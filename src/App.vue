@@ -1,21 +1,12 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <van-button type="info">vant组件按钮</van-button>
     <router-view />
   </div>
 </template>
 
 <script>
-import { Button } from 'vant'
-
 export default {
-  components: {
-    'van-button': Button
-  }
+
 }
 </script>
 
