@@ -20,5 +20,10 @@ export default {
   color: white;
   font-size: 0.16rem;
   background-color: $main-color;
+  transition: all 0.1s;
+
+  &:active{
+    opacity: 0.6;
+  }
 }
 </style>

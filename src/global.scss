@@ -19,12 +19,17 @@ body {
 }
 // 导航栏占位符
 .van-nav-bar__placeholder{
-  height: 50px;
+  height: 46px;
 }
 
 // 下拉菜单
 .van-dropdown-menu{
   border-bottom: solid 1px $normal-text;
+  background-color: #ffffff;
+  position: sticky;
+  top: 46px;
+  left: 0;
+  z-index: 100;
 
   &__bar{
     box-shadow: none !important;

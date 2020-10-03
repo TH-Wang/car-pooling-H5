@@ -5,7 +5,7 @@
     <div class="end">重庆西站</div>
 
     <!-- 车次 -->
-    <div class="num-tag">{{countTag}}</div>
+    <div :class="`num-tag-${tagColor}`">{{countTag}}</div>
 
     <!-- 常用tag -->
     <img v-if="common" class="common-tag" src="../assets/icons/common-tag.png" alt="">
@@ -22,6 +22,11 @@ export default {
     tag: {
       type: String,
       default: '车次'
+    },
+    // ['yellow', 'green']
+    tagColor: {
+      type: String,
+      default: 'yellow'
     }
   },
   computed: {
@@ -46,6 +51,11 @@ export default {
   background-color: $linecard-color;
   position: relative;
 
+  &:active{
+    // opacity: 0.8;
+    background-color: #eee;
+  }
+
   // 线路箭头
   .arrow{
     width: 0.15rem;
@@ -61,10 +71,19 @@ export default {
     color: white;
     font-size: 0.12rem;
     text-align: center;
-    background-color: $main-color;
     position: absolute;
     top: -0.08rem;
     right: -0.06rem;
+  }
+
+  .num-tag-yellow{
+    @extend .num-tag;
+    background-color: $main-color;
+  }
+
+  .num-tag-green{
+    @extend .num-tag;
+    background-color: $aid-green-color;
   }
 
   // 常用标签

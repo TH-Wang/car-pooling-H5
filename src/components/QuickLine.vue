@@ -8,13 +8,13 @@
     </div>
     <!-- 列表 -->
     <div class="list-container">
-      <line-card tag="504" common class="list-item" />
-      <line-card tag="2304" common class="list-item" />
-      <line-card tag="471" common class="list-item" />
-      <line-card tag="471" class="list-item" />
-      <line-card tag="504" class="list-item" />
-      <line-card tag="" class="list-item" />
-      <line-card class="list-item" />
+      <line-card tag="504" :tagColor="tagColor" common class="list-item" />
+      <line-card tag="2304" :tagColor="tagColor" common class="list-item" />
+      <line-card tag="471" :tagColor="tagColor" common class="list-item" />
+      <line-card tag="471" :tagColor="tagColor" class="list-item" />
+      <line-card tag="504" :tagColor="tagColor" class="list-item" />
+      <line-card tag="" :tagColor="tagColor" class="list-item" />
+      <line-card :tagColor="tagColor" class="list-item" />
     </div>
   </div>
 </template>
@@ -25,6 +25,13 @@ import LineCard from './LineCard'
 export default {
   components: {
     'line-card': LineCard
+  },
+  props: {
+    // ['yellow', 'green']
+    tagColor: {
+      type: String,
+      default: 'yellow'
+    }
   }
 }
 </script>

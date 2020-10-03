@@ -61,6 +61,7 @@ export default {
   box-shadow: 0px 0px 10px 4px rgba(38, 38, 38, 0.06);
   box-sizing: border-box;
   border-radius: 0.05rem;
+  background-color: #fff;
 
   // 上方搜索容器
   .search-box{
@@ -84,7 +85,7 @@ export default {
       .switch{
         width: 0.18rem;
         height: 0.18rem;
-        margin: 0.09rem 0;
+        margin: 0.12rem 0;
       }
     }
 
@@ -93,7 +94,7 @@ export default {
       flex: 1;
 
       .address-bar{
-        height: 0.50rem;
+        height: 0.55rem;
         display: flex;
         align-items: center;
         font-size: 0.14rem;

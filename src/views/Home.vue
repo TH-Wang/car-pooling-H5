@@ -2,11 +2,19 @@
   <div class="container">
 
     <!-- 导航栏 -->
-    <van-nav-bar title="拼车之家" fixed placeholder :border="false">
+    <van-nav-bar
+      title="拼车之家"
+      fixed
+      placeholder
+      :border="false"
+      @click-left="handleChooseCity"
+    >
       <template #left>
-        重庆 · 渝北区
+        重庆 · 渝北区<van-icon name="arrow" color="#262626" />
       </template>
     </van-nav-bar>
+
+    <!-- <van-pull-refresh v-model="refresh" @refresh="handleListRefresh"> -->
 
     <!-- banner -->
     <div class="banner"></div>
@@ -16,6 +24,7 @@
       <div
         class="main-nav-item"
         v-for="(item, index) in mainNavConfig"
+        @click="$router.push(item.path)"
         :key="index">
         <img class="icon" :src="item.icon" alt="">
         <div class="title">{{item.title}}</div>
@@ -37,15 +46,24 @@
     </van-dropdown-menu>
 
     <!-- 拼单列表 -->
-    <carpool-order />
-    <carpool-order />
-    <carpool-order />
-    <carpool-order />
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      :error.sync="error"
+      error-text="加载失败，请点击重试"
+      @load="handleListLoad"
+    >
+      <carpool-order v-for="(item, index) in list" :key="index" />
+    </van-list>
+
+    <!-- </van-pull-refresh> -->
+
   </div>
 </template>
 
 <script>
-import { NavBar, DropdownMenu, DropdownItem } from 'vant'
+import { NavBar, Icon, DropdownMenu, DropdownItem, List, Toast } from 'vant'
 import mainNavConfig from '@/configs/homeMainNav'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
@@ -55,6 +73,9 @@ export default {
   name: 'Home',
   components: {
     'van-nav-bar': NavBar,
+    'van-icon': Icon,
+    'van-list': List,
+    // 'van-pull-refresh': PullRefresh,
     'van-dropdown-menu': DropdownMenu,
     'van-dropdown-item': DropdownItem,
     'search-card': SearchCard,
@@ -63,6 +84,12 @@ export default {
   },
   data: () => ({
     mainNavConfig,
+    refresh: false,
+    list: [],
+    total: 0,
+    loading: false,
+    finished: false,
+    error: false,
     areaValue: 0,
     areaOptions: [
       { text: '全城', value: 0 },
@@ -95,7 +122,39 @@ export default {
       { text: '前排', value: 2 },
       { text: '后排', value: 3 }
     ]
-  })
+  }),
+  methods: {
+    // 点击选择城市
+    handleChooseCity () {
+      console.log('choose city')
+    },
+    // 列表刷新
+    handleListRefresh () {
+      setTimeout(() => {
+        this.refresh = false
+        Toast('刷新成功')
+      }, 2000)
+    },
+    // 列表加载
+    handleListLoad () {
+      setTimeout(() => {
+        if (this.total >= 16) {
+          this.loading = false
+          this.finished = true
+          return
+        }
+
+        this.list.push(...new Array(4).fill(1))
+        this.total += 4
+        console.log('触发')
+        this.loading = false
+      }, 2000)
+    }
+  },
+  mounted: function () {
+    this.list.push(...new Array(4).fill(1))
+    this.total = 4
+  }
 }
 </script>
 
@@ -133,6 +192,10 @@ export default {
       color: $main-text;
     }
   }
+}
+
+.list{
+  overflow: scroll
 }
 
 </style>

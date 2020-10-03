@@ -61,7 +61,7 @@
       </div>
       <!-- 拼单操作 -->
       <div class="book-order">
-        <div class="seat">余座<span>3</span></div>
+        <div class="seat"><span>余座</span><span class="num-yellow">3</span></div>
         <div class="handle-button">立即预定</div>
       </div>
     </div>
@@ -75,8 +75,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// 使用订单底部用户栏样式
+@import '@/assets/scss/common.scss';
+
 .container{
   padding: 0 .15rem;
+  margin-bottom: .10rem;
+  background-color: #fff;
+
+  &:active{
+    background-color: #f9f9f9;
+  }
 
   // 顶部主要信息
   .header{
@@ -177,6 +186,7 @@ export default {
     font-size: .12rem;
     color: $sub-text;
     text-align: left;
+    border-bottom: dashed 1px $normal-text;
 
     &-item{
       padding-bottom: .15rem;
@@ -198,91 +208,6 @@ export default {
         right: 0;
         top: 50%;
         transform: translateY(-50%);
-      }
-    }
-  }
-
-  // 用户信息及操作
-  .user{
-    height: .50rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: dashed 1px $normal-text;
-
-    // 用户信息
-    &-info{
-      flex: 1;
-      display: flex;
-      align-items: center;
-
-      // 头像
-      .avatar{
-        width: 0.20rem;
-        height: 0.20rem;
-        margin-right: .10rem;
-        border-radius: 50%;
-        background-color: $normal-text;
-      }
-
-      // 用户名
-      .name{
-        font-size: .14rem;
-        color: $main-text;
-        font-weight: bold;
-        // flex: 1;
-        text-align: left;
-        max-width: .8rem;
-      }
-
-      // 点赞
-      .social{
-        display: flex;
-        align-items: flex-end;
-        margin-left: .10rem;
-        font-size: .12rem;
-        color: $tip-text;
-
-        img{
-          width: 0.16rem;
-          height: 0.16rem;
-          margin-right: .02rem;
-        }
-      }
-    }
-
-    // 订单操作
-    .book-order{
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-
-      .seat{
-        font-size: .12rem;
-        color: $tip-text;
-        margin-right: .05rem;
-
-        span{
-          margin-left: 0.02rem;
-          font-weight: bold;
-          font-size: .14rem;
-          color: $main-color;
-        }
-      }
-
-      .handle-button{
-        padding: 0 .12rem;
-        height: .30rem;
-        border-radius: .10rem;
-        background: linear-gradient(135deg, #FFCD00 0%, #FFAE20 100%);
-        box-shadow: 0px 6px 10px -4px rgba(255, 174, 32, 0.5);
-        color: white;
-        font-size: .16rem;
-        font-weight: bold;
-        font-family: PingFangSC-Regular, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
       }
     }
   }

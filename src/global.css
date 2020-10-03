@@ -16,11 +16,16 @@ body {
 }
 
 .van-nav-bar__placeholder {
-  height: 50px;
+  height: 46px;
 }
 
 .van-dropdown-menu {
   border-bottom: solid 1px #E8E8E8;
+  background-color: #ffffff;
+  position: sticky;
+  top: 46px;
+  left: 0;
+  z-index: 100;
 }
 
 .van-dropdown-menu__bar {
