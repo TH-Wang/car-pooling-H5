@@ -107,12 +107,18 @@ export default {
     // 点击订单按钮
     handleClickOrderButton (e) {
       console.log('[点击mini按钮]', e)
-      this.menuVisibleId = e.id
+      this.menuVisibleId = this.menuVisibleId === e.id ? null : e.id
     },
     // 取消预约
     handleOrderCancel (e) {
       console.log('[点击取消菜单]', e)
     }
+  },
+  mounted () {
+    window.addEventListener('click', this.windowClick, false)
+  },
+  beforeDestroy () {
+    window.removeEventListener('click', this.windowClick, false)
   }
 }
 </script>

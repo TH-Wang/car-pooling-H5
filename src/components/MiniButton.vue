@@ -1,7 +1,14 @@
 <template>
+  <!--
+      className = MINI_BUTTON_MENU_SAFENODE: 下拉菜单的安全node节点
+      详见 list-mixin 的 mouted
+  -->
   <div class="button-container">
     <!-- 按钮主体 -->
-    <div :class="`button-${color}`" @click="$emit('click', {id: orderId})">
+    <div
+      :class="`button-${color} MINI_BUTTON_MENU_SAFENODE`"
+      @click="$emit('click', {id: orderId})"
+    >
 
       <!-- 按钮文本内容 -->
       <slot></slot>
@@ -11,6 +18,7 @@
         v-if="showMenu"
         name="arrow-down"
         size="0.12rem"
+        class="MINI_BUTTON_MENU_SAFENODE"
         style="margin-left: .05rem"
       />
     </div>
@@ -19,7 +27,7 @@
     <transition name="slide">
       <div v-if="showMenu" v-show="menuVisible" class="handle-menu">
         <div
-          class="meun-item"
+          class="meun-item MINI_BUTTON_MENU_SAFENODE"
           v-for="(item, index) in menu"
           :key="index"
           @click="$emit(item.type, {id: orderId})"

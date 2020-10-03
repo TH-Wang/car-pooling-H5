@@ -7,7 +7,7 @@ export default {
     navbarMode: 'light'
   }),
   methods: {
-    // 状态变化处理
+    // search-nav-bar 导航栏的状态变化处理: light <=> dark
     handleWindowScroll (e) {
       var top = e.srcElement.scrollingElement.scrollTop
       if (top > 1 && this.navbarMode === 'light') {
@@ -17,14 +17,31 @@ export default {
         console.log('[回到顶部]')
         this.navbarMode = 'light'
       }
+    },
+    // 点击屏幕事件 -- 关闭mini按钮的下拉菜单
+    windowClick (e) {
+      const className = e.target.className
+      // className中有 MINI_BUTTON_MENU_SAFENODE 的则为下拉菜单的安全节点
+      if (
+        !/MINI_BUTTON_MENU_SAFENODE/g.test(className) &&
+        this.menuVisibleId !== null
+      ) {
+        this.menuVisibleId = null
+      }
     }
   },
   mounted () {
-    // 挂载时注册 scroll 事件
+    // 完成挂载时注册事件
+    if ('menuVisibleId' in this) {
+      window.addEventListener('click', this.windowClick, false)
+    }
     window.addEventListener('scroll', this.handleWindowScroll, false)
   },
   beforeDestroy () {
-    // 销毁前注销 scroll 事件
+    // 销毁前注销事件
+    if ('menuVisibleId' in this) {
+      window.removeEventListener('click', this.windowClick, false)
+    }
     window.removeEventListener('scroll', this.handleWindowScroll, false)
   }
 }
