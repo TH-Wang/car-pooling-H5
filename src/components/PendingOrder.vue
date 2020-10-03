@@ -59,15 +59,21 @@
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat"><span>人数</span><span class="num-green">3</span></div>
-        <div class="handle-button">立即预定</div>
+        <slot name="button"></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {
 
+export default {
+  props: {
+    record: {
+      type: Object,
+      default: () => ({})
+    }
+  }
 }
 </script>
 

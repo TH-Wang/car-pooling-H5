@@ -38,7 +38,19 @@
       @load="handleListLoad"
       class="list-container"
     >
-      <carpool-order v-for="(item, index) in list" :key="index" />
+      <carpool-order
+        v-for="(item, index) in list"
+        :key="index"
+        :record="item"
+      >
+        <template #button>
+          <mini-button
+            color="yellow"
+            :orderId="item.id"
+            @click="handleClickOrderButton"
+          >立即预订</mini-button>
+        </template>
+      </carpool-order>
     </van-list>
   </div>
 </template>
@@ -49,6 +61,7 @@ import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
 import CarpoolOrder from '@/components/CarpoolOrder'
+import MiniButton from '@/components/MiniButton'
 import NoticeBar from '@/components/NoticeBar'
 import NavbarMixin from '@/mixins/navbar-mixin'
 import ListMixin from '@/mixins/list-mixin'
@@ -65,7 +78,8 @@ export default {
     'nav-bar-search': NavBarSearch,
     'search-card': SearchCard,
     'quick-line': QuickLine,
-    'carpool-order': CarpoolOrder
+    'carpool-order': CarpoolOrder,
+    'mini-button': MiniButton
   },
   data: () => ({
     url: ''
@@ -76,6 +90,10 @@ export default {
     },
     handleClickReserve () {
       console.log('[点击预约]')
+    },
+    // 点击订单按钮
+    handleClickOrderButton (e) {
+      console.log('[点击mini按钮]', e)
     }
   },
   created () {

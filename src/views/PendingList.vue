@@ -38,17 +38,35 @@
       @load="handleListLoad"
       class="list-container"
     >
-      <pending-order v-for="(item, index) in list" :key="index" />
+      <pending-order
+        v-for="(item, index) in list"
+        :key="index"
+        :record="item"
+      >
+        <template #button>
+          <mini-button
+            color="green"
+            :orderId="item.id"
+            :menu="menu"
+            :menuVisible="menuVisibleId === item.id"
+            @click="handleClickOrderButton"
+            @cancel="handleOrderCancel"
+          >
+            <van-icon style="margin-right: .05rem" size=".18rem" name="phone" />预约
+          </mini-button>
+        </template>
+      </pending-order>
     </van-list>
   </div>
 </template>
 
 <script>
-import { DropdownMenu, DropdownItem, List } from 'vant'
+import { DropdownMenu, DropdownItem, List, Icon } from 'vant'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
 import PendingOrder from '@/components/PendingOrder'
+import MiniButton from '@/components/MiniButton'
 import NoticeBar from '@/components/NoticeBar'
 import NavbarMixin from '@/mixins/navbar-mixin'
 import ListMixin from '@/mixins/list-mixin'
@@ -61,14 +79,23 @@ export default {
     'van-list': List,
     'van-dropdown-menu': DropdownMenu,
     'van-dropdown-item': DropdownItem,
+    'van-icon': Icon,
     'notice-bar': NoticeBar,
     'nav-bar-search': NavBarSearch,
     'search-card': SearchCard,
     'quick-line': QuickLine,
-    'pending-order': PendingOrder
+    'pending-order': PendingOrder,
+    'mini-button': MiniButton
   },
   data: () => ({
-    url: ''
+    url: '',
+    menuVisibleId: null,
+    menu: [
+      {
+        type: 'cancel',
+        text: '取消预约'
+      }
+    ]
   }),
   methods: {
     handleClickSearch () {
@@ -76,6 +103,15 @@ export default {
     },
     handleClickReserve () {
       console.log('[点击预约]')
+    },
+    // 点击订单按钮
+    handleClickOrderButton (e) {
+      console.log('[点击mini按钮]', e)
+      this.menuVisibleId = e.id
+    },
+    // 取消预约
+    handleOrderCancel (e) {
+      console.log('[点击取消菜单]', e)
     }
   }
 }

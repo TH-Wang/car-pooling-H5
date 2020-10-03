@@ -54,6 +54,14 @@ export default {
     ]
   }),
   methods: {
+    createList (count) {
+      const result = []
+      const date = Date.now()
+      for (let i = 0; i < count; i++) {
+        result.push({ id: `${date}-${i}` })
+      }
+      return result
+    },
     // 列表加载
     handleListLoad () {
       setTimeout(() => {
@@ -63,7 +71,7 @@ export default {
           return
         }
 
-        this.list.push(...new Array(4).fill(1))
+        this.list.push(...this.createList(4))
         this.total += 4
         console.log('[加载列表]')
         this.loading = false
@@ -72,7 +80,7 @@ export default {
   },
   mounted: function () {
     console.log('开始请求:' + this.url)
-    this.list.push(...new Array(4).fill(1))
+    this.list = this.createList(4)
     this.total = 4
   }
 }

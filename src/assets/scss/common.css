@@ -7,7 +7,7 @@
 }
 
 .list-container {
-  background-color: #E8E8E8;
+  background-color: #FAFAFA;
 }
 
 .user {
@@ -79,19 +79,4 @@
 
 .user .book-order .seat .num-green {
   color: #0AD593;
-}
-
-.user .book-order .handle-button {
-  padding: 0 .12rem;
-  height: .30rem;
-  border-radius: .10rem;
-  background: linear-gradient(135deg, #FFCD00 0%, #FFAE20 100%);
-  box-shadow: 0px 6px 10px -4px rgba(255, 174, 32, 0.5);
-  color: white;
-  font-size: .16rem;
-  font-weight: bold;
-  font-family: PingFangSC-Regular, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }

@@ -62,13 +62,14 @@
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat"><span>余座</span><span class="num-yellow">3</span></div>
-        <div class="handle-button">立即预定</div>
+        <slot name="button"></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
 
 }
