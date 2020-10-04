@@ -22,6 +22,11 @@ body {
   height: 46px;
 }
 
+// 索引列表
+.van-index-anchor--sticky{
+  top: 50px !important;
+}
+
 // 下拉菜单
 .van-dropdown-menu{
   border-bottom: solid 1px $normal-text;
@@ -53,13 +58,13 @@ body {
 }
 
 // iconfont
-.icon {
-  width: 1em;
-  height: 1em;
-  vertical-align: -0.15em;
-  fill: currentColor;
-  overflow: hidden;
-}
+// .icon {
+//   width: 1em;
+//   height: 1em;
+//   vertical-align: -0.15em;
+//   fill: currentColor;
+//   overflow: hidden;
+// }
 
 // 单行省略号
 .ellipsis{

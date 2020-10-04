@@ -19,6 +19,10 @@ body {
   height: 46px;
 }
 
+.van-index-anchor--sticky {
+  top: 50px !important;
+}
+
 .van-dropdown-menu {
   border-bottom: solid 1px #E8E8E8;
   background-color: #ffffff;
@@ -30,14 +34,6 @@ body {
 
 .van-dropdown-menu__bar {
   box-shadow: none !important;
-}
-
-.icon {
-  width: 1em;
-  height: 1em;
-  vertical-align: -0.15em;
-  fill: currentColor;
-  overflow: hidden;
 }
 
 .ellipsis {

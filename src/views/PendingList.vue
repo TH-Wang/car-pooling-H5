@@ -113,12 +113,6 @@ export default {
     handleOrderCancel (e) {
       console.log('[点击取消菜单]', e)
     }
-  },
-  mounted () {
-    window.addEventListener('click', this.windowClick, false)
-  },
-  beforeDestroy () {
-    window.removeEventListener('click', this.windowClick, false)
   }
 }
 </script>

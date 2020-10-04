@@ -8,7 +8,12 @@
       <van-icon class="search-icon" name="search" />
       <div class="input-box">
         <span v-if="button">搜索城市名称查询</span>
-        <input v-else type="text" placeholder="请输入城市名称查询" />
+        <input
+          v-else
+          type="text"
+          placeholder="请输入城市名称查询"
+          @input="handleSearchInput"
+        />
       </div>
     </div>
 
@@ -51,8 +56,13 @@ export default {
     }
   },
   methods: {
+    // 返回上一页
     handleGoBack () {
       this.$router.go(-1)
+    },
+    // 搜索事件
+    handleSearchInput (e) {
+      this.$emit('search', { value: e.target.value })
     }
   }
 }

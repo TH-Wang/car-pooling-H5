@@ -5,6 +5,7 @@ import CommonLayout from '@/layout/common'
 import Home from '@/views/Home'
 import CarpoolList from '@/views/CarpoolList'
 import PendingList from '@/views/PendingList'
+import SelectCity from '@/views/SelectCity'
 
 Vue.use(VueRouter)
 
@@ -36,6 +37,11 @@ const routes = [
         path: '/common/pending',
         name: 'PendingList',
         component: PendingList
+      },
+      {
+        path: '/common/city',
+        name: 'SelectCity',
+        component: SelectCity
       }
     ]
   }

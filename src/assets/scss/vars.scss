@@ -1,3 +1,12 @@
+// 字体混合指令
+@mixin font ($size: .16rem, $color: $main-text, $weight: 400) {
+  font: {
+    size: $size;
+    weight: $weight;
+  }
+  color: $color;
+}
+
 // 主题色
 $main-color: #FFCD00;
 // 二级主题色

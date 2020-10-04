@@ -7,7 +7,7 @@
       fixed
       placeholder
       :border="false"
-      @click-left="handleChooseCity"
+      @click-left="handleSelectCity"
     >
       <template #left>
         重庆 · 渝北区<van-icon name="arrow" color="#262626" />
@@ -68,9 +68,11 @@ import mainNavConfig from '@/configs/homeMainNav'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
 import CarpoolOrder from '@/components/CarpoolOrder'
+import ListMixin from '@/mixins/list-mixin'
 
 export default {
   name: 'Home',
+  mixins: [ListMixin],
   components: {
     'van-nav-bar': NavBar,
     'van-icon': Icon,
@@ -83,50 +85,13 @@ export default {
     'carpool-order': CarpoolOrder
   },
   data: () => ({
-    mainNavConfig,
-    refresh: false,
-    list: [],
-    total: 0,
-    loading: false,
-    finished: false,
-    error: false,
-    areaValue: 0,
-    areaOptions: [
-      { text: '全城', value: 0 },
-      { text: '江北区', value: 1 },
-      { text: '渝中区', value: 3 },
-      { text: '南岸区', value: 4 },
-      { text: '沙坪坝区', value: 5 }
-    ],
-    timeValue: 0,
-    timeOptions: [
-      { text: '全天', value: 0 },
-      { text: '上午', value: 1 },
-      { text: '中午', value: 2 },
-      { text: '下午', value: 3 },
-      { text: '晚上', value: 4 }
-    ],
-    priceValue: 0,
-    priceOptions: [
-      { text: '不限车价', value: 0 },
-      { text: '100元以下', value: 1 },
-      { text: '100-300元', value: 2 },
-      { text: '300-500元', value: 3 },
-      { text: '500-1000元', value: 4 },
-      { text: '1000元以上', value: 5 }
-    ],
-    seatValue: 0,
-    seatOptions: [
-      { text: '不限座位', value: 0 },
-      { text: '靠窗', value: 1 },
-      { text: '前排', value: 2 },
-      { text: '后排', value: 3 }
-    ]
+    url: '/index',
+    mainNavConfig
   }),
   methods: {
     // 点击选择城市
-    handleChooseCity () {
-      console.log('choose city')
+    handleSelectCity () {
+      this.$router.push('/common/city')
     },
     // 列表刷新
     handleListRefresh () {
