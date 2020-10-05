@@ -42,6 +42,7 @@
         v-for="(item, index) in list"
         :key="index"
         :record="item"
+        @click="handleLinkDetail"
       >
         <template #button>
           <mini-button
@@ -91,6 +92,10 @@ export default {
     handleClickReserve () {
       console.log('[点击预约]')
     },
+    // 点击订单
+    handleLinkDetail (e) {
+      this.$router.push({ path: '/common/order/detail', query: { id: e.id } })
+    },
     // 点击订单按钮
     handleClickOrderButton (e) {
       console.log('[点击mini按钮]', e)
@@ -103,10 +108,18 @@ export default {
       case 'cities': this.url = '/cities'; return
       case 'province': this.url = '/province'
     }
+  },
+  mounted () {
+    this.$dialog.confirm({
+      title: '提示',
+      message: '请确认 <b class="dialog-message-active">157 2020 0123</b>\n能联系到您',
+      confirmButtonText: '确认在用',
+      cancelButtonText: '修改手机号'
+    })
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/common.scss'
+@import '@/assets/scss/common.scss';
 </style>

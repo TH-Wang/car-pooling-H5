@@ -16,6 +16,13 @@ body {
 // 标题导航栏
 .van-nav-bar{
   box-shadow: 0 0 15px 0 rgba(50, 50, 50, 0.05);
+  color: $main-text;
+
+  // 导航栏图标
+  .van-icon{
+    color: $main-text !important;
+    font-size: 18px;
+  }
 }
 // 导航栏占位符
 .van-nav-bar__placeholder{
@@ -25,6 +32,21 @@ body {
 // 索引列表
 .van-index-anchor--sticky{
   top: 50px !important;
+}
+
+// 弹出框
+.dialog{
+  border-radius: .08rem !important;
+  
+  .dialog-message-active{
+    @include font (.16rem, $main-color, bold)
+  }
+
+  // 标题、底部按钮
+  .van-dialog__header, .van-button__text{
+    font-weight: bold;
+    font-size: 0.18rem;
+  }
 }
 
 // 下拉菜单

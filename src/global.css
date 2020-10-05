@@ -13,6 +13,12 @@ body {
 
 .van-nav-bar {
   box-shadow: 0 0 15px 0 rgba(50, 50, 50, 0.05);
+  color: #262626;
+}
+
+.van-nav-bar .van-icon {
+  color: #262626 !important;
+  font-size: 18px;
 }
 
 .van-nav-bar__placeholder {
@@ -21,6 +27,21 @@ body {
 
 .van-index-anchor--sticky {
   top: 50px !important;
+}
+
+.dialog {
+  border-radius: .08rem !important;
+}
+
+.dialog .dialog-message-active {
+  font-size: 0.16rem;
+  font-weight: bold;
+  color: #FFCD00;
+}
+
+.dialog .van-dialog__header, .dialog .van-button__text {
+  font-weight: bold;
+  font-size: 0.18rem;
 }
 
 .van-dropdown-menu {

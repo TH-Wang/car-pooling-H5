@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @click="handleClick">
 
     <!-- 顶部主要信息 -->
     <div class="header">
@@ -71,7 +71,19 @@
 <script>
 
 export default {
-
+  props: {
+    record: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  methods: {
+    handleClick (e) {
+      e.preventDefault()
+      const _this_ = this
+      this.$emit('click', { id: _this_.record.id })
+    }
+  }
 }
 </script>
 
@@ -131,10 +143,6 @@ export default {
         .arrow{
           width: .18rem;
           margin: 0 .10rem;
-        }
-
-        div{
-          // max-width: 30%;
         }
       }
 

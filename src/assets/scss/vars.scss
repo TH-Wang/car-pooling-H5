@@ -7,6 +7,14 @@
   color: $color;
 }
 
+// flex布局混合指令
+@mixin flex ($justify: flex-start, $align: flex-start, $dir: row) {
+  display: flex;
+  flex-direction: $dir;
+  justify-content: $justify;
+  align-items: $align;
+}
+
 // 主题色
 $main-color: #FFCD00;
 // 二级主题色

@@ -11,10 +11,10 @@ export default {
     handleWindowScroll (e) {
       var top = e.srcElement.scrollingElement.scrollTop
       if (top > 1 && this.navbarMode === 'light') {
-        console.log('[页面滚动]')
+        // console.log('[页面滚动]')
         this.navbarMode = 'dark'
       } else if (top <= 1 && this.navbarMode === 'dark') {
-        console.log('[回到顶部]')
+        // console.log('[回到顶部]')
         this.navbarMode = 'light'
       }
     },

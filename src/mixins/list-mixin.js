@@ -73,13 +73,13 @@ export default {
 
         this.list.push(...this.createList(4))
         this.total += 4
-        console.log('[加载列表]')
+        // console.log('[加载列表]')
         this.loading = false
       }, 2000)
     }
   },
   mounted: function () {
-    console.log('开始请求:' + this.url)
+    // console.log('开始请求:' + this.url)
     this.list = this.createList(4)
     this.total = 4
   }
