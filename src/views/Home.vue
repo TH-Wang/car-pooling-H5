@@ -53,6 +53,7 @@
       :error.sync="error"
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
+      class="list-container"
     >
       <carpool-order v-for="(item, index) in list" :key="index" />
     </van-list>
@@ -99,31 +100,14 @@ export default {
         this.refresh = false
         Toast('刷新成功')
       }, 2000)
-    },
-    // 列表加载
-    handleListLoad () {
-      setTimeout(() => {
-        if (this.total >= 16) {
-          this.loading = false
-          this.finished = true
-          return
-        }
-
-        this.list.push(...new Array(4).fill(1))
-        this.total += 4
-        console.log('触发')
-        this.loading = false
-      }, 2000)
     }
-  },
-  mounted: function () {
-    this.list.push(...new Array(4).fill(1))
-    this.total = 4
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/common.scss';
+
 .banner{
   width: 3.45rem;
   height: .88rem;

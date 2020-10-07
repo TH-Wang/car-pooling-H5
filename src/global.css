@@ -45,16 +45,21 @@ body {
 }
 
 .van-dropdown-menu {
-  border-bottom: solid 1px #E8E8E8;
+  border-bottom: solid 1px rgba(232, 232, 232, 0.5);
   background-color: #ffffff;
-  position: sticky;
-  top: 46px;
-  left: 0;
-  z-index: 100;
 }
 
 .van-dropdown-menu__bar {
   box-shadow: none !important;
+  justify-content: space-around;
+}
+
+.van-dropdown-menu__item {
+  flex: none !important;
+}
+
+.van-tabs__wrap {
+  border-bottom: solid 1px rgba(255, 255, 255, 0.4);
 }
 
 .ellipsis {

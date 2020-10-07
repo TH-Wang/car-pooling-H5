@@ -2,6 +2,8 @@
 
 export default {
   data: () => ({
+    // 是否在下拉刷新
+    isRefresh: false,
     // 列表数据
     list: [],
     // 记录页面总数据数
@@ -61,6 +63,13 @@ export default {
         result.push({ id: `${date}-${i}` })
       }
       return result
+    },
+    // 处理下拉刷新
+    handlePullRefresh () {
+      var _this_ = this
+      setTimeout(() => {
+        _this_.isRefresh = false
+      }, 1000)
     },
     // 列表加载
     handleListLoad () {

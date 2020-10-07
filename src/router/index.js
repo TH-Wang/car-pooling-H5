@@ -5,6 +5,7 @@ import CommonLayout from '@/layout/common'
 import Home from '@/views/Home'
 import CarpoolList from '@/views/CarpoolList'
 import PendingList from '@/views/PendingList'
+import HitchhikeList from '@/views/HitchhikeList'
 import OrderDetail from '@/views/OrderDetail'
 import SelectCity from '@/views/SelectCity'
 
@@ -38,6 +39,11 @@ const routes = [
         path: '/common/pending/list',
         name: 'PendingList',
         component: PendingList
+      },
+      {
+        path: '/common/hitchhike/list',
+        name: 'HitchhikeList',
+        component: HitchhikeList
       },
       {
         path: '/common/order/detail',

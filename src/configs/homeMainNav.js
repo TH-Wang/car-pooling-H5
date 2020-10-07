@@ -22,7 +22,7 @@ export default [
   {
     icon: require('../assets/images/home/main-5.png'),
     title: '上下班拼车',
-    path: '/'
+    path: '/common/hitchhike/list'
   },
   {
     icon: require('../assets/images/home/main-6.png'),

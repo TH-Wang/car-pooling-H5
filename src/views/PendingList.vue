@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="transparent-nav-page">
     <!-- 搜索框导航栏 -->
     <nav-bar-search :mode="navbarMode" button @click-search="handleClickSearch">
       <template #right>定位城市</template>
@@ -7,12 +7,16 @@
 
     <!-- 背景 -->
     <div class="background">
-      <!-- 搜索卡片 -->
-      <search-card />
     </div>
 
     <!-- 占位符 -->
-    <div style="height: 66px" />
+    <div style="height: .12rem" />
+
+    <!-- 搜索卡片 -->
+    <search-card />
+
+    <!-- 占位符 -->
+    <div style="height: .1rem" />
 
     <!-- 快捷路线 -->
     <quick-line tagColor="green" />
