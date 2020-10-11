@@ -19,8 +19,10 @@
       <!-- 提示信息、路线、订单状态 -->
       <div class="tip-box">
         <span class="tip-text">出发地点 - 到达地点</span>
+        <!-- 价格 -->
         <div class="price"><span>60</span>元/座</div>
-        <div class="state">进行中</div>
+        <!-- 订单状态 -->
+        <img class="state" src="@/assets/icons/order-state/doing.png" alt="">
       </div>
       <!-- 路线 -->
       <div class="line-text">
@@ -156,12 +158,8 @@ export default {
     // 订单状态
     .state{
       @extend .absolute;
-      @include flex (center, center);
       width: 1rem;
       height: 1rem;
-      border-radius: 50%;
-      background-color: $sub-color;
-      opacity: 0.5;
     }
   }
 

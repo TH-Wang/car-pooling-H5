@@ -27,7 +27,7 @@ export default [
   {
     icon: require('../assets/images/home/main-6.png'),
     title: '顺路带物',
-    path: '/'
+    path: '/common/carry/list'
   },
   {
     icon: require('../assets/images/home/main-7.png'),

@@ -3,11 +3,6 @@ import VueRouter from 'vue-router'
 import BasicLayout from '@/layout/basic'
 import CommonLayout from '@/layout/common'
 import Home from '@/views/Home'
-import CarpoolList from '@/views/CarpoolList'
-import PendingList from '@/views/PendingList'
-import HitchhikeList from '@/views/HitchhikeList'
-import OrderDetail from '@/views/OrderDetail'
-import SelectCity from '@/views/SelectCity'
 
 Vue.use(VueRouter)
 
@@ -33,44 +28,46 @@ const routes = [
       {
         path: '/common/carpool/list',
         name: 'CarpoolList',
-        component: CarpoolList
+        component: () => import(/* webpackChunkName: "CarpoolList" */ '@/views/CarpoolList.vue')
       },
       {
         path: '/common/pending/list',
         name: 'PendingList',
-        component: PendingList
+        component: () => import(/* webpackChunkName: "webpackChunkName" */ '@/views/PendingList.vue')
       },
       {
         path: '/common/hitchhike/list',
         name: 'HitchhikeList',
-        component: HitchhikeList
+        component: () => import(/* webpackChunkName: "HitchhikeList" */ '@/views/HitchhikeList.vue')
+      },
+      {
+        path: '/common/carry/list',
+        name: 'CarryList',
+        component: () => import(/* webpackChunkName: "CarryList" */ '@/views/CarryList.vue')
       },
       {
         path: '/common/order/detail',
         name: 'OrderDetail',
-        component: OrderDetail
+        component: () => import(/* webpackChunkName: "OrderDetail" */ '@/views/OrderDetail.vue')
       },
       {
         path: '/common/city',
         name: 'SelectCity',
-        component: SelectCity
+        component: () => import(/* webpackChunkName: "SelectCity" */ '@/views/SelectCity.vue')
       }
     ]
   }
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // }
 ]
 
 const router = new VueRouter({
   // mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+// 全局后置钩子
+router.afterEach((to, from) => {
+  console.warn(`跳转页面：[${to.path}]  路由名称：${to.name}`)
 })
 
 export default router

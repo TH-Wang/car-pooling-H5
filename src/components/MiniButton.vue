@@ -98,11 +98,8 @@ export default {
     border-radius: .10rem;
     color: white;
     font-size: .16rem;
-    // font-weight: bold;
     font-family: PingFangSC-Regular, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    @include flex (center, center)
   }
 
   // 黄色主题

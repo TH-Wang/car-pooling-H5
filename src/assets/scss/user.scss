@@ -1,0 +1,70 @@
+@import './vars.scss';
+
+// 订单的底部用户栏
+.user{
+  height: .50rem;
+  @include flex (space-between, center);
+
+  // 用户信息
+  &-info{
+    flex: 1;
+    @include flex ($align: center);
+
+    // 头像
+    .avatar{
+      width: 0.20rem;
+      height: 0.20rem;
+      margin-right: .10rem;
+      border-radius: 50%;
+      background-color: $normal-text;
+    }
+
+    // 用户名
+    .name{
+      @include font (.14rem, $main-text, bold);
+      // flex: 1;
+      text-align: left;
+      max-width: .8rem;
+    }
+
+    // 点赞
+    .social{
+      @include flex ($align: flex-end);
+      @include font (.12rem, $tip-text);
+      margin-left: .10rem;
+
+      img{
+        width: 0.16rem;
+        height: 0.16rem;
+        margin-right: .02rem;
+      }
+    }
+  }
+
+  // 订单操作
+  .book-order{
+    flex-shrink: 0;
+    @include flex ($align: center);
+
+    // 余座&人数
+    .seat{
+      @include font (.12rem, $tip-text);
+      @include flex ($align: baseline);
+      margin-right: .08rem;
+
+      .num{
+        margin-left: 0.03rem;
+        font-weight: bold;
+        font-size: .14rem;
+      }
+      .num-yellow{
+        @extend .num;
+        color: $main-color;
+      }
+      .num-green{
+        @extend .num;
+        color: $aid-green-color;
+      }
+    }
+  }
+}

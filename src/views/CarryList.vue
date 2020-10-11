@@ -44,7 +44,7 @@
           class="list-container"
         >
           <!-- 订单 -->
-          <hitchhike-order
+          <carry-order
             v-for="(item, index) in list"
             :key="index"
             :record="item"
@@ -59,7 +59,7 @@
                 @click="handleClickOrderButton"
               >立即预订</mini-button>
             </template>
-          </hitchhike-order>
+          </carry-order>
         </van-list>
 
       </van-tab>
@@ -89,7 +89,7 @@
           class="list-container"
         >
           <!-- 订单 -->
-          <hitchhike-order
+          <carry-order
             v-for="(item, index) in list"
             :key="index"
             :record="item"
@@ -108,7 +108,7 @@
                 <van-icon style="margin-right: .05rem" size=".18rem" name="phone" />预约
               </mini-button>
             </template>
-          </hitchhike-order>
+          </carry-order>
         </van-list>
       </van-tab>
     </van-tabs>
@@ -122,7 +122,7 @@
 import { Tabs, Tab, DropdownMenu, DropdownItem, List, Icon } from 'vant'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
-import HitchhikeOrder from '@/components/Order/Hitchhike'
+import CarryOrder from '@/components/Order/Carry'
 import MiniButton from '@/components/MiniButton'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'
@@ -141,7 +141,7 @@ export default {
     'van-list': List,
     'nav-bar-search': NavBarSearch,
     'search-card': SearchCard,
-    'hitchhike-order': HitchhikeOrder,
+    'carry-order': CarryOrder,
     'mini-button': MiniButton,
     'cancel-reserve-layer': CancelReserveLayer
   },

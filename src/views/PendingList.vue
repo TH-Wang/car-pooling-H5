@@ -61,6 +61,9 @@
         </template>
       </pending-order>
     </van-list>
+
+    <!-- 取消预约弹出层 -->
+    <cancel-reserve-layer ref="cancelLayer" @submit="handleCancelSubmit" />
   </div>
 </template>
 
@@ -69,9 +72,10 @@ import { DropdownMenu, DropdownItem, List, Icon } from 'vant'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
-import PendingOrder from '@/components/PendingOrder'
+import PendingOrder from '@/components/Order/Pending'
 import MiniButton from '@/components/MiniButton'
 import NoticeBar from '@/components/NoticeBar'
+import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'
 import ListMixin from '@/mixins/list-mixin'
 
@@ -89,17 +93,13 @@ export default {
     'search-card': SearchCard,
     'quick-line': QuickLine,
     'pending-order': PendingOrder,
-    'mini-button': MiniButton
+    'mini-button': MiniButton,
+    'cancel-reserve-layer': CancelReserveLayer
   },
   data: () => ({
     url: '',
     menuVisibleId: null,
-    menu: [
-      {
-        type: 'cancel',
-        text: '取消预约'
-      }
-    ]
+    menu: [{ type: 'cancel', text: '取消预约' }]
   }),
   methods: {
     handleClickSearch () {
@@ -115,7 +115,18 @@ export default {
     },
     // 取消预约
     handleOrderCancel (e) {
-      console.log('[点击取消菜单]', e)
+      console.log('[弹出取消菜单]', e)
+      this.$refs.cancelLayer.show()
+    },
+    // 提交取消预约事件
+    handleCancelSubmit (e) {
+      console.log('[取消预约]', e)
+      const _this_ = this
+      // 隐藏选项菜单
+      this.$refs.cancelLayer.hidden()
+      setTimeout(() => {
+        _this_.$toast.success('取消成功')
+      }, 1000)
     }
   }
 }

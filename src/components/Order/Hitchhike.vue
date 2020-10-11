@@ -5,19 +5,27 @@
     <div class="header">
       <!-- 主要信息 -->
       <div class="header-main">
-        <div class="time-num">08:00</div>
-        <div class="time-text">/ 今天</div>
+        <!-- 时间段 -->
+        <div class="time-num">
+          <span>08:00 - 19:00</span>/ 出发·返程
+        </div>
+        <!-- 价格 -->
+        <div :class="`price-${type}`"><span>￥</span>60</div>
+      </div>
+      <div class="car-info">
+        <div v-if="type === 'customer'" class="car-info-item">
+          <img src="@/assets/icons/order/car.png" alt="">
+          <span>奔驰E300l</span>
+        </div>
         <div class="car-info-item">
-          <img src="../assets/icons/order/location.png" alt="">
+          <img src="@/assets/icons/order/location.png" alt="">
           <span>2.5km</span>
         </div>
         <div class="car-info-item">
-          <img src="../assets/icons/order/line.png" alt="">
+          <img src="@/assets/icons/order/line.png" alt="">
           <span>95%</span>
         </div>
       </div>
-      <!-- 价格 -->
-      <div class="price"><span>￥</span>60</div>
     </div>
 
     <!-- 详细信息 -->
@@ -48,17 +56,19 @@
         <div class="avatar"></div>
         <div class="name ellipsis">杨女士</div>
         <div class="social">
-          <img src="../assets/icons/order/like.png" alt="">
+          <img src="@/assets/icons/order/like.png" alt="">
           <span>1920</span>
         </div>
         <div class="social">
-          <img src="../assets/icons/order/dislike.png" alt="">
+          <img src="@/assets/icons/order/dislike.png" alt="">
           <span>10</span>
         </div>
       </div>
       <!-- 拼单操作 -->
       <div class="book-order">
-        <div class="seat"><span>人数</span><span class="num-green">3</span></div>
+        <div class="seat">
+          人数<span :class="`num-${type === 'customer' ? 'yellow' : 'green'}`">3</span>
+        </div>
         <slot name="button"></slot>
       </div>
     </div>
@@ -72,6 +82,11 @@ export default {
     record: {
       type: Object,
       default: () => ({})
+    },
+    // 订单类型：['customer', 'driver']
+    type: {
+      type: String,
+      default: 'customer'
     }
   }
 }
@@ -79,7 +94,7 @@ export default {
 
 <style lang="scss" scoped>
 // 使用订单底部用户栏样式
-@import '@/assets/scss/common.scss';
+@import '@/assets/scss/user.scss';
 
 .container{
   padding: 0 .15rem;
@@ -88,31 +103,54 @@ export default {
 
   // 顶部主要信息
   .header{
-    padding: .20rem 0 .05rem 0;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    font-size: .12rem;
-    color: $tip-text;
+    padding: .20rem 0 .10rem 0;
+    @include font (.12rem, $tip-text);
 
     // 订单信息
     .header-main{
       flex: 1;
-      display: flex;
-      align-items: baseline;
-      justify-content: flex-start;
+      @include flex (space-between, baseline);
 
       .time-num{
-        font-size: .24rem;
-        color: $main-text;
-        font-weight: bold;
-        margin-right: .05rem;
+        @include font (.12rem, $tip-text);
+
+        span{
+          @include font (.24rem, $main-text, bold);
+          margin-right: .05rem;
+        }
       }
 
-      .car-info-item{
+      // 车价
+      .price{
+        flex-shrink: 0;
+        @include font (.24rem, $main-color, bold);
+
+        &-customer{
+          @extend .price;
+          color: $main-color;
+        }
+
+        &-driver{
+          @extend .price;
+          color: $aid-green-color;
+        }
+
+        span{
+          font-size: .2rem;
+          font-family: '等线';
+          margin-right: -0.02rem;
+        }
+      }
+    }
+
+    .car-info{
+      margin-top: 0.05rem;
+      @include flex (flex-start, baseline);
+
+      &-item{
         display: flex;
-        align-items: baseline;
-        margin-left: .15rem;
+        align-items: center;
+        margin-right: .15rem;
 
         img{
           width: .12rem;
@@ -121,20 +159,6 @@ export default {
         span{
           margin-left: .03rem;
         }
-      }
-    }
-
-    // 车价
-    .price{
-      flex-shrink: 0;
-      font-size: .24rem;
-      font-weight: bold;
-      color: $aid-green-color;
-
-      span{
-        font-size: .2rem;
-        font-family: '等线';
-        margin-right: -0.02rem;
       }
     }
   }

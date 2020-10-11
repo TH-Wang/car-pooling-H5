@@ -34,7 +34,7 @@
     </div>
 
     <!-- 按钮 -->
-    <main-button>寻找车主</main-button>
+    <main-button width="100%">寻找车主</main-button>
   </div>
 </template>
 

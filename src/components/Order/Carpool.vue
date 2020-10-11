@@ -12,20 +12,20 @@
       <div class="header-main">
         <div class="line-text">
           <div class="start">重庆北站</div>
-          <img class="arrow" src="../assets/icons/line-arrow.png" alt="">
+          <img class="arrow" src="@/assets/icons/line-arrow.png" alt="">
           <div class="end">重庆西站</div>
         </div>
         <div class="car-info">
           <div class="car-info-item">
-            <img src="../assets/icons/order/car.png" alt="">
+            <img src="@/assets/icons/order/car.png" alt="">
             <span>奔驰E300l</span>
           </div>
           <div class="car-info-item">
-            <img src="../assets/icons/order/location.png" alt="">
+            <img src="@/assets/icons/order/location.png" alt="">
             <span>2.5km</span>
           </div>
           <div class="car-info-item">
-            <img src="../assets/icons/order/line.png" alt="">
+            <img src="@/assets/icons/order/line.png" alt="">
             <span>95%</span>
           </div>
         </div>
@@ -51,11 +51,11 @@
         <div class="avatar"></div>
         <div class="name ellipsis">杨女士</div>
         <div class="social">
-          <img src="../assets/icons/order/like.png" alt="">
+          <img src="@/assets/icons/order/like.png" alt="">
           <span>1920</span>
         </div>
         <div class="social">
-          <img src="../assets/icons/order/dislike.png" alt="">
+          <img src="@/assets/icons/order/dislike.png" alt="">
           <span>10</span>
         </div>
       </div>
@@ -89,7 +89,7 @@ export default {
 
 <style lang="scss" scoped>
 // 使用订单底部用户栏样式
-@import '@/assets/scss/common.scss';
+@import '@/assets/scss/user.scss';
 
 .container{
   padding: 0 .15rem;
