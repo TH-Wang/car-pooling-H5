@@ -37,6 +37,6 @@ export default [
   {
     icon: require('../assets/images/home/main-8.png'),
     title: '拼车群',
-    path: '/'
+    path: '/common/group/nearby'
   }
 ]

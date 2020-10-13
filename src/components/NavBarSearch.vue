@@ -1,7 +1,12 @@
 <template>
-  <div class="nav-bar" :style="theme">
+  <div :class="`nav-bar theme-${mode}`">
     <!-- 返回箭头 -->
-    <van-icon class="icon" name="arrow-left" @click="handleGoBack" />
+    <van-icon v-if="backIcon" class="icon" name="arrow-left" @click="handleGoBack" />
+
+    <!-- 左侧slot -->
+    <div class="left-slot" @click="$emit('click-left')">
+      <slot name="left" />
+    </div>
 
     <!-- 搜索框 -->
     <div class="search" @click="$emit('click-search')">
@@ -18,7 +23,7 @@
     </div>
 
     <!-- 当前地址 -->
-    <div class="address" @click="$emit('click-right')">
+    <div class=".right-slot" @click="$emit('click-right')">
       <slot name="right" />
     </div>
   </div>
@@ -32,6 +37,10 @@ export default {
     'van-icon': Icon
   },
   props: {
+    backIcon: {
+      type: Boolean,
+      default: true
+    },
     button: {
       type: Boolean,
       default: false
@@ -44,15 +53,6 @@ export default {
     mode: {
       type: String,
       default: 'light'
-    }
-  },
-  computed: {
-    theme () {
-      return this.mode === 'light'
-        ? 'color: #fff; background-color: transparent'
-        : `color: #262626;
-           background-color: #fff;
-           box-shadow: 0 0 15px 0 rgba(50, 50, 50, 0.05);`
     }
   },
   methods: {
@@ -69,6 +69,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// 主题色
+.theme-light{
+  color: #fff;
+  background-color: transparent;
+
+  .search{
+    background-color: rgba(250, 250, 250, .5);
+  }
+}
+.theme-dark{
+  color: #262626;
+  background-color: #fff;
+  box-shadow: 0 0 15px 0 rgba(50, 50, 50, 0.05);
+
+  .search{
+    background-color: rgba(250, 250, 250, 1);
+  }
+}
+
 .nav-bar{
   width: 100vw;
   height: 50px;
@@ -92,7 +111,6 @@ export default {
     flex: 1;
     height: 36px;
     border-radius: 5px;
-    background-color: rgba(250, 250, 250, .5);
     padding: 0 13px;
     margin: 0 15px 0 10px;
     display: flex;
@@ -121,9 +139,10 @@ export default {
     }
   }
 
-  .address{
+  .left-slot, .right-slot{
     flex-shrink: 0;
-    font-size: 15px;
+    @include flex ($align: center);
+    font-size: .15rem;
   }
 }
 </style>

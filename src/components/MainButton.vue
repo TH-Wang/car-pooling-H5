@@ -1,7 +1,7 @@
 <template>
   <div
-    :class="`button-${color}`"
-    :style="`width: ${width}`"
+    :class="`button-${color}${gradient ? '-gradient' : ''}`"
+    :style="`width: ${width};${center ? 'margin: 0 auto' :''}`"
     @click="$emit('click')"
   >
     <slot></slot>
@@ -11,6 +11,10 @@
 <script>
 export default {
   props: {
+    center: {
+      type: Boolean,
+      default: false
+    },
     width: {
       type: String,
       default: '3.15rem'
@@ -18,6 +22,10 @@ export default {
     color: {
       type: String,
       default: 'yellow'
+    },
+    gradient: {
+      type: Boolean,
+      default: false
     }
   }
 }
@@ -25,7 +33,7 @@ export default {
 
 <style lang="scss" scoped>
 .button{
-  margin: 0 auto;
+  // margin: 0 auto;
   width: 3.15rem;
   height: 0.50rem;
   line-height: 0.50rem;
@@ -42,6 +50,11 @@ export default {
   &-yellow{
     @extend .button;
     background-color: $main-color;
+
+    &-gradient{
+      @extend .button;
+      background: linear-gradient(90deg, #FFCD00 0%, #FFAE20 100%);
+    }
   }
 
   &-blue{

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import { Dialog, Toast } from 'vant'
+import { Dialog, Toast, Icon } from 'vant'
 import './global.min.css'
 import router from './router'
 import store from './store'
@@ -18,6 +18,7 @@ Toast.setDefaultOptions({
   duration: 1500
 })
 Vue.use(Toast)
+Vue.use(Icon)
 
 new Vue({
   router,

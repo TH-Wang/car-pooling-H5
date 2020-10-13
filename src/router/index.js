@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
+import tabbarConfig from '@/configs/tabbar'
 import BasicLayout from '@/layout/basic'
 import CommonLayout from '@/layout/common'
 import Home from '@/views/Home'
@@ -16,7 +18,14 @@ const routes = [
       {
         path: '/home',
         name: 'Home',
-        component: Home
+        component: Home,
+        meta: { tabbar: true }
+      },
+      {
+        path: '/group',
+        name: 'Group',
+        component: () => import(/* webpackChunkName: "CarpoolList" */ '@/views/Group.vue'),
+        meta: { tabbar: true }
       }
     ]
   },
@@ -54,6 +63,16 @@ const routes = [
         path: '/common/city',
         name: 'SelectCity',
         component: () => import(/* webpackChunkName: "SelectCity" */ '@/views/SelectCity.vue')
+      },
+      {
+        path: '/common/group/nearby',
+        name: 'NearbyGroup',
+        component: () => import(/* webpackChunkName: "NearbyGroup" */ '@/views/NearbyGroup.vue')
+      },
+      {
+        path: '/common/group/detail',
+        name: 'GroupDetail',
+        component: () => import(/* webpackChunkName: "GroupDetail" */ '@/views/GroupDetail.vue')
       }
     ]
   }
@@ -67,6 +86,12 @@ const router = new VueRouter({
 
 // 全局后置钩子
 router.afterEach((to, from) => {
+  // 根据路由判断当前tabbar页面
+  if (to.meta.tabbar) {
+    const idx = tabbarConfig.findIndex(i => i.path === to.path)
+    store.commit('changeTabbar', idx)
+  }
+
   console.warn(`跳转页面：[${to.path}]  路由名称：${to.name}`)
 })
 

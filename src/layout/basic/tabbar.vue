@@ -1,33 +1,47 @@
 <template>
   <div class="tabbar">
-    <div class="tabbar-item">
-      <img src="@/assets/icons/index/home.png" alt="">
-      <span class="title">首页</span>
-    </div>
-    <div class="tabbar-item">
-      <img src="@/assets/icons/index/group.png" alt="">
-      <span class="title">拼车群</span>
-    </div>
-    <div class="tabbar-item">
-      <div class="middle"><van-icon name="plus"/></div>
-    </div>
-    <div class="tabbar-item">
-      <img src="@/assets/icons/index/notify.png" alt="">
-      <span class="title">消息</span>
-    </div>
-    <div class="tabbar-item">
-      <img src="@/assets/icons/index/mine.png" alt="">
-      <span class="title">我的</span>
-    </div>
+    <router-link
+      v-for="(item, index) in tabbarConfig"
+      :key="index"
+      :to="item.path"
+    >
+      <!-- 中间按钮 -->
+      <div v-if="item.middle" class="tabbar-item" @click="handleChangeTabbar($event, index)">
+        <div class="middle"><van-icon name="plus"/></div>
+      </div>
+
+      <!-- 普通tabbar -->
+      <div v-else class="tabbar-item" @click="handleChangeTabbar($event, index)">
+        <img :src="tabbarId === index ? item.activeIcon : item.icon" alt="">
+        <span :class="`title${tabbarId === index ? '-active' : ''}`">{{item.title}}</span>
+      </div>
+    </router-link>
   </div>
 </template>
 
 <script>
 import { Icon } from 'vant'
+import tabbarConfig from '@/configs/tabbar'
 
 export default {
   components: {
     'van-icon': Icon
+  },
+  data: () => ({
+    tabbarConfig
+  }),
+  computed: {
+    tabbarId () {
+      return this.$store.state.tabbar.tabbarId
+    }
+  },
+  methods: {
+    handleChangeTabbar (e, idx) {
+      this.$store.commit('changeTabbar', idx)
+    }
+  },
+  beforeRouteUpdate: function (to, from, next) {
+    console.log(to)
   }
 }
 </script>

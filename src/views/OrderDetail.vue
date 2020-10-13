@@ -233,11 +233,9 @@ export default {
       }
 
       .label{
-        display: inline-block;
         width: .66rem;
-        text-align: justify;
-        text-align-last: justify;
         margin-right: .15rem;
+        @include textJustify;
       }
 
       .text{

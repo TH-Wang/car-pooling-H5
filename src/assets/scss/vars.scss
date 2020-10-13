@@ -1,4 +1,4 @@
-// 字体混合指令
+// 字体样式
 @mixin font ($size: .16rem, $color: $main-text, $weight: 400) {
   font: {
     size: $size;
@@ -7,12 +7,19 @@
   color: $color;
 }
 
-// flex布局混合指令
+// flex布局
 @mixin flex ($justify: flex-start, $align: flex-start, $dir: row) {
   display: flex;
   flex-direction: $dir;
   justify-content: $justify;
   align-items: $align;
+}
+
+// 文本两端对齐
+@mixin textJustify {
+  display: inline-block;
+  text-align: justify;
+  text-align-last: justify;
 }
 
 // 主题色
