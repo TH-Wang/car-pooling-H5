@@ -190,6 +190,7 @@ export default {
 @import '@/assets/scss/common.scss';
 
 .search-card-wrap{
-  margin: .10rem 0;
+  padding: .10rem 0;
+  border-top: solid 1px rgba($color: #fff, $alpha: 0.6);
 }
 </style>

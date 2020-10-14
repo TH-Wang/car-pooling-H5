@@ -13,13 +13,13 @@ export default [
   },
   {
     middle: true,
-    path: ''
+    path: '/release'
   },
   {
     title: '消息',
     icon: require('@/assets/icons/index/notify.png'),
     activeIcon: require('@/assets/icons/index/notify-active.png'),
-    path: ''
+    path: '/notify'
   },
   {
     title: '我的',

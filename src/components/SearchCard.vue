@@ -34,7 +34,9 @@
     </div>
 
     <!-- 按钮 -->
-    <main-button width="100%">寻找车主</main-button>
+    <div class="button" v-if="hasButton">
+      <main-button width="100%">寻找车主</main-button>
+    </div>
   </div>
 </template>
 
@@ -47,6 +49,12 @@ export default {
     'van-switch': Switch,
     'main-button': MainButton
   },
+  props: {
+    hasButton: {
+      type: Boolean,
+      default: true
+    }
+  },
   data: () => ({
     startSwtich: false
   })
@@ -57,7 +65,7 @@ export default {
 .container{
   width: 3.45rem;
   margin: 0 auto;
-  padding: 0 0.18rem 0.15rem 0.18rem;
+  padding: 0 .18rem;
   box-shadow: 0px 0px 10px 4px rgba(38, 38, 38, 0.06);
   box-sizing: border-box;
   border-radius: 0.05rem;
@@ -124,6 +132,11 @@ export default {
         border-bottom: dashed 1px $normal-text;
       }
     }
+  }
+
+  // 按钮
+  .button{
+    padding-bottom: .15rem;
   }
 }
 

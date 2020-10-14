@@ -26,7 +26,7 @@
         </van-radio-group>
 
         <!-- 提交按钮 -->
-        <main-button color="green" @click="handleSubmit">提交</main-button>
+        <main-button width="100%" color="green" @click="handleSubmit">提交</main-button>
       </div>
     </van-popup>
   </div>

@@ -24,7 +24,19 @@ const routes = [
       {
         path: '/group',
         name: 'Group',
-        component: () => import(/* webpackChunkName: "CarpoolList" */ '@/views/Group.vue'),
+        component: () => import(/* webpackChunkName: "Group" */ '@/views/Group.vue'),
+        meta: { tabbar: true }
+      },
+      {
+        path: '/release',
+        name: 'Release',
+        component: () => import(/* webpackChunkName: "Release" */ '@/views/Release.vue'),
+        meta: { tabbar: true }
+      },
+      {
+        path: '/notify',
+        name: 'Notify',
+        component: () => import(/* webpackChunkName: "Notify" */ '@/views/Notify.vue'),
         meta: { tabbar: true }
       }
     ]
@@ -42,7 +54,7 @@ const routes = [
       {
         path: '/common/pending/list',
         name: 'PendingList',
-        component: () => import(/* webpackChunkName: "webpackChunkName" */ '@/views/PendingList.vue')
+        component: () => import(/* webpackChunkName: "PendingList" */ '@/views/PendingList.vue')
       },
       {
         path: '/common/hitchhike/list',

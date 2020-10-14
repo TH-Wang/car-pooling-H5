@@ -58,10 +58,6 @@ body {
   flex: none !important;
 }
 
-.van-tabs__wrap {
-  border-bottom: solid 1px rgba(255, 255, 255, 0.4);
-}
-
 .ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;
