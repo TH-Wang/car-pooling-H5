@@ -119,7 +119,7 @@ export default {
   }),
   methods: {
     reqList () {
-      const data = new Array(2).fill({}).map((e, idx) => ({ id: `${Date.now()}-${idx}` }))
+      const data = new Array(3).fill({}).map((e, idx) => ({ id: `${Date.now()}-${idx}` }))
       this.list.push(...data)
       console.log(this.list)
     },

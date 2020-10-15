@@ -22,6 +22,8 @@
           <search-card :hasButton="false" />
         </div>
 
+        <customer-form></customer-form>
+
         <div class="submit">
           <div class="submit-checkbox">
             <van-checkbox
@@ -101,6 +103,7 @@
 import { Tabs, Tab, Checkbox } from 'vant'
 import SearchCard from '@/components/SearchCard'
 import MainButton from '@/components/MainButton'
+import CustomerForm from './customer'
 
 export default {
   components: {
@@ -108,7 +111,8 @@ export default {
     'van-tab': Tab,
     'van-checkbox': Checkbox,
     'search-card': SearchCard,
-    'main-button': MainButton
+    'main-button': MainButton,
+    'customer-form': CustomerForm
   },
   data: () => ({
     tabId: 0,

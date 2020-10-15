@@ -30,7 +30,7 @@ const routes = [
       {
         path: '/release',
         name: 'Release',
-        component: () => import(/* webpackChunkName: "Release" */ '@/views/Release.vue'),
+        component: () => import(/* webpackChunkName: "Release" */ '@/views/Release/index.vue'),
         meta: { tabbar: true }
       },
       {
