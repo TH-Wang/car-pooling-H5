@@ -38,6 +38,12 @@ const routes = [
         name: 'Notify',
         component: () => import(/* webpackChunkName: "Notify" */ '@/views/Notify.vue'),
         meta: { tabbar: true }
+      },
+      {
+        path: '/mine',
+        name: 'Mine',
+        component: () => import(/* webpackChunkName: "Mine" */ '@/views/Mine.vue'),
+        meta: { tabbar: true }
       }
     ]
   },

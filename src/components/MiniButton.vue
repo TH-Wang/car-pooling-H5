@@ -32,7 +32,9 @@
           :key="index"
           @click="$emit(item.type, {id: orderId})"
         >
-          <img src="../assets/icons/order/emoji-cancel.png" />{{item.text}}
+          <img v-if="item.type === 'cancel'" src="../assets/icons/order/cancel-emoji.png" />
+          <img v-else-if="item.type === 'report'" src="../assets/icons/order/report-emoji.png" />
+          {{item.text}}
         </div>
       </div>
     </transition>

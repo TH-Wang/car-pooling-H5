@@ -44,6 +44,10 @@ body {
   font-size: 0.18rem;
 }
 
+.van-swipe {
+  overflow: initial !important;
+}
+
 .van-dropdown-menu {
   border-bottom: solid 1px rgba(232, 232, 232, 0.5);
   background-color: #ffffff;

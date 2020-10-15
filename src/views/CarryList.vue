@@ -126,12 +126,13 @@ import CarryOrder from '@/components/Order/Carry'
 import MiniButton from '@/components/MiniButton'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'
+import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
   // NavbarMixin 负责导航栏状态变化
   // ListMixin 负责筛选，以及列表动态加载
-  mixins: [NavbarMixin, ListMixin],
+  mixins: [NavbarMixin, ButtonMenuMixin, ListMixin],
   components: {
     'van-tabs': Tabs,
     'van-tab': Tab,

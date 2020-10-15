@@ -55,7 +55,11 @@
       @load="handleListLoad"
       class="list-container"
     >
-      <carpool-order v-for="(item, index) in list" :key="index" />
+      <carpool-order
+        v-for="(item, index) in list"
+        :key="index"
+        @click="handleLinkDetail"
+      />
     </van-list>
 
     <!-- </van-pull-refresh> -->
@@ -100,6 +104,10 @@ export default {
         this.refresh = false
         Toast('刷新成功')
       }, 2000)
+    },
+    // 进入详情页面
+    handleLinkDetail () {
+      this.$router.push('/common/order/detail')
     }
   }
 }

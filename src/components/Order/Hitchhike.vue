@@ -10,10 +10,10 @@
           <span>08:00 - 19:00</span>/ 出发·返程
         </div>
         <!-- 价格 -->
-        <div :class="`price-${type}`"><span>￥</span>60</div>
+        <div :class="`price-${color}`"><span>￥</span>60</div>
       </div>
       <div class="car-info">
-        <div v-if="type === 'customer'" class="car-info-item">
+        <div v-if="showCar" class="car-info-item">
           <img src="@/assets/icons/order/car.png" alt="">
           <span>奔驰E300l</span>
         </div>
@@ -40,7 +40,7 @@
         <span>重庆西站春天小学</span>
       </div>
       <!-- 途径点 -->
-      <div class="detail">
+      <div class="detail" v-if="showLineDetail">
         <span>途径点</span> | 重庆北站 - 紫金山地铁站 - 人民路红十字会 - 二七地铁站 - 重庆一中 - 医学院地铁站 - 京广路 - 崇山路 - 新城区路口 - 体育路 - 中兴路 - 体育村 - 重庆西站
       </div>
       <!-- 备注 -->
@@ -67,7 +67,7 @@
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat">
-          人数<span :class="`num-${type === 'customer' ? 'yellow' : 'green'}`">3</span>
+          人数<span :class="`num-${color}`">3</span>
         </div>
         <slot name="button"></slot>
       </div>
@@ -83,10 +83,18 @@ export default {
       type: Object,
       default: () => ({})
     },
-    // 订单类型：['customer', 'driver']
-    type: {
+    // 订单类型：['yellow', 'green']
+    color: {
       type: String,
-      default: 'customer'
+      default: 'yellow'
+    },
+    showCar: {
+      type: Boolean,
+      default: false
+    },
+    showLineDetail: {
+      type: Boolean,
+      default: false
     }
   }
 }
@@ -125,12 +133,12 @@ export default {
         flex-shrink: 0;
         @include font (.24rem, $main-color, bold);
 
-        &-customer{
+        &-yellow{
           @extend .price;
           color: $main-color;
         }
 
-        &-driver{
+        &-green{
           @extend .price;
           color: $aid-green-color;
         }

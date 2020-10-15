@@ -48,7 +48,8 @@
             v-for="(item, index) in list"
             :key="index"
             :record="item"
-            type="customer"
+            color="yellow"
+            showCar showLineDetail
             @click="handleLinkDetail"
           >
             <!-- 预约按钮 -->
@@ -93,7 +94,7 @@
             v-for="(item, index) in list"
             :key="index"
             :record="item"
-            type="driver"
+            color="green"
           >
             <!-- 预约按钮 -->
             <template #button>
@@ -126,12 +127,13 @@ import HitchhikeOrder from '@/components/Order/Hitchhike'
 import MiniButton from '@/components/MiniButton'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'
+import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
   // NavbarMixin 负责导航栏状态变化
   // ListMixin 负责筛选，以及列表动态加载
-  mixins: [NavbarMixin, ListMixin],
+  mixins: [NavbarMixin, ButtonMenuMixin, ListMixin],
   components: {
     'van-tabs': Tabs,
     'van-tab': Tab,
@@ -155,9 +157,9 @@ export default {
     handleClickSearch () {
       console.log('click search')
     },
-    handleClickReserve (e) {
+    handleClickReserve ({ id }) {
       console.log('[点击预约]')
-      this.menuVisibleId = this.menuVisibleId === e.id ? null : e.id
+      this.menuVisibleId = this.menuVisibleId === id ? null : id
     },
     // 点击订单
     handleLinkDetail (e) {

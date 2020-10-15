@@ -25,6 +25,6 @@ export default [
     title: '我的',
     icon: require('@/assets/icons/index/mine.png'),
     activeIcon: require('@/assets/icons/index/mine-active.png'),
-    path: ''
+    path: '/mine'
   }
 ]
