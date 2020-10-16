@@ -1,0 +1,40 @@
+@import './vars.scss';
+
+.van-field{
+  width: 3.45rem;
+  height: .38rem;
+  background-color: $light-color;
+  border-radius: .05rem;
+  margin: 0 auto .20rem auto;
+  position: relative;
+  overflow: initial;
+  font-size: .14rem;
+  @include flex ($align:center);
+
+  &__label{
+    position: relative;
+
+    &::after{
+      content: '';
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: .14rem;
+      background-color: #D8D8D8;
+    }
+  }
+
+  .van-icon{
+    font-size: .12rem
+  }
+
+  &__error-message{
+    position: absolute;
+    bottom: 0;
+    transform: translateY(.2rem);
+    font-size: .12rem;
+  }
+}

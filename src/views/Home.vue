@@ -10,7 +10,7 @@
       @click-left="handleSelectCity"
     >
       <template #left>
-        重庆 · 渝北区<van-icon name="arrow" color="#262626" size=".15rem" />
+        重庆 · 渝北区<van-icon name="arrow" color="#262626" size=".15px" />
       </template>
     </van-nav-bar>
 
