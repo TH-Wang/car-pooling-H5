@@ -68,6 +68,7 @@ export default {
     top: calc(100% + 12px);
     left: -0.12rem;
     width: 2.40rem;
+    z-index: 100;
     max-height: 1.76rem;
     overflow-y: scroll;
     background-color: #ffffff;

@@ -12,7 +12,6 @@
       background="#ffffff"
       line-width="52px"
       line-height="2px"
-      animated
     >
       <!-- 车主发布 -->
       <van-tab title="车主发布">

@@ -77,7 +77,7 @@
     <!-- 底部按钮组 -->
     <div class="footer-button-group">
       <div class="button-normal">转发分享</div>
-      <div class="button-primary">立即预订</div>
+      <div class="button-primary" @click="handleLinkReserve">立即预订</div>
     </div>
 
     <!-- 温馨提示 -->
@@ -101,6 +101,9 @@ export default {
     handleBackHome () {
       this.$router.replace('/home')
       location.reload()
+    },
+    handleLinkReserve () {
+      this.$router.push('/common/reserve')
     }
   }
 }

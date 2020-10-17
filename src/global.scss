@@ -23,6 +23,10 @@ body {
     color: $main-text !important;
     font-size: 18px;
   }
+
+  &--fixed{
+    z-index: 10;
+  }
 }
 // 导航栏占位符
 .van-nav-bar__placeholder{

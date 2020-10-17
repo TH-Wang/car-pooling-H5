@@ -41,6 +41,18 @@
           </template>
         </van-field>
       </div>
+      <!-- 时间选择器 -->
+      <div>
+        <van-field
+          readonly
+          name="time2"
+          :value="time"
+          label="时间"
+          placeholder="请选择时间"
+          @click="showTimePicker = true"
+          is-link arrow-direction="down"
+        />
+      </div>
     </van-form>
 
     <!-- 提交部分 -->
@@ -64,7 +76,7 @@
       <main-button
         center
         style="margin-top:.22rem"
-        @click="handleClickSubmit"
+        @click="()=>{$refs.form.submit()}"
       >发布</main-button>
     </div>
 
@@ -76,6 +88,16 @@
         :columns="orderTypeColumns"
         @confirm="handleOrderTypeConfirm"
         @cancel="showOrderTypePicker = false"
+      />
+    </van-popup>
+
+    <!-- 时间选择器 -->
+    <van-popup v-model="showTimePicker" position="bottom" round>
+      <van-datetime-picker
+        title="选择时间（年月日时分）"
+        type="datetime"
+        @confirm="handleTimeConfirm"
+        @cancel="showTimePicker = false"
       />
     </van-popup>
 
@@ -95,7 +117,7 @@
 </template>
 
 <script>
-import { Form, Field, Popup, Picker, Checkbox } from 'vant'
+import { Form, Field, Popup, Picker, Checkbox, DatetimePicker } from 'vant'
 import MainButton from '@/components/MainButton'
 import SelectMenu from '@/components/SelectMenu'
 
@@ -105,18 +127,26 @@ export default {
     'van-field': Field,
     'van-popup': Popup,
     'van-picker': Picker,
+    'van-datetime-picker': DatetimePicker,
     'van-checkbox': Checkbox,
     'main-button': MainButton,
     'select-menu': SelectMenu
   },
   data: () => ({
-    orderTypeColumns: ['拼车', '上下班拼车', '顺路带物', '旅游包车'],
+    // 订单类型
     orderType: '拼车',
+    orderTypeColumns: ['拼车', '上下班拼车', '顺路带物', '旅游包车'],
     showOrderTypePicker: false,
+    // 座位
     seat: '',
+    // 出发时间
     timeValue: 0,
     timeColumns: ['上午', '中午', '下午', '晚高峰'],
+    // 选择时间
+    time: '',
+    currentDate: new Date(),
     showTime: false,
+    showTimePicker: false,
     agreePact: true,
     agreePackage: false
   }),
@@ -129,9 +159,10 @@ export default {
     handleSubmit (values) {
       console.log(values)
     },
-    // 点击发布按钮
-    handleClickSubmit () {
-      this.$refs.form.submit()
+    handleTimeConfirm (time) {
+      console.log(time)
+      // this.time = time
+      this.showTimePicker = false
     }
   }
 }

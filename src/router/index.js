@@ -52,45 +52,55 @@ const routes = [
     name: 'CommonLayout',
     component: CommonLayout,
     children: [
-      {
+      { // 短途拼车、城际拼车、跨省拼车
         path: '/common/carpool/list',
         name: 'CarpoolList',
         component: () => import(/* webpackChunkName: "CarpoolList" */ '@/views/CarpoolList.vue')
       },
-      {
+      { // 车主找人
         path: '/common/pending/list',
         name: 'PendingList',
         component: () => import(/* webpackChunkName: "PendingList" */ '@/views/PendingList.vue')
       },
-      {
+      { // 上下班拼车
         path: '/common/hitchhike/list',
         name: 'HitchhikeList',
         component: () => import(/* webpackChunkName: "HitchhikeList" */ '@/views/HitchhikeList.vue')
       },
-      {
+      { // 顺路带物
         path: '/common/carry/list',
         name: 'CarryList',
         component: () => import(/* webpackChunkName: "CarryList" */ '@/views/CarryList.vue')
       },
-      {
+      { // 订单详情页面
         path: '/common/order/detail',
         name: 'OrderDetail',
         component: () => import(/* webpackChunkName: "OrderDetail" */ '@/views/OrderDetail.vue')
       },
-      {
+      { // 选择城市
         path: '/common/city',
         name: 'SelectCity',
         component: () => import(/* webpackChunkName: "SelectCity" */ '@/views/SelectCity.vue')
       },
-      {
+      { // 附近的拼车群
         path: '/common/group/nearby',
         name: 'NearbyGroup',
         component: () => import(/* webpackChunkName: "NearbyGroup" */ '@/views/NearbyGroup.vue')
       },
-      {
+      { // 拼车群详情页面
         path: '/common/group/detail',
         name: 'GroupDetail',
         component: () => import(/* webpackChunkName: "GroupDetail" */ '@/views/GroupDetail.vue')
+      },
+      { // 乘客预约订单
+        path: '/common/reserve',
+        name: 'Reserve',
+        component: () => import(/* webpackChunkName: "Reserve" */ '@/views/Reserve.vue')
+      },
+      { // 修改手机号
+        path: '/common/phone/modify',
+        name: 'ModifyPhone',
+        component: () => import(/* webpackChunkName: "ModifyPhone" */ '@/views/ModifyPhone.vue')
       }
     ]
   }
