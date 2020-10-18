@@ -6,6 +6,7 @@
       left-arrow
       fixed
       placeholder
+      :border="false"
       @click-left="$router.go(-1)"
     />
 

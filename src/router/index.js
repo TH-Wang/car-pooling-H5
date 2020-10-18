@@ -101,6 +101,16 @@ const routes = [
         path: '/common/phone/modify',
         name: 'ModifyPhone',
         component: () => import(/* webpackChunkName: "ModifyPhone" */ '@/views/ModifyPhone.vue')
+      },
+      { // 我的行程
+        path: '/common/my/trip',
+        name: 'MyTrip',
+        component: () => import(/* webpackChunkName: "MyTrip" */ '@/views/MyTrip/index.vue')
+      },
+      { // 我的行程
+        path: '/common/my/order',
+        name: 'MyOrder',
+        component: () => import(/* webpackChunkName: "MyOrder" */ '@/views/MyOrder.vue')
       }
     ]
   }

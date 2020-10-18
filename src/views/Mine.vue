@@ -79,7 +79,12 @@
 
     <!-- 菜单列表 -->
     <div class="menu">
-      <div class="menu-item" v-for="(item, index) in menuList" :key="index">
+      <div
+        class="menu-item"
+        v-for="(item, index) in menuList"
+        :key="index"
+        @click="$router.push(item.path)"
+      >
         <img :src="item.icon" alt="">
         <span>{{item.title}}</span>
         <van-icon name="arrow" color="#E8E8E8" size=".12rem"/>
@@ -113,8 +118,16 @@ export default {
     ],
     swipeCurrent: 0,
     menuList: [
-      { icon: require('@/assets/icons/mine/travel.png'), title: '我的行程' },
-      { icon: require('@/assets/icons/mine/order.png'), title: '我的订单' }
+      {
+        icon: require('@/assets/icons/mine/travel.png'),
+        path: '/common/my/trip',
+        title: '我的行程'
+      },
+      {
+        icon: require('@/assets/icons/mine/order.png'),
+        path: '/common/my/order',
+        title: '我的订单'
+      }
     ]
   }),
   methods: {
@@ -272,11 +285,13 @@ export default {
 
 // 菜单列表
 .menu{
-  padding: .15rem;
+  margin-bottom: 1rem;
+  padding: 0 .15rem;
   box-sizing: border-box;
 
   &-item{
     height: .60rem;
+    border-bottom: solid 1px $light-color;
     @include flex (space-between, center);
 
     img{

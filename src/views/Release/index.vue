@@ -4,7 +4,7 @@
     <van-nav-bar title="发布" fixed placeholder :border="false" />
 
     <!-- tabs -->
-     <van-tabs
+    <van-tabs
       v-model="tabId"
       color="#262626"
       title-inactive-color="#BFBFBF"
@@ -21,7 +21,7 @@
           <search-card :hasButton="false" />
         </div>
 
-        <customer-form></customer-form>
+        <customer-form-body></customer-form-body>
 
       </van-tab>
 
@@ -40,14 +40,14 @@
 <script>
 import { Tabs, Tab } from 'vant'
 import SearchCard from '@/components/SearchCard'
-import CustomerForm from './customer'
+import CustomerFormBody from './customer'
 
 export default {
   components: {
     'van-tabs': Tabs,
     'van-tab': Tab,
     'search-card': SearchCard,
-    'customer-form': CustomerForm
+    'customer-form-body': CustomerFormBody
   },
   data: () => ({
     tabId: 0

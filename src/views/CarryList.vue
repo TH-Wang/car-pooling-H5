@@ -192,5 +192,6 @@ export default {
 
 .search-card-wrap{
   margin: .10rem 0;
+  border-top: solid 1px rgba($color: #fff, $alpha: 0.6);
 }
 </style>

@@ -125,6 +125,13 @@ export default {
     box-shadow: 0px 6px 10px -4px #00AEFF;
   }
 
+  // 红色主题
+  .button-red{
+    @extend .button;
+    background: #FF6A20;
+    box-shadow: 0px 6px 10px -4px rgba(255, 32, 32, 0.5);
+  }
+
   // 操作下拉菜单
   .handle-menu{
     width: 1.10rem;
