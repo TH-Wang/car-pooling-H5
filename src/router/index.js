@@ -102,12 +102,38 @@ const routes = [
         name: 'ModifyPhone',
         component: () => import(/* webpackChunkName: "ModifyPhone" */ '@/views/ModifyPhone.vue')
       },
+      { // 信息通知详情
+        path: '/common/notify/detail',
+        name: 'NotifyDetail',
+        component: () => import(/* webpackChunkName: "NotifyDetail" */ '@/views/NotifyDetail.vue')
+      },
       { // 我的行程
         path: '/common/my/trip',
         name: 'MyTrip',
         component: () => import(/* webpackChunkName: "MyTrip" */ '@/views/MyTrip/index.vue')
       },
-      { // 我的行程
+      { // 乘客的行程详情
+        path: '/common/tripinfo/customer',
+        name: 'CustomerTripInfo',
+        component: () => import(
+          /* webpackChunkName: "CustomerTripInfo" */ '@/views/MyTrip/CustomerTripInfo.vue'
+        )
+      },
+      { // 车主的行程详情
+        path: '/common/tripinfo/driver',
+        name: 'DriverTripInfo',
+        component: () => import(
+          /* webpackChunkName: "DriverTripInfo" */ '@/views/MyTrip/DriverTripInfo.vue'
+        )
+      },
+      { // 车主行程的乘客信息
+        path: '/common/my/custinfo',
+        name: 'MyCustInfo',
+        component: () => import(
+          /* webpackChunkName: "MyCustInfo" */ '@/views/MyTrip/MyCustInfo.vue'
+        )
+      },
+      { // 我的订单
         path: '/common/my/order',
         name: 'MyOrder',
         component: () => import(/* webpackChunkName: "MyOrder" */ '@/views/MyOrder.vue')

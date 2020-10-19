@@ -57,7 +57,7 @@ export default {
   methods: {
     // 跳转详情
     handleLink (e, id) {
-      this.$router.push({ path: '/common/order/detail', query: { id } })
+      this.$router.push({ path: '/common/notify/detail', query: { id } })
     },
     // 下拉刷新
     handleRefresh () {

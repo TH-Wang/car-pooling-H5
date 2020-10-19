@@ -1,15 +1,15 @@
 <template>
-  <div class="trip">
+  <div class="trip" @click="$emit('click')">
     <div class="trip-header">
-      <div :class="`tag tag-${record.type}`">{{tagText()}}</div>
+      <div :class="`tag tag-${stateMark}`">{{tagText()}}</div>
       <start-end class="start-end" :start="record.start" :end="record.end" />
     </div>
     <div class="trip-detail">
-      <time-seat :time="record.time" :seat="record.seat" :type="record.type" />
+      <time-seat :time="record.time" :seat="record.seat" :type="stateMark" />
     </div>
     <!-- 删除按钮 -->
     <div v-show="showRemove" class="remove-button">
-      <mini-button color="red" @click="$emit('remove', record.id)">删除</mini-button>
+      <mini-button color="red" @click="$emit('remove')">删除</mini-button>
     </div>
   </div>
 </template>
@@ -34,9 +34,14 @@ export default {
       default: true
     }
   },
+  computed: {
+    stateMark () {
+      return this.record.state
+    }
+  },
   methods: {
     tagText () {
-      switch (this.record.type) {
+      switch (this.stateMark) {
         case 'doing': return '进行中'
         case 'cancel': return '已撤下'
         case 'finish': return '已完成'

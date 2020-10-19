@@ -17,16 +17,16 @@
 
     <!-- tabs -->
     <van-tabs
-      v-model="tabId"
+      :active="$store.state.tabsId.myTrip"
+      @change="(index) => {$store.commit('changeTabsId', {type: 'myTrip', index})}"
       color="#262626"
       title-inactive-color="#BFBFBF"
       title-active-color="#262626"
       background="#ffffff"
       line-width="52px"
       line-height="2px"
-      animated
     >
-      <!-- 车主发布 -->
+      <!-- 我是乘客 -->
       <van-tab class="van-tab-wrapper" title="我是乘客">
         <van-empty description="暂无行程" v-if="customer.list.length === 0" />
         <trip-item
@@ -34,10 +34,12 @@
           :key="item.id"
           :record="item"
           :show-remove="manage"
+          @click="handleLinkDetail($event, 'customer', item)"
+          @remove="handleRemove('customer', item.id)"
         />
       </van-tab>
 
-      <!-- 乘客发布 -->
+      <!-- 我是车主 -->
       <van-tab class="van-tab-wrapper" title="我是车主">
         <van-empty description="暂无行程" v-if="driver.list.length === 0" />
         <trip-item
@@ -45,6 +47,8 @@
           :key="item.id"
           :record="item"
           :show-remove="manage"
+          @click="handleLinkDetail($event, 'driver', item)"
+          @remove="handleRemove('driver', item.id)"
         />
       </van-tab>
     </van-tabs>
@@ -75,11 +79,26 @@ export default {
       list: []
     }
   }),
+  methods: {
+    handleLinkDetail (e, type, { id, state }) {
+      this.$router.push({
+        path: `/common/tripinfo/${type}`,
+        query: { id, state }
+      })
+    },
+    handleRemove (type, id) {
+      const index = this[type].list.findIndex(i => i.id === id)
+      console.log(index)
+      if (typeof index !== 'undefined') {
+        this[type].list.splice(index, 1)
+      }
+    }
+  },
   mounted () {
     const data = new Array(5).fill({}).map((item, index) => {
       return {
         id: index,
-        type: index > 0
+        state: index > 0
           ? index > 1 ? 'finish' : 'cancel'
           : 'doing',
         start: '重庆北站',
@@ -89,7 +108,7 @@ export default {
       }
     })
     this.customer.list = data
-    this.driver.list = data
+    this.driver.list = data.slice(0, 3)
   }
 }
 </script>

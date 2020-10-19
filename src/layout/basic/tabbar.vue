@@ -54,6 +54,7 @@ export default {
   box-shadow: 0 0px 15px 0 rgba($color: #000000, $alpha: 0.08);
   position: fixed;
   bottom: 0;
+  z-index: 999999;
   @include flex (space-around, center);
 
   &-item{

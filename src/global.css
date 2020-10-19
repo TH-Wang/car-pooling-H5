@@ -50,6 +50,7 @@ body {
 
 .van-swipe {
   overflow: initial !important;
+  z-index: 10;
 }
 
 .van-dropdown-menu {

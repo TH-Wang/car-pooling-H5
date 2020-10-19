@@ -51,7 +51,7 @@
     <!-- 底部按钮 -->
     <div class="footer">
       <main-button width="1.20rem" color="yellow">分享给朋友</main-button>
-      <main-button width="2.10rem" color="yellow" gradient>付费进群</main-button>
+      <main-button width="2.10rem" color="yellow" type="gradient">付费进群</main-button>
     </div>
 
     <overlay v-model="showQRcode">
@@ -59,7 +59,7 @@
         <qrcode-card :tips="tips" center />
       </div>
       <div class="code-button">
-        <main-button width="3.15rem" color="yellow" gradient>复制入群码</main-button>
+        <main-button width="3.15rem" color="yellow" type="gradient">复制入群码</main-button>
       </div>
     </overlay>
   </div>

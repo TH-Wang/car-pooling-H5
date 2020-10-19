@@ -1,0 +1,145 @@
+<template>
+  <div class="header">
+    <!-- 提示信息、路线、订单状态 -->
+    <div class="tip-box">
+      <span class="tip-text">出发地点 - 到达地点</span>
+
+      <!-- 价格 -->
+      <div v-if="contentType === 'price'" class="price">
+        <span>{{record.price}}</span>元/座
+      </div>
+      <!-- 订单状态 -->
+      <img
+        v-else-if="contentType === 'state'"
+        class="state"
+        :src="stateImage()" alt=""
+      />
+      <!-- 余座 -->
+      <div v-else-if="contentType === 'seat'" class="seat">
+        <img src="@/assets/icons/order/seat.png" alt="">
+        余座 <span>3</span>
+      </div>
+    </div>
+    <!-- 起止路线 -->
+    <start-end :start="record.start" :end="record.end" />
+    <!-- 时间余座 -->
+    <div v-if="showTimeSeat" class="time-seat">
+      <time-seat :time="record.time" :seat="record.seat" :type="record.type" />
+    </div>
+  </div>
+</template>
+
+<script>
+import { StartEnd, TimeSeat } from '@/components/Common'
+
+export default {
+  components: {
+    'start-end': StartEnd,
+    'time-seat': TimeSeat
+  },
+  props: {
+    record: {
+      type: Object,
+      default: () => ({})
+    },
+    // 右上方的显示内容: ['price', 'state', 'seat']
+    contentType: {
+      type: String,
+      default: 'price'
+    },
+    // 是否展示时间余座
+    showTimeSeat: {
+      type: Boolean,
+      default: false
+    }
+  },
+  methods: {
+    stateImage () {
+      let imageName = 'doing'
+      if (this.record.state !== 'doing') {
+        imageName = 'finish'
+      }
+      return require(`@/assets/icons/order-state/${imageName}.png`)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.header{
+  width: 100%;
+  padding: .20rem .15rem;
+  box-sizing: border-box;
+
+  // 提示信息、价格、订单状态
+  .tip-box{
+    width: 100%;
+    position: relative;
+    margin-bottom: .15rem;
+    text-align: left;
+
+    .tip-text{
+      letter-spacing: 0.8px;
+      @include font (.14rem, $sub-text)
+    }
+
+    // 定位
+    .absolute{
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    // 车价
+    .price{
+      @extend .absolute;
+      @include font (.12rem, $tip-text);
+      // letter-spacing: 0.8px;
+
+      span{
+        @include font (.24rem, $main-color);
+        margin-right: 3px
+      }
+
+      span:before{
+        content: '￥';
+        @include font(.20rem, $main-color);
+        font-family: '等线';
+        display: inline-block;
+        transform: translateX(5px);
+      }
+    }
+
+    // 订单状态
+    .state{
+      @extend .absolute;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    // 余座
+    .seat{
+      @extend .absolute;
+      @include flex ($align: center);
+      @include font (.12rem, $tip-text);
+
+      img{
+        width: 0.11rem;
+        height: 0.11rem;
+        margin-right: .03rem;
+      }
+
+      span{
+        margin-left: .02rem;
+        @include font (.13rem, $main-color, bold);
+      }
+    }
+  }
+
+  // 时间余座
+  .time-seat{
+    padding: .18rem 0 .16rem 0;
+    border-bottom: solid 1px $normal-text;
+  }
+}
+</style>

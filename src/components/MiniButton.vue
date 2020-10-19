@@ -7,7 +7,7 @@
     <!-- 按钮主体 -->
     <div
       :class="`button-${color} MINI_BUTTON_MENU_SAFENODE`"
-      @click="$emit('click', {id: orderId})"
+      @click.stop="$emit('click', {id: orderId})"
     >
 
       <!-- 按钮文本内容 -->
