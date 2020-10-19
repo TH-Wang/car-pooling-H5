@@ -122,7 +122,7 @@
 import { Tabs, Tab, DropdownMenu, DropdownItem, List, Icon } from 'vant'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
-import CarryOrder from '@/components/Order/Carry'
+import CarryOrder from '@/components/OrderItem/Carry'
 import MiniButton from '@/components/MiniButton'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'

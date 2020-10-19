@@ -96,7 +96,7 @@
 <script>
 import { Swipe, SwipeItem } from 'vant'
 import OverageCard from '@/components/OverageCard'
-import HitchhikeOrder from '@/components/Order/Hitchhike'
+import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
 import MiniButton from '@/components/MiniButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 

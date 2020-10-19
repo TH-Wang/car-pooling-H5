@@ -123,7 +123,7 @@
 import { Tabs, Tab, DropdownMenu, DropdownItem, List, Icon } from 'vant'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
-import HitchhikeOrder from '@/components/Order/Hitchhike'
+import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
 import MiniButton from '@/components/MiniButton'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'

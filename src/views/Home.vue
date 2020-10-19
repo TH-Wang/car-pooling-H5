@@ -72,7 +72,7 @@ import { NavBar, Icon, DropdownMenu, DropdownItem, List, Toast } from 'vant'
 import mainNavConfig from '@/configs/homeMainNav'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
-import CarpoolOrder from '@/components/Order/Carpool'
+import CarpoolOrder from '@/components/OrderItem/Carpool'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
