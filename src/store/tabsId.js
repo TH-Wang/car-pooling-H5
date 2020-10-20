@@ -1,6 +1,7 @@
 export default {
   state: {
-    myTrip: 0
+    myTrip: 0,
+    myOrder: 0
   },
 
   mutations: {

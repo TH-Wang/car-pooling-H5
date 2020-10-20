@@ -133,10 +133,34 @@ const routes = [
           /* webpackChunkName: "MyCustInfo" */ '@/views/MyTrip/MyCustInfo.vue'
         )
       },
+      { // 车主分享行程信息
+        path: '/common/tripshare/driver',
+        name: 'DriverTripShare',
+        component: () => import(
+          /* webpackChunkName: "DriverTripShare" */ '@/views/MyTrip/DriverTripShare.vue'
+        )
+      },
+      { // 乘客分享行程信息
+        path: '/common/tripshare/customer',
+        name: 'CustomerTripShare',
+        component: () => import(
+          /* webpackChunkName: "CustomerTripShare" */ '@/views/MyTrip/CustomerTripShare.vue'
+        )
+      },
       { // 我的订单
         path: '/common/my/order',
         name: 'MyOrder',
-        component: () => import(/* webpackChunkName: "MyOrder" */ '@/views/MyOrder.vue')
+        component: () => import(/* webpackChunkName: "MyOrder" */ '@/views/MyOrder/index.vue')
+      },
+      { // 我的旅游订单详情
+        path: '/common/my/order/tour',
+        name: 'TourOrderDetail',
+        component: () => import(/* webpackChunkName: "TourOrderDetail" */ '@/views/MyOrder/TourOrderDetail.vue')
+      },
+      { // 我的包车订单详情
+        path: '/common/my/order/car',
+        name: 'CarOrderDetail',
+        component: () => import(/* webpackChunkName: "CarOrderDetail" */ '@/views/MyOrder/CarOrderDetail.vue')
       }
     ]
   }

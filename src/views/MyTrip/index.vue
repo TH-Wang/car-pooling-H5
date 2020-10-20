@@ -81,8 +81,9 @@ export default {
   }),
   methods: {
     handleLinkDetail (e, type, { id, state }) {
+      const urlPrefix = this.manage ? 'tripshare' : 'tripinfo'
       this.$router.push({
-        path: `/common/tripinfo/${type}`,
+        path: `/common/${urlPrefix}/${type}`,
         query: { id, state }
       })
     },

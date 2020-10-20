@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @click="$emit('click')">
     <!-- 商品图片 -->
     <van-image fill="cover" width="1.15rem" height=".90rem" />
 

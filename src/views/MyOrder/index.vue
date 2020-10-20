@@ -12,14 +12,14 @@
 
     <!-- tabs -->
     <van-tabs
-      v-model="tabId"
+      :active="$store.state.tabsId.myOrder"
+      @change="(index) => {$store.commit('changeTabsId', {type: 'myOrder', index})}"
       color="#262626"
       title-inactive-color="#BFBFBF"
       title-active-color="#262626"
       background="#ffffff"
       line-width="52px"
       line-height="2px"
-      animated
     >
       <!-- 车主发布 -->
       <van-tab class="van-tab-wrapper" title="旅游路线">
@@ -30,20 +30,22 @@
           :record="item"
           :button-text="getButtonStyle('text', item.state)"
           :button-type="getButtonStyle('type', item.state)"
+          @click="handleLinkDetail('tour', item.id, item.state)"
         />
       </van-tab>
 
       <!-- 乘客发布 -->
       <van-tab class="van-tab-wrapper" title="包车信息">
-        <van-empty description="暂无订单信息" v-if="cars.list.length === 0" />
+        <van-empty description="暂无订单信息" v-if="car.list.length === 0" />
         <goods-item
-          v-for="item in cars.list"
+          v-for="item in car.list"
           :key="item.id"
           :record="item"
           :button-text="getButtonStyle('text', item.state)"
           :button-type="getButtonStyle('type', item.state)"
           show-tip
           price-suffix="起"
+          @click="handleLinkDetail('car', item.id, item.state)"
         />
       </van-tab>
     </van-tabs>
@@ -67,7 +69,7 @@ export default {
       limit: 20,
       list: []
     },
-    cars: {
+    car: {
       page: 1,
       limit: 20,
       list: []
@@ -80,6 +82,13 @@ export default {
         case 'text': return state === 'doing' ? '进行中' : '已完成'
         case 'type': return state === 'doing' ? 'primary' : 'normal'
       }
+    },
+    // 跳转详情页面
+    handleLinkDetail (type, id, state) {
+      this.$router.push({
+        path: `/common/my/order/${type}`,
+        query: { id, state }
+      })
     }
   },
   mounted () {
@@ -94,7 +103,7 @@ export default {
     })
     this.tour.list = tourData
     // 包车
-    const carsData = new Array(5).fill({}).map((item, index) => {
+    const carsData = new Array(3).fill({}).map((item, index) => {
       return {
         id: index,
         state: index % 2 === 0 ? 'doing' : 'finish',
@@ -103,7 +112,7 @@ export default {
         tip: '搬运'
       }
     })
-    this.cars.list = carsData
+    this.car.list = carsData
   }
 }
 </script>
