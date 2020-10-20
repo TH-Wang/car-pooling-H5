@@ -87,11 +87,19 @@ export default {
   &-blue{
     @extend .button;
     background-color: $aid-blue-color;
+
+    &-fill{
+      @extend .button-blue;
+    }
   }
 
   &-green{
     @extend .button;
     background-color: $aid-green-color;
+
+    &-fill{
+      @extend .button-green;
+    }
   }
 
   // 灰色按钮

@@ -13,7 +13,7 @@
     <div style="height: .12rem" />
 
     <!-- 搜索卡片 -->
-    <search-card />
+    <search-card button-text="寻找乘客" button-color="green" />
 
     <!-- 占位符 -->
     <div style="height: .1rem" />

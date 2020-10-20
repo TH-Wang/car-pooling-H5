@@ -16,9 +16,13 @@
         <div class="header-tag-item-blue">车主认证</div>
       </div>
       <div class="header-icon">
-        <img src="@/assets/icons/navbar/upload.png" alt="">
-        <img src="@/assets/icons/navbar/setting.png" alt="">
-        <img src="@/assets/icons/navbar/service.png" alt="">
+        <img
+          v-for="(item, index) in headerIcons"
+          :key="index"
+          :src="require(`@/assets/icons/navbar/${item.icon}.png`)"
+          alt=""
+          @click="$router.push(item.path)"
+        >
       </div>
     </div>
 
@@ -110,6 +114,11 @@ export default {
     'mini-button': MiniButton
   },
   data: () => ({
+    headerIcons: [
+      { icon: 'upload', path: '/common/my/share' },
+      { icon: 'setting', path: '/common/setting' },
+      { icon: 'service', path: '' }
+    ],
     list: [],
     menuVisibleId: null,
     orderMenu: [

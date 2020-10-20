@@ -45,7 +45,7 @@
 
     <!-- 提交按钮 -->
     <div style="margin-top: .50rem">
-      <main-button @click="handleSubmit" center>立即预定</main-button>
+      <main-button @click="handleSubmit" center>确认</main-button>
     </div>
   </div>
 </template>

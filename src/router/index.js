@@ -107,6 +107,21 @@ const routes = [
         name: 'NotifyDetail',
         component: () => import(/* webpackChunkName: "NotifyDetail" */ '@/views/NotifyDetail.vue')
       },
+      { // 我的分享邀请
+        path: '/common/my/share',
+        name: 'MyShare',
+        component: () => import(/* webpackChunkName: "MyShare" */ '@/views/MyShare.vue')
+      },
+      { // 我的邀请记录
+        path: '/common/my/share/history',
+        name: 'MyShareHistory',
+        component: () => import(/* webpackChunkName: "MyShareHistory" */ '@/views/MyShareHistory.vue')
+      },
+      { // 设置
+        path: '/common/setting',
+        name: 'Setting',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/views/Setting/index.vue')
+      },
       { // 我的行程
         path: '/common/my/trip',
         name: 'MyTrip',

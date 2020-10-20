@@ -16,7 +16,6 @@
       background="transparent"
       line-width="52px"
       line-height="2px"
-      animated
     >
       <van-tab title="车主信息">
 

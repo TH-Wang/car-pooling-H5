@@ -32,7 +32,7 @@
         <span>重庆西站春天小学</span>
       </div>
       <!-- 途径点 -->
-      <div class="detail">
+      <div v-if="hasWay" class="detail">
         <span>途径点</span> | 重庆北站 - 紫金山地铁站 - 人民路红十字会 - 二七地铁站 - 重庆一中 - 医学院地铁站 - 京广路 - 崇山路 - 新城区路口 - 体育路 - 中兴路 - 体育村 - 重庆西站
       </div>
       <!-- 备注 -->
@@ -72,6 +72,10 @@ export default {
     record: {
       type: Object,
       default: () => ({})
+    },
+    hasWay: {
+      type: Boolean,
+      drfault: false
     }
   }
 }

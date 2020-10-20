@@ -3,7 +3,7 @@
     <!-- 标题 -->
     <div class="header">
       <span class="title">快捷线路</span>
-      <span class="tip">当前线路拼接信息</span>
+      <span class="header-tip">当前线路拼接信息</span>
       <span class="more-btn">查看更多</span>
     </div>
     <!-- 列表 -->
@@ -53,7 +53,7 @@ export default {
     color: $main-text;
   }
 
-  .tip{
+  &-tip{
     flex: 1;
     color: $tip-text;
     text-align: left;

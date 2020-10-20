@@ -35,7 +35,11 @@
 
     <!-- 按钮 -->
     <div class="button" v-if="hasButton">
-      <main-button width="100%">寻找车主</main-button>
+      <main-button
+        width="100%"
+        :color="buttonColor"
+        :type="buttonType"
+      >{{buttonText}}</main-button>
     </div>
   </div>
 </template>
@@ -53,6 +57,18 @@ export default {
     hasButton: {
       type: Boolean,
       default: true
+    },
+    buttonText: {
+      type: String,
+      default: '寻找车主'
+    },
+    buttonColor: {
+      type: String,
+      default: 'yellow'
+    },
+    buttonType: {
+      type: String,
+      default: 'fill'
     }
   },
   data: () => ({
