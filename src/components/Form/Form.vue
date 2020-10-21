@@ -15,12 +15,24 @@ export default {
       const fields = []
       this.$children.forEach(item => {
         if (this.isFieldChildren(item)) {
-          const { name, validate } = item
-          const value = item.$refs.input.value
-          fields.push({ name, value, validate })
+          const { name, value, validate, getValue, setValue } = item
+          fields.push({ name, value, validate, getValue, setValue })
         }
       })
       this.fields = fields
+    },
+    // 设置表单的值
+    setValues (values) {
+      for (const key in values) {
+        this.setValueField(key, values[key])
+      }
+    },
+    // 设置某个字段的值
+    setValueField (key, value) {
+      const children = this.fields.find(i => i.name === key)
+      if (children) {
+        children.setValue(value)
+      }
     },
     // 获取所有的值
     getValues () {
@@ -28,7 +40,7 @@ export default {
       this.collectFields()
       // 递归封装结果
       const values = this.fields.reduce((vals, item) => {
-        return Object.assign(vals, { [item.name]: item.value })
+        return Object.assign(vals, { [item.name]: item.getValue() })
       }, {})
       return values
     },
@@ -57,7 +69,7 @@ export default {
     },
     // 筛选符合要求的表单项子组件
     isFieldChildren (vm) {
-      return vm.$options._componentTag === 'custom-input' &&
+      return /^custom/.test(vm.$options._componentTag) &&
         typeof vm.name !== 'undefined'
     }
   },

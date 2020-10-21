@@ -1,0 +1,139 @@
+@import './vars.scss';
+
+// 容器
+.custom-form-item{
+  width: 3.45rem;
+  margin: .20rem auto;
+}
+
+// 字段的公共样式
+.public-style{
+  border-radius: .05rem;
+  background-color: $light-color;
+}
+
+// 字段主要样式
+.custom-field{
+  width: 3.45rem;
+  height: 0.38rem;
+  padding: 0 .15rem;
+  box-sizing: border-box;
+  position: relative;
+  @extend .public-style;
+  @include flex ($align: center);
+  @include font (.14rem, $main-text);
+
+  .label{
+    flex-shrink: 0;
+    width: .70rem;
+    height: .14rem;
+    line-height: .14rem;
+    box-sizing: border-box;
+    border-right: solid 1px #D8D8D8;
+    @include flex ($align: center);
+  }
+
+  .main{
+    margin-left: .15rem;
+    flex: 1;
+
+    input{
+      line-height: .14rem;
+      width: 100%;
+      background-color: transparent;
+      border: none;
+
+      &::placeholder{
+        color: $tip-text;
+      }
+    }
+  }
+}
+
+// 文本域主要样式
+.custom-textarea{
+  @extend .public-style;
+  padding: .10rem .15rem;
+  @include font (.14rem, $main-text);
+
+  .label{
+    margin-bottom: .05rem;
+    @include flex ($align: baseline);
+
+    div{ flex-shrink: 0 }
+    
+    .error-tip{ flex: 1; }
+
+    .link{ color: $main-color }
+  }
+
+  textarea{
+    width: 100%;
+    height: .40rem;
+    border: none;
+    background-color: transparent;
+  }
+
+  .textarea-error::placeholder{
+    color: $error-text;
+  }
+}
+
+// 占位符
+.placeholder{
+  color: $tip-text;
+}
+
+// required错误提示
+.required{
+  color: $error-text;
+
+  &::placeholder{
+    color: $error-text;
+  }
+}
+
+// 错误提示
+.error-message{
+  margin-top: 2px;
+  margin-left: 1rem;
+  @include font (.12rem, $error-text);
+}
+// 错误说明
+.error-tip{
+  margin: 0 .10rem;
+  @include font (.12rem, $error-text);
+}
+
+// 下拉菜单
+.menu{
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: calc(100% - .85rem);
+  z-index: 100;
+  max-height: 1.76rem;
+  overflow-y: scroll;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 10px 0px rgba(38, 38, 38, 0.06);
+  border-radius: .05rem;
+  transform-origin: top;
+  transition: all .3s;
+
+  &::-webkit-scrollbar{
+    display: none;
+  }
+
+  &-item{
+    width: 100%;
+    height: .44rem;
+    line-height: .44rem;
+    padding-left: .10rem;
+    box-sizing: border-box;
+  }
+
+  &-item-active{
+    @extend .menu-item;
+    background-color: #EEF2FB;
+  }
+}

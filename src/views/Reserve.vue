@@ -116,6 +116,15 @@ export default {
         return `${value.substr(0, 3)} **** ${value.substr(7, 11)}`
       }
     }
+  },
+  mounted () {
+    setTimeout(() => {
+      this.$refs.form.setValues({
+        people: 3,
+        start: '观音桥',
+        end: '太古里'
+      })
+    }, 2000)
   }
 }
 </script>

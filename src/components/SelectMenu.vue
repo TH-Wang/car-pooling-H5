@@ -37,14 +37,13 @@ export default {
       default: 0
     }
   },
-  // data: () => ({
-  //   value: 0,
-  //   columns: ['上午', '中午', '下午', '晚高峰']
-  // }),
   computed: {
     text () {
       return this.columns[this.value]
     }
+  },
+  mounted () {
+    this.$emit('change', this.defaultIndex)
   }
 }
 </script>

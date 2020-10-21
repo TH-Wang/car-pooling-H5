@@ -1,59 +1,14 @@
 <template>
   <div>
     <!-- 表单部分 -->
-    <van-form ref="form" @submit="handleSubmit">
-      <div>
-        <van-field
-          readonly
-          name="order_type"
-          :value="orderType"
-          label="发布类型"
-          placeholder="请选择发布类型"
-          @click="showOrderTypePicker = true"
-          is-link arrow-direction="down"
-        />
-      </div>
-      <div>
-        <van-field
-          label="余座"
-          placeholder="请输入余座"
-          name="seat"
-          type="digit"
-          v-model="seat"
-          :rules="[{required: true}]"
-        />
-      </div>
-      <div>
-        <van-field
-          readonly
-          name="time"
-          :value="timeValue"
-          label="出发时间"
-          is-link arrow-direction="down"
-          @click="showTime = !showTime"
-        >
-          <template #input>
-            <select-menu
-              :show="showTime"
-              v-model="timeValue"
-              :columns="timeColumns"
-            />
-          </template>
-        </van-field>
-      </div>
-      <!-- 时间选择器 -->
-      <div>
-        <van-field
-          readonly
-          name="time2"
-          :value="time"
-          label="时间"
-          placeholder="请选择时间"
-          @click="showTimePicker = true"
-          is-link arrow-direction="down"
-        />
-      </div>
-    </van-form>
+    <custom-form ref="form">
+      <custom-item :options="orderTypeOptions" />
+      <custom-item
+        v-for="(item, index) in formOptions"
+        :key="index"
+        :options="item"
+      />
+    </custom-form>
 
     <!-- 提交部分 -->
     <div class="submit">
@@ -76,30 +31,9 @@
       <main-button
         center
         style="margin-top:.22rem"
-        @click="()=>{$refs.form.submit()}"
+        @click="handleSubmit"
       >发布</main-button>
     </div>
-
-    <!-- 订单类型选择器 -->
-    <van-popup v-model="showOrderTypePicker" position="bottom" round>
-      <van-picker
-        show-toolbar
-        :default-index="0"
-        :columns="orderTypeColumns"
-        @confirm="handleOrderTypeConfirm"
-        @cancel="showOrderTypePicker = false"
-      />
-    </van-popup>
-
-    <!-- 时间选择器 -->
-    <van-popup v-model="showTimePicker" position="bottom" round>
-      <van-datetime-picker
-        title="选择时间（年月日时分）"
-        type="datetime"
-        @confirm="handleTimeConfirm"
-        @cancel="showTimePicker = false"
-      />
-    </van-popup>
 
     <!-- 联系号码 -->
     <div class="confirm-phone">
@@ -117,53 +51,84 @@
 </template>
 
 <script>
-import { Form, Field, Popup, Picker, Checkbox, DatetimePicker } from 'vant'
+import { Checkbox } from 'vant'
+import { Form, Item } from '@/components/Form'
 import MainButton from '@/components/MainButton'
-import SelectMenu from '@/components/SelectMenu'
 
 export default {
   components: {
-    'van-form': Form,
-    'van-field': Field,
-    'van-popup': Popup,
-    'van-picker': Picker,
-    'van-datetime-picker': DatetimePicker,
     'van-checkbox': Checkbox,
-    'main-button': MainButton,
-    'select-menu': SelectMenu
+    'custom-form': Form,
+    'custom-item': Item,
+    'main-button': MainButton
   },
   data: () => ({
-    // 订单类型
-    orderType: '拼车',
-    orderTypeColumns: ['拼车', '上下班拼车', '顺路带物', '旅游包车'],
-    showOrderTypePicker: false,
-    // 座位
-    seat: '',
-    // 出发时间
-    timeValue: 0,
-    timeColumns: ['上午', '中午', '下午', '晚高峰'],
-    // 选择时间
-    time: '',
-    currentDate: new Date(),
-    showTime: false,
-    showTimePicker: false,
+    // 发布类型字段
+    orderTypeOptions: {
+      type: 'picker',
+      name: 'order_type',
+      label: '发布类型',
+      placeholder: '请选择发布类型',
+      columns: ['拼车', '上下班拼车', '顺路带物', '旅游包车']
+    },
+    // 表单列表
+    formOptions: [
+      {
+        type: 'field',
+        name: 'phone',
+        label: '手机号',
+        placeholder: '请输入手机号',
+        inputType: 'tel'
+      }, {
+        type: 'timer',
+        name: 'time',
+        label: '时间',
+        placeholder: '请选择时间',
+        defaultTime: new Date(),
+        clearable: true
+      }, {
+        type: 'picker',
+        name: 'car_type',
+        label: '车型',
+        placeholder: '请选择车型',
+        columns: ['小面包车', '轿车', 'SUV'],
+        required: true
+      }, {
+        type: 'field',
+        name: 'seat',
+        label: '余座',
+        placeholder: '请输入余座',
+        inputType: 'tel',
+        maxLength: 1
+      }
+    ],
     agreePact: true,
     agreePackage: false
   }),
   methods: {
-    handleOrderTypeConfirm (value) {
-      this.order_type = value
-      this.showOrderTypePicker = false
-    },
+    // handleOrderTypeConfirm (value) {
+    //   this.order_type = value
+    //   this.showOrderTypePicker = false
+    // },
     // 表单提交，所有校验通过后才执行此回调函数
-    handleSubmit (values) {
-      console.log(values)
-    },
-    handleTimeConfirm (time) {
-      console.log(time)
-      // this.time = time
-      this.showTimePicker = false
+    handleSubmit () {
+      const { err, values } = this.$refs.form.submit()
+      if (!err) console.log(values)
     }
+    // handleTimeConfirm (time) {
+    //   console.log(time)
+    //   // this.time = time
+    //   this.showTimePicker = false
+    // }
+  },
+  mounted () {
+    this.$refs.form.setValues({
+      car_type: 2,
+      order_type: 2,
+      phone: '13788889999',
+      seat: '1',
+      time: new Date(2020, 5, 21)
+    })
   }
 }
 </script>

@@ -115,6 +115,13 @@ export default {
       if (this.errorMessage !== '') this.errorMessage = ''
       this.$emit('change', e.target.value)
     },
+    // 设置值
+    setValue (value) {
+      console.log('设置值', value)
+      this.$emit('change', value)
+      console.log(this.value)
+    },
+    // 字段校验
     validate () {
       // 如果当前字段不需要做校验，则跳过
       if (this.rules.length === 0) return

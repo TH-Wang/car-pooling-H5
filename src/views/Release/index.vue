@@ -21,7 +21,7 @@
           <search-card :hasButton="false" />
         </div>
 
-        <customer-form-body></customer-form-body>
+        <driver-form-body />
 
       </van-tab>
 
@@ -32,6 +32,8 @@
         <div class="search-card-wrap">
           <search-card :hasButton="false" />
         </div>
+
+        <customer-form-body></customer-form-body>
       </van-tab>
     </van-tabs>
   </div>
@@ -41,13 +43,15 @@
 import { Tabs, Tab } from 'vant'
 import SearchCard from '@/components/SearchCard'
 import CustomerFormBody from './customer'
+import DriverFormBody from './driver'
 
 export default {
   components: {
     'van-tabs': Tabs,
     'van-tab': Tab,
     'search-card': SearchCard,
-    'customer-form-body': CustomerFormBody
+    'customer-form-body': CustomerFormBody,
+    'driver-form-body': DriverFormBody
   },
   data: () => ({
     tabId: 0
@@ -57,7 +61,7 @@ export default {
 
 <style lang="scss" scoped>
 .search-card-wrap{
-  padding: .20rem 0;
+  padding-top: .20rem;
   border-top: solid 1px $normal-text;
 }
 </style>
