@@ -1,61 +1,77 @@
 <template>
   <div>
     <custom-form ref="form">
+      <!-- 发布类型 -->
       <custom-picker
+        v-model="orderType"
+        name="order_type"
         label="发布类型"
-        name="type"
         placeholder="请选择发布类型"
         :columns="['拼车', '上下班拼车', '顺路带物', '旅游包车']"
-        clearable
-        required
       />
-      <custom-field
-        name="seat"
-        label="余座"
-        type="tel"
-        placeholder="请输入余座"
-        max-length="1"
-        clearable
-        :rules="[{required: true}, {
-          pattern: /^\d/,
-          message: '必须以数字开头'
-        }]"
+      <!-- 详细表单项 -->
+      <custom-item
+        v-for="item in formOptions[orderType]"
+        :key="item.id"
+        :options="item"
       />
-      <custom-timer
-        name="time"
-        label="时间"
-        :default-time="new Date()"
-        placeholder="请选择时间"
-        clearable
-        required
-      />
+      <!-- 公用的备注表单项 -->
       <custom-textarea
         name="remark"
         label="备注"
         placeholder="请输入备注"
-        required
       />
     </custom-form>
 
-    <main-button center @click="handleSubmit">提交</main-button>
+    <!-- 提交部分 -->
+    <div class="submit">
+      <div class="submit-checkbox">
+        <van-checkbox
+          v-model="agreePact"
+          icon-size=".15rem"
+          checked-color="#FFCD00"
+          shape="square"
+        >我已阅读并同意发布拼车信息<span class="link">《合乘协议》</span></van-checkbox>
+      </div>
+      <div class="submit-checkbox">
+        <van-checkbox
+          v-model="agreePackage"
+          icon-size=".15rem"
+          checked-color="#FFCD00"
+          shape="square"
+        >天天拼车套餐，免去天天发布信息（非必选）</van-checkbox>
+      </div>
+      <main-button
+        center
+        style="margin-top:.22rem"
+        @click="handleSubmit"
+      >发布</main-button>
+    </div>
   </div>
 </template>
 
 <script>
-import { Form, Field, Picker, Timer, Textarea } from '@/components/Form/index'
+import { Checkbox } from 'vant'
+import { Form, Item, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
+import { driver as driverConfig } from './config'
 
 export default {
   components: {
+    'van-checkbox': Checkbox,
     'custom-form': Form,
-    'custom-field': Field,
-    'custom-textarea': Textarea,
+    'custom-item': Item,
     'custom-picker': Picker,
-    'custom-timer': Timer,
+    'custom-textarea': Textarea,
     'main-button': MainButton
   },
   data: () => ({
-    index: 0
+    // 选择的发布类型
+    orderType: 0,
+    // 表单列表
+    formOptions: driverConfig,
+    agreePact: true,
+    agreePackage: false
   }),
   methods: {
     handleSubmit () {
@@ -64,16 +80,11 @@ export default {
     }
   },
   mounted () {
-    this.$refs.form.setValues({
-      type: 1,
-      seat: 2,
-      time: new Date(2020, 5, 21),
-      remark: '急急急急'
-    })
+
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+@import '@/assets/scss/release.scss';
 </style>

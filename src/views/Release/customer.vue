@@ -2,11 +2,25 @@
   <div>
     <!-- 表单部分 -->
     <custom-form ref="form">
-      <custom-item :options="orderTypeOptions" />
+      <!-- 发布类型 -->
+      <custom-picker
+        v-model="orderType"
+        name="order_type"
+        label="发布类型"
+        placeholder="请选择发布类型"
+        :columns="['拼车', '上下班拼车', '顺路带物']"
+      />
+      <!-- 详细表单项 -->
       <custom-item
-        v-for="(item, index) in formOptions"
-        :key="index"
+        v-for="item in formOptions[orderType]"
+        :key="item.id"
         :options="item"
+      />
+      <!-- 公用的备注表单项 -->
+      <custom-textarea
+        name="remark"
+        label="备注"
+        placeholder="请输入备注"
       />
     </custom-form>
 
@@ -35,105 +49,80 @@
       >发布</main-button>
     </div>
 
-    <!-- 联系号码 -->
-    <div class="confirm-phone">
-      请确认你的联系手机号
-      <span class="phone">157 2020 0126</span>
-      <span class="link">修改手机号</span>
-    </div>
-
-    <!-- 温馨提示 -->
-    <div class="tip">
-      <p>温馨提示</p>
-      <p>请务必保证信息的真实，如被拼友投诉，将被平台限制发信息哦</p>
-    </div>
+    <!-- 选择套餐窗口 -->
+    <choose-combo-layer
+      ref="layer"
+      @close="handlePopupClose"
+      @submit="handleChangeCombo"
+    />
   </div>
 </template>
 
 <script>
 import { Checkbox } from 'vant'
-import { Form, Item } from '@/components/Form'
+import { Form, Item, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
+import ChooseComboLayer from '@/components/Layer/ChooseCombo'
+import { customer as customerConfig } from './config.js'
 
 export default {
   components: {
     'van-checkbox': Checkbox,
     'custom-form': Form,
     'custom-item': Item,
-    'main-button': MainButton
+    'custom-picker': Picker,
+    'custom-textarea': Textarea,
+    'main-button': MainButton,
+    'choose-combo-layer': ChooseComboLayer
   },
   data: () => ({
-    // 发布类型字段
-    orderTypeOptions: {
-      type: 'picker',
-      name: 'order_type',
-      label: '发布类型',
-      placeholder: '请选择发布类型',
-      columns: ['拼车', '上下班拼车', '顺路带物', '旅游包车']
-    },
+    // 选择的发布类型
+    orderType: 0,
     // 表单列表
-    formOptions: [
-      {
-        type: 'field',
-        name: 'phone',
-        label: '手机号',
-        placeholder: '请输入手机号',
-        inputType: 'tel'
-      }, {
-        type: 'timer',
-        name: 'time',
-        label: '时间',
-        placeholder: '请选择时间',
-        defaultTime: new Date(),
-        clearable: true
-      }, {
-        type: 'picker',
-        name: 'car_type',
-        label: '车型',
-        placeholder: '请选择车型',
-        columns: ['小面包车', '轿车', 'SUV'],
-        required: true
-      }, {
-        type: 'field',
-        name: 'seat',
-        label: '余座',
-        placeholder: '请输入余座',
-        inputType: 'tel',
-        maxLength: 1
-      }
-    ],
+    formOptions: customerConfig,
     agreePact: true,
-    agreePackage: false
+    agreePackage: false,
+    combo: {}
   }),
   methods: {
-    // handleOrderTypeConfirm (value) {
-    //   this.order_type = value
-    //   this.showOrderTypePicker = false
-    // },
-    // 表单提交，所有校验通过后才执行此回调函数
+    // 提交发布
     handleSubmit () {
-      const { err, values } = this.$refs.form.submit()
-      if (!err) console.log(values)
+      const { err, values, errors } = this.$refs.form.submit()
+      if (!err) {
+        const combo = this.combo
+        console.log({ ...values, combo })
+      } else {
+        console.log(errors)
+      }
+    },
+    // 弹出层关闭
+    handlePopupClose () {
+      if (JSON.stringify(this.combo) === '{}') {
+        this.agreePackage = false
+      }
+    },
+    // 选择套餐
+    handleChangeCombo (value) {
+      this.combo = value
     }
-    // handleTimeConfirm (time) {
-    //   console.log(time)
-    //   // this.time = time
-    //   this.showTimePicker = false
-    // }
   },
   mounted () {
-    this.$refs.form.setValues({
-      car_type: 2,
-      order_type: 2,
-      phone: '13788889999',
-      seat: '1',
-      time: new Date(2020, 5, 21)
-    })
+    // this.$refs.form.setValues({
+    //   car_type: 2,
+    //   order_type: 2,
+    //   phone: '13788889999',
+    //   seat: '1'
+    // })
+  },
+  watch: {
+    agreePackage: function (newVal) {
+      if (newVal) this.$refs.layer.show()
+      else this.combo = {}
+    }
   }
 }
 </script>
 
-<style lang="scss">
-@import '@/assets/scss/field.scss';
+<style lang="scss" scoped>
 @import '@/assets/scss/release.scss';
 </style>

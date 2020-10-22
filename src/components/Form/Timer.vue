@@ -31,7 +31,7 @@
     <!-- 时间选择器 -->
     <van-popup v-model="showPicker" round position="bottom">
       <van-datetime-picker
-        v-model="value"
+        :type="type"
         :title="title"
         @confirm="handleChange"
       />
@@ -47,11 +47,17 @@ export default {
     'van-popup': Popup,
     'van-datetime-picker': DatetimePicker
   },
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
     // 表单标识
     name: {
       type: String
     },
+    // 字段值
+    value: [String, Number, Date],
     // 标签
     label: String,
     // 时间选择器类型
@@ -86,7 +92,7 @@ export default {
     }
   },
   data: () => ({
-    value: null,
+    val: null,
     showPicker: false,
     error: false,
     minData: null,
@@ -94,21 +100,21 @@ export default {
   }),
   computed: {
     clear () {
-      return this.clearable && this.value !== null
+      return this.clearable && this.val !== null
     }
   },
   methods: {
     text () {
-      if (this.value === null) {
+      if (this.val === null) {
         if (this.error) return `请选择${this.label}`
         else return this.placeholder
       } else {
-        return this.value.toString()
+        return this.val.toString()
       }
     },
     mainClass () {
       const classNames = ['main']
-      if (this.value === null) {
+      if (this.val === null) {
         if (this.error) classNames.push('required')
         else classNames.push('placeholder')
       }
@@ -116,21 +122,21 @@ export default {
     },
     handleChange (value) {
       this.showPicker = false
-      this.value = value
+      this.val = value
     },
     handleClear () {
-      this.value = null
+      this.val = null
       if (this.required) this.error = true
     },
     // 获取值
     getValue () {
-      return this.value
+      return this.val
     },
     setValue (value) {
-      this.value = value
+      this.val = value
     },
     validate () {
-      if (this.required && this.value === null) {
+      if (this.required && this.val === null) {
         this.error = true
         return false
       } else return true
@@ -138,7 +144,12 @@ export default {
   },
   mounted () {
     if (this.defaultTime !== false) {
-      this.value = this.defaultTime
+      this.val = this.defaultTime
+    }
+  },
+  watch: {
+    val: function (newVal) {
+      this.$emit('change', newVal)
     }
   }
 }

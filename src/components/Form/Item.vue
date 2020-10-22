@@ -149,7 +149,7 @@ export default {
         // 默认选中项
         defaultIndex: {
           type: [Number, Boolean],
-          default: false
+          default: null
         },
 
         // timer独有props:

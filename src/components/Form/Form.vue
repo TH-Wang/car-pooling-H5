@@ -15,8 +15,8 @@ export default {
       const fields = []
       this.$children.forEach(item => {
         if (this.isFieldChildren(item)) {
-          const { name, value, validate, getValue, setValue } = item
-          fields.push({ name, value, validate, getValue, setValue })
+          const { name, val, validate, getValue, setValue } = item
+          fields.push({ name, val, validate, getValue, setValue })
         }
       })
       this.fields = fields

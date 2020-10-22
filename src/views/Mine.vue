@@ -143,7 +143,7 @@ export default {
     reqList () {
       const data = new Array(3).fill({}).map((e, idx) => ({ id: `${Date.now()}-${idx}` }))
       this.list.push(...data)
-      console.log(this.list)
+      // console.log(this.list)
     },
     handlePay () {
       console.log('[支付欠费]')

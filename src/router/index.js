@@ -100,12 +100,16 @@ const routes = [
       { // 修改手机号
         path: '/common/phone/modify',
         name: 'ModifyPhone',
-        component: () => import(/* webpackChunkName: "ModifyPhone" */ '@/views/ModifyPhone.vue')
+        component: () => import(
+          /* webpackChunkName: "ModifyPhone" */ '@/views/ModifyPhone.vue'
+        )
       },
       { // 信息通知详情
         path: '/common/notify/detail',
         name: 'NotifyDetail',
-        component: () => import(/* webpackChunkName: "NotifyDetail" */ '@/views/NotifyDetail.vue')
+        component: () => import(
+          /* webpackChunkName: "NotifyDetail" */ '@/views/NotifyDetail.vue'
+        )
       },
       { // 我的分享邀请
         path: '/common/my/share',
@@ -115,12 +119,21 @@ const routes = [
       { // 我的邀请记录
         path: '/common/my/share/history',
         name: 'MyShareHistory',
-        component: () => import(/* webpackChunkName: "MyShareHistory" */ '@/views/MyShareHistory.vue')
+        component: () => import(
+          /* webpackChunkName: "MyShareHistory" */ '@/views/MyShareHistory.vue'
+        )
       },
       { // 设置
         path: '/common/setting',
         name: 'Setting',
         component: () => import(/* webpackChunkName: "Setting" */ '@/views/Setting/index.vue')
+      },
+      { // 身份证认证
+        path: '/common/auth/idcard',
+        name: 'AuthIDcard',
+        component: () => import(
+          /* webpackChunkName: "AuthIDcard" */ '@/views/Setting/AuthIDcard.vue'
+        )
       },
       { // 我的行程
         path: '/common/my/trip',
@@ -170,12 +183,16 @@ const routes = [
       { // 我的旅游订单详情
         path: '/common/my/order/tour',
         name: 'TourOrderDetail',
-        component: () => import(/* webpackChunkName: "TourOrderDetail" */ '@/views/MyOrder/TourOrderDetail.vue')
+        component: () => import(
+          /* webpackChunkName: "TourOrderDetail" */ '@/views/MyOrder/TourOrderDetail.vue'
+        )
       },
       { // 我的包车订单详情
         path: '/common/my/order/car',
         name: 'CarOrderDetail',
-        component: () => import(/* webpackChunkName: "CarOrderDetail" */ '@/views/MyOrder/CarOrderDetail.vue')
+        component: () => import(
+          /* webpackChunkName: "CarOrderDetail" */ '@/views/MyOrder/CarOrderDetail.vue'
+        )
       }
     ]
   }

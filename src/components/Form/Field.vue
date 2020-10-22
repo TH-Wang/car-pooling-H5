@@ -9,7 +9,7 @@
           :type="type"
           :disabled="readonly"
           :placeholder="placeholder || ''"
-          v-model="value"
+          v-model="val"
           :class="unrequired ? 'required' : ''"
           :style="inputStyle"
           :maxlength="maxLength"
@@ -38,11 +38,17 @@
 import isEmpty from '@/utils/isEmpty'
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
     // 表单标识
     name: {
       type: String
     },
+    // 字段值
+    value: [String, Number],
     // 标签
     label: String,
     // 输入框类型
@@ -79,19 +85,19 @@ export default {
     }
   },
   data: () => ({
-    value: '',
+    val: '',
     unrequired: false,
     errorMessage: ''
   }),
   computed: {
     showClear () {
-      return this.clearable && !isEmpty(this.value)
+      return this.clearable && !isEmpty(this.val)
     }
   },
   methods: {
     // 清空输入框
     handleClear () {
-      this.value = ''
+      this.val = ''
       this.$refs.input.focus()
     },
     // 输入框发生变化
@@ -107,11 +113,11 @@ export default {
     },
     // 获取值
     getValue () {
-      return this.value
+      return this.val
     },
     // 设置值
     setValue (value) {
-      this.value = value
+      this.val = value
     },
     // 字段校验
     validate () {
@@ -145,6 +151,11 @@ export default {
         }
       }
       return true
+    }
+  },
+  watch: {
+    val: function (newVal) {
+      this.$emit('change', newVal)
     }
   }
 }

@@ -87,9 +87,10 @@
 // required错误提示
 .required{
   color: $error-text;
+  background-color: red;
 
   &::placeholder{
-    color: $error-text;
+    color: $error-text !important;
   }
 }
 

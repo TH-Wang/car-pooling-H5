@@ -30,7 +30,7 @@
       <!-- 下拉菜单 -->
       <div class="menu" :style="slideStyle">
         <div
-          :class="`menu-item${index === value ? '-active' : ''}`"
+          :class="`menu-item${index === val ? '-active' : ''}`"
           v-for="(item, index) in columns"
           :key="index"
           @click.stop="handleChange($event, index)"
@@ -42,11 +42,17 @@
 
 <script>
 export default {
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
     // 表单标识
     name: {
       type: String
     },
+    // 字段值
+    value: Number,
     // 标签
     label: String,
     // 所有菜单选项
@@ -76,7 +82,7 @@ export default {
     }
   },
   data: () => ({
-    value: null,
+    val: 0,
     show: false,
     error: false
   }),
@@ -85,53 +91,58 @@ export default {
       return this.show ? '' : 'transform: scaleY(0)'
     },
     clear () {
-      return this.clearable && this.value !== null
+      return this.clearable && this.val !== null
     }
   },
   methods: {
     text () {
-      if (this.value === null) {
+      if (this.val === null) {
         if (this.error) return `请选择${this.label}`
         else return this.placeholder
       } else {
-        return this.columns[this.value]
+        return this.columns[this.val]
       }
     },
     mainClass () {
       const classNames = ['main']
-      if (this.value === null) {
+      if (this.val === null) {
         if (this.error) classNames.push('required')
         else classNames.push('placeholder')
       }
       return classNames.join(' ')
     },
     handleChange (e, idx) {
-      this.value = idx
+      this.val = idx
       setTimeout(() => {
         this.show = false
         if (this.error) this.error = false
       }, 200)
     },
     handleClear () {
-      this.value = null
+      this.val = null
       if (this.required) this.error = true
     },
     // 获取值
     getValue () {
-      return this.value
+      return this.val
     },
     setValue (value) {
-      this.value = value
+      this.val = value
     },
     validate () {
-      if (this.required && this.value === null) {
+      if (this.required && this.val === null) {
         this.error = true
         return false
       } else return true
     }
   },
   mounted () {
-    if (this.defaultIndex !== false) this.data = this.dataIndex
+    if (this.defaultIndex !== false) this.val = this.dataIndex
+  },
+  watch: {
+    val: function (newVal) {
+      this.$emit('change', newVal)
+    }
   }
 }
 </script>

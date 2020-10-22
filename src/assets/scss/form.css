@@ -96,10 +96,11 @@
 
 .required {
   color: #ee0a24;
+  background-color: red;
 }
 
 .required::placeholder {
-  color: #ee0a24;
+  color: #ee0a24 !important;
 }
 
 .error-message {

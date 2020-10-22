@@ -7,7 +7,7 @@
       </div>
       <div class="main">
         <textarea
-          v-model="value"
+          v-model="val"
           :class="textareaClass"
           :rows="rows"
           :disabled="readonly"
@@ -23,6 +23,10 @@
 import isEmpty from '@/utils/isEmpty'
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
     // 表单标识
     name: {
@@ -56,7 +60,7 @@ export default {
     }
   },
   data: () => ({
-    value: '',
+    val: '',
     error: false
   }),
   computed: {
@@ -69,23 +73,28 @@ export default {
   },
   methods: {
     handleBlur () {
-      if (this.required && isEmpty(this.value)) {
+      if (this.required && isEmpty(this.val)) {
         this.error = true
       }
     },
     // 获取值
     getValue () {
-      return this.value
+      return this.val
     },
     setValue (value) {
-      this.value = value
+      this.val = value
     },
     validate () {
-      if (this.required && isEmpty(this.value)) {
+      if (this.required && isEmpty(this.val)) {
         this.error = true
         return false
       }
       return true
+    }
+  },
+  watch: {
+    val: function (newVal) {
+      this.$emit('change', newVal)
     }
   }
 }

@@ -36,6 +36,19 @@
         <customer-form-body></customer-form-body>
       </van-tab>
     </van-tabs>
+
+    <!-- 联系号码 -->
+    <div class="confirm-phone">
+      请确认你的联系手机号
+      <span class="phone">157 2020 0126</span>
+      <span class="link">修改手机号</span>
+    </div>
+
+    <!-- 温馨提示 -->
+    <div class="tip">
+      <p>温馨提示</p>
+      <p>请务必保证信息的真实，如被拼友投诉，将被平台限制发信息哦</p>
+    </div>
   </div>
 </template>
 
@@ -60,6 +73,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/release.scss';
+
 .search-card-wrap{
   padding-top: .20rem;
   border-top: solid 1px $normal-text;

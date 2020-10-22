@@ -42,7 +42,7 @@
     </div>
 
     <!-- 身份证认证 -->
-    <div class="cell" @click="handleSetNickName">
+    <div class="cell" @click="$router.push('/common/auth/idcard')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/idcard.png" alt="">身份证认证
       </div>
