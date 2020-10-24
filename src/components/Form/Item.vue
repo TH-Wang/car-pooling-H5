@@ -167,6 +167,23 @@ export default {
         title: {
           type: String,
           default: '选择时间'
+        },
+
+        // upload独有props:
+        // 是否可以多选
+        multiple: {
+          type: Boolean,
+          default: false
+        },
+        // 最多选择几张：只有 multiple = true 时该属性才生效
+        maxCount: {
+          type: Number,
+          default: 3
+        },
+        // 选择图片按钮的说明文字
+        description: {
+          type: String,
+          default: '请选择图片，可拍照或从相册选择'
         }
       })
     }

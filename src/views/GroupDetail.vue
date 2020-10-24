@@ -15,7 +15,7 @@
 
     <!-- 群名片 -->
     <div class="group-info">
-      <group-item :record="groupInfo">
+      <group-item :record="groupInfo" show-views>
         <template #right>
           <mini-button color="green" @click="handleShowCode">群二维码</mini-button>
         </template>
@@ -23,17 +23,17 @@
     </div>
 
     <!-- 详细信息 -->
-    <div class="info-list">
-      <span class="info-list-label">付费</span><span>￥5.00</span>
-    </div>
-    <div class="info-list">
-      <span class="info-list-label">群主微信</span><span>ch80817</span>
-    </div>
-    <div class="info-list">
-      <span class="info-list-label">发布时间</span><span>2019-12-31 17:47:52</span>
-    </div>
-    <div class="info-list">
-      <span class="info-list-label">归属</span><span>重庆</span>
+    <div class="info-list gap">
+      <div class="info-list-title">群信息</div>
+      <div class="info-list-cell">
+        <span class="info-list-label">更新时间</span><span>2020-10-23</span>
+      </div>
+      <div class="info-list-cell">
+        <span class="info-list-label">群归属地</span><span>重庆 渝北</span>
+      </div>
+      <div class="info-list-cell">
+        <span class="info-list-label">进群规则</span><span class="ellipsis">拿来大陆参加四六级发生的理解你卡车</span>
+      </div>
     </div>
 
     <!-- 群介绍 -->
@@ -51,7 +51,7 @@
     <!-- 底部按钮 -->
     <div class="footer">
       <main-button width="1.20rem" color="yellow">分享给朋友</main-button>
-      <main-button width="2.10rem" color="yellow" type="gradient">付费进群</main-button>
+      <main-button width="2.10rem" color="yellow" type="gradient">付费￥5.00进群</main-button>
     </div>
 
     <overlay v-model="showQRcode">
@@ -66,7 +66,6 @@
 </template>
 
 <script>
-import { NavBar } from 'vant'
 import GroupItem from '@/components/GroupItem'
 import MiniButton from '@/components/MiniButton'
 import MainButton from '@/components/MainButton'
@@ -75,7 +74,6 @@ import QRcodeCard from '@/components/QRcodeCard'
 
 export default {
   components: {
-    'van-nav-bar': NavBar,
     'group-item': GroupItem,
     'mini-button': MiniButton,
     'main-button': MainButton,
@@ -120,7 +118,13 @@ export default {
     box-sizing: border-box;
     @include font (.16rem, $main-text);
 
+    &-cell{
+      margin: .10rem auto;
+      @include flex ();
+    }
+
     &-label{
+      flex-shrink: 0;
       color: $tip-text;
       width: .64rem;
       margin-right: .15rem;

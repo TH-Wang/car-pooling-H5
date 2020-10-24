@@ -1,5 +1,5 @@
 <template>
-  <div class="container" @click="$emit('click')">
+  <div :class="`container container-${size}`" @click="$emit('click')">
     <!-- 商品图片 -->
     <van-image fill="cover" width="1.15rem" height=".90rem" />
 
@@ -66,8 +66,14 @@ export default {
 <style lang="scss" scoped>
 .container{
   height: .90rem;
-  margin: .20rem .15rem;
   @include flex ($align: center);
+
+  &-default{
+    margin: .20rem .15rem;
+  }
+  &-small{
+    margin: .17rem .15rem;
+  }
 
   // 商品信息
   .info {

@@ -72,6 +72,11 @@ const routes = [
         name: 'CarryList',
         component: () => import(/* webpackChunkName: "CarryList" */ '@/views/CarryList.vue')
       },
+      { // 旅游包车
+        path: '/common/tourcar',
+        name: 'TourCar',
+        component: () => import(/* webpackChunkName: "TourCar" */ '@/views/TourCar/index.vue')
+      },
       { // 订单详情页面
         path: '/common/order/detail',
         name: 'OrderDetail',
@@ -133,6 +138,34 @@ const routes = [
         name: 'AuthIDcard',
         component: () => import(
           /* webpackChunkName: "AuthIDcard" */ '@/views/Setting/AuthIDcard.vue'
+        )
+      },
+      { // 驾驶证认证
+        path: '/common/auth/license',
+        name: 'AuthLicense',
+        component: () => import(
+          /* webpackChunkName: "AuthLicense" */ '@/views/Setting/AuthLicense.vue'
+        )
+      },
+      { // 车辆认证
+        path: '/common/auth/car',
+        name: 'AuthCar',
+        component: () => import(
+          /* webpackChunkName: "AuthCar" */ '@/views/Setting/AuthCar.vue'
+        )
+      },
+      { // 投诉建议
+        path: '/common/suggest',
+        name: 'Suggest',
+        component: () => import(
+          /* webpackChunkName: "Suggest" */ '@/views/Setting/Suggest.vue'
+        )
+      },
+      { // 投诉建议的历史记录
+        path: '/common/suggest/history',
+        name: 'SuggestHistory',
+        component: () => import(
+          /* webpackChunkName: "SuggestHistory" */ '@/views/Setting/SuggestHistory.vue'
         )
       },
       { // 我的行程

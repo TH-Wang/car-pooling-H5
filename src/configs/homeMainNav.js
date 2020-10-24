@@ -32,7 +32,7 @@ export default [
   {
     icon: require('../assets/images/home/main-7.png'),
     title: '旅游包车',
-    path: '/'
+    path: '/common/tourcar'
   },
   {
     icon: require('../assets/images/home/main-8.png'),

@@ -8,7 +8,7 @@
       @click="handleChooseImage"
     >
       <!-- 选择图片按钮 -->
-      <div class="button">
+      <div :class="`button ${error ? 'button-error' : ''}`">
         <van-icon name="plus" size=".20rem" />
         <p>{{description}}</p>
       </div>
@@ -83,7 +83,8 @@ export default {
   },
   data: () => ({
     previewImage: '',
-    val: null
+    val: null,
+    error: false
   }),
   computed: {
     showPreview () {
@@ -97,6 +98,9 @@ export default {
     },
     // 文件发生变化
     async handleFileChange (e) {
+      // 清除必选的提示
+      if (this.error) this.error = false
+      // 获取文件
       const files = e.target.files
       if (this.multiple) {
         this.val = files
@@ -143,8 +147,10 @@ export default {
     },
     // 表单验证
     validate () {
-      if (this.required && this.val === null) return false
-      else return true
+      if (this.required && this.val === null) {
+        this.error = true
+        return false
+      } else return true
     }
   },
   watch: {
@@ -174,6 +180,11 @@ export default {
       box-sizing: border-box;
       @include flex (center, center, column);
       @include font (.16rem, $tip-text);
+
+      &-error{
+        // border-color: $error-text;
+        color: $error-text;
+      }
 
       p{ margin-top: .05rem }
     }

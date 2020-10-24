@@ -52,7 +52,7 @@
     </div>
 
     <!-- 驾驶证认证 -->
-    <div class="cell" @click="handleSetNickName">
+    <div class="cell" @click="$router.push('/common/auth/license')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/card.png" alt="">驾驶证认证
       </div>
@@ -62,7 +62,7 @@
     </div>
 
     <!-- 车辆认证 -->
-    <div class="cell" @click="handleSetNickName">
+    <div class="cell" @click="$router.push('/common/auth/car')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/car.png" alt="">车辆认证
       </div>
@@ -72,7 +72,7 @@
     </div>
 
     <!-- 投诉建议 -->
-    <div class="cell" @click="handleSetNickName">
+    <div class="cell" @click="$router.push('/common/suggest')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/suggest.png" alt="">投诉建议
       </div>

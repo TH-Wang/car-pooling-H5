@@ -15,6 +15,8 @@
       <div v-if="type === 'group'" class="people">
         <van-icon name="friends"/>
         <span class="people-count">{{record.people}}</span>
+        <van-icon v-if="showViews" name="browsing-history"/>
+        <span v-if="showViews" class="people-count">{{record.people}}</span>
       </div>
       <!-- 个人微信号 -->
       <div v-else-if="type=== 'person'" class="wechat-number">{{record.wechat_number}}</div>
@@ -43,6 +45,11 @@ export default {
     type: {
       type: String,
       default: 'group'
+    },
+    // 是否显示浏览量
+    showViews: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -111,6 +118,7 @@ export default {
 
       &-count{
         margin-left: 0.03rem;
+        margin-right: .15rem;
       }
     }
 

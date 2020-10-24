@@ -3,39 +3,36 @@
     <div ref="main">
       <!-- 导航栏 -->
       <van-nav-bar
-        title="身份证认证"
+        title="驾驶证认证"
         fixed
         placeholder
         left-arrow
         :border="false"
         @click-left="$router.go(-1)"
+        :rules="[{required: true}]"
       />
 
       <!-- 表单主体 -->
       <custom-form ref="form">
 
         <!-- 姓名和身份证号 -->
-        <custom-field
-          name="realname"
-          label="姓名"
-          placeholder="请输入您的真实姓名"
-          :rules="[{required: true}]"
-        />
+        <custom-field name="realname" label="姓名" placeholder="请输入您的真实姓名" />
         <custom-field
           name="idcount"
-          label="身份证号"
-          placeholder="请输入您的身份证号"
-          :max-length="18"
+          label="车型"
+          placeholder="请输入您爱车的型号"
           clearable
-          :rules="[{
-            pattern: /^\d{17}[\dx]$/i, message: '18位身份证号，最后一位可为X'
-          }]"
+          :rules="[{required: true}]"
         />
 
         <!-- 上传身份证图片 -->
         <div class="title">请上传身份证正反面</div>
         <custom-upload name="front" description="请上传身份证正面" />
         <custom-upload name="back" description="请上传身份证反面" />
+
+        <!-- 上驾驶证证图片 -->
+        <div class="title">请上传驾驶证</div>
+        <custom-upload name="license" description="请上传驾驶证" />
       </custom-form>
     </div>
 
