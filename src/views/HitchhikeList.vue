@@ -67,7 +67,7 @@
 
         <!-- 搜索卡片 -->
         <div class="search-card-wrap">
-          <search-card />
+          <search-card button-text="寻找乘客" button-color="green" />
         </div>
 
         <!-- 筛选菜单 -->

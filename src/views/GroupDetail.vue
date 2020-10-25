@@ -32,7 +32,7 @@
         <span class="info-list-label">群归属地</span><span>重庆 渝北</span>
       </div>
       <div class="info-list-cell">
-        <span class="info-list-label">进群规则</span><span class="ellipsis">拿来大陆参加四六级发生的理解你卡车</span>
+        <span class="info-list-label">进群规则</span><span>拿来大陆参加四六级发生的理解你卡车拿来大陆参加四六级</span>
       </div>
     </div>
 

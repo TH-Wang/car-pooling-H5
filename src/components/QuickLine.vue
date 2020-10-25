@@ -3,18 +3,32 @@
     <!-- 标题 -->
     <div class="header">
       <span class="title">快捷线路</span>
-      <span class="header-tip">当前线路拼接信息</span>
-      <span class="more-btn">查看更多</span>
+      <span v-if="showLink" class="header-tip">当前线路拼接信息</span>
+      <span v-if="showLink" class="more-btn" @click="$emit('link-more')">查看更多</span>
     </div>
     <!-- 列表 -->
     <div class="list-container">
-      <line-card tag="504" :tagColor="tagColor" common class="list-item" />
-      <line-card tag="2304" :tagColor="tagColor" common class="list-item" />
-      <line-card tag="471" :tagColor="tagColor" common class="list-item" />
-      <line-card tag="471" :tagColor="tagColor" class="list-item" />
-      <line-card tag="504" :tagColor="tagColor" class="list-item" />
-      <line-card tag="" :tagColor="tagColor" class="list-item" />
-      <line-card :tagColor="tagColor" class="list-item" />
+      <line-card
+        @click="$router.push('/common/searchline/list')"
+        tag="504" :tagColor="tagColor" common class="list-item" />
+      <line-card
+        @click="$router.push('/common/searchline/list')"
+        tag="2304" :tagColor="tagColor" common class="list-item" />
+      <line-card
+        @click="$router.push('/common/searchline/list')"
+        tag="471" :tagColor="tagColor" common class="list-item" />
+      <line-card
+        @click="$router.push('/common/searchline/list')"
+        tag="471" :tagColor="tagColor" class="list-item" />
+      <line-card
+        @click="$router.push('/common/searchline/list')"
+        tag="504" :tagColor="tagColor" class="list-item" />
+      <line-card
+        @click="$router.push('/common/searchline/list')"
+        tag="" :tagColor="tagColor" class="list-item" />
+      <line-card
+        @click="$router.push('/common/searchline/list')"
+        :tagColor="tagColor" class="list-item" />
     </div>
   </div>
 </template>
@@ -31,6 +45,10 @@ export default {
     tagColor: {
       type: String,
       default: 'yellow'
+    },
+    showLink: {
+      type: Boolean,
+      default: true
     }
   }
 }

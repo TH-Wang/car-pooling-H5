@@ -17,6 +17,7 @@
           priceSuffix="起"
           showTip
           style="margin-top: 0"
+          @click="$router.push('/common/car/detail')"
         />
       </template>
     </scroll-nav-bar>
@@ -48,14 +49,10 @@ export default {
   }),
   mounted () {
     const titles = ['全部', '大巴车', '中巴车', '商务MPV', 'SUV小汽车', '摩托', '小面包', '中面包', '小货车', '中货车', '大货车']
-    const data = titles.map(item => ({
-      title: item,
-      list: new Array(4).fill({
-        title: '小面包车',
-        tip: '乘坐',
-        price: '30'
-      })
-    }))
+    const data = titles.map((item, index) => {
+      const name = index === 0 ? '小面包车' : item
+      return { title: item, list: new Array(6).fill({ title: name, price: 30 }) }
+    })
     this.list = data
   }
 }

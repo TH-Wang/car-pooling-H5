@@ -72,15 +72,48 @@ const routes = [
         name: 'CarryList',
         component: () => import(/* webpackChunkName: "CarryList" */ '@/views/CarryList.vue')
       },
-      { // 旅游包车
-        path: '/common/tourcar',
-        name: 'TourCar',
-        component: () => import(/* webpackChunkName: "TourCar" */ '@/views/TourCar/index.vue')
+      { // 快捷线路列表
+        path: '/common/quick/list',
+        name: 'QuickList',
+        component: () => import(/* webpackChunkName: "QuickList" */ '@/views/QuickList.vue')
+      },
+      { // 线路搜索结果列表
+        path: '/common/searchline/list',
+        name: 'SearchLineList',
+        component: () => import(
+          /* webpackChunkName: "SearchLineList" */ '@/views/SearchLineList.vue'
+        )
       },
       { // 订单详情页面
         path: '/common/order/detail',
         name: 'OrderDetail',
         component: () => import(/* webpackChunkName: "OrderDetail" */ '@/views/OrderDetail.vue')
+      },
+      { // 旅游包车
+        path: '/common/tourcar',
+        name: 'TourCar',
+        component: () => import(/* webpackChunkName: "TourCar" */ '@/views/TourCar/index.vue')
+      },
+      { // 旅游路线详情信息
+        path: '/common/tour/detail',
+        name: 'TourDetail',
+        component: () => import(
+          /* webpackChunkName: "TourDetail" */ '@/views/TourCar/TourDetail.vue'
+        )
+      },
+      { // 包车详情信息
+        path: '/common/car/detail',
+        name: 'CarDetail',
+        component: () => import(
+          /* webpackChunkName: "CarDetail" */ '@/views/TourCar/CarDetail.vue'
+        )
+      },
+      { // 旅游包车下单
+        path: '/common/tourcar/placeorder',
+        name: 'PlaceOrder',
+        component: () => import(
+          /* webpackChunkName: "PlaceOrder" */ '@/views/TourCar/PlaceOrder.vue'
+        )
       },
       { // 选择城市
         path: '/common/city',

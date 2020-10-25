@@ -35,7 +35,7 @@
     <search-card />
 
     <!-- 快捷路线 -->
-    <quick-line />
+    <quick-line @link-more="$router.push('/common/quick/list')" />
 
     <!-- 筛选菜单 -->
     <van-dropdown-menu class="dropdown" active-color="#FFCD00">
@@ -59,7 +59,15 @@
         v-for="(item, index) in list"
         :key="index"
         @click="handleLinkDetail"
-      />
+      >
+        <template #button>
+          <mini-button
+            color="yellow"
+            :orderId="item.id"
+            @click="handleClickOrderButton"
+          >立即预订</mini-button>
+        </template>
+      </carpool-order>
     </van-list>
 
     <!-- </van-pull-refresh> -->
@@ -74,6 +82,7 @@ import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
 import CarpoolOrder from '@/components/OrderItem/Carpool'
 import ListMixin from '@/mixins/list-mixin'
+import MiniButton from '@/components/MiniButton'
 
 export default {
   name: 'Home',
@@ -87,7 +96,8 @@ export default {
     'van-dropdown-item': DropdownItem,
     'search-card': SearchCard,
     'quick-line': QuickLine,
-    'carpool-order': CarpoolOrder
+    'carpool-order': CarpoolOrder,
+    'mini-button': MiniButton
   },
   data: () => ({
     url: '/index',
@@ -108,6 +118,10 @@ export default {
     // 进入详情页面
     handleLinkDetail () {
       this.$router.push('/common/order/detail')
+    },
+    // 点击订单按钮
+    handleClickOrderButton (e) {
+      console.log('[点击mini按钮]', e)
     }
   }
 }

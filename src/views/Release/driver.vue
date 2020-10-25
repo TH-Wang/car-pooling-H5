@@ -47,6 +47,13 @@
         @click="handleSubmit"
       >发布</main-button>
     </div>
+
+    <!-- 选择套餐窗口 -->
+    <choose-combo-layer
+      ref="layer"
+      @close="handlePopupClose"
+      @submit="handleChangeCombo"
+    />
   </div>
 </template>
 
@@ -54,6 +61,7 @@
 import { Checkbox } from 'vant'
 import { Form, Item, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
+import ChooseComboLayer from '@/components/Layer/ChooseCombo'
 import { driver as driverConfig } from './config'
 
 export default {
@@ -63,7 +71,8 @@ export default {
     'custom-item': Item,
     'custom-picker': Picker,
     'custom-textarea': Textarea,
-    'main-button': MainButton
+    'main-button': MainButton,
+    'choose-combo-layer': ChooseComboLayer
   },
   data: () => ({
     // 选择的发布类型
@@ -71,16 +80,30 @@ export default {
     // 表单列表
     formOptions: driverConfig,
     agreePact: true,
-    agreePackage: false
+    agreePackage: false,
+    combo: {}
   }),
   methods: {
     handleSubmit () {
       const { err, values } = this.$refs.form.submit()
       if (!err) console.log(values)
+    },
+    // 弹出层关闭
+    handlePopupClose () {
+      if (JSON.stringify(this.combo) === '{}') {
+        this.agreePackage = false
+      }
+    },
+    // 选择套餐
+    handleChangeCombo (value) {
+      this.combo = value
     }
   },
-  mounted () {
-
+  watch: {
+    agreePackage: function (newVal) {
+      if (newVal) this.$refs.layer.show()
+      else this.combo = {}
+    }
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" @click="$emit('click')">
     <div class="start">重庆北站</div>
     <img class="arrow" src="../assets/icons/line-arrow.png" alt="">
     <div class="end">重庆西站</div>

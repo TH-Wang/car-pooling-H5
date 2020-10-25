@@ -39,6 +39,7 @@
         width="100%"
         :color="buttonColor"
         :type="buttonType"
+        @click="$router.push('/common/searchline/list')"
       >{{buttonText}}</main-button>
     </div>
   </div>
