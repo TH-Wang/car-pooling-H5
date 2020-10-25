@@ -31,6 +31,7 @@
       title="钱包余额（元）"
       :number="-10"
       hasButton
+      @click="$router.push('/common/my/wallet')"
       @click-button="handlePay"
     />
 
@@ -94,6 +95,13 @@
         <van-icon name="arrow" color="#E8E8E8" size=".12rem"/>
       </div>
     </div>
+
+    <!-- 固定按钮 -->
+    <affix
+      icon="master"
+      content="申请站长"
+      @click="$router.push('/common/settle/site/tips')"
+    />
   </div>
 </template>
 
@@ -103,6 +111,7 @@ import OverageCard from '@/components/OverageCard'
 import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
 import MiniButton from '@/components/MiniButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
+import Affix from '@/components/Affix'
 
 export default {
   mixins: [ButtonMenuMixin],
@@ -111,7 +120,8 @@ export default {
     'van-swipe-item': SwipeItem,
     'overage-card': OverageCard,
     'hitchhike-order': HitchhikeOrder,
-    'mini-button': MiniButton
+    'mini-button': MiniButton,
+    affix: Affix
   },
   data: () => ({
     headerIcons: [
@@ -136,6 +146,21 @@ export default {
         icon: require('@/assets/icons/mine/order.png'),
         path: '/common/my/order',
         title: '我的订单'
+      },
+      {
+        icon: require('@/assets/icons/mine/group.png'),
+        path: '/common/group/master',
+        title: '我是群主'
+      },
+      {
+        icon: require('@/assets/icons/mine/master.png'),
+        path: '/common/site/master',
+        title: '我是站长'
+      },
+      {
+        icon: require('@/assets/icons/mine/master.png'),
+        path: '/common/site/submaster',
+        title: '我是副站长'
       }
     ]
   }),

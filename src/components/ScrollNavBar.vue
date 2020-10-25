@@ -79,7 +79,6 @@ export default {
         const itemDOM = this.$refs[`${this.scrollKey}${i}`][0]
         this.scrollTopList.push(itemDOM.offsetTop - parentOffsetTop)
       }
-      console.log(this.scrollTopList)
     }
   },
   beforeDestroy () {

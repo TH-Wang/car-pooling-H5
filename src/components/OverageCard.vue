@@ -1,9 +1,11 @@
 <template>
-  <div class="card">
+  <div class="card" @click="$emit('click')">
     <div class="card-title">{{title}}</div>
     <div class="card-detail">
       <div class="card-number">{{numberText()}}</div>
-      <mini-button color="green" @click="$emit('click-button')">支付欠费</mini-button>
+      <mini-button v-if="hasButton" color="green" @click="$emit('click-button')">
+        支付欠费
+      </mini-button>
     </div>
   </div>
 </template>

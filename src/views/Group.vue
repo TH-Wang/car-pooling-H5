@@ -32,6 +32,13 @@
         </mini-button>
       </template>
     </group-item>
+
+    <!-- 固定按钮 -->
+    <affix
+      icon="group"
+      content="我是群主 我要入驻"
+      @click="$router.push('/common/settle/group')"
+    />
   </div>
 </template>
 
@@ -41,6 +48,7 @@ import NavBarSearch from '@/components/NavBarSearch'
 import ScrollTabs from '@/components/ScrollTabs'
 import GroupItem from '@/components/GroupItem'
 import MiniButton from '@/components/MiniButton'
+import Affix from '@/components/Affix'
 
 export default {
   components: {
@@ -48,7 +56,8 @@ export default {
     'nav-bar-search': NavBarSearch,
     'scroll-tabs': ScrollTabs,
     'group-item': GroupItem,
-    'mini-button': MiniButton
+    'mini-button': MiniButton,
+    affix: Affix
   },
   data: () => ({
     tabsId: 0,

@@ -17,6 +17,7 @@
           @blur="handleBlur"
         >
       </div>
+      <slot name="suffix"></slot>
 
       <!-- 清除按钮 -->
       <van-icon

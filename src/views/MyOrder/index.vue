@@ -21,7 +21,7 @@
       line-width="52px"
       line-height="2px"
     >
-      <!-- 车主发布 -->
+      <!-- 旅游路线 -->
       <van-tab class="van-tab-wrapper" title="旅游路线">
         <van-empty description="暂无订单信息" v-if="tour.list.length === 0" />
         <goods-item
@@ -34,7 +34,7 @@
         />
       </van-tab>
 
-      <!-- 乘客发布 -->
+      <!-- 包车信息 -->
       <van-tab class="van-tab-wrapper" title="包车信息">
         <van-empty description="暂无订单信息" v-if="car.list.length === 0" />
         <goods-item

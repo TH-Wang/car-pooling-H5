@@ -201,10 +201,15 @@ const routes = [
           /* webpackChunkName: "SuggestHistory" */ '@/views/Setting/SuggestHistory.vue'
         )
       },
-      { // 我的行程
+      { // 我的钱包
         path: '/common/my/trip',
         name: 'MyTrip',
         component: () => import(/* webpackChunkName: "MyTrip" */ '@/views/MyTrip/index.vue')
+      },
+      { // 我的行程
+        path: '/common/my/wallet',
+        name: 'MyWallet',
+        component: () => import(/* webpackChunkName: "MyWallet" */ '@/views/MyWallet/index.vue')
       },
       { // 乘客的行程详情
         path: '/common/tripinfo/customer',
@@ -258,6 +263,69 @@ const routes = [
         name: 'CarOrderDetail',
         component: () => import(
           /* webpackChunkName: "CarOrderDetail" */ '@/views/MyOrder/CarOrderDetail.vue'
+        )
+      },
+      { // 申请入驻拼车群
+        path: '/common/settle/group',
+        name: 'SettleGroup',
+        component: () => import(
+          /* webpackChunkName: "SettleGroup" */ '@/views/Settle/Group.vue'
+        )
+      },
+      { // 完成入驻拼车群的申请，添加客服微信
+        path: '/common/settle/group/finish',
+        name: 'SettleGroupFinish',
+        component: () => import(
+          /* webpackChunkName: "SettleGroupFinish" */ '@/views/Settle/GroupFinish.vue'
+        )
+      },
+      { // 申请站长的权益介绍页
+        path: '/common/settle/site/tips',
+        name: 'SettleSiteTips',
+        component: () => import(
+          /* webpackChunkName: "SettleSiteTips" */ '@/views/Settle/SiteTips.vue'
+        )
+      },
+      { // 申请站长
+        path: '/common/settle/site',
+        name: 'SettleSite',
+        component: () => import(
+          /* webpackChunkName: "SettleSite" */ '@/views/Settle/Site.vue'
+        )
+      },
+      { // 申请站长的申请记录
+        path: '/common/settle/site/history',
+        name: 'SettleSiteHistory',
+        component: () => import(
+          /* webpackChunkName: "SettleSiteHistory" */ '@/views/Settle/SiteHistory.vue'
+        )
+      },
+      { // 我是群主
+        path: '/common/group/master',
+        name: 'GroupMaster',
+        component: () => import(
+          /* webpackChunkName: "GroupMaster" */ '@/views/Manage/GroupMaster.vue'
+        )
+      },
+      { // 我是站长
+        path: '/common/site/master',
+        name: 'SiteMaster',
+        component: () => import(
+          /* webpackChunkName: "SiteMaster" */ '@/views/Manage/SiteMaster.vue'
+        )
+      },
+      { // 我是副站长
+        path: '/common/site/submaster',
+        name: 'SiteSubMaster',
+        component: () => import(
+          /* webpackChunkName: "SiteSubMaster" */ '@/views/Manage/SiteSubMaster.vue'
+        )
+      },
+      { // 我的收益
+        path: '/common/my/income',
+        name: 'MyIncome',
+        component: () => import(
+          /* webpackChunkName: "MyIncome" */ '@/views/MyIncome.vue'
         )
       }
     ]

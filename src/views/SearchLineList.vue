@@ -76,6 +76,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/common.scss';
 // 路线
 .line-text{
   display: flex;

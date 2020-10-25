@@ -1,0 +1,68 @@
+@import './vars.scss';
+
+.public{
+  padding: 0 .15rem;
+  box-sizing: border-box;
+}
+
+.cell{
+  @extend .public;
+
+  &-item{
+    height: .60rem;
+    border-bottom: solid 1px $light-color;
+    @include flex (space-between, center);
+
+    img{
+      flex-shrink: 0;
+      width: .20rem;
+      height: .20rem;
+    }
+
+    span{
+      flex: 1;
+      margin: 0 .06rem;
+      @include font (.14rem, $main-text);
+    }
+
+    div{
+      @include font (.14rem, #000, bold);
+      margin-right: .08rem;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.bill{
+  @extend .public;
+
+  &-item{
+    padding: .20rem 0 .15rem 0;
+    border-bottom: solid 1px $light-color;
+  }
+
+  &-main{
+    @include flex (space-between, center);
+
+    img{
+      flex-shrink: 0;
+      width: .26rem;
+      height: .26rem;
+    }
+    span{
+      flex: 1;
+      margin: 0 .10rem;
+      @include font (.14rem, $main-text, bold);
+    }
+    .price{
+      flex-shrink: 0;
+      @include font (.18rem, $main-text, bold);
+    }
+  }
+
+  &-tip{
+    @include font (.12rem, $tip-text);
+    padding-left: .36rem;
+    box-sizing: border-box;
+  }
+}
