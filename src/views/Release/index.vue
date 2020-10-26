@@ -5,7 +5,8 @@
 
     <!-- tabs -->
     <van-tabs
-      v-model="tabId"
+      :active="$store.state.tabsId.release"
+      @change="(index) => {$store.commit('changeTabsId', {type: 'release', index})}"
       color="#262626"
       title-inactive-color="#BFBFBF"
       title-active-color="#262626"

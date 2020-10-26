@@ -85,8 +85,32 @@ export default {
   }),
   methods: {
     handleSubmit () {
-      const { err, values } = this.$refs.form.submit()
-      if (!err) console.log(values)
+      const _this_ = this
+      const { err, values, errors } = this.$refs.form.submit()
+      if (!err) {
+        const combo = this.combo
+        console.log({ ...values, combo })
+        this.$dialog.confirm({
+          title: '提示',
+          message: '请确认 <span style="color:#FFCD00">157 2020 0123</span> 能联系到你',
+          allowHtml: true,
+          confirmButtonText: '确认在用',
+          cancelButtonText: '修改手机号'
+        }).then(() => {
+          console.log('[确认在用]')
+          setTimeout(() => {
+            _this_.$dialog.alert({
+              title: '提示',
+              message: '2018年11月16日起，为车主每拼到1人收取3元的信息服务费，行程结束后计费，请知悉。',
+              confirmButtonText: '我知道了'
+            })
+          }, 300)
+        }).catch(() => {
+          _this_.$router.push('/common/phone/modify')
+        })
+      } else {
+        console.log(errors)
+      }
     },
     // 弹出层关闭
     handlePopupClose () {

@@ -32,12 +32,6 @@ export default {
         }
         reject(new Error('The code is pending'))
       })
-    },
-    // 表单提交
-    handleSubmit () {
-      const { err, values } = this.$refs.form.submit()
-      if (err) return
-      console.log(values)
     }
   }
 }

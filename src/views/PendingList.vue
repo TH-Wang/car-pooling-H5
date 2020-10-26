@@ -22,7 +22,7 @@
     <quick-line tagColor="green" />
 
     <!-- 公告栏 -->
-    <notice-bar @reserve="handleClickReserve" />
+    <!-- <notice-bar @reserve="handleClickReserve" /> -->
 
      <!-- 筛选菜单 -->
     <van-dropdown-menu class="dropdown" active-color="#FFCD00">
@@ -74,7 +74,7 @@ import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
 import PendingOrder from '@/components/OrderItem/Pending'
 import MiniButton from '@/components/MiniButton'
-import NoticeBar from '@/components/NoticeBar'
+// import NoticeBar from '@/components/NoticeBar'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'
 import ListMixin from '@/mixins/list-mixin'
@@ -88,7 +88,7 @@ export default {
     'van-dropdown-menu': DropdownMenu,
     'van-dropdown-item': DropdownItem,
     'van-icon': Icon,
-    'notice-bar': NoticeBar,
+    // 'notice-bar': NoticeBar,
     'nav-bar-search': NavBarSearch,
     'search-card': SearchCard,
     'quick-line': QuickLine,

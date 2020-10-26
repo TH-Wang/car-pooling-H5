@@ -39,7 +39,7 @@
     <div class="reserve">
       <span class="title">我的预约</span>
       <span class="tip">请在十分钟内确认</span>
-      <span class="link">查看更多</span>
+      <span class="link" @click="$router.push('/common/my/appoint')">查看更多</span>
     </div>
 
     <!-- 预约订单轮播 -->

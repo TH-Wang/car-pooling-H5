@@ -35,7 +35,11 @@ export default {
         title: '我的收益',
         path: '/common/my/income'
       },
-      { icon: require('@/assets/icons/mine/manage.png'), title: '我的管理', path: '' }
+      {
+        icon: require('@/assets/icons/mine/manage.png'),
+        title: '我的管理',
+        path: '/common/manage/group'
+      }
     ]
   })
 }

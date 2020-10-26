@@ -2,7 +2,7 @@
   <div>
     <!-- 导航栏 -->
     <van-nav-bar
-      title="我是群主"
+      title="我是站长"
       fixed
       placeholder
       left-arrow
@@ -40,28 +40,28 @@ export default {
       {
         icon: require('@/assets/icons/mine/link.png'),
         title: '渝北区站首页链接',
-        path: ''
+        path: { path: '/common/my/homelink', query: { title: '渝北区站首页链接' } }
       },
       {
         icon: require('@/assets/icons/mine/query.png'),
         title: '拼车查询',
-        path: ''
+        path: '/common/searchline/list'
       },
       {
         icon: require('@/assets/icons/mine/add.png'),
         title: '拼车发布',
         content: '余 423',
-        path: ''
+        path: '/release'
       },
       {
         icon: require('@/assets/icons/mine/manage.png'),
         title: '副站长管理',
-        path: ''
+        path: '/common/manage/subsite'
       },
       {
         icon: require('@/assets/icons/mine/manage.png'),
         title: '群主管理',
-        path: ''
+        path: '/common/manage/groupmaster'
       }
     ]
   })

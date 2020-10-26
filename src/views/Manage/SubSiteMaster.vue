@@ -2,7 +2,7 @@
   <div>
     <!-- 导航栏 -->
     <van-nav-bar
-      title="我是群主"
+      title="我是副站长"
       fixed
       placeholder
       left-arrow
@@ -40,18 +40,18 @@ export default {
       {
         icon: require('@/assets/icons/mine/link.png'),
         title: '陈女士的首页链接',
-        path: ''
+        path: { path: '/common/my/homelink', query: { title: '陈女士的首页链接' } }
       },
       {
         icon: require('@/assets/icons/mine/query.png'),
         title: '拼车查询',
-        path: ''
+        path: '/common/searchline/list'
       },
       {
         icon: require('@/assets/icons/mine/add.png'),
         title: '拼车发布',
         content: '余 423',
-        path: ''
+        path: '/release'
       }
     ]
   })

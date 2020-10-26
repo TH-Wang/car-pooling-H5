@@ -1,7 +1,12 @@
 <template>
   <div>
     <!-- 顶部导航栏 -->
-    <nav-bar-search mode="dark" button :backIcon="false">
+    <nav-bar-search
+      mode="dark"
+      button
+      :backIcon="false"
+      @click-search="$router.push('/common/group/search')"
+    >
       <template #left>
         重庆 · 渝北区 <van-icon name="arrow" />
       </template>
@@ -43,7 +48,6 @@
 </template>
 
 <script>
-import { Icon } from 'vant'
 import NavBarSearch from '@/components/NavBarSearch'
 import ScrollTabs from '@/components/ScrollTabs'
 import GroupItem from '@/components/GroupItem'
@@ -52,7 +56,6 @@ import Affix from '@/components/Affix'
 
 export default {
   components: {
-    'van-icon': Icon,
     'nav-bar-search': NavBarSearch,
     'scroll-tabs': ScrollTabs,
     'group-item': GroupItem,

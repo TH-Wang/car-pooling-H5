@@ -93,7 +93,7 @@ export default {
       console.log('click search')
     },
     handleClickReserve () {
-      console.log('[点击预约]')
+      this.$router.push('/common/appoint')
     },
     // 点击订单
     handleLinkDetail (e) {

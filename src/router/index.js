@@ -24,7 +24,7 @@ const routes = [
       {
         path: '/group',
         name: 'Group',
-        component: () => import(/* webpackChunkName: "Group" */ '@/views/Group.vue'),
+        component: () => import(/* webpackChunkName: "Group" */ '@/views/Group/index.vue'),
         meta: { tabbar: true }
       },
       {
@@ -52,6 +52,11 @@ const routes = [
     name: 'CommonLayout',
     component: CommonLayout,
     children: [
+      { // 登录
+        path: '/common/login',
+        name: 'Login',
+        component: () => import(/* webpackChunkName: "Login" */ '@/views/Login.vue')
+      },
       { // 短途拼车、城际拼车、跨省拼车
         path: '/common/carpool/list',
         name: 'CarpoolList',
@@ -122,13 +127,31 @@ const routes = [
       },
       { // 附近的拼车群
         path: '/common/group/nearby',
-        name: 'NearbyGroup',
-        component: () => import(/* webpackChunkName: "NearbyGroup" */ '@/views/NearbyGroup.vue')
+        name: 'GroupNearby',
+        component: () => import(
+          /* webpackChunkName: "GroupNearby" */ '@/views/Group/GroupNearby.vue'
+        )
+      },
+      { // 拼车群搜索页面
+        path: '/common/group/search',
+        name: 'GroupSearch',
+        component: () => import(
+          /* webpackChunkName: "GroupSearch" */ '@/views/Group/GroupSearch.vue'
+        )
+      },
+      { // 按地区搜索拼车群
+        path: '/common/group/area',
+        name: 'GroupArea',
+        component: () => import(
+          /* webpackChunkName: "GroupArea" */ '@/views/Group/GroupArea.vue'
+        )
       },
       { // 拼车群详情页面
         path: '/common/group/detail',
         name: 'GroupDetail',
-        component: () => import(/* webpackChunkName: "GroupDetail" */ '@/views/GroupDetail.vue')
+        component: () => import(
+          /* webpackChunkName: "GroupDetail" */ '@/views/Group/GroupDetail.vue'
+        )
       },
       { // 乘客预约订单
         path: '/common/reserve',
@@ -205,6 +228,16 @@ const routes = [
         path: '/common/my/trip',
         name: 'MyTrip',
         component: () => import(/* webpackChunkName: "MyTrip" */ '@/views/MyTrip/index.vue')
+      },
+      { // 我的预约
+        path: '/common/my/appoint',
+        name: 'MyAppoint',
+        component: () => import(/* webpackChunkName: "MyAppoint" */ '@/views/MyAppoint/index.vue')
+      },
+      { // 乘客预约
+        path: '/common/appoint',
+        name: 'Appoint',
+        component: () => import(/* webpackChunkName: "Appoint" */ '@/views/Appoint.vue')
       },
       { // 我的行程
         path: '/common/my/wallet',
@@ -316,9 +349,9 @@ const routes = [
       },
       { // 我是副站长
         path: '/common/site/submaster',
-        name: 'SiteSubMaster',
+        name: 'SubSiteMaster',
         component: () => import(
-          /* webpackChunkName: "SiteSubMaster" */ '@/views/Manage/SiteSubMaster.vue'
+          /* webpackChunkName: "SubSiteMaster" */ '@/views/Manage/SubSiteMaster.vue'
         )
       },
       { // 我的收益
@@ -326,6 +359,34 @@ const routes = [
         name: 'MyIncome',
         component: () => import(
           /* webpackChunkName: "MyIncome" */ '@/views/MyIncome.vue'
+        )
+      },
+      { // 我的主页链接
+        path: '/common/my/homelink',
+        name: 'MyHomeLink',
+        component: () => import(
+          /* webpackChunkName: "MyHomeLink" */ '@/views/Manage/MyHomeLink.vue'
+        )
+      },
+      { // 群主：管理群
+        path: '/common/manage/group',
+        name: 'ManageGroup',
+        component: () => import(
+          /* webpackChunkName: "ManageGroup" */ '@/views/Manage/ManageGroup.vue'
+        )
+      },
+      { // 站长：管理副站长
+        path: '/common/manage/subsite',
+        name: 'ManageSubSite',
+        component: () => import(
+          /* webpackChunkName: "ManageSubSite" */ '@/views/Manage/ManageSubSite.vue'
+        )
+      },
+      { // 站长：管理群主
+        path: '/common/manage/groupmaster',
+        name: 'ManageGroupMaster',
+        component: () => import(
+          /* webpackChunkName: "ManageGroupMaster" */ '@/views/Manage/ManageGroupMaster.vue'
         )
       }
     ]
