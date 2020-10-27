@@ -94,7 +94,7 @@
           </span>
         </div>
       </div>
-      <div class="pay-button">立即购买</div>
+      <div class="pay-button" @click="handleBuy">立即购买</div>
     </div>
 
     <!-- 明细弹出层 -->
@@ -160,8 +160,20 @@ export default {
       return 'transition: all 0.3s;' + this.showDetail ? 'transform: rotateZ(180)' : ''
     }
   },
+  methods: {
+    handleBuy () {
+      const path = `/common/${this.mode}/feedback/`
+      const suffix = this.payType === 0 ? 'success' : 'fail'
+      this.$router.push(path + suffix)
+    }
+  },
   created () {
     this.mode = this.$route.query.type
+  },
+  mounted () {
+    this.$dialog.alert({
+      message: '支付宝支付：跳转购买成功页面，微信支付：跳转购买失败页面'
+    })
   }
 }
 </script>

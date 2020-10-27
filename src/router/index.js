@@ -120,6 +120,34 @@ const routes = [
           /* webpackChunkName: "PlaceOrder" */ '@/views/TourCar/PlaceOrder.vue'
         )
       },
+      { // 旅游产品下单成功
+        path: '/common/tour/feedback/success',
+        name: 'TourSuccess',
+        component: () => import(
+          /* webpackChunkName: "TourSuccess" */ '@/views/Feedback/TourSuccess.vue'
+        )
+      },
+      { // 旅游产品下单失败
+        path: '/common/tour/feedback/fail',
+        name: 'TourFail',
+        component: () => import(
+          /* webpackChunkName: "TourFail" */ '@/views/Feedback/TourFail.vue'
+        )
+      },
+      { // 包车下单成功
+        path: '/common/car/feedback/success',
+        name: 'CarSuccess',
+        component: () => import(
+          /* webpackChunkName: "CarSuccess" */ '@/views/Feedback/CarSuccess.vue'
+        )
+      },
+      { // 包车下单失败
+        path: '/common/car/feedback/fail',
+        name: 'CarFail',
+        component: () => import(
+          /* webpackChunkName: "CarFail" */ '@/views/Feedback/CarFail.vue'
+        )
+      },
       { // 选择城市
         path: '/common/city',
         name: 'SelectCity',
@@ -163,6 +191,20 @@ const routes = [
         name: 'ModifyPhone',
         component: () => import(
           /* webpackChunkName: "ModifyPhone" */ '@/views/ModifyPhone.vue'
+        )
+      },
+      { // 乘客预定成功
+        path: '/common/order/feedback/success',
+        name: 'OrderSuccess',
+        component: () => import(
+          /* webpackChunkName: "OrderSuccess" */ '@/views/Feedback/OrderSuccess.vue'
+        )
+      },
+      { // 乘客预定失败
+        path: '/common/order/feedback/fail',
+        name: 'OrderFail',
+        component: () => import(
+          /* webpackChunkName: "OrderFail" */ '@/views/Feedback/OrderFail.vue'
         )
       },
       { // 信息通知详情

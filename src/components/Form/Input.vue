@@ -11,7 +11,7 @@
         :type="type"
         :disabled="readonly"
         :placeholder="placeholder || ''"
-        :value="value"
+        v-model="val"
         :class="unrequired ? 'unrequired' : ''"
         :style="inputStyle"
         :maxlength="maxLength"
@@ -92,41 +92,44 @@ export default {
     }
   },
   data: () => ({
+    val: '',
     unrequired: false,
     errorMessage: ''
   }),
   computed: {
     text () {
-      return this.formatter ? this.formatter(this.value) : this.value
+      return this.formatter ? this.formatter(this.val) : this.val
     },
     showClear () {
-      return this.clearable && !isEmpty(this.value)
+      return this.clearable && !isEmpty(this.val)
     }
   },
   methods: {
     // 清空输入框
     handleClear () {
-      this.$emit('change', '')
+      this.val = ''
       this.$refs.input.focus()
     },
     handleInput (e) {
       // 消除必填的提示
       if (this.unrequired) this.unrequired = false
       if (this.errorMessage !== '') this.errorMessage = ''
-      this.$emit('change', e.target.value)
+      // this.val = e.target.value
+    },
+    // 获取值
+    getValue () {
+      return this.val
     },
     // 设置值
     setValue (value) {
-      console.log('设置值', value)
-      this.$emit('change', value)
-      console.log(this.value)
+      this.val = value
     },
     // 字段校验
     validate () {
       // 如果当前字段不需要做校验，则跳过
       if (this.rules.length === 0) return
       // 输入框的值
-      const value = this.$refs.input.value
+      const value = this.val
       const len = this.rules.length
       for (let i = 0; i < len; i++) {
         const item = this.rules[i]
@@ -153,6 +156,11 @@ export default {
         }
       }
       return true
+    }
+  },
+  watch: {
+    val: function (newValue) {
+      this.$emit('change', newValue)
     }
   }
 }

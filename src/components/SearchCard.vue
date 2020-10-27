@@ -4,17 +4,18 @@
     <div class="search-box">
       <!-- 指示图标 -->
       <div class="guide-box">
-        <img class="point" src="../assets/icons/start-point.png" alt="">
-        <img class="switch" src="../assets/icons/switch.png" alt="">
-        <img class="point" src="../assets/icons/end-point.png" alt="">
+        <img class="point" src="@/assets/icons/start-point.png" alt="">
+        <img v-if="defaultType" class="switch" src="@/assets/icons/switch.png" alt="">
+        <img class="point" src="@/assets/icons/end-point.png" alt="">
       </div>
       <!-- 地址显示栏 -->
       <div class="address-box">
         <!-- 起始点 -->
         <div class="address-bar dotted-border">
           <span class="address-bar-city">重庆</span>
-          <span class="address-bar-detail">江北区建新北路观音桥步行街</span>
+          <span class="address-bar-detail">江北区建新北路观音桥</span>
           <van-switch
+            v-if="defaultType"
             v-model="startSwtich"
             active-color="#FFCD00"
             size="0.16rem"
@@ -25,11 +26,16 @@
           <span class="address-bar-city default">你要去哪儿</span>
           <span class="address-bar-detail default">地址/街道/酒店/景点</span>
           <van-switch
+            v-if="defaultType"
             v-model="startSwtich"
             active-color="#FFCD00"
             size="0.16rem"
           />
         </div>
+      </div>
+      <!-- 右侧切换按钮 -->
+      <div v-if="!defaultType" class="switch-button">
+        <img src="@/assets/icons/switch.png" alt="">
       </div>
     </div>
 
@@ -55,6 +61,11 @@ export default {
     'main-button': MainButton
   },
   props: {
+    // ['default', 'icon-right']
+    type: {
+      type: String,
+      default: 'default'
+    },
     hasButton: {
       type: Boolean,
       default: true
@@ -70,6 +81,11 @@ export default {
     buttonType: {
       type: String,
       default: 'fill'
+    }
+  },
+  computed: {
+    defaultType () {
+      return this.type === 'default'
     }
   },
   data: () => ({
@@ -96,6 +112,7 @@ export default {
     // 指示图标容器
     .guide-box{
       flex-shrink: 0;
+      height: .70rem;
       padding: 0rem 0.12rem 0rem 0.05rem;
       display: flex;
       flex-direction: column;
@@ -110,7 +127,7 @@ export default {
       .switch{
         width: 0.18rem;
         height: 0.18rem;
-        margin: 0.12rem 0;
+        // margin: 0.12rem 0;
       }
     }
 
@@ -147,6 +164,22 @@ export default {
       // 虚线边框
       .dotted-border{
         border-bottom: dashed 1px $normal-text;
+      }
+    }
+
+    // 右侧切换按钮
+    .switch-button{
+      width: .40rem;
+      height: 0.4rem;
+      border-radius: .05rem;
+      background-color: $linecard-color;
+      margin-left: .10rem;
+      @include flex (center, center);
+
+      img{
+        width: .20rem;
+        height: .20rem;
+        transform: translateY(-1px);
       }
     }
   }

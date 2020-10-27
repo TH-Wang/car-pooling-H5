@@ -2,7 +2,7 @@
   <div class="container">
     <!-- 标题 -->
     <div class="header">
-      <span class="title">快捷线路</span>
+      <span class="title">{{title}}</span>
       <span v-if="showLink" class="header-tip">当前线路拼接信息</span>
       <span v-if="showLink" class="more-btn" @click="$emit('link-more')">查看更多</span>
     </div>
@@ -29,6 +29,9 @@
       <line-card
         @click="$router.push('/common/searchline/list')"
         :tagColor="tagColor" class="list-item" />
+      <line-card
+        @click="$router.push('/common/searchline/list')"
+        :tagColor="tagColor" class="list-item" />
     </div>
   </div>
 </template>
@@ -41,6 +44,10 @@ export default {
     'line-card': LineCard
   },
   props: {
+    title: {
+      type: String,
+      default: '快捷路线'
+    },
     // ['yellow', 'green']
     tagColor: {
       type: String,

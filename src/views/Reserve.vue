@@ -16,7 +16,6 @@
       <!-- 手机号 -->
       <custom-input
         name="phone"
-        :value="phone"
         input-style="font-size:0.18rem;font-weight:bold"
         readonly
         :formatter="phoneFormatter"
@@ -98,7 +97,6 @@ export default {
     'main-button': MainButton
   },
   data: () => ({
-    phone: '155 **** 6393',
     agree: true
   }),
   methods: {
@@ -106,6 +104,8 @@ export default {
       const { err, values } = this.$refs.form.submit()
       if (err) return
       console.log(values)
+      const path = values.peopel % 2 === 0 ? 'success' : 'fail'
+      this.$router.push(`/common/order/feedback/${path}`)
     },
     peopelValidator (value) {
       const number = parseInt(value)
@@ -118,13 +118,14 @@ export default {
     }
   },
   mounted () {
-    setTimeout(() => {
-      this.$refs.form.setValues({
-        people: 3,
-        start: '观音桥',
-        end: '太古里'
-      })
-    }, 2000)
+    this.$dialog.alert({
+      message: '人数输入: 1预约失败，输入: 2预约成功'
+    })
+    this.$refs.form.setValues({
+      phone: '155 **** 6393',
+      start: '观音桥',
+      end: '太古里'
+    })
   }
 }
 </script>
