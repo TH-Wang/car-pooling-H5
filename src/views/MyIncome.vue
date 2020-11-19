@@ -24,7 +24,6 @@
         class="bill-item"
         v-for="(item, index) in billList"
         :key="index"
-        @click="$router.push(item.path)"
       >
         <div class="bill-main">
           <img :src="getBillIcon(item.type)" alt="">
@@ -46,8 +45,8 @@ export default {
   },
   data: () => ({
     billList: [
-      { type: 0, price: '+10.00', time: '2020-07-23 10:55' },
-      { type: 1, price: '-10.00', time: '2020-07-23 10:55' }
+      { type: 0, price: '+10.00', time: '2020-07-23 10:55', path: '' },
+      { type: 1, price: '-10.00', time: '2020-07-23 10:55', path: '' }
     ]
   }),
   methods: {

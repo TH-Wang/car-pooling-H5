@@ -4,7 +4,7 @@
     <img class="arrow" src="../assets/icons/line-arrow.png" alt="">
     <div class="end">重庆西站</div>
 
-    <!-- 车次 -->
+    <!-- 拼单数量 -->
     <div :class="`num-tag-${tagColor}`">{{countTag}}</div>
 
     <!-- 常用tag -->
@@ -20,8 +20,8 @@ export default {
       default: false
     },
     tag: {
-      type: String,
-      default: '车次'
+      type: [String, Number],
+      default: 0
     },
     // ['yellow', 'green']
     tagColor: {
@@ -31,7 +31,7 @@ export default {
   },
   computed: {
     countTag () {
-      return !this.tag || this.tag === '' ? '车次' : this.tag
+      return this.tag > 999 ? '999+' : this.tag
     }
   }
 }

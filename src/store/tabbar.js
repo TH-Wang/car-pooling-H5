@@ -1,3 +1,5 @@
+// 全局tabbar控制
+
 export default {
   state: () => ({
     tabbarId: 0

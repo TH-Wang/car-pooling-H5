@@ -1,3 +1,5 @@
+// 所有tabs页面的id控制
+
 export default {
   state: {
     myTrip: 0,

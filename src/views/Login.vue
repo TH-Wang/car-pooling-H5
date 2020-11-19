@@ -2,11 +2,11 @@
   <div class="page">
 
     <div class="header">
-      <van-icon @click="handleBack" name="cross" size=".18rem" color="#BFBFBF" />
+      <!-- <van-icon @click="handleBack" name="cross" size=".18rem" color="#BFBFBF" /> -->
+      <div class="title">拼车之家登录/注册</div>
     </div>
 
     <div class="main">
-      <div class="title">拼车之家登录/注册</div>
 
       <!-- 表单主体 -->
       <custom-form ref="form">
@@ -15,6 +15,9 @@
         <custom-input
           name="phone"
           v-model="phone"
+          type="tel"
+          max-length="11"
+          placeholder="请输入手机号码"
           clearable
           input-style="font-size:0.18rem;font-weight:bold"
           :rules="[{required: true}]"
@@ -58,6 +61,7 @@
 import { Form, Input } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import vertifyCodeMixin from '@/mixins/vertify-code'
+import { sendCode, userCodeLogin } from '@/api'
 
 export default {
   mixins: [vertifyCodeMixin],
@@ -74,15 +78,31 @@ export default {
     async handleGetCode () {
       try {
         await this.handleChangeCodeStatus()
+        // 请求验证码
+        const phone = this.phone
+        const res = await sendCode({ phone, type: 'LOGIN' })
+        setTimeout(() => {
+          this.$dialog.alert({
+            message: `您的验证码为【${res.data.data}】，五分钟内有效，请妥善保管！`
+          })
+        }, 2000)
       } catch (error) {
         console.log(error)
       }
     },
     // 表单提交
-    handleSubmit () {
+    async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
       if (err) return
-      console.log(values)
+      const res = await userCodeLogin(values)
+      const { msg, data } = res.data
+      if (msg === '成功') {
+        this.$toast({ message: '登录成功！', type: 'success' })
+        this.$store.commit('setToken', data.token)
+        this.$router.push('/home')
+      } else {
+        this.$toast({ message: msg, type: 'fail' })
+      }
     },
     handleBack () {
       this.$router.go(-1)
@@ -94,23 +114,20 @@ export default {
 <style lang="scss" scoped>
 .page{
   height: 100vh;
-  @include flex (space-between, center, column);
+  @include flex (space-evenly, center, column);
 
   .header{
-    width: calc(100% - .60rem);
+    width: 100%;
     margin: 0 auto;
-    padding-top: .30rem;
-    text-align: right;
-  }
-
-  .main{
-    transform: translateY(-.40rem);
 
     .title{
       margin: 0 .30rem;
-      margin-bottom: .8rem;
+      transform: translateY(.3rem);
       @include font (.24rem, $main-text, bold);
     }
+  }
+
+  .main{
 
     .tip{
       margin: .15rem .30rem;
@@ -119,7 +136,6 @@ export default {
   }
 
   .footer{
-    padding-bottom: .50rem;
     @include font (.12rem, $tip-text);
   }
 }

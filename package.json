@@ -8,6 +8,9 @@
     "start": "vue-cli-service serve"
   },
   "dependencies": {
+    "@amap/amap-jsapi-loader": "^0.0.7",
+    "axios": "^0.21.0",
+    "cnchar": "^2.2.7",
     "core-js": "^3.6.5",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",

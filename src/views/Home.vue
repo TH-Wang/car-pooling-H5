@@ -10,7 +10,7 @@
       @click-left="handleSelectCity"
     >
       <template #left>
-        重庆 · 渝北区<van-icon name="arrow" color="#262626" size=".15px" />
+        {{getPosition()}}<van-icon name="arrow" color="#262626" size=".15px" />
       </template>
     </van-nav-bar>
 
@@ -76,7 +76,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { NavBar, Icon, DropdownMenu, DropdownItem, List, Toast } from 'vant'
+import { isEmpty } from 'lodash'
 import mainNavConfig from '@/configs/homeMainNav'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
@@ -103,7 +105,21 @@ export default {
     url: '/index',
     mainNavConfig
   }),
+  computed: {
+    // 全局存储城市区县数据
+    ...mapState(['position'])
+  },
   methods: {
+    // 显示当前定位城市
+    getPosition () {
+      if (isEmpty(this.position.city) && isEmpty(this.position.county)) {
+        return '请选择城市'
+      } else {
+        if (isEmpty(this.position.county)) {
+          return this.position.city.shortName
+        } else return `${this.position.city.shortName} · ${this.position.county.shortName}`
+      }
+    },
     // 点击选择城市
     handleSelectCity () {
       this.$router.push('/common/city')
