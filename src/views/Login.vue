@@ -14,7 +14,6 @@
         <!-- 手机号 -->
         <custom-input
           name="phone"
-          v-model="phone"
           type="tel"
           max-length="11"
           placeholder="请输入手机号码"
@@ -58,6 +57,7 @@
 </template>
 
 <script>
+import { isEmpty } from 'lodash'
 import { Form, Input } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import vertifyCodeMixin from '@/mixins/vertify-code'
@@ -71,7 +71,7 @@ export default {
     'main-button': MainButton
   },
   data: () => ({
-    phone: '152 1907 6783',
+    phone: '',
     code: ''
   }),
   methods: {
@@ -79,7 +79,7 @@ export default {
       try {
         await this.handleChangeCodeStatus()
         // 请求验证码
-        const phone = this.phone
+        const phone = this.$refs.form.getValueField('phone')
         const res = await sendCode({ phone, type: 'LOGIN' })
         setTimeout(() => {
           this.$dialog.alert({
@@ -97,8 +97,9 @@ export default {
       const res = await userCodeLogin(values)
       const { msg, data } = res.data
       if (msg === '成功') {
+        const { token, phone } = data
         this.$toast({ message: '登录成功！', type: 'success' })
-        this.$store.commit('setToken', data.token)
+        this.$store.commit('setStorage', { token, phone, info: data })
         this.$router.push('/home')
       } else {
         this.$toast({ message: msg, type: 'fail' })
@@ -106,6 +107,12 @@ export default {
     },
     handleBack () {
       this.$router.go(-1)
+    }
+  },
+  mounted () {
+    const phone = this.$store.state.user.loginPhone
+    if (!isEmpty(phone)) {
+      this.$refs.form.setValues({ phone })
     }
   }
 }

@@ -7,7 +7,7 @@
       <div class="label">{{label}}</div>
 
       <!-- 显示选择结果 -->
-      <div :class="mainClass()">{{text()}}</div>
+      <div :class="mainClass()">{{text(val)}}</div>
 
       <!-- 清除按钮 -->
       <van-icon
@@ -30,11 +30,11 @@
       <!-- 下拉菜单 -->
       <div class="menu" :style="slideStyle">
         <div
-          :class="`menu-item${index === val ? '-active' : ''}`"
-          v-for="(item, index) in columns"
-          :key="index"
-          @click.stop="handleChange($event, index)"
-        >{{item}}</div>
+          :class="`menu-item${item.id === val ? '-active' : ''}`"
+          v-for="item in columns"
+          :key="item.id"
+          @click.stop="handleChange($event, item.id)"
+        >{{text(item.id)}}</div>
       </div>
     </div>
   </div>
@@ -82,7 +82,7 @@ export default {
     }
   },
   data: () => ({
-    val: 0,
+    val: null,
     show: false,
     error: false
   }),
@@ -95,12 +95,13 @@ export default {
     }
   },
   methods: {
-    text () {
-      if (this.val === null) {
+    text (value) {
+      if (value === null) {
         if (this.error) return `请选择${this.label}`
         else return this.placeholder
       } else {
-        return this.columns[this.val]
+        const obj = this.columns.find(i => i.id === value)
+        return obj ? obj.label : ''
       }
     },
     mainClass () {
@@ -137,7 +138,8 @@ export default {
     }
   },
   mounted () {
-    if (this.defaultIndex !== false) this.val = this.dataIndex
+    if (this.defaultIndex !== false) this.val = this.defaultIndex
+    else this.val = this.columns[0].id
   },
   watch: {
     val: function (newVal) {

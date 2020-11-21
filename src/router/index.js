@@ -60,22 +60,30 @@ const routes = [
       { // 短途拼车、城际拼车、跨省拼车
         path: '/common/carpool/list',
         name: 'CarpoolList',
-        component: () => import(/* webpackChunkName: "CarpoolList" */ '@/views/CarpoolList.vue')
+        component: () => import(
+          /* webpackChunkName: "CarpoolList" */ '@/views/OrderList/Carpool.vue'
+        )
       },
       { // 车主找人
         path: '/common/pending/list',
         name: 'PendingList',
-        component: () => import(/* webpackChunkName: "PendingList" */ '@/views/PendingList.vue')
+        component: () => import(
+          /* webpackChunkName: "PendingList" */ '@/views/OrderList/Pending.vue'
+        )
       },
       { // 上下班拼车
         path: '/common/hitchhike/list',
         name: 'HitchhikeList',
-        component: () => import(/* webpackChunkName: "HitchhikeList" */ '@/views/HitchhikeList.vue')
+        component: () => import(
+          /* webpackChunkName: "HitchhikeList" */ '@/views/OrderList/Hitchhike.vue'
+        )
       },
       { // 顺路带物
         path: '/common/carry/list',
         name: 'CarryList',
-        component: () => import(/* webpackChunkName: "CarryList" */ '@/views/CarryList.vue')
+        component: () => import(
+          /* webpackChunkName: "CarryList" */ '@/views/OrderList/Carry.vue'
+        )
       },
       { // 快捷线路列表
         path: '/common/quick/list',

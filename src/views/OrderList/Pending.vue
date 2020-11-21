@@ -19,21 +19,26 @@
     <div style="height: .1rem" />
 
     <!-- 快捷路线 -->
-    <quick-line tagColor="green" />
+    <quick-line
+      :dataSource="quickList"
+      tagColor="green"
+      @retry="handleRetryQuick"
+      @link-more="$router.push('/common/quick/list')"
+    />
 
     <!-- 公告栏 -->
     <!-- <notice-bar @reserve="handleClickReserve" /> -->
 
-     <!-- 筛选菜单 -->
-    <van-dropdown-menu class="dropdown" active-color="#FFCD00">
-      <van-dropdown-item v-model="areaValue" :options="areaOptions" />
-      <van-dropdown-item v-model="timeValue" :options="timeOptions" />
-      <van-dropdown-item v-model="priceValue" :options="priceOptions" />
-      <van-dropdown-item v-model="seatValue" :options="seatOptions" />
-    </van-dropdown-menu>
+    <!-- 筛选菜单 -->
+    <order-filter @change="handleFilterChange" />
 
+    <!-- 如果列表数据为空 -->
+    <div v-if="list.length === 0" @click="handleRetry">
+      <van-empty description="暂无订单，请点击重试" />
+    </div>
     <!-- 拼单列表 -->
     <van-list
+      v-else
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
@@ -68,7 +73,8 @@
 </template>
 
 <script>
-import { DropdownMenu, DropdownItem, List, Icon } from 'vant'
+import { List, Icon } from 'vant'
+import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
@@ -85,8 +91,7 @@ export default {
   mixins: [NavbarMixin, ListMixin],
   components: {
     'van-list': List,
-    'van-dropdown-menu': DropdownMenu,
-    'van-dropdown-item': DropdownItem,
+    'order-filter': OrderFilter,
     'van-icon': Icon,
     // 'notice-bar': NoticeBar,
     'nav-bar-search': NavBarSearch,
@@ -102,6 +107,17 @@ export default {
     menu: [{ type: 'cancel', text: '取消预约' }]
   }),
   methods: {
+    // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
+    getRequestDatas () {
+      return {
+        orderType: 2, // 1-车主发布 2-乘客发布
+        publishType: 1
+      }
+    },
+    // 请求快捷路线时，自动调用该函数，获取请求参数
+    getRequestQuickDatas () {
+      return { startPage: 1, pageSize: 10 }
+    },
     handleClickSearch () {
       console.log('click search')
     },

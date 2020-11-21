@@ -6,32 +6,22 @@
       <span v-if="showLink" class="header-tip">当前线路拼接信息</span>
       <span v-if="showLink" class="more-btn" @click="$emit('link-more')">查看更多</span>
     </div>
+
+    <!-- 如果列表数据为空 -->
+    <div v-if="dataSource.length === 0" @click="$emit('retry')">
+      <van-empty description="暂无快捷路线，请点击重试" />
+    </div>
     <!-- 列表 -->
     <div class="list-container">
       <line-card
+        class="list-item"
+        v-for="item in dataSource"
+        :key="item.id"
+        tag="504"
+        :tagColor="tagColor"
+        common
         @click="$router.push('/common/searchline/list')"
-        tag="504" :tagColor="tagColor" common class="list-item" />
-      <line-card
-        @click="$router.push('/common/searchline/list')"
-        tag="2304" :tagColor="tagColor" common class="list-item" />
-      <line-card
-        @click="$router.push('/common/searchline/list')"
-        tag="471" :tagColor="tagColor" common class="list-item" />
-      <line-card
-        @click="$router.push('/common/searchline/list')"
-        tag="471" :tagColor="tagColor" class="list-item" />
-      <line-card
-        @click="$router.push('/common/searchline/list')"
-        tag="504" :tagColor="tagColor" class="list-item" />
-      <line-card
-        @click="$router.push('/common/searchline/list')"
-        tag="" :tagColor="tagColor" class="list-item" />
-      <line-card
-        @click="$router.push('/common/searchline/list')"
-        :tagColor="tagColor" class="list-item" />
-      <line-card
-        @click="$router.push('/common/searchline/list')"
-        :tagColor="tagColor" class="list-item" />
+      />
     </div>
   </div>
 </template>
@@ -44,6 +34,10 @@ export default {
     'line-card': LineCard
   },
   props: {
+    dataSource: {
+      type: Array,
+      default: () => ([])
+    },
     title: {
       type: String,
       default: '快捷路线'

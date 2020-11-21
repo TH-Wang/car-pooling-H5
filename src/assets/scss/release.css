@@ -1,3 +1,8 @@
+.search-card-wrap {
+  padding-top: .20rem;
+  border-top: solid 1px #E8E8E8;
+}
+
 .submit {
   padding: 0 .15rem;
   box-sizing: border-box;

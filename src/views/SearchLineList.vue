@@ -18,7 +18,7 @@
     </van-nav-bar>
 
     <!-- 过滤下拉菜单 -->
-    <common-filter />
+    <order-filter />
 
     <!-- 拼单列表 -->
     <van-list
@@ -49,7 +49,7 @@
 
 <script>
 import { List } from 'vant'
-import Filter from '@/components/Filter'
+import { OrderFilter } from '@/components/Filter/index.js'
 import CarpoolOrder from '@/components/OrderItem/Carpool'
 import ListMixin from '@/mixins/list-mixin'
 import MiniButton from '@/components/MiniButton'
@@ -58,7 +58,7 @@ export default {
   mixins: [ListMixin],
   components: {
     'van-list': List,
-    'common-filter': Filter,
+    'order-filter': OrderFilter,
     'carpool-order': CarpoolOrder,
     'mini-button': MiniButton
   },

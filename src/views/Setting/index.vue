@@ -2,7 +2,7 @@
   <div>
     <!-- 导航栏 -->
     <van-nav-bar
-      title="我的订单"
+      title="设置"
       fixed
       placeholder
       left-arrow

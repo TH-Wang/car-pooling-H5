@@ -96,7 +96,6 @@
 
 .required {
   color: #ee0a24;
-  background-color: red;
 }
 
 .required::placeholder {

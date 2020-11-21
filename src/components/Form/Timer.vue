@@ -33,6 +33,8 @@
       <van-datetime-picker
         :type="type"
         :title="title"
+        :value="oriVal"
+        :min-date="minDate"
         @confirm="handleChange"
       />
     </van-popup>
@@ -41,6 +43,7 @@
 
 <script>
 import { Popup, DatetimePicker } from 'vant'
+import moment from 'moment'
 
 export default {
   components: {
@@ -92,7 +95,9 @@ export default {
     }
   },
   data: () => ({
+    oriVal: new Date(),
     val: null,
+    minDate: new Date(),
     showPicker: false,
     error: false,
     minData: null,
@@ -109,7 +114,7 @@ export default {
         if (this.error) return `请选择${this.label}`
         else return this.placeholder
       } else {
-        return this.val.toString()
+        return this.val
       }
     },
     mainClass () {
@@ -122,7 +127,7 @@ export default {
     },
     handleChange (value) {
       this.showPicker = false
-      this.val = value
+      this.oriVal = value
     },
     handleClear () {
       this.val = null
@@ -145,11 +150,13 @@ export default {
   mounted () {
     if (this.defaultTime !== false) {
       this.val = this.defaultTime
-    }
+    } else this.val = moment(this.oriVal).format('YYYY-MM-DD HH:mm')
   },
   watch: {
-    val: function (newVal) {
-      this.$emit('change', newVal)
+    oriVal: function (newVal) {
+      const formatDate = moment(newVal).format('YYYY-MM-DD HH:mm')
+      this.val = formatDate
+      this.$emit('change', formatDate)
     }
   }
 }

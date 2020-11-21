@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <custom-form ref="form">
       <!-- 发布类型 -->
       <custom-picker
@@ -7,7 +8,8 @@
         name="order_type"
         label="发布类型"
         placeholder="请选择发布类型"
-        :columns="['拼车', '上下班拼车', '顺路带物', '旅游包车']"
+        :default-index="1"
+        :columns="orderMenu"
       />
       <!-- 详细表单项 -->
       <custom-item
@@ -59,6 +61,7 @@
 
 <script>
 import { Checkbox } from 'vant'
+import { isEmpty } from 'lodash'
 import { Form, Item, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import ChooseComboLayer from '@/components/Layer/ChooseCombo'
@@ -77,40 +80,46 @@ export default {
   data: () => ({
     // 选择的发布类型
     orderType: 0,
+    // 所有的发布类型
+    orderMenu: [
+      { id: 1, label: '拼车' },
+      { id: 2, label: '上下班拼车' },
+      { id: 3, label: '顺路带物' },
+      { id: 4, label: '旅游包车' }
+    ],
     // 表单列表
     formOptions: driverConfig,
     agreePact: true,
     agreePackage: false,
+    // 选择套餐
     combo: {}
   }),
   methods: {
-    handleSubmit () {
-      const _this_ = this
+    // 提交
+    async handleSubmit () {
+      // 表单校验并获取值
       const { err, values, errors } = this.$refs.form.submit()
-      if (!err) {
-        const combo = this.combo
-        console.log({ ...values, combo })
-        this.$dialog.confirm({
-          title: '提示',
-          message: '请确认 <span style="color:#FFCD00">157 2020 0123</span> 能联系到你',
-          allowHtml: true,
-          confirmButtonText: '确认在用',
-          cancelButtonText: '修改手机号'
-        }).then(() => {
-          console.log('[确认在用]')
-          setTimeout(() => {
-            _this_.$dialog.alert({
-              title: '提示',
-              message: '2018年11月16日起，为车主每拼到1人收取3元的信息服务费，行程结束后计费，请知悉。',
-              confirmButtonText: '我知道了'
-            })
-          }, 300)
-        }).catch(() => {
-          _this_.$router.push('/common/phone/modify')
-        })
-      } else {
+      if (err) {
         console.log(errors)
+        return
       }
+
+      // 表单数据
+      const data = {
+        ...values,
+        // 发布类型：车主发布
+        orderType: 1
+      }
+
+      // 数据类型转换
+      if (data.cost) data.cost = parseInt(data.cost)
+      if (data.seatNum) data.seatNum = parseInt(data.seatNum)
+
+      // 如果没有选择套餐
+      if (isEmpty(this.combo)) data.setType = 0
+
+      // 通知父组件做提交相关操作
+      this.$emit('submit', data)
     },
     // 弹出层关闭
     handlePopupClose () {

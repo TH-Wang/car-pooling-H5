@@ -14,8 +14,6 @@
       </template>
     </van-nav-bar>
 
-    <!-- <van-pull-refresh v-model="refresh" @refresh="handleListRefresh"> -->
-
     <!-- banner -->
     <div class="banner"></div>
 
@@ -32,21 +30,25 @@
     </div>
 
     <!-- 搜索卡片 -->
-    <search-card />
+    <search-card v-model="addr" />
 
     <!-- 快捷路线 -->
-    <quick-line @link-more="$router.push('/common/quick/list')" />
+    <quick-line
+      :dataSource="quickList"
+      @retry="handleRetryQuick"
+      @link-more="$router.push('/common/quick/list')"
+    />
 
     <!-- 筛选菜单 -->
-    <van-dropdown-menu class="dropdown" active-color="#FFCD00">
-      <van-dropdown-item v-model="areaValue" :options="areaOptions" />
-      <van-dropdown-item v-model="timeValue" :options="timeOptions" />
-      <van-dropdown-item v-model="priceValue" :options="priceOptions" />
-      <van-dropdown-item v-model="seatValue" :options="seatOptions" />
-    </van-dropdown-menu>
+    <order-filter v-model="filters" @change="handleFilterChange" />
 
+    <!-- 如果列表数据为空 -->
+    <div v-if="list.length === 0" @click="handleRetry">
+      <van-empty description="暂无订单，请点击重试" />
+    </div>
     <!-- 拼单列表 -->
     <van-list
+      v-else
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
@@ -70,21 +72,20 @@
       </carpool-order>
     </van-list>
 
-    <!-- </van-pull-refresh> -->
-
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { NavBar, Icon, DropdownMenu, DropdownItem, List, Toast } from 'vant'
+import { NavBar, Icon, List } from 'vant'
 import { isEmpty } from 'lodash'
-import mainNavConfig from '@/configs/homeMainNav'
+import { OrderFilter } from '@/components/Filter/index.js'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
 import CarpoolOrder from '@/components/OrderItem/Carpool'
-import ListMixin from '@/mixins/list-mixin'
 import MiniButton from '@/components/MiniButton'
+import ListMixin from '@/mixins/list-mixin'
+import mainNavConfig from '@/configs/homeMainNav'
 
 export default {
   name: 'Home',
@@ -93,23 +94,38 @@ export default {
     'van-nav-bar': NavBar,
     'van-icon': Icon,
     'van-list': List,
-    // 'van-pull-refresh': PullRefresh,
-    'van-dropdown-menu': DropdownMenu,
-    'van-dropdown-item': DropdownItem,
+    'order-filter': OrderFilter,
     'search-card': SearchCard,
     'quick-line': QuickLine,
     'carpool-order': CarpoolOrder,
     'mini-button': MiniButton
   },
   data: () => ({
-    url: '/index',
-    mainNavConfig
+    mainNavConfig,
+    // 存储起止点信息
+    addr: {
+      start: '',
+      end: ''
+    },
+    // 快捷路线列表
+    quickList: []
   }),
   computed: {
     // 全局存储城市区县数据
     ...mapState(['position'])
   },
   methods: {
+    // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
+    getRequestDatas () {
+      return {
+        orderType: 1, // 1-车主发布 2-乘客发布
+        publishType: 1
+      }
+    },
+    // 请求快捷路线时，自动调用该函数，获取请求参数
+    getRequestQuickDatas () {
+      return { startPage: 1, pageSize: 10 }
+    },
     // 显示当前定位城市
     getPosition () {
       if (isEmpty(this.position.city) && isEmpty(this.position.county)) {
@@ -123,13 +139,6 @@ export default {
     // 点击选择城市
     handleSelectCity () {
       this.$router.push('/common/city')
-    },
-    // 列表刷新
-    handleListRefresh () {
-      setTimeout(() => {
-        this.refresh = false
-        Toast('刷新成功')
-      }, 2000)
     },
     // 进入详情页面
     handleLinkDetail () {

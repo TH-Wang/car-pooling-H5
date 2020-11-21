@@ -44,6 +44,10 @@ export default {
       }, {})
       return values
     },
+    getValueField (key) {
+      const field = this.fields.find(i => i.name === key)
+      if (field) return field.getValue()
+    },
     // 对所有字段进行校验
     validate () {
       const len = this.fields.length

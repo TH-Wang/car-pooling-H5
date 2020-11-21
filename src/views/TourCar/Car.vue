@@ -1,6 +1,6 @@
 <template>
   <div>
-    <common-filter :filter-list="filters" />
+    <order-filter :filter-list="filters" />
     <scroll-nav-bar
       :list="list"
       height="calc(100vh - 140px)"
@@ -28,7 +28,7 @@
 // import Vue from 'vue'
 // import VueScrollTo from 'vue-scrollto'
 import ScrollNavBar from '@/components/ScrollNavBar'
-import Filter from '@/components/Filter'
+import { OrderFilter } from '@/components/Filter/index.js'
 import GoodsItem from '@/components/GoodsItem'
 import filtersTourcar from '@/utils/filters-tourcar'
 
@@ -40,7 +40,7 @@ import filtersTourcar from '@/utils/filters-tourcar'
 export default {
   components: {
     'scroll-nav-bar': ScrollNavBar,
-    'common-filter': Filter,
+    'order-filter': OrderFilter,
     'goods-item': GoodsItem
   },
   data: () => ({

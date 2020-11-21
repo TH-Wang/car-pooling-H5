@@ -73,7 +73,7 @@ export default {
     // 热门城市列表
     hotCities: [
       { code: 2, shortName: '北京' },
-      { code: 1, shortName: '重庆' },
+      { code: 2324, shortName: '重庆' },
       { code: 802, shortName: '上海' },
       { code: 1988, shortName: '深圳' },
       { code: 2368, shortName: '成都' },

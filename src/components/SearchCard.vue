@@ -12,8 +12,15 @@
       <div class="address-box">
         <!-- 起始点 -->
         <div class="address-bar dotted-border">
-          <span class="address-bar-city">重庆</span>
-          <span class="address-bar-detail">江北区建新北路观音桥</span>
+          <!-- <span class="address-bar-city">重庆</span>
+          <span class="address-bar-detail">江北区建新北路观音桥</span> -->
+          <input
+            v-model="value.start"
+            @input="handleChange($event, 'start')"
+            class="address-bar-input"
+            type="text"
+            placeholder="请输入起点"
+          >
           <van-switch
             v-if="defaultType"
             v-model="startSwtich"
@@ -23,8 +30,15 @@
         </div>
         <!-- 目的地 -->
         <div class="address-bar">
-          <span class="address-bar-city default">你要去哪儿</span>
-          <span class="address-bar-detail default">地址/街道/酒店/景点</span>
+          <!-- <span class="address-bar-city default">你要去哪儿</span>
+          <span class="address-bar-detail default">地址/街道/酒店/景点</span> -->
+          <input
+            v-model="value.end"
+            @input="handleChange($event, 'end')"
+            class="address-bar-input"
+            type="text"
+            placeholder="您要去哪儿  地址/街道/酒店/景点"
+          >
           <van-switch
             v-if="defaultType"
             v-model="startSwtich"
@@ -53,6 +67,7 @@
 
 <script>
 import { Switch } from 'vant'
+import { cloneDeep } from 'lodash'
 import MainButton from '@/components/MainButton'
 
 export default {
@@ -60,12 +75,25 @@ export default {
     'van-switch': Switch,
     'main-button': MainButton
   },
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
     // ['default', 'icon-right']
     type: {
       type: String,
       default: 'default'
     },
+    // 输入值
+    value: {
+      type: Object,
+      default: () => ({
+        start: '',
+        end: ''
+      })
+    },
+    // 下部分均与搜索按钮相关
     hasButton: {
       type: Boolean,
       default: true
@@ -90,7 +118,14 @@ export default {
   },
   data: () => ({
     startSwtich: false
-  })
+  }),
+  methods: {
+    handleChange (e, type) {
+      const position = cloneDeep(this.value)
+      position[type] = e.target.value
+      this.$emit('change', position)
+    }
+  }
 }
 </script>
 
@@ -142,6 +177,13 @@ export default {
         font-size: 0.14rem;
         color: $main-text;
         font-weight: bold;
+
+        &-input{
+          display: block;
+          flex: 1;
+          border: none;
+          height: 100%;
+        }
 
         &-city{
           flex-shrink: 0;

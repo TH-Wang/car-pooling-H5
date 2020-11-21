@@ -66,17 +66,17 @@ export default {
     comboType: 0,
     // 套餐选项
     options: [
-      { id: 0, text: '周免发布' },
-      { id: 1, text: '月免发布' },
-      { id: 2, text: '季度免发布' },
-      { id: 3, text: '年免发布' }
+      { id: 1, text: '周免发布' },
+      { id: 2, text: '月免发布' },
+      { id: 3, text: '季度免发布' },
+      { id: 4, text: '年免发布' }
     ],
     // 选择的支付方式
     payType: 0,
     // 支付方式
     payOptions: [
-      { id: 0, icon: require('@/assets/icons/pay/alipay.png'), text: '支付宝钱包' },
-      { id: 1, icon: require('@/assets/icons/pay/wechat.png'), text: '微信钱包' }
+      { id: 1, icon: require('@/assets/icons/pay/alipay.png'), text: '支付宝钱包' },
+      { id: 2, icon: require('@/assets/icons/pay/wechat.png'), text: '微信钱包' }
     ]
   }),
   methods: {

@@ -1,68 +1,81 @@
 // 负责列表的筛选和动态加载数据
+import { isEmpty } from 'lodash'
+import store from '@/store'
+import { getCar, getCommonRoute } from '@/api'
 
 export default {
   data: () => ({
-    // 是否在下拉刷新
-    isRefresh: false,
-    // 列表数据
-    list: [],
+    // 当前页码
+    startPage: 1,
+    // 每页数据量
+    pageSize: 10,
     // 记录页面总数据数
     total: 0,
+    // 是否在下拉刷新
+    isRefresh: false,
     // 加载
     loading: false,
     // 全部加载完毕
     finished: false,
     // 加载失败
     error: false,
-    // 地区选择项
-    areaValue: 0,
-    // 地区下拉菜单
-    areaOptions: [
-      { text: '全城', value: 0 },
-      { text: '江北区', value: 1 },
-      { text: '渝中区', value: 3 },
-      { text: '南岸区', value: 4 },
-      { text: '沙坪坝区', value: 5 }
-    ],
-    // 时间选择像
-    timeValue: 0,
-    // 时间下拉菜单
-    timeOptions: [
-      { text: '全天', value: 0 },
-      { text: '上午', value: 1 },
-      { text: '中午', value: 2 },
-      { text: '下午', value: 3 },
-      { text: '晚上', value: 4 }
-    ],
-    // 车价选择项
-    priceValue: 0,
-    // 车价下拉菜单
-    priceOptions: [
-      { text: '不限车价', value: 0 },
-      { text: '100元以下', value: 1 },
-      { text: '100-300元', value: 2 },
-      { text: '300-500元', value: 3 },
-      { text: '500-1000元', value: 4 },
-      { text: '1000元以上', value: 5 }
-    ],
-    // 座位选择项
-    seatValue: 0,
-    // 座位下拉菜单
-    seatOptions: [
-      { text: '不限座位', value: 0 },
-      { text: '靠窗', value: 1 },
-      { text: '前排', value: 2 },
-      { text: '后排', value: 3 }
-    ]
+    // 筛选选项数据
+    filters: {
+      area: 0,
+      time: 0,
+      cost: 0,
+      seat: 0
+    },
+    // 列表数据
+    list: [],
+    // 快捷路线列表
+    quickList: []
   }),
   methods: {
-    createList (count) {
-      const result = []
-      const date = Date.now()
-      for (let i = 0; i < count; i++) {
-        result.push({ id: `${date}-${i}` })
+    // 筛选条件发生改变
+    handleFilterChange () {
+      console.log(JSON.stringify(this.filters))
+    },
+    // 请求列表
+    async handleListLoad () {
+      const _this_ = this
+
+      const data = {
+        ..._this_.getRequestDatas(),
+        startPage: _this_.startPage,
+        pageSize: _this_.pageSize
       }
-      return result
+
+      // 地区id
+      data.county = isEmpty(store.state.position.county)
+        ? store.state.position.city.code
+        : store.state.position.county.code
+
+      const res = await getCar(data)
+      this.list.concat(res.data.data.list)
+      this.startPage++
+    },
+    // 请求快捷路线
+    async handleQuickListLoad () {
+      const data = this.getRequestQuickDatas()
+      const res = await getCommonRoute(data)
+      this.quickList = res.data.data.list
+    },
+    // 点击重试（订单列表）
+    handleRetry () {
+      this.$toast.loading({
+        message: '加载中...',
+        duration: 1000
+      })
+      this.handleListLoad()
+    },
+    // 点击重试（快捷路线列表）
+    handleRetryQuick () {
+      this.$toast.loading({
+        message: '加载中...',
+        duration: 1000
+      })
+      this.handleQuickListLoad()
     },
     // 处理下拉刷新
     handlePullRefresh () {
@@ -70,26 +83,24 @@ export default {
       setTimeout(() => {
         _this_.isRefresh = false
       }, 1000)
-    },
-    // 列表加载
-    handleListLoad () {
-      setTimeout(() => {
-        if (this.total >= 16) {
-          this.loading = false
-          this.finished = true
-          return
-        }
-
-        this.list.push(...this.createList(4))
-        this.total += 4
-        // console.log('[加载列表]')
-        this.loading = false
-      }, 2000)
     }
   },
-  mounted: function () {
-    // console.log('开始请求:' + this.url)
-    this.list = this.createList(4)
-    this.total = 4
+  mounted: async function () {
+    const position = store.state.position
+    if (isEmpty(position.city) && isEmpty(position.county)) {
+      await this.$dialog.alert({
+        title: '位置信息',
+        message: '请先选择城市，然后向您推荐当地的拼单信息!'
+      })
+      this.$router.push('/common/city')
+      return
+    }
+    await this.handleListLoad()
+    await this.handleQuickListLoad()
+  },
+  watch: {
+    position (val) {
+      console.log(val)
+    }
   }
 }
