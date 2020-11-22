@@ -4,6 +4,7 @@ import { Dialog, Toast, Icon, NavBar, Empty } from 'vant'
 import './global.min.css'
 import router from './router'
 import store from './store'
+import 'moment/locale/zh-cn'
 
 Vue.config.productionTip = false
 

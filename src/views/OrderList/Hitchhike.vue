@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { Tabs, Tab } from 'vant'
 import NavBarSearch from '@/components/NavBarSearch'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
@@ -56,6 +57,9 @@ export default {
     menuVisibleId: null,
     menu: [{ type: 'cancel', text: '取消预约' }]
   }),
+  computed: {
+    ...mapState(['position'])
+  },
   methods: {
     handleClickSearch () {
       console.log('click search')

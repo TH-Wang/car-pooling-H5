@@ -73,7 +73,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { List, Icon } from 'vant'
+import { isEmpty } from 'lodash'
 import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
@@ -104,12 +106,21 @@ export default {
   data: () => ({
     url: '',
     menuVisibleId: null,
-    menu: [{ type: 'cancel', text: '取消预约' }]
+    menu: [{ type: 'cancel', text: '取消预约' }],
+    needQuick: true
   }),
+  computed: {
+    ...mapState(['position'])
+  },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
+      // 地区id
+      const county = isEmpty(this.position.county)
+        ? this.position.city.code
+        : this.position.county.code
       return {
+        county,
         orderType: 2, // 1-车主发布 2-乘客发布
         publishType: 1
       }

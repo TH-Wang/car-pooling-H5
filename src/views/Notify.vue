@@ -3,8 +3,14 @@
     <!-- 导航栏 -->
     <van-nav-bar title="消息" fixed placeholder :border="false" />
 
-    <!-- 消息列表 -->
-    <van-pull-refresh v-model="refresh" @refresh="handleRefresh">
+    <!-- 如果列表数据为空 -->
+    <div v-if="list.length === 0" @click="handleRetry" class="empty-container">
+      <van-empty description="空空如也~" />
+    </div>
+
+    <!-- 主体容器 -->
+    <van-pull-refresh v-else v-model="refresh" @refresh="handlePullRefresh">
+      <!-- 消息列表 -->
       <van-list
         v-model="loading"
         :finished="finished"
@@ -38,65 +44,35 @@
 
 <script>
 import { PullRefresh, List } from 'vant'
+import { queryUserMessage } from '@/api'
+import ListMixin from '@/mixins/list-mixin'
 
 export default {
+  // ListMixin 负责筛选，以及列表动态加载
+  mixins: [ListMixin],
   components: {
     'van-pull-refresh': PullRefresh,
     'van-list': List
   },
-  data: () => ({
-    refresh: false,
-    loading: false,
-    finished: false,
-    error: false,
-    page: 1,
-    limit: 5,
-    total: 13,
-    list: []
-  }),
   methods: {
+    // 自定义请求api，详见 list-mixin
+    reqApi: queryUserMessage,
     // 跳转详情
     handleLink (e, id) {
       this.$router.push({ path: '/common/notify/detail', query: { id } })
-    },
-    // 下拉刷新
-    handleRefresh () {
-      // 清理数据
-      if (this.finished) this.finished = false
-      if (this.error) this.error = false
-      this.page = 1
-      setTimeout(() => {
-        this.list = []
-        // 请求数据
-        this.handleListLoad()
-        this.refresh = false
-      }, 1000)
-    },
-    // 加载更多消息
-    handleListLoad () {
-      if (this.list.length >= this.total) {
-        this.finished = true
-        return
-      }
-
-      var data = new Array(this.limit).fill({
-        id: `${Date.now()}${parseInt(Math.random() * 10)}`,
-        title: '拼车通知',
-        content: '您的拼车信息已被车主xxxx车牌号xxxxxxx接单。',
-        time: '2020-7-13 10:47'
-      })
-      this.list.push(...data)
-      this.page++
-      setTimeout(() => {
-        this.loading = false
-        console.log(this.list)
-      }, 1000)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.empty-container{
+  width: 100%;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-80%);
+}
+
 .notify-container{
   margin: .20rem 0;
   padding: 0 .15rem;

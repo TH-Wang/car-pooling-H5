@@ -60,6 +60,7 @@
       <carpool-order
         v-for="(item, index) in list"
         :key="index"
+        :record="item"
         @click="handleLinkDetail"
       >
         <template #button>
@@ -107,8 +108,7 @@ export default {
       start: '',
       end: ''
     },
-    // 快捷路线列表
-    quickList: []
+    needQuick: true
   }),
   computed: {
     // 全局存储城市区县数据
@@ -117,7 +117,12 @@ export default {
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
+      // 地区id
+      const county = isEmpty(this.position.county)
+        ? this.position.city.code
+        : this.position.county.code
       return {
+        county,
         orderType: 1, // 1-车主发布 2-乘客发布
         publishType: 1
       }
@@ -147,6 +152,15 @@ export default {
     // 点击订单按钮
     handleClickOrderButton (e) {
       console.log('[点击mini按钮]', e)
+    }
+  },
+  created: async function () {
+    if (isEmpty(this.position.city) && isEmpty(this.position.county)) {
+      await this.$dialog.alert({
+        title: '位置信息',
+        message: '请先选择城市，然后向您推荐当地的拼单信息!'
+      })
+      this.$router.push('/common/city')
     }
   }
 }

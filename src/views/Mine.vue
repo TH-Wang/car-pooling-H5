@@ -3,18 +3,26 @@
     <!-- 顶部 -->
     <div class="header">
       <div class="header-info">
-        <div class="header-info-avatar"></div>
+        <!-- 头像 -->
+        <van-image :src="user.info.headimg" width="40px" height="40px" fit="cover" round/>
         <div class="header-info-detail">
+          <!-- 用户名 -->
           <div class="header-info-phone">{{user.info.username}}</div>
           <div class="header-info-text">
-            我的信用分 <span>1000</span> <van-icon class="question" name="question-o" />
+            我的信用分
+            <span style="margin-right: 5px">{{account.info.credit}}</span>
+            <van-icon class="question" name="question-o" />
           </div>
         </div>
       </div>
       <!-- 身份认证标签 -->
       <div class="header-tag">
-        <div class="header-tag-item-green">身份证认证</div>
-        <div class="header-tag-item-blue">车主认证</div>
+        <div v-if="getConfirm('idnumstatus')" class="header-tag-item-green">身份证认证</div>
+        <div v-else class="header-tag-item-gray">未身份认证</div>
+        <div v-if="getConfirm('carstatus')" class="header-tag-item-blue">车主认证</div>
+        <div v-if="getConfirm('group')" class="header-tag-item-yellow">群主认证</div>
+        <div v-if="getConfirm('etc')" class="header-tag-item-red">站长认证</div>
+        <div v-if="getConfirm('viceAdministrator')" class="header-tag-item-red">副站长认证</div>
       </div>
       <!-- 右上角按钮 -->
       <div class="header-icon">
@@ -31,8 +39,8 @@
     <!-- 钱包卡片 -->
     <overage-card
       title="钱包余额（元）"
-      :number="-10"
-      hasButton
+      :number="account.info.totalPrice"
+      :hasButton="account.info.totalPrice < 0"
       @click="$router.push('/common/my/wallet')"
       @click-button="handlePay"
     />
@@ -109,7 +117,9 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Swipe, SwipeItem } from 'vant'
+import { Image, Swipe, SwipeItem } from 'vant'
+import { isEmpty } from 'lodash'
+import { selectAccountInfo } from '@/api'
 import OverageCard from '@/components/OverageCard'
 import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
 import MiniButton from '@/components/MiniButton'
@@ -119,6 +129,7 @@ import Affix from '@/components/Affix'
 export default {
   mixins: [ButtonMenuMixin],
   components: {
+    'van-image': Image,
     'van-swipe': Swipe,
     'van-swipe-item': SwipeItem,
     'overage-card': OverageCard,
@@ -168,13 +179,24 @@ export default {
     ]
   }),
   computed: {
-    ...mapState(['user'])
+    ...mapState(['user', 'account'])
   },
   methods: {
+    // 请求我的预约（前三个）
     reqList () {
       const data = new Array(3).fill({}).map((e, idx) => ({ id: `${Date.now()}-${idx}` }))
       this.list.push(...data)
       // console.log(this.list)
+    },
+    async reqAccount () {
+      // 如果已请求到账户信息，则不再进行多余的请求
+      if (!isEmpty(this.account.info)) return
+      const res = await selectAccountInfo()
+      this.$store.commit('setAccountInfo', res.data.data)
+    },
+    // 身份判断
+    getConfirm (type) {
+      return this.account.info[type] === 'YES'
     },
     handlePay () {
       console.log('[支付欠费]')
@@ -195,6 +217,7 @@ export default {
   },
   mounted () {
     this.reqList()
+    this.reqAccount()
   }
 }
 </script>
@@ -219,12 +242,12 @@ export default {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      margin-right: 10px;
       background-color: $normal-text;
     }
 
     &-detail{
       height: 100%;
+      margin-left: 10px;
       @include flex (space-between, flex-start, column);
     }
 
@@ -234,9 +257,12 @@ export default {
     &-text{
       @include font (12px, $tip-text);
 
-      span{ color: $main-color }
+      span{
+        color: $main-color;
+        margin-right: 5px;
+      }
 
-      .question{ color: $main-text }
+      .question{ color: $main-text; transform: translateY(2px); }
     }
   }
 
@@ -251,6 +277,11 @@ export default {
       margin-right: 10px;
       border-radius: 2px;
 
+      &-gray{
+        @extend .header-tag-item;
+        background-color: $tip-text;
+      }
+
       &-green{
         @extend .header-tag-item;
         background-color: $aid-green-color;
@@ -259,6 +290,16 @@ export default {
       &-blue{
         @extend .header-tag-item;
         background-color: $aid-blue-color;
+      }
+
+      &-red{
+        @extend .header-tag-item;
+        background-color: #FF6A20;
+      }
+
+      &-yellow{
+        @extend .header-tag-item;
+        background-color: $sub-color;
       }
     }
   }

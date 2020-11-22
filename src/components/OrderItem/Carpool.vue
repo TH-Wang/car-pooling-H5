@@ -5,15 +5,15 @@
     <div class="header">
       <!-- 时间 -->
       <div class="time">
-        <div class="time-num">08:00</div>
-        <div class="time-text">今天</div>
+        <div class="time-num">{{hourMinute}}</div>
+        <div class="time-text">{{fromNow}}</div>
       </div>
       <!-- 主要信息 -->
       <div class="header-main">
         <div class="line-text">
-          <div class="start">重庆北站</div>
+          <div class="start">{{record.startAddr}}</div>
           <img class="arrow" src="@/assets/icons/line-arrow.png" alt="">
-          <div class="end">重庆西站</div>
+          <div class="end">{{record.endAddr}}</div>
         </div>
         <div class="car-info">
           <div class="car-info-item">
@@ -31,16 +31,16 @@
         </div>
       </div>
       <!-- 价格 -->
-      <div class="price"><span>￥</span>60</div>
+      <div class="price"><span>￥</span>{{record.cost}}</div>
     </div>
 
     <!-- 详细内容 -->
     <div class="content">
       <div class="content-item">
-        <span>途径点</span>重庆北站 - 紫金山地铁站 - 人民路红十字会 - 二七地铁站 - 重庆一中 - 医学院地铁站 - 京广路 - 崇山路 - 新城区路口 - 体育路 - 中兴路 - 体育村 - 重庆西站
+        <span>途径点</span>{{passPointLis}}
       </div>
-      <div class="content-item">
-        <span>备注</span>重庆北站到重庆西站顺路可带4人，顺路上下，预定电话确认下
+      <div v-if="confirmShow('remark')" class="content-item">
+        <span>备注</span>{{record.remark}}
       </div>
     </div>
 
@@ -49,7 +49,7 @@
       <!-- 用户信息 -->
       <div class="user-info">
         <div class="avatar"></div>
-        <div class="name ellipsis">杨女士</div>
+        <div class="name ellipsis">{{record.userName}}</div>
         <div class="social">
           <img src="@/assets/icons/order/like.png" alt="">
           <span>1920</span>
@@ -61,7 +61,7 @@
       </div>
       <!-- 拼单操作 -->
       <div class="book-order">
-        <div class="seat"><span>余座</span><span class="num-yellow">3</span></div>
+        <div class="seat"><span>余座</span><span class="num-yellow">{{record.seatNum}}</span></div>
         <slot name="button"></slot>
       </div>
     </div>
@@ -69,6 +69,8 @@
 </template>
 
 <script>
+import { isEmpty } from 'lodash'
+import moment from 'moment'
 
 export default {
   props: {
@@ -77,11 +79,31 @@ export default {
       default: () => ({})
     }
   },
+  computed: {
+    // 途径点拼接字符串
+    passPointLis () {
+      return this.record.passPointLis.map(i => i.pointName).join('-')
+    },
+    // 时间分钟
+    hourMinute () {
+      return this.record.startTime.slice(-5)
+    },
+    // 从发布到现在的时间
+    fromNow () {
+      return moment(this.record.startTime).fromNow()
+    }
+  },
   methods: {
+    // 判断是否显示
+    confirmShow (key) {
+      return !isEmpty(this.record[key])
+    },
+    // 处理点击
     handleClick (e) {
       e.preventDefault()
-      const _this_ = this
-      this.$emit('click', { id: _this_.record.id })
+      console.log(this.$slots)
+      // const _this_ = this
+      // this.$emit('click', { id: _this_.record.id })
     }
   }
 }

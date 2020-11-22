@@ -1,6 +1,22 @@
-// 负责列表的筛选和动态加载数据
-import { isEmpty } from 'lodash'
-import store from '@/store'
+/**
+ * 负责列表的筛选和动态加载数据
+ *
+ * 核心数据：
+ * list: Array (列表)
+ * filters: Object [可选] (筛选条件)
+ * 其他请翻阅 data ，同名可覆盖
+ *
+ * 调用接口：
+ * handleListLoad: func (加载列表)
+ * handleRetry: func (点击重试)
+ * handlePullRefresh: func (下拉刷新)
+ *
+ * 自定义接口：
+ * reqApi: func (自定义发送请求的api函数)
+ * getRequestDatas: func (返回除页码、每页数据量外的其他参数)
+ *    @returns object
+ */
+
 import { getCar, getCommonRoute } from '@/api'
 
 export default {
@@ -10,9 +26,9 @@ export default {
     // 每页数据量
     pageSize: 10,
     // 记录页面总数据数
-    total: 0,
+    total: null,
     // 是否在下拉刷新
-    isRefresh: false,
+    refresh: false,
     // 加载
     loading: false,
     // 全部加载完毕
@@ -34,30 +50,48 @@ export default {
   methods: {
     // 筛选条件发生改变
     handleFilterChange () {
-      console.log(JSON.stringify(this.filters))
+      this.handleListLoad(1)
     },
     // 请求列表
-    async handleListLoad () {
+    async handleListLoad (page) {
+      if (this.list.length === this.total) {
+        this.finished = true
+        return
+      }
+
       const _this_ = this
 
+      // 基础参数
       const data = {
-        ..._this_.getRequestDatas(),
-        startPage: _this_.startPage,
+        startPage: page || _this_.startPage,
         pageSize: _this_.pageSize
       }
 
-      // 地区id
-      data.county = isEmpty(store.state.position.county)
-        ? store.state.position.city.code
-        : store.state.position.county.code
+      // 如果该组件需要额外参数，则直接获取并合并
+      if (this.getRequestDatas) {
+        Object.assign(data, _this_.getRequestDatas())
+      }
 
-      const res = await getCar(data)
-      this.list.concat(res.data.data.list)
+      const res = this.reqApi
+        ? await this.reqApi(data)
+        : await getCar(data)
+
+      const { list, total } = res.data.data
+      this.list.push(...list)
+      this.total = total
       this.startPage++
     },
     // 请求快捷路线
     async handleQuickListLoad () {
-      const data = this.getRequestQuickDatas()
+      // 基础参数
+      const { startPage, pageSize } = this
+      const data = { startPage, pageSize }
+
+      // 自定义额外参数
+      if (this.getRequestQuickDatas) {
+        Object.assign(data, this.getRequestQuickDatas())
+      }
+      // 发送请求
       const res = await getCommonRoute(data)
       this.quickList = res.data.data.list
     },
@@ -67,7 +101,7 @@ export default {
         message: '加载中...',
         duration: 1000
       })
-      this.handleListLoad()
+      this.handleListLoad(1)
     },
     // 点击重试（快捷路线列表）
     handleRetryQuick () {
@@ -79,28 +113,16 @@ export default {
     },
     // 处理下拉刷新
     handlePullRefresh () {
-      var _this_ = this
       setTimeout(() => {
-        _this_.isRefresh = false
+        this.refresh = false
       }, 1000)
+      this.handleListLoad(1)
     }
   },
   mounted: async function () {
-    const position = store.state.position
-    if (isEmpty(position.city) && isEmpty(position.county)) {
-      await this.$dialog.alert({
-        title: '位置信息',
-        message: '请先选择城市，然后向您推荐当地的拼单信息!'
-      })
-      this.$router.push('/common/city')
-      return
-    }
     await this.handleListLoad()
-    await this.handleQuickListLoad()
-  },
-  watch: {
-    position (val) {
-      console.log(val)
+    if (this.needQuick) {
+      await this.handleQuickListLoad()
     }
   }
 }

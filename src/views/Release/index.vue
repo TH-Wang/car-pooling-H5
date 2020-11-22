@@ -85,12 +85,12 @@ export default {
   methods: {
     // 提交
     async handleSubmit ({ data, type }) {
-      // // 1. 提示确认手机号
-      // await this.confirmPhone()
-      // // 2. 提示收取信息费
-      // await this.alertCost()
-      // // 3. 发起请求
-      // await this.handleRequest(data)
+      // 1. 提示确认手机号
+      await this.confirmPhone()
+      // 2. 提示收取信息费
+      await this.alertCost()
+      // 3. 发起请求
+      await this.handleRequest(data)
       // 4. 通知子组件清空表单
       this.$refs[type].clearForm()
     },
@@ -144,6 +144,9 @@ export default {
       // 目的地
       passPointList.push({ pointName: end, sort: 2, type: 3 })
       data.passPointList = passPointList
+
+      // 订单状态（进行中）
+      data.orderState = 1
 
       // 发起请求
       const res = await insertPublish(data)

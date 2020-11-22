@@ -46,7 +46,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { List } from 'vant'
+import { isEmpty } from 'lodash'
 import SearchCard from '@/components/SearchCard'
 import { OrderFilter } from '@/components/Filter/index.js'
 import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
@@ -63,10 +65,18 @@ export default {
     'hitchhike-order': HitchhikeOrder,
     'mini-button': MiniButton
   },
+  computed: {
+    ...mapState(['position'])
+  },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
+      // 地区id
+      const county = isEmpty(this.position.county)
+        ? this.position.city.code
+        : this.position.county.code
       return {
+        county,
         orderType: 1, // 1-车主发布 2-乘客发布
         publishType: 2
       }
