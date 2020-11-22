@@ -184,8 +184,6 @@ export const driver = [
     label: '出发时间',
     title: '出发时间',
     placeholder: '请选择出发时间',
-    timerType: 'datetime',
-    defaultTime: new Date(),
     clearable: true
   }, {
     id: '4-2',
@@ -194,8 +192,6 @@ export const driver = [
     label: '返程时间',
     title: '返程时间',
     placeholder: '请选择返程时间',
-    timerType: 'datetime',
-    defaultTime: new Date(),
     clearable: true
   }, {
     id: '4-3',

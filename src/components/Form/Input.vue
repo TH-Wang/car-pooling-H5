@@ -25,7 +25,7 @@
         name="clear"
         size=".16rem"
         color="#E1E1E1"
-        @click="handleClear"
+        @click="clear"
       />
       <div class="slot">
         <slot name="suffix"/>
@@ -106,7 +106,7 @@ export default {
   },
   methods: {
     // 清空输入框
-    handleClear () {
+    clear () {
       this.val = ''
       this.$refs.input.focus()
     },

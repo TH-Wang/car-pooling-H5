@@ -11,12 +11,12 @@
 
       <!-- 清除按钮 -->
       <van-icon
-        v-show="clear"
+        v-show="canClear"
         name="clear"
         size=".14rem"
         color="#BFBFBF"
         style="margin-left:.08rem"
-        @click.stop="handleClear"
+        @click.stop="clear"
       />
 
       <!-- 箭头 -->
@@ -77,7 +77,7 @@ export default {
     }
   },
   computed: {
-    clear () {
+    canClear () {
       return this.clearable && this.val !== null
     }
   },
@@ -108,7 +108,7 @@ export default {
       this.showPicker = false
       this.val = value
     },
-    handleClear () {
+    clear () {
       this.val = null
       if (this.required) this.error = true
     },

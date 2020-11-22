@@ -72,6 +72,11 @@ export default {
     }
   },
   methods: {
+    // 清空表单内容
+    clear () {
+      this.val = ''
+    },
+    // 失焦
     handleBlur () {
       if (this.required && isEmpty(this.val)) {
         this.error = true

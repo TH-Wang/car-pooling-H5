@@ -15,8 +15,8 @@ export default {
       const fields = []
       this.$children.forEach(item => {
         if (this.isFieldChildren(item)) {
-          const { name, val, validate, getValue, setValue } = item
-          fields.push({ name, val, validate, getValue, setValue })
+          const { name, val, validate, getValue, setValue, clear } = item
+          fields.push({ name, val, validate, getValue, setValue, clear })
         }
       })
       this.fields = fields
@@ -44,6 +44,7 @@ export default {
       }, {})
       return values
     },
+    // 获取某个字段的值
     getValueField (key) {
       const field = this.fields.find(i => i.name === key)
       if (field) return field.getValue()
@@ -61,6 +62,14 @@ export default {
     // 校验某个字段
     validateField (name) {
       this.fields.find(i => i.name === name).validate()
+    },
+    // 表单重置（清空）
+    clear () {
+      const len = this.fields.length
+      for (let i = 0; i < len; i++) {
+        const item = this.fields[i]
+        item.clear()
+      }
     },
     // 表单提交
     submit (callback) {

@@ -151,6 +151,10 @@ export default {
         this.error = true
         return false
       } else return true
+    },
+    // 清空选择
+    clear () {
+      this.val = null
     }
   },
   watch: {

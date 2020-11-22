@@ -26,7 +26,7 @@
         size=".14rem"
         color="#BFBFBF"
         style="margin-left:.08rem"
-        @click="handleClear"
+        @click="clear"
       />
     </div>
 
@@ -97,9 +97,9 @@ export default {
   },
   methods: {
     // 清空输入框
-    handleClear () {
+    clear () {
       this.val = ''
-      this.$refs.input.focus()
+      // this.$refs.input.focus()
     },
     // 输入框发生变化
     handleInput (e) {
@@ -125,7 +125,7 @@ export default {
       // 如果当前字段不需要做校验，则跳过
       if (this.rules.length === 0) return true
       // 输入框的值
-      const value = this.$refs.input.value
+      const value = this.val
       const len = this.rules.length
       for (let i = 0; i < len; i++) {
         const item = this.rules[i]

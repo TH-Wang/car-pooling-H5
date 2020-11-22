@@ -11,12 +11,12 @@
 
       <!-- 清除按钮 -->
       <van-icon
-        v-show="clear"
+        v-show="canClear"
         name="clear"
         size=".14rem"
         color="#BFBFBF"
         style="margin-left:.08rem"
-        @click.stop="handleClear"
+        @click.stop="clear"
       />
 
       <!-- 箭头 -->
@@ -90,7 +90,7 @@ export default {
     slideStyle () {
       return this.show ? '' : 'transform: scaleY(0)'
     },
-    clear () {
+    canClear () {
       return this.clearable && this.val !== null
     }
   },
@@ -119,8 +119,10 @@ export default {
         if (this.error) this.error = false
       }, 200)
     },
-    handleClear () {
-      this.val = null
+    // 恢复默认值（清空）
+    clear () {
+      if (this.defaultIndex !== false) this.val = this.defaultIndex
+      else this.val = this.columns[0].id
       if (this.required) this.error = true
     },
     // 获取值
@@ -138,8 +140,7 @@ export default {
     }
   },
   mounted () {
-    if (this.defaultIndex !== false) this.val = this.defaultIndex
-    else this.val = this.columns[0].id
+    this.clear()
   },
   watch: {
     val: function (newVal) {

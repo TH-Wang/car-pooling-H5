@@ -27,7 +27,7 @@
         <img src="@/assets/icons/setting/smile.png" alt="">修改昵称
       </div>
       <div class="cell-right">
-        <span class="cell-text">设置昵称</span><van-icon name="arrow"/>
+        <span class="cell-text-main">{{user.info.username}}</span><van-icon name="arrow"/>
       </div>
     </div>
 
@@ -37,7 +37,7 @@
         <img src="@/assets/icons/setting/phone.png" alt="">修改手机号
       </div>
       <div class="cell-right">
-        <span class="cell-text">修改手机号</span><van-icon name="arrow"/>
+        <span class="cell-text-main">{{user.info.phone}}</span><van-icon name="arrow"/>
       </div>
     </div>
 
@@ -47,7 +47,9 @@
         <img src="@/assets/icons/setting/idcard.png" alt="">身份证认证
       </div>
       <div class="cell-right">
-        <span class="cell-text-main">已认证</span><van-icon name="arrow"/>
+        <span v-if="user.info.idnumstatus === 'NO'" class="cell-text">立即认证</span>
+        <span v-else class="cell-text-main">已认证</span>
+        <van-icon name="arrow"/>
       </div>
     </div>
 
@@ -57,7 +59,9 @@
         <img src="@/assets/icons/setting/card.png" alt="">驾驶证认证
       </div>
       <div class="cell-right">
-        <span class="cell-text-main">已认证</span><van-icon name="arrow"/>
+        <span v-if="user.info.driverlicensestatus === 'NO'" class="cell-text">驾驶证认证</span>
+        <span v-else class="cell-text-main">已认证</span>
+        <van-icon name="arrow"/>
       </div>
     </div>
 
@@ -67,7 +71,9 @@
         <img src="@/assets/icons/setting/car.png" alt="">车辆认证
       </div>
       <div class="cell-right">
-        <span class="cell-text">添加车辆</span><van-icon name="arrow"/>
+        <span v-if="user.info.carstatus === 'NO'" class="cell-text">车辆认证</span>
+        <span v-else class="cell-text-main">已认证</span>
+        <van-icon name="arrow"/>
       </div>
     </div>
 
@@ -84,11 +90,15 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { Image } from 'vant'
 
 export default {
   components: {
     'van-image': Image
+  },
+  computed: {
+    ...mapState(['user'])
   },
   methods: {
     handleSetNickName () {

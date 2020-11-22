@@ -119,7 +119,11 @@ export default {
       if (isEmpty(this.combo)) data.setType = 0
 
       // 通知父组件做提交相关操作
-      this.$emit('submit', data)
+      this.$emit('submit', { data, type: 'driver' })
+    },
+    // 父组件提交后调用该方法，清空表单
+    clearForm () {
+      this.$refs.form.clear()
     },
     // 弹出层关闭
     handlePopupClose () {

@@ -5,16 +5,18 @@
       <div class="header-info">
         <div class="header-info-avatar"></div>
         <div class="header-info-detail">
-          <div class="header-info-phone">150****3768</div>
+          <div class="header-info-phone">{{user.info.username}}</div>
           <div class="header-info-text">
             我的信用分 <span>1000</span> <van-icon class="question" name="question-o" />
           </div>
         </div>
       </div>
+      <!-- 身份认证标签 -->
       <div class="header-tag">
         <div class="header-tag-item-green">身份证认证</div>
         <div class="header-tag-item-blue">车主认证</div>
       </div>
+      <!-- 右上角按钮 -->
       <div class="header-icon">
         <img
           v-for="(item, index) in headerIcons"
@@ -106,6 +108,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { Swipe, SwipeItem } from 'vant'
 import OverageCard from '@/components/OverageCard'
 import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
@@ -164,6 +167,9 @@ export default {
       }
     ]
   }),
+  computed: {
+    ...mapState(['user'])
+  },
   methods: {
     reqList () {
       const data = new Array(3).fill({}).map((e, idx) => ({ id: `${Date.now()}-${idx}` }))

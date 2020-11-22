@@ -201,6 +201,9 @@ export default {
     },
     validate () {
       return this.$children[0].validate()
+    },
+    clear () {
+      this.$children[0].clear()
     }
   },
   mounted () {

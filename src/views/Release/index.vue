@@ -22,7 +22,7 @@
           <search-card :hasButton="false" v-model="addr" />
         </div>
 
-        <driver-form-body @submit="handleSubmit" />
+        <driver-form-body ref="driver" @submit="handleSubmit" />
 
       </van-tab>
 
@@ -34,7 +34,7 @@
           <search-card :hasButton="false" v-model="addr" />
         </div>
 
-        <customer-form-body @submit="handleSubmit" />
+        <customer-form-body ref="customer" @submit="handleSubmit" />
 
       </van-tab>
     </van-tabs>
@@ -84,13 +84,15 @@ export default {
   },
   methods: {
     // 提交
-    async handleSubmit (data) {
-      // 1. 提示确认手机号
-      await this.confirmPhone()
-      // 2. 提示收取信息费
-      await this.alertCost()
-      // 3. 发起请求
-      await this.handleRequest(data)
+    async handleSubmit ({ data, type }) {
+      // // 1. 提示确认手机号
+      // await this.confirmPhone()
+      // // 2. 提示收取信息费
+      // await this.alertCost()
+      // // 3. 发起请求
+      // await this.handleRequest(data)
+      // 4. 通知子组件清空表单
+      this.$refs[type].clearForm()
     },
     // 提示确认手机号
     async confirmPhone () {
