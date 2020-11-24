@@ -1,27 +1,28 @@
 <template>
   <div class="card" @click="$emit('click')">
-    <div class="start">重庆北站</div>
+    <div class="start">{{record.startAddr}}</div>
     <img class="arrow" src="../assets/icons/line-arrow.png" alt="">
-    <div class="end">重庆西站</div>
+    <div class="end">{{record.endAddr}}</div>
 
     <!-- 拼单数量 -->
     <div :class="`num-tag-${tagColor}`">{{countTag}}</div>
 
     <!-- 常用tag -->
-    <img v-if="common" class="common-tag" src="../assets/icons/common-tag.png" alt="">
+    <img
+      v-if="record.common"
+      class="common-tag"
+      src="../assets/icons/common-tag.png"
+      alt=""
+    >
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    common: {
-      type: Boolean,
-      default: false
-    },
-    tag: {
-      type: [String, Number],
-      default: 0
+    record: {
+      type: Object,
+      default: () => ({})
     },
     // ['yellow', 'green']
     tagColor: {
@@ -31,7 +32,7 @@ export default {
   },
   computed: {
     countTag () {
-      return this.tag > 999 ? '999+' : this.tag
+      return this.record.num > 999 ? '999+' : this.record.num
     }
   }
 }

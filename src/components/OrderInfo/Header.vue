@@ -6,7 +6,7 @@
 
       <!-- 价格 -->
       <div v-if="contentType === 'price'" class="price">
-        <span>{{record.price}}</span>元/座
+        <span>{{record.cost}}</span>元/座
       </div>
       <!-- 订单状态 -->
       <img
@@ -21,10 +21,10 @@
       </div>
     </div>
     <!-- 起止路线 -->
-    <start-end :start="record.start" :end="record.end" />
+    <start-end :start="record.startAddr" :end="record.endAddr" />
     <!-- 时间余座 -->
     <div v-if="showTimeSeat" class="time-seat">
-      <time-seat :time="record.time" :seat="record.seat" :type="record.type" />
+      <time-seat :time="record.startTime" :seat="record.seatNum" :type="record.type" />
     </div>
   </div>
 </template>
@@ -115,6 +115,7 @@ export default {
       @extend .absolute;
       width: 1rem;
       height: 1rem;
+      z-index: 5;
     }
 
     // 余座

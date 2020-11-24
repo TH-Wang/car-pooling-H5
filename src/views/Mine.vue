@@ -52,6 +52,10 @@
       <span class="link" @click="$router.push('/common/my/appoint')">查看更多</span>
     </div>
 
+    <!-- 预约为空 -->
+    <div v-if="list.length === 0" @click="handleRetry">
+      <van-empty description="暂无预约，点击刷新" />
+    </div>
     <!-- 预约订单轮播 -->
     <van-swipe indicator-color="#FFCD00" @change="handleSwipeChange">
       <!-- 每一项 -->
@@ -63,17 +67,13 @@
         <hitchhike-order
           :record="item"
           type="driver"
-        >
-          <!-- 预约按钮 -->
-          <template #button>
-            <mini-button
-              color="yellow"
-              :orderId="item.id"
-              :menu="orderMenu"
-              :menuVisible="menuVisibleId === item.id"
-              @click="handleClickReserve"
-              @cancel="handleOrderCancel"
-            >确认预约</mini-button>
+        ><template #button>
+            <confirm-button
+              :status="item.status"
+              @confirm="handleOrderConfirm($event, item.orderId)"
+              @cancel="handleOrderCancel($event, item.orderId)"
+              @report="handleOrderReport($event, item.orderId)"
+            />
           </template>
         </hitchhike-order>
       </van-swipe-item>
@@ -98,6 +98,7 @@
         class="menu-item"
         v-for="(item, index) in menuList"
         :key="index"
+        v-show="item.show"
         @click="$router.push(item.path)"
       >
         <img :src="item.icon" alt="">
@@ -119,10 +120,11 @@
 import { mapState } from 'vuex'
 import { Image, Swipe, SwipeItem } from 'vant'
 import { isEmpty } from 'lodash'
-import { selectAccountInfo } from '@/api'
+import { selectAccountInfo, getOrdering, confirmOrder } from '@/api'
 import OverageCard from '@/components/OverageCard'
 import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
-import MiniButton from '@/components/MiniButton'
+import ConfirmButton from '@/components/ConfirmButton'
+// import MiniButton from '@/components/MiniButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import Affix from '@/components/Affix'
 
@@ -134,7 +136,8 @@ export default {
     'van-swipe-item': SwipeItem,
     'overage-card': OverageCard,
     'hitchhike-order': HitchhikeOrder,
-    'mini-button': MiniButton,
+    'confirm-button': ConfirmButton,
+    // 'mini-button': MiniButton,
     affix: Affix
   },
   data: () => ({
@@ -144,55 +147,72 @@ export default {
       { icon: 'service', path: '' }
     ],
     list: [],
-    menuVisibleId: null,
-    orderMenu: [
-      { type: 'cancel', text: '取消预约' },
-      { type: 'report', text: '举报' }
-    ],
     swipeCurrent: 0,
-    menuList: [
-      {
+    menuList: {
+      trip: {
         icon: require('@/assets/icons/mine/travel.png'),
         path: '/common/my/trip',
-        title: '我的行程'
+        title: '我的行程',
+        show: true
       },
-      {
+      order: {
         icon: require('@/assets/icons/mine/order.png'),
         path: '/common/my/order',
-        title: '我的订单'
+        title: '我的订单',
+        show: true
       },
-      {
+      group: {
         icon: require('@/assets/icons/mine/group.png'),
         path: '/common/group/master',
-        title: '我是群主'
+        title: '我是群主',
+        show: false
       },
-      {
+      etc: {
         icon: require('@/assets/icons/mine/master.png'),
         path: '/common/site/master',
-        title: '我是站长'
+        title: '我是站长',
+        show: false
       },
-      {
+      viceAdministrator: {
         icon: require('@/assets/icons/mine/master.png'),
         path: '/common/site/submaster',
-        title: '我是副站长'
+        title: '我是副站长',
+        show: false
       }
-    ]
+    }
   }),
   computed: {
     ...mapState(['user', 'account'])
   },
   methods: {
     // 请求我的预约（前三个）
-    reqList () {
-      const data = new Array(3).fill({}).map((e, idx) => ({ id: `${Date.now()}-${idx}` }))
-      this.list.push(...data)
-      // console.log(this.list)
+    async reqList () {
+      const res = await getOrdering({
+        startPage: 1,
+        pageSize: 3
+      })
+      this.list = res.data.data.list
     },
+    // 刷新预约订单信息
+    handleRetry () {
+      this.$toast.loading({
+        message: '加载中...',
+        duration: 1000
+      })
+      this.reqList()
+    },
+    // 请求账户信息
     async reqAccount () {
       // 如果已请求到账户信息，则不再进行多余的请求
       if (!isEmpty(this.account.info)) return
       const res = await selectAccountInfo()
       this.$store.commit('setAccountInfo', res.data.data)
+
+      // 身份判断
+      const { group, etc, viceAdministrator } = res.data.data
+      this.menuList.group.show = group === 'YES'
+      this.menuList.etc.show = etc === 'YES'
+      this.menuList.viceAdministrator.show = viceAdministrator === 'YES'
     },
     // 身份判断
     getConfirm (type) {
@@ -205,19 +225,35 @@ export default {
       console.log('[点击预约]')
       this.menuVisibleId = this.menuVisibleId === e.id ? null : e.id
     },
+    // 确认订单
+    async handleOrderConfirm (status, orderId) {
+      // const userId = this.user.info.id
+      const res = await confirmOrder({ orderId, status })
+      if (res.data.msg === '成功') {
+        this.$toast.success('已确认')
+      } else {
+        this.$toast.fail('确认失败，请稍后再试')
+      }
+      this.reqList()
+    },
     // 取消预约
-    handleOrderCancel (e) {
-      console.log('[弹出取消菜单]', e)
-      // this.$refs.cancelLayer.show()
+    async handleOrderCancel (status, orderId) {
+      const userId = this.user.info.id
+      const res = await confirmOrder({ orderId, status, userId })
+      console.log(res.data)
+    },
+    // 举报订单
+    handleOrderReport () {
+      console.log('举报订单')
     },
     // swipe切换
     handleSwipeChange (index) {
       this.swipeCurrent = index
     }
   },
-  mounted () {
-    this.reqList()
-    this.reqAccount()
+  mounted: async function () {
+    await this.reqList()
+    await this.reqAccount()
   }
 }
 </script>

@@ -43,13 +43,14 @@
       </div>
     </van-index-bar>
 
+    <!-- 区县列表 -->
     <div
       v-show="showCountyList"
       v-for="county in position.countyList"
       :key="county.code"
       class="index-cell"
       @click="handleSelectCounty($event, county)"
-    >{{county.shortName}}</div>
+    >{{county.name}}</div>
   </div>
 </template>
 

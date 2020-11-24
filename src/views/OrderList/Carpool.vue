@@ -2,7 +2,7 @@
   <div class="transparent-nav-page">
     <!-- 搜索框导航栏 -->
     <nav-bar-search :mode="navbarMode" button @click-search="handleClickSearch">
-      <template #right>定位城市</template>
+      <template #right>{{location}}</template>
     </nav-bar-search>
 
     <!-- 背景 -->
@@ -12,7 +12,7 @@
     <div style="height: .12rem" />
 
     <!-- 搜索卡片 -->
-    <search-card />
+    <search-card useStore @search="handleSearchOrder" />
 
     <!-- 占位符 -->
     <div style="height: .1rem" />
@@ -55,7 +55,7 @@
           <mini-button
             color="yellow"
             :orderId="item.id"
-            @click="handleClickOrderButton"
+            @click="handleLinkDetail"
           >立即预订</mini-button>
         </template>
       </carpool-order>
@@ -64,7 +64,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import moment from 'moment'
+import { mapGetters, mapState } from 'vuex'
 import { List } from 'vant'
 import { isEmpty } from 'lodash'
 import { OrderFilter } from '@/components/Filter/index.js'
@@ -95,7 +96,8 @@ export default {
     needQuick: true
   }),
   computed: {
-    ...mapState(['position'])
+    ...mapState(['position', 'search']),
+    ...mapGetters(['location'])
   },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
@@ -104,8 +106,11 @@ export default {
       const county = isEmpty(this.position.county)
         ? this.position.city.code
         : this.position.county.code
+      // 今天日期
+      const today = moment().format('YYYY-MM-DD 00:00:00')
       return {
         county,
+        startTime: today,
         orderType: 1, // 1-车主发布 2-乘客发布
         publishType: 1
       }
@@ -114,15 +119,28 @@ export default {
     getRequestQuickDatas () {
       return { startPage: 1, pageSize: 10 }
     },
+    // 按起止地点找车
+    handleSearchOrder () {
+      const _this_ = this
+      const { startAddr, endAddr } = this.search
+      const query = {
+        publishType: 1,
+        // 1车主发布，2乘客发布
+        orderType: _this_.identity === 0 ? 1 : 2,
+        startAddr,
+        endAddr
+      }
+      this.$router.push({ path: '/common/searchline/list', query })
+    },
     handleClickSearch () {
       console.log('click search')
     },
     handleClickReserve () {
       this.$router.push('/common/appoint')
     },
-    // 点击订单
-    handleLinkDetail (e) {
-      this.$router.push({ path: '/common/order/detail', query: { id: e.id } })
+    // 进入详情页面
+    handleLinkDetail (record) {
+      this.$router.push({ name: 'OrderDetail', params: { record } })
     },
     // 点击订单按钮
     handleClickOrderButton (e) {

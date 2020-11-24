@@ -15,8 +15,8 @@
           <!-- <span class="address-bar-city">重庆</span>
           <span class="address-bar-detail">江北区建新北路观音桥</span> -->
           <input
-            v-model="value.start"
-            @input="handleChange($event, 'start')"
+            :value="useStore ? search.startAddr : value.startAddr"
+            @input="handleChange($event, 'startAddr')"
             class="address-bar-input"
             type="text"
             placeholder="请输入起点"
@@ -33,8 +33,8 @@
           <!-- <span class="address-bar-city default">你要去哪儿</span>
           <span class="address-bar-detail default">地址/街道/酒店/景点</span> -->
           <input
-            v-model="value.end"
-            @input="handleChange($event, 'end')"
+            :value="useStore ? search.endAddr : value.endAddr"
+            @input="handleChange($event, 'endAddr')"
             class="address-bar-input"
             type="text"
             placeholder="您要去哪儿  地址/街道/酒店/景点"
@@ -59,15 +59,16 @@
         width="100%"
         :color="buttonColor"
         :type="buttonType"
-        @click="$router.push('/common/searchline/list')"
+        @click="handleSearch"
       >{{buttonText}}</main-button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
 import { Switch } from 'vant'
-import { cloneDeep } from 'lodash'
+import { isEmpty, cloneDeep } from 'lodash'
 import MainButton from '@/components/MainButton'
 
 export default {
@@ -89,9 +90,14 @@ export default {
     value: {
       type: Object,
       default: () => ({
-        start: '',
-        end: ''
+        startAddr: '',
+        endAddr: ''
       })
+    },
+    // 是否使用 store 中缓存的起止点信息
+    useStore: {
+      type: Boolean,
+      default: false
     },
     // 下部分均与搜索按钮相关
     hasButton: {
@@ -112,6 +118,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['search']),
     defaultType () {
       return this.type === 'default'
     }
@@ -120,10 +127,36 @@ export default {
     startSwtich: false
   }),
   methods: {
+    ...mapMutations(['setSearchAddr']),
+    // 输入框发送变化
     handleChange (e, type) {
-      const position = cloneDeep(this.value)
-      position[type] = e.target.value
-      this.$emit('change', position)
+      const value = e.target.value
+      if (this.useStore) {
+        // 如果使用缓存，则修改缓存中的数据
+        this.setSearchAddr({ type, value })
+      } else {
+        // 使用双向绑定
+        const position = cloneDeep(this.value)
+        position[type] = value
+        this.$emit('change', position)
+      }
+    },
+    // 点击搜索按钮
+    handleSearch () {
+      if (this.validate()) { this.$emit('search') }
+    },
+    validate () {
+      const value = this.useStore ? this.search : this.value
+      const { startAddr, endAddr } = value
+      if (isEmpty(startAddr)) {
+        this.$toast({ message: '请先输入您的位置' })
+        return false
+      }
+      if (isEmpty(endAddr)) {
+        this.$toast({ message: '请输入您要去哪' })
+        return false
+      }
+      return true
     }
   }
 }

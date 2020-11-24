@@ -16,9 +16,9 @@
       <custom-form ref="form">
 
         <!-- 姓名和身份证号 -->
-        <custom-field name="realname" label="姓名" placeholder="请输入您的真实姓名" />
+        <custom-field name="userName" label="姓名" placeholder="请输入您的真实姓名" />
         <custom-field
-          name="idcount"
+          name="carModel"
           label="车型"
           placeholder="请输入您爱车的型号"
           clearable
@@ -27,12 +27,12 @@
 
         <!-- 上传身份证图片 -->
         <div class="title">请上传身份证正反面</div>
-        <custom-upload name="front" description="请上传身份证正面" />
-        <custom-upload name="back" description="请上传身份证反面" />
+        <custom-upload name="identityCardFront" description="请上传身份证正面" required />
+        <custom-upload name="identityCardBack" description="请上传身份证反面" required />
 
         <!-- 上驾驶证证图片 -->
         <div class="title">请上传驾驶证</div>
-        <custom-upload name="license" description="请上传驾驶证" />
+        <custom-upload name="userDrivingCard" description="请上传驾驶证" required />
       </custom-form>
     </div>
 
@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { userDrivingCard } from '@/api'
 import { Form, Field, Upload } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import formButtonMixin from '@/mixins/form-button-mixin'
@@ -53,10 +55,29 @@ export default {
     'custom-upload': Upload,
     'main-button': MainButton
   },
+  computed: {
+    ...mapState(['user'])
+  },
   methods: {
-    handleSubmit () {
+    async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
-      if (!err) console.log(values)
+      if (err) return
+
+      // 发送认证请求
+      const userId = this.user.info.id
+      const data = { ...values, userId }
+      this.$toast.loading('正在提交...')
+      const res = await userDrivingCard(data)
+      if (res.data.status === 200) {
+        this.$toast.clear()
+        await this.$dialog.alert({
+          title: '提交成功',
+          message: '请等待后台管理员的审核，审核通过后，便成为认证车主'
+        })
+        this.$router.go(-1)
+      } else {
+        this.$toast.fail('提交失败\n请稍后重试')
+      }
     }
   }
 }

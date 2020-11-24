@@ -101,9 +101,7 @@ export default {
     // 处理点击
     handleClick (e) {
       e.preventDefault()
-      console.log(this.$slots)
-      // const _this_ = this
-      // this.$emit('click', { id: _this_.record.id })
+      this.$emit('click', this.record)
     }
   }
 }

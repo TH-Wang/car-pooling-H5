@@ -26,14 +26,14 @@
           :key="index"
         >
           <!-- 时间 -->
-          <div class="time">{{item.time}}</div>
+          <div class="time">{{notifyTime(item.time)}}</div>
           <!-- 详情卡片 -->
-          <div class="card" @click="handleLink($event, index)">
+          <div class="card" @click="handleLink($event, item.orderId)">
             <div class="card-header">
               <img src="@/assets/icons/notify.png" alt="">
-              <span>{{item.title}}</span>
+              <span>拼车通知</span>
             </div>
-            <div class="card-content">{{item.content}}</div>
+            <div class="card-content">{{item.message}}</div>
             <div class="card-link">查看订单详情</div>
           </div>
         </div>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { PullRefresh, List } from 'vant'
 import { queryUserMessage } from '@/api'
 import ListMixin from '@/mixins/list-mixin'
@@ -58,8 +59,12 @@ export default {
     // 自定义请求api，详见 list-mixin
     reqApi: queryUserMessage,
     // 跳转详情
-    handleLink (e, id) {
-      this.$router.push({ path: '/common/notify/detail', query: { id } })
+    handleLink (e, orderId) {
+      this.$router.push({ path: '/common/notify/detail', query: { orderId } })
+    },
+    // 转换时间函数
+    notifyTime (time) {
+      return moment(time).format('YYYY-MM-DD HH:mm')
     }
   }
 }

@@ -15,10 +15,9 @@
 
       <!-- 手机号 -->
       <custom-input
-        name="phone"
+        name="telPhone"
         input-style="font-size:0.18rem;font-weight:bold"
         readonly
-        :formatter="phoneFormatter"
       >
         <template #suffix>
           <span
@@ -30,17 +29,17 @@
 
       <!-- 预定人数 -->
       <custom-input
-        name="people"
+        name="orderNum"
         type="tel"
         max-length="1"
         clearable
         placeholder="请输入预定人数"
-        :rules="[{required: true}, {validator: peopelValidator, message: '人数应在1-5之间'}]"
+        :rules="[{required: true}]"
       />
 
       <!-- 上车点 -->
       <custom-input
-        name="start"
+        name="startAddr"
         clearable
         placeholder="请输入上车点"
         :rules="[{required: true}]"
@@ -52,7 +51,7 @@
 
       <!-- 到达地点 -->
       <custom-input
-        name="end"
+        name="endAddr"
         clearable
         placeholder="请输入到达地点"
         :rules="[{required: true}]"
@@ -85,7 +84,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
+import { commitOrder } from '@/api'
 import { Form, Input } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 
@@ -97,35 +98,43 @@ export default {
     'main-button': MainButton
   },
   data: () => ({
-    agree: true
+    agree: true,
+    pprId: null
   }),
+  computed: {
+    ...mapState(['user'])
+  },
   methods: {
-    handleSubmit () {
+    async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
       if (err) return
-      console.log(values)
-      const path = values.peopel % 2 === 0 ? 'success' : 'fail'
-      this.$router.push(`/common/order/feedback/${path}`)
-    },
-    peopelValidator (value) {
-      const number = parseInt(value)
-      return (number >= 1 && number <= 5)
-    },
-    phoneFormatter (value) {
-      if (value.length > 6) {
-        return `${value.substr(0, 3)} **** ${value.substr(7, 11)}`
+
+      // 提交的数据
+      const pprId = parseInt(this.pprId)
+      const data = {
+        ...values,
+        orderNum: parseInt(values.orderNum),
+        pprIdCar: pprId
+      }
+
+      // 发送请求
+      const res = await commitOrder(data)
+      if (res.data.data === 1 || res.data.msg === '成功') {
+        this.$router.push('/common/order/feedback/success')
+      } else {
+        this.$router.push({ name: 'OrderFail', params: { msg: res.data.msg } })
       }
     }
   },
+  created () {
+    // 获取拼车单pprId
+    const pprId = this.$route.query.pprId
+    this.pprId = pprId
+  },
   mounted () {
-    this.$dialog.alert({
-      message: '人数输入: 1预约失败，输入: 2预约成功'
-    })
-    this.$refs.form.setValues({
-      phone: '155 **** 6393',
-      start: '观音桥',
-      end: '太古里'
-    })
+    // 设置用户登录的手机号
+    const phone = this.user.info.phone
+    this.$refs.form.setValues({ telPhone: phone })
   }
 }
 </script>

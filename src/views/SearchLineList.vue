@@ -10,9 +10,9 @@
     >
       <template #title>
         <div class="line-text">
-          <div class="start ellipsis">重庆北站</div>
+          <div class="start ellipsis">{{dataSource.startAddr}}</div>
           <img class="arrow" src="@/assets/icons/line-arrow.png" alt="">
-          <div class="end ellipsis">重庆西站</div>
+          <div class="end ellipsis">{{dataSource.endAddr}}</div>
         </div>
       </template>
     </van-nav-bar>
@@ -20,8 +20,11 @@
     <!-- 过滤下拉菜单 -->
     <order-filter />
 
+    <!-- 如果列表数据为空 -->
+    <van-empty v-if="list.length === 0" description="未搜索到结果~" />
     <!-- 拼单列表 -->
     <van-list
+      v-else
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
@@ -33,13 +36,14 @@
       <carpool-order
         v-for="(item, index) in list"
         :key="index"
+        :record="item"
         @click="handleLinkDetail"
       >
         <template #button>
           <mini-button
             color="yellow"
             :orderId="item.id"
-            @click="handleClickOrderButton"
+            @click="handleConfirm"
           >立即预订</mini-button>
         </template>
       </carpool-order>
@@ -48,6 +52,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import moment from 'moment'
+import { isEmpty } from 'lodash'
 import { List } from 'vant'
 import { OrderFilter } from '@/components/Filter/index.js'
 import CarpoolOrder from '@/components/OrderItem/Carpool'
@@ -62,15 +69,44 @@ export default {
     'carpool-order': CarpoolOrder,
     'mini-button': MiniButton
   },
+  data: () => ({
+    dataSource: {}
+  }),
+  computed: {
+    ...mapState(['position'])
+  },
   methods: {
+    // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
+    getRequestDatas () {
+      // 地区id
+      const county = isEmpty(this.position.county)
+        ? this.position.city.code
+        : this.position.county.code
+      // 今天日期
+      const today = moment().format('YYYY-MM-DD 00:00:00')
+      // 起止地点
+      const { startAddr, endAddr } = this.dataSource
+      // 返回主要参数
+      return {
+        county,
+        startAddr,
+        endAddr,
+        startTime: today,
+        orderType: 1, // 1-车主发布 2-乘客发布
+        publishType: 1
+      }
+    },
     // 进入详情页面
-    handleLinkDetail () {
-      this.$router.push('/common/order/detail')
+    handleLinkDetail (record) {
+      this.$router.push({ name: 'OrderDetail', query: { record: JSON.stringify(record) } })
     },
     // 点击订单按钮
-    handleClickOrderButton (e) {
+    handleConfirm (e) {
       console.log('[点击mini按钮]', e)
     }
+  },
+  created () {
+    this.dataSource = this.$route.query
   }
 }
 </script>

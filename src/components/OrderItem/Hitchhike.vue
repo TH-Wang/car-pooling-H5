@@ -7,10 +7,12 @@
       <div class="header-main">
         <!-- 时间段 -->
         <div class="time-num">
-          <span>08:00 - 19:00</span>/ 出发·返程
+          <span>{{record.startTime.slice(-5)}}</span>
+          <span v-if="record.endTime"> - {{record.endTime.slice(-5)}}</span>
+          / {{record.endTime ? '出发·返程' : '出发时间'}}
         </div>
         <!-- 价格 -->
-        <div :class="`price-${color}`"><span>￥</span>60</div>
+        <div :class="`price-${color}`"><span>￥</span>{{record.cost}}</div>
       </div>
       <div class="car-info">
         <div v-if="showCar" class="car-info-item">
@@ -33,11 +35,11 @@
       <!-- 路线信息 -->
       <div class="line-info">
         <span class="start">起</span>
-        <span>重庆北站阳光花园小区</span>
+        <span>{{record.startAddr}}</span>
       </div>
       <div class="line-info gap">
         <span class="end">终</span>
-        <span>重庆西站春天小学</span>
+        <span>{{record.endAddr}}</span>
       </div>
       <!-- 途径点 -->
       <div class="detail" v-if="showLineDetail">
@@ -45,7 +47,7 @@
       </div>
       <!-- 备注 -->
       <div class="detail">
-        <span>备注</span> | 周六周日不上班
+        <span>备注</span> | {{record.remark || '无'}}
       </div>
     </div>
 
@@ -54,7 +56,7 @@
       <!-- 用户信息 -->
       <div class="user-info">
         <div class="avatar"></div>
-        <div class="name ellipsis">杨女士</div>
+        <div class="name ellipsis">{{record.userName}}</div>
         <div class="social">
           <img src="@/assets/icons/order/like.png" alt="">
           <span>1920</span>

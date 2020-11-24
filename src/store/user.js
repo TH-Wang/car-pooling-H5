@@ -17,6 +17,20 @@ export default {
       localStorage.setItem('token', token)
       localStorage.setItem('phone', phone)
       localStorage.setItem('info', JSON.stringify(info))
+    },
+    setUserInfo (state, { key, value }) {
+      state[key] = value
+      // 更新localStorage
+      const update = info
+      update[key] = value
+      localStorage.setItem('info', JSON.stringify(update))
+    }
+  },
+
+  getters: {
+    // 获取用户身份：0乘客，1车主
+    identity (state) {
+      return state.info.carstatus === 'YES' ? 0 : 1
     }
   }
 }

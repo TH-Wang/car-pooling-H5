@@ -48,7 +48,13 @@ export default {
   },
   data: () => ({
     show: true
-  })
+  }),
+  mounted () {
+    const msg = this.$route.params.msg
+    this.$dialog.alert({
+      message: '对不起！' + msg
+    })
+  }
 }
 </script>
 

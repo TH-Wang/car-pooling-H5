@@ -2,7 +2,12 @@
   <div>
     <!-- 搜索卡片 -->
     <div class="search-card-wrap">
-      <search-card button-text="寻找乘客" button-color="green" />
+      <search-card
+        useStore
+        button-text="寻找乘客"
+        button-color="green"
+        @search="handleSearchOrder"
+      />
     </div>
 
     <!-- 筛选菜单 -->
@@ -49,7 +54,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import moment from 'moment'
+import { mapGetters, mapState } from 'vuex'
 import { List, Icon } from 'vant'
 import { isEmpty } from 'lodash'
 import SearchCard from '@/components/SearchCard'
@@ -70,7 +76,8 @@ export default {
     'mini-button': MiniButton
   },
   computed: {
-    ...mapState(['position'])
+    ...mapState(['position']),
+    ...mapGetters(['identity'])
   },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
@@ -79,8 +86,11 @@ export default {
       const county = isEmpty(this.position.county)
         ? this.position.city.code
         : this.position.county.code
+      // 今天日期
+      const today = moment().format('YYYY-MM-DD 00:00:00')
       return {
         county,
+        startTime: today,
         orderType: 2, // 1-车主发布 2-乘客发布
         publishType: 2
       }
@@ -88,6 +98,19 @@ export default {
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
       return { startPage: 1, pageSize: 10 }
+    },
+    // 按起止地点找车
+    handleSearchOrder () {
+      const _this_ = this
+      const { startAddr, endAddr } = this.search
+      const query = {
+        publishType: 2,
+        // 1车主发布，2乘客发布
+        orderType: _this_.identity === 0 ? 1 : 2,
+        startAddr,
+        endAddr
+      }
+      this.$router.push({ path: '/common/searchline/list', query })
     }
   }
 }

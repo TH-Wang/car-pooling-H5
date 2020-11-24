@@ -15,6 +15,8 @@
  * reqApi: func (自定义发送请求的api函数)
  * getRequestDatas: func (返回除页码、每页数据量外的其他参数)
  *    @returns object
+ * resDataHandler: func (请求成功的回调，自己处理数据)
+ *    @params res: { list: 数据列表, total: 数据总量 } (返回值)
  */
 
 import { getCar, getCommonRoute } from '@/api'
@@ -53,8 +55,9 @@ export default {
       this.handleListLoad(1)
     },
     // 请求列表
-    async handleListLoad (page) {
-      if (this.list.length === this.total) {
+    async handleListLoad (page, must) {
+      // must: Boolean (是否强制请求，如果是true将会越过判断)
+      if (this.list.length === this.total && !must) {
         this.finished = true
         return
       }
@@ -72,12 +75,25 @@ export default {
         Object.assign(data, _this_.getRequestDatas())
       }
 
+      // 组件的自定义api
       const res = this.reqApi
         ? await this.reqApi(data)
         : await getCar(data)
 
-      const { list, total } = res.data.data
-      this.list.push(...list)
+      // 如果自己处理返回值
+      const mainData = this.resDataHandler
+        ? this.resDataHandler(res)
+        : res.data.data
+
+      const { list, total } = mainData
+
+      // 如果是首页，则直接设置list，否则插入到尾部
+      if (page === 1 || this.startPage === 1) {
+        this.list = list
+      } else {
+        this.list.push(...list)
+      }
+
       this.total = total
       this.startPage++
     },
@@ -116,13 +132,13 @@ export default {
       setTimeout(() => {
         this.refresh = false
       }, 1000)
-      this.handleListLoad(1)
+      this.handleListLoad(1, true)
     }
   },
   mounted: async function () {
-    await this.handleListLoad()
     if (this.needQuick) {
       await this.handleQuickListLoad()
     }
+    await this.handleListLoad()
   }
 }

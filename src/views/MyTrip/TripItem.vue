@@ -1,11 +1,11 @@
 <template>
   <div class="trip" @click="$emit('click')">
     <div class="trip-header">
-      <div :class="`tag tag-${stateMark}`">{{tagText()}}</div>
+      <div :class="`tag tag-${stateMark}`">{{status[record.orderState]}}</div>
       <start-end class="start-end" :start="record.start" :end="record.end" />
     </div>
     <div class="trip-detail">
-      <time-seat :time="record.time" :seat="record.seat" :type="stateMark" />
+      <time-seat :time="record.startTime" :seat="record.seatNum" :type="stateMark" />
     </div>
     <!-- 删除按钮 -->
     <div v-show="showRemove" class="remove-button">
@@ -34,9 +34,18 @@ export default {
       default: true
     }
   },
+  data: () => ({
+    status: {
+      1: '进行中',
+      2: '进行中',
+      3: '已取消',
+      4: '已取消',
+      5: '已完成'
+    }
+  }),
   computed: {
     stateMark () {
-      return this.record.state
+      return this.record.orderState
     }
   },
   methods: {

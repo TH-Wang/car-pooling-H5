@@ -2,7 +2,7 @@
   <div class="transparent-nav-page">
     <!-- 搜索框导航栏 -->
     <nav-bar-search :mode="navbarMode" button @click-search="handleClickSearch">
-      <template #right>定位城市</template>
+      <template #right>{{location}}</template>
     </nav-bar-search>
 
     <!-- 背景 -->
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { Tabs, Tab } from 'vant'
 import NavBarSearch from '@/components/NavBarSearch'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
@@ -58,7 +58,8 @@ export default {
     menu: [{ type: 'cancel', text: '取消预约' }]
   }),
   computed: {
-    ...mapState(['position'])
+    ...mapState(['position']),
+    ...mapGetters(['location'])
   },
   methods: {
     handleClickSearch () {

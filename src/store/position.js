@@ -33,5 +33,13 @@ export default {
     setCountyList (state, list) {
       state.countyList = list
     }
+  },
+
+  getters: {
+    location (state) {
+      return state.county
+        ? state.city.shortName + ' · ' + state.county.name
+        : state.city.shortName
+    }
   }
 }

@@ -1,6 +1,6 @@
 import axios from './http'
 
-export default { sendCode, userCodeLogin }
+export default { sendCode, userCodeLogin, updateUserInfo }
 
 // 获取短信验证码
 function sendCode ({ phone, type }) {
@@ -17,5 +17,14 @@ function userCodeLogin ({ phone, code }) {
     url: '/user/userSmsCodeLogin',
     method: 'POST',
     params: { userPhone: phone, code }
+  })
+}
+
+// 修改个人信息
+function updateUserInfo (params) {
+  return axios({
+    url: '/user/updateUserInfo',
+    method: 'POST',
+    params
   })
 }

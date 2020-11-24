@@ -5,6 +5,7 @@ import tabsId from './tabsId'
 import user from './user'
 import account from './account'
 import position from './position'
+import search from './search'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
     tabsId,
     user,
     account,
-    position
+    position,
+    search
   }
 })

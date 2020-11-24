@@ -1,20 +1,22 @@
 <template>
-  <div class="group-container" @click="$emit('click', {id: record.id})">
+  <div class="group-container" @click="$emit('click')">
 
     <!-- 头像 -->
-    <div class="avatar"></div>
+    <div class="avatar">
+      <van-image :src="record.imgUrl" width="100%" height="100%" fit="cover"/>
+    </div>
 
     <!-- 信息 -->
     <div class="info">
       <!-- 主要信息 -->
       <div class="info-main">
-        <div v-if="type === 'group'" :class="tagClass">{{tagText}}</div>
-        <div class="group-name">{{record.name}}</div>
+        <div v-if="type === 'group'" :class="tagClass">{{kind}}</div>
+        <div class="group-name">{{record.groupName}}</div>
       </div>
       <!-- 群人数 -->
       <div v-if="type === 'group'" class="people">
         <van-icon name="friends"/>
-        <span class="people-count">{{record.people}}</span>
+        <span class="people-count">{{record.peopleNumber}}</span>
         <van-icon v-if="showViews" name="browsing-history"/>
         <span v-if="showViews" class="people-count">{{record.people}}</span>
       </div>
@@ -30,11 +32,12 @@
 </template>
 
 <script>
-import { Icon } from 'vant'
+import { Icon, Image } from 'vant'
 
 export default {
   components: {
-    'van-icon': Icon
+    'van-icon': Icon,
+    'van-image': Image
   },
   props: {
     record: {
@@ -52,12 +55,15 @@ export default {
       default: false
     }
   },
+  data: () => ({
+    keyType: ['', '官方群', '入驻群']
+  }),
   computed: {
     tagClass () {
       return `tag-${this.record.type === 0 ? 'blue' : 'green'}`
     },
-    tagText () {
-      return this.record.type === 0 ? '入驻群' : '官方群'
+    kind () {
+      return this.keyType[this.record.kind]
     }
   }
 }
@@ -77,6 +83,7 @@ export default {
     height: 0.6rem;
     border-radius: .08rem;
     background-color: $normal-text;
+    overflow: hidden;
   }
 
   // 信息

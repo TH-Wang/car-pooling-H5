@@ -15,22 +15,17 @@
     </van-nav-bar>
 
     <!-- 顶部基本信息 -->
-    <order-info-header :record="{
-      start: '重庆西站',
-      end: '重庆北站',
-      state: $route.query.state,
-      price: 100
-    }" content-type="price" />
+    <order-info-header :record="record" content-type="price" />
 
     <!-- 详情卡片 -->
     <div class="content-card">
 
       <!-- 详细信息 -->
-      <order-info-field icon-type="user" label="车主" content="陈女士" />
-      <order-info-field icon-type="car" label="车型" content="奔驰E300l" />
-      <order-info-field icon-type="seat" label="余座" content="3" text-color="yellow" />
-      <order-info-field icon-type="time" label="出发时间" content="07月09日 08:00" />
-      <order-info-field icon-type="address" label="途径点" content="重庆北站 - 紫金山地铁站 - 人民路红十字会 - 二七地铁站 - 重庆一中 - 医学院地铁站 - 京广路 - 崇山路 - 新城区路口 - 体育路 - 中兴路 - 体育村 - 重庆西站" />
+      <order-info-field icon-type="user" label="车主" :content="record.userName" />
+      <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
+      <order-info-field icon-type="seat" label="余座" :content="record.seatNum" text-color="yellow" />
+      <order-info-field icon-type="time" label="出发时间" :content="startTime" />
+      <order-info-field icon-type="address" label="途径点" :content="passPointLis" />
 
       <!-- 地图 -->
       <map-view />
@@ -50,6 +45,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+// import { isEmpty } from 'lodash'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
@@ -61,14 +58,38 @@ export default {
     'map-view': MapView,
     'main-button': MainButton
   },
+  data: () => ({
+    record: {
+      userName: '',
+      vehicleType: '',
+      seatNum: 0,
+      passPointLis: []
+    },
+    headerRecord: {}
+  }),
+  computed: {
+    startTime () {
+      return moment(this.record.startTime).format('MM月DD日 HH:mm')
+    },
+    passPointLis () {
+      return this.record.passPointLis.map(i => i.pointName).join('-')
+    }
+  },
   methods: {
     handleBackHome () {
       this.$router.replace('/home')
       location.reload()
     },
     handleLinkReserve () {
-      this.$router.push('/common/reserve')
+      const pprId = this.record.pprId
+      this.$router.push({ path: '/common/reserve', query: { pprId } })
     }
+  },
+  created () {
+    this.record = JSON.parse(this.$route.query.record)
+  },
+  activated () {
+    this.record = JSON.parse(this.$route.query.record)
   }
 }
 </script>

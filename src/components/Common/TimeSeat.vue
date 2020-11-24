@@ -12,7 +12,7 @@
 export default {
   props: {
     type: {
-      type: String,
+      type: [String, Number],
       default: 'doing'
     },
     time: String,

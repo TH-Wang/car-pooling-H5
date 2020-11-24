@@ -56,8 +56,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { Collapse, CollapseItem } from 'vant'
 import { max, isEmpty } from 'lodash'
+import { userCarVerification } from '@/api'
 import { Form, Item, Upload } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import formConfig from './carConfig'
@@ -76,14 +78,42 @@ export default {
     count: new Array(3).fill(null),
     forms: [formConfig]
   }),
+  computed: {
+    ...mapState(['user'])
+  },
   methods: {
-    handleSubmit () {
-      for (let i = 0; i < this.count; i++) {
-        const { err, values } = this.$refs[`form${i}`].submit()
-        if (!err) {
-          console.log(`第${i}辆车：`)
-          console.log(values)
+    async handleSubmit () {
+      const failArr = []
+      const userId = this.user.info.id
+      // 循环提交
+      for (let i = 0; i < this.count.length; i++) {
+        const nowCar = i + 1
+        // 如果当前车辆信息填写表单还没有渲染，则跳过
+        if (!this.$refs['form' + nowCar]) continue
+        // 获取表单信息
+        const { err, values } = this.$refs['form' + nowCar][0].submit()
+        // 表单校验有错误
+        if (err) continue
+        else {
+          // 发起请求
+          this.$toast.clear()
+          this.$toast.loading(`正在校验并提交第${nowCar}辆车...`)
+          const data = { ...values, userId }
+          const res = await userCarVerification(data)
+          if (res.data.status === 200) {
+            this.$refs[`form${nowCar}`][0].clear()
+            this.$toast.success(`第${nowCar}辆车提交成功`)
+          } else {
+            failArr.push(nowCar)
+            this.$toast.fail(`第${nowCar}辆车提交失败`)
+          }
         }
+      }
+      // 向用户反馈提交失败的车辆信息
+      if (failArr.length > 0) {
+        this.$dialog.alert({
+          message: `第${failArr.join('，')}辆车提交失败，请检查是否为信息缺漏，或稍后再试`
+        })
       }
     },
     // 折叠表单发生变化

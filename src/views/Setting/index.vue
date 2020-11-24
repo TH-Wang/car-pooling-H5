@@ -13,16 +13,26 @@
     <!-- 头像 -->
     <div class="avatar-container">
       <div class="avatar">
-        <van-image width=".60rem" height=".60rem" round fit="cover" />
+        <van-image
+          @click="previewAvatar" :src="user.info.headimg"
+          width=".60rem" height=".60rem" round fit="cover"
+        />
         <div class="avatar-title">头像</div>
       </div>
-      <div class="avatar-right">
+      <div class="avatar-right" @click="$refs.file.click()">
         <span class="cell-text">修改头像</span><van-icon name="arrow"/>
+        <input
+          type="file"
+          ref="file"
+          accept="image/*"
+          hidden
+          @change="handleFileChange"
+        />
       </div>
     </div>
 
     <!-- 修改昵称 -->
-    <div class="cell" @click="handleSetNickName">
+    <div class="cell" @click="handleOpenDialog">
       <div class="cell-left">
         <img src="@/assets/icons/setting/smile.png" alt="">修改昵称
       </div>
@@ -30,6 +40,23 @@
         <span class="cell-text-main">{{user.info.username}}</span><van-icon name="arrow"/>
       </div>
     </div>
+
+    <!-- 修改昵称对话框 -->
+    <van-dialog
+      v-model="show"
+      title="修改昵称"
+      show-cancel-button
+      confirm-button-color="#0AD593"
+      width="2.80rem"
+      @confirm="setUsername"
+    ><input
+        ref="input"
+        type="text"
+        v-model="username"
+        class="dialog-input"
+        placeholder="由汉字、字母、下滑线组成"
+      >
+    </van-dialog>
 
     <!-- 修改手机号 -->
     <div class="cell" @click="$router.push('/common/phone/modify')">
@@ -42,36 +69,36 @@
     </div>
 
     <!-- 身份证认证 -->
-    <div class="cell" @click="$router.push('/common/auth/idcard')">
+    <div class="cell" @click="handleLinkAuth($event, 'idnumstatus', '/common/auth/idcard')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/idcard.png" alt="">身份证认证
       </div>
       <div class="cell-right">
-        <span v-if="user.info.idnumstatus === 'NO'" class="cell-text">立即认证</span>
+        <span v-if="!Authed('idnumstatus')" class="cell-text">立即认证</span>
         <span v-else class="cell-text-main">已认证</span>
         <van-icon name="arrow"/>
       </div>
     </div>
 
     <!-- 驾驶证认证 -->
-    <div class="cell" @click="$router.push('/common/auth/license')">
+    <div class="cell" @click="handleLinkAuth($event, 'driverlicensestatus', '/common/auth/license')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/card.png" alt="">驾驶证认证
       </div>
       <div class="cell-right">
-        <span v-if="user.info.driverlicensestatus === 'NO'" class="cell-text">驾驶证认证</span>
+        <span v-if="!Authed('driverlicensestatus')" class="cell-text">驾驶证认证</span>
         <span v-else class="cell-text-main">已认证</span>
         <van-icon name="arrow"/>
       </div>
     </div>
 
     <!-- 车辆认证 -->
-    <div class="cell" @click="$router.push('/common/auth/car')">
+    <div class="cell" @click="handleLinkAuth($event, 'carstatus', '/common/auth/car')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/car.png" alt="">车辆认证
       </div>
       <div class="cell-right">
-        <span v-if="user.info.carstatus === 'NO'" class="cell-text">车辆认证</span>
+        <span v-if="!Authed('carstatus')" class="cell-text">车辆认证</span>
         <span v-else class="cell-text-main">已认证</span>
         <van-icon name="arrow"/>
       </div>
@@ -91,18 +118,75 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Image } from 'vant'
+import { Image, ImagePreview } from 'vant'
+import { updateUserInfo, uploadFile } from '@/api'
 
 export default {
   components: {
     'van-image': Image
   },
+  data: () => ({
+    show: false,
+    username: ''
+  }),
   computed: {
     ...mapState(['user'])
   },
   methods: {
-    handleSetNickName () {
-      console.log('设置昵称')
+    // 预览头像
+    previewAvatar () {
+      const avatar = this.user.info.headimg
+      ImagePreview({
+        images: [avatar],
+        showIndex: false
+      })
+    },
+    // 点击修改头像
+    async handleFileChange (e) {
+      const file = e.target.files[0]
+      const formData = new FormData()
+      formData.append('file', file)
+      this.$toast.loading('上传中...')
+      const res = await uploadFile(formData)
+      if (res.data.status === 200) {
+        this.$store.commit('setUserInfo', {
+          key: 'headimg',
+          value: res.data.data
+        })
+        this.$toast.clear()
+        this.$toast.success('修改成功')
+      }
+    },
+    // 点击设置昵称按钮
+    handleOpenDialog () {
+      this.show = true
+      this.$nextTick(() => {
+        this.username = this.user.info.username
+        this.$refs.input.focus()
+      })
+    },
+    // 发送修改昵称的请求
+    async setUsername () {
+      const username = this.username
+      this.$toast.loading('修改中...')
+      const res = await updateUserInfo({ username })
+      if (res.data.msg === '成功') {
+        this.$store.commit('setUserInfo', {
+          key: 'username',
+          value: username
+        })
+        this.$toast.clear()
+        this.$toast.success('修改成功')
+      }
+    },
+    // 进入认证页面
+    handleLinkAuth (e, type, url) {
+      // if (!this.Authed(type))
+      this.$router.push(url)
+    },
+    // 判断是否已认证
+    Authed (type) {
+      return this.user.info[type] === 'YES'
     }
   }
 }
@@ -161,5 +245,19 @@ export default {
   &-right{
     @include font (.12rem, $tip-text);
   }
+}
+
+.van-dialog{
+  text-align: center;
+}
+// 对话框的输入框（修改昵称）
+.dialog-input{
+  margin: .15rem auto;
+  width: 85%;
+  border-radius: 5px;
+  height: .4rem;
+  padding: 0 .1rem;
+  border: solid 1px $sub-text;
+  box-sizing: border-box;
 }
 </style>

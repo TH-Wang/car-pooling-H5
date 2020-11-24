@@ -19,31 +19,31 @@ const routes = [
         path: '/home',
         name: 'Home',
         component: Home,
-        meta: { tabbar: true }
+        meta: { tabbar: true, keepAlive: true }
       },
       {
         path: '/group',
         name: 'Group',
         component: () => import(/* webpackChunkName: "Group" */ '@/views/Group/index.vue'),
-        meta: { tabbar: true }
+        meta: { tabbar: true, keepAlive: true }
       },
       {
         path: '/release',
         name: 'Release',
         component: () => import(/* webpackChunkName: "Release" */ '@/views/Release/index.vue'),
-        meta: { tabbar: true }
+        meta: { tabbar: true, keepAlive: true }
       },
       {
         path: '/notify',
         name: 'Notify',
         component: () => import(/* webpackChunkName: "Notify" */ '@/views/Notify.vue'),
-        meta: { tabbar: true }
+        meta: { tabbar: true, keepAlive: true }
       },
       {
         path: '/mine',
         name: 'Mine',
         component: () => import(/* webpackChunkName: "Mine" */ '@/views/Mine.vue'),
-        meta: { tabbar: true }
+        meta: { tabbar: true, keepAlive: true }
       }
     ]
   },
@@ -100,6 +100,7 @@ const routes = [
       { // 订单详情页面
         path: '/common/order/detail',
         name: 'OrderDetail',
+        meta: { keepAlive: true },
         component: () => import(/* webpackChunkName: "OrderDetail" */ '@/views/OrderDetail.vue')
       },
       { // 旅游包车

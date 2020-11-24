@@ -9,7 +9,7 @@
 
     <!-- 如果列表数据为空 -->
     <div v-if="dataSource.length === 0" @click="$emit('retry')">
-      <van-empty description="暂无快捷路线，请点击重试" />
+      <van-empty description="暂无快捷路线，可点击重试" />
     </div>
     <!-- 列表 -->
     <div class="list-container">
@@ -17,16 +17,17 @@
         class="list-item"
         v-for="item in dataSource"
         :key="item.id"
-        tag="504"
+        :record="item"
         :tagColor="tagColor"
         common
-        @click="$router.push('/common/searchline/list')"
+        @click="handleClick($event, item)"
       />
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import LineCard from './LineCard'
 
 export default {
@@ -50,6 +51,23 @@ export default {
     showLink: {
       type: Boolean,
       default: true
+    }
+  },
+  computed: {
+    ...mapGetters(['identity'])
+  },
+  methods: {
+    handleClick (e, record) {
+      const _this_ = this
+      const { startAddr, endAddr } = record
+      const query = {
+        publishType: 1,
+        // 1车主发布，2乘客发布
+        orderType: _this_.identity === 0 ? 1 : 2,
+        startAddr,
+        endAddr
+      }
+      this.$router.push({ path: '/common/searchline/list', query })
     }
   }
 }

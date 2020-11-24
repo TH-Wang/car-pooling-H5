@@ -27,7 +27,7 @@
       </van-tab>
 
       <!-- 乘客发布 -->
-      <van-tab class="van-tab-wrapper" title="包车信息">
+      <van-tab class="van-tab-wrapper" title="积分余额">
         <integral-detail />
       </van-tab>
     </van-tabs>

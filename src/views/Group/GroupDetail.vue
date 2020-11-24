@@ -15,7 +15,7 @@
 
     <!-- 群名片 -->
     <div class="group-info">
-      <group-item :record="groupInfo" show-views>
+      <group-item :record="info" show-views>
         <template #right>
           <mini-button color="green" @click="handleShowCode">群二维码</mini-button>
         </template>
@@ -26,37 +26,37 @@
     <div class="info-list gap">
       <div class="info-list-title">群信息</div>
       <div class="info-list-cell">
-        <span class="info-list-label">更新时间</span><span>2020-10-23</span>
+        <span class="info-list-label">更新时间</span><span>{{time}}</span>
       </div>
       <div class="info-list-cell">
-        <span class="info-list-label">群归属地</span><span>重庆 渝北</span>
+        <span class="info-list-label">群归属地</span><span>{{region}}</span>
       </div>
       <div class="info-list-cell">
-        <span class="info-list-label">进群规则</span><span>拿来大陆参加四六级发生的理解你卡车拿来大陆参加四六级</span>
+        <span class="info-list-label">进群规则</span><span>{{info.groupRequire}}</span>
       </div>
     </div>
 
     <!-- 群介绍 -->
     <div class="info-list gap">
       <div class="info-list-title">群介绍</div>
-      <div class="info-list-content">本群吧啦拿来大陆参加四六级发生的理解你卡车年来首次你说你拉扯你拉娜老师打了承诺啦铖简历我哪里看出那颗星呢</div>
+      <div class="info-list-content">{{info.groupIntroduce}}</div>
     </div>
 
     <!-- 群说明 -->
     <div class="info-list gap">
       <div class="info-list-title">群说明</div>
-      <div class="info-list-content">本群吧啦拿来大陆参加四六级发生的理解你卡车年来首次你说你拉扯你拉娜老师打了承诺啦铖简历我哪里看出那颗星呢</div>
+      <div class="info-list-content">{{info.groupIntroduce}}</div>
     </div>
 
     <!-- 底部按钮 -->
     <div class="footer">
       <main-button width="1.20rem" color="yellow">分享给朋友</main-button>
-      <main-button width="2.10rem" color="yellow" type="gradient">付费￥5.00进群</main-button>
+      <main-button width="2.10rem" color="yellow" type="gradient">{{priceText()}}</main-button>
     </div>
 
     <overlay v-model="showQRcode">
       <div class="code-card">
-        <qrcode-card :tips="tips" center />
+        <qrcode-card :record="info" :tips="tips" center />
       </div>
       <div class="code-button">
         <main-button width="3.15rem" color="yellow" type="gradient">复制入群码</main-button>
@@ -66,6 +66,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+import { selectGroupById } from '@/api'
 import GroupItem from '@/components/GroupItem'
 import MiniButton from '@/components/MiniButton'
 import MainButton from '@/components/MainButton'
@@ -81,7 +83,10 @@ export default {
     'qrcode-card': QRcodeCard
   },
   data: () => ({
-    groupInfo: { id: 0, type: 0, name: '直通车6群', people: 334, price: '免费' },
+    // 拼车群id
+    groupId: null,
+    // 详细信息
+    info: { price: 0 },
     tips: [
       '长按二维码扫描或保存进群流程',
       '1.扫码二维码',
@@ -89,7 +94,30 @@ export default {
     ],
     showQRcode: false
   }),
+  computed: {
+    time () {
+      return moment(this.info).format('YYYY-MM-DD')
+    },
+    region () {
+      return this.info.city + ' · ' + this.info.region
+    }
+  },
   methods: {
+    // 请求群详情信息
+    async handleReq () {
+      const res = await selectGroupById(this.groupId)
+      this.info = res.data.data
+    },
+    // 价格的前缀样式
+    priceText () {
+      const price = this.info.price
+      if (price === 0) return '免费'
+      else {
+        const decimal = price.toString().split('.')[1]
+        const priceText = decimal ? price : price + '.00'
+        return `付费￥${priceText}元进群`
+      }
+    },
     handleBackHome () {
       this.$router.replace('/home')
       location.reload()
@@ -97,6 +125,10 @@ export default {
     handleShowCode () {
       this.showQRcode = true
     }
+  },
+  created () {
+    this.groupId = this.$route.query.id
+    this.handleReq()
   }
 }
 </script>

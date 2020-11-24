@@ -6,7 +6,7 @@
       <!-- 发布类型 -->
       <custom-picker
         v-model="orderType"
-        name="order_type"
+        name="publishType"
         label="发布类型"
         placeholder="请选择发布类型"
         :columns="orderMenu"

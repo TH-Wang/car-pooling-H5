@@ -7,7 +7,7 @@
     <!-- 按钮主体 -->
     <div
       :class="`button-${color} MINI_BUTTON_MENU_SAFENODE`"
-      @click.stop="$emit('click', {id: orderId})"
+      @click.stop="$emit('click')"
     >
 
       <!-- 按钮文本内容 -->
@@ -30,7 +30,7 @@
           class="meun-item MINI_BUTTON_MENU_SAFENODE"
           v-for="(item, index) in menu"
           :key="index"
-          @click="$emit(item.type, {id: orderId})"
+          @click="$emit(item.type)"
         >
           <img v-if="item.type === 'cancel'" src="../assets/icons/order/cancel-emoji.png" />
           <img v-else-if="item.type === 'report'" src="../assets/icons/order/report-emoji.png" />
@@ -49,9 +49,6 @@ export default {
     'van-icon': Icon
   },
   props: {
-    orderId: {
-      type: [String, Number]
-    },
     // ['yellow', 'green', 'blue']
     color: {
       type: String,

@@ -56,7 +56,12 @@ export default {
       '1.如您行程改变，请尽可能提前退订，<span style="color:#FFCD00">07月09日 08:00</span style="color:#FFCD00">前可<span style="color:#FFCD00">无责退订</span>。',
       '2.请在上车后，将分摊费用直接支付车主。'
     ]
-  })
+  }),
+  mounted () {
+    this.$dialog.alert({
+      message: '恭喜您，预约成功！您可前往个人中心页面进行确认'
+    })
+  }
 }
 </script>
 

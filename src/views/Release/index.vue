@@ -19,7 +19,7 @@
 
         <!-- 搜索卡片 -->
         <div class="search-card-wrap">
-          <search-card :hasButton="false" v-model="addr" />
+          <search-card ref="driver_search_card" :hasButton="false" v-model="addr" />
         </div>
 
         <driver-form-body ref="driver" @submit="handleSubmit" />
@@ -31,7 +31,7 @@
 
         <!-- 搜索卡片 -->
         <div class="search-card-wrap">
-          <search-card :hasButton="false" v-model="addr" />
+          <search-card ref="customer_search_card" :hasButton="false" v-model="addr" />
         </div>
 
         <customer-form-body ref="customer" @submit="handleSubmit" />
@@ -74,8 +74,8 @@ export default {
   data: () => ({
     // 起止点
     addr: {
-      start: '',
-      end: ''
+      startAddr: '',
+      endAddr: ''
     },
     tabId: 0
   }),
@@ -85,13 +85,18 @@ export default {
   methods: {
     // 提交
     async handleSubmit ({ data, type }) {
-      // 1. 提示确认手机号
+      // 1. 校验起止点信息是否输入
+      if (!this.$refs[type + '_search_card'].validate()) {
+        window.scrollTo(0, 0)
+        return
+      }
+      // 2. 提示确认手机号
       await this.confirmPhone()
-      // 2. 提示收取信息费
+      // 3. 提示收取信息费
       await this.alertCost()
-      // 3. 发起请求
+      // 4. 发起请求
       await this.handleRequest(data)
-      // 4. 通知子组件清空表单
+      // 5. 通知子组件清空表单
       this.$refs[type].clearForm()
     },
     // 提示确认手机号
@@ -138,11 +143,11 @@ export default {
 
       // 出发点、目的地、途径点
       const passPointList = []
-      const { start, end } = this.addr
+      const { startAddr, endAddr } = this.addr
       // 出发点
-      passPointList.push({ pointName: start, sort: 1, type: 1 })
+      passPointList.push({ pointName: startAddr, sort: 1, type: 1 })
       // 目的地
-      passPointList.push({ pointName: end, sort: 2, type: 3 })
+      passPointList.push({ pointName: endAddr, sort: 2, type: 3 })
       data.passPointList = passPointList
 
       // 订单状态（进行中）

@@ -8,7 +8,7 @@
       @click-search="$router.push('/common/group/search')"
     >
       <template #left>
-        重庆 · 渝北区 <van-icon name="arrow" />
+        {{location}} <van-icon name="arrow" />
       </template>
       <template #right>
         <van-icon name="service" size=".18rem" />
@@ -24,19 +24,34 @@
     <!-- tabs -->
     <scroll-tabs :tabs="tabs" v-model="tabsId" />
 
+    <!-- 如果群列表数据为空 -->
+    <div v-if="list.length === 0" @click="handleRetry">
+      <van-empty description="未搜索到附近的拼车群" />
+    </div>
     <!-- 群列表 -->
-    <group-item
-      v-for="item in list"
-      :key="item.id"
-      :record="item"
-      @click="handleLink"
+    <van-list
+      v-else
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      :error.sync="error"
+      error-text="加载失败，请点击重试"
+      @load="handleListLoad"
+      class="list-container"
     >
-      <template #right>
-        <mini-button>
-          <span :class="item.price==='免费'?'':'price-prefix'">{{item.price}}</span>
-        </mini-button>
-      </template>
-    </group-item>
+      <group-item
+        v-for="item in list"
+        :key="item.id"
+        :record="item"
+        @click="handleLink($event, item.id)"
+      >
+        <template #right>
+          <mini-button>
+            <span :class="priceClass(item.price)">{{priceText(item.price)}}</span>
+          </mini-button>
+        </template>
+      </group-item>
+    </van-list>
 
     <!-- 固定按钮 -->
     <affix
@@ -48,16 +63,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { List } from 'vant'
+import { selectGroup } from '@/api'
 import NavBarSearch from '@/components/NavBarSearch'
 import ScrollTabs from '@/components/ScrollTabs'
 import GroupItem from '@/components/GroupItem'
 import MiniButton from '@/components/MiniButton'
 import Affix from '@/components/Affix'
+import ListMixin from '@/mixins/list-mixin'
 
 export default {
+  mixins: [ListMixin],
   components: {
     'nav-bar-search': NavBarSearch,
     'scroll-tabs': ScrollTabs,
+    'van-list': List,
     'group-item': GroupItem,
     'mini-button': MiniButton,
     affix: Affix
@@ -70,15 +91,32 @@ export default {
       { id: 2, title: '专线拼车群' },
       { id: 3, title: '创建拼车群' },
       { id: 4, title: '创建拼车群' }
-    ],
-    list: [
-      { id: 0, type: 0, name: '直通车6群', people: 334, price: '5.00' },
-      { id: 1, type: 1, name: '直通车6群', people: 334, price: '5.00' },
-      { id: 2, type: 1, name: '直通车6群', people: 334, price: '免费' }
     ]
   }),
+  computed: {
+    ...mapGetters(['location'])
+  },
   methods: {
-    handleLink ({ id }) {
+    // 请求拼车群列表的api函数
+    reqApi: selectGroup,
+    // 自己处理返回值
+    resDataHandler (res) {
+      const { rows, total } = res.data
+      return { list: rows, total }
+    },
+    // 价格的前缀样式
+    priceClass (price) {
+      return price === 0 ? '' : 'price-prefix'
+    },
+    // 价格的前缀样式
+    priceText (price) {
+      if (price === 0) return '免费'
+      else {
+        const decimal = price.toString().split('.')[1]
+        return decimal ? price : price + '.00'
+      }
+    },
+    handleLink (e, id) {
       this.$router.push({ path: '/common/group/detail', query: { id } })
     }
   }
@@ -86,6 +124,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.price-prefix::before{
+  content: '￥';
+  margin-right: -2px;
+  font-size: .15rem;
+}
 
 .banner{
   width: 3.45rem;

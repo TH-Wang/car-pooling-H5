@@ -30,7 +30,7 @@
     </div>
 
     <!-- 搜索卡片 -->
-    <search-card v-model="addr" />
+    <search-card useStore @search="handleSearchOrder" />
 
     <!-- 快捷路线 -->
     <quick-line
@@ -67,7 +67,7 @@
           <mini-button
             color="yellow"
             :orderId="item.id"
-            @click="handleClickOrderButton"
+            @click="handleLinkDetail"
           >立即预订</mini-button>
         </template>
       </carpool-order>
@@ -77,7 +77,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import moment from 'moment'
+import { mapGetters, mapState } from 'vuex'
 import { NavBar, Icon, List } from 'vant'
 import { isEmpty } from 'lodash'
 import { OrderFilter } from '@/components/Filter/index.js'
@@ -112,17 +113,21 @@ export default {
   }),
   computed: {
     // 全局存储城市区县数据
-    ...mapState(['position'])
+    ...mapState(['user', 'position', 'search']),
+    ...mapGetters(['identity', 'location'])
   },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
       // 地区id
-      const county = isEmpty(this.position.county)
-        ? this.position.city.code
-        : this.position.county.code
+      // const county = isEmpty(this.position.county)
+      //   ? this.position.city.code
+      //   : this.position.county.code
+      // 今天日期
+      const today = moment().format('YYYY-MM-DD 00:00:00')
       return {
-        county,
+        county: 0,
+        startTime: today,
         orderType: 1, // 1-车主发布 2-乘客发布
         publishType: 1
       }
@@ -131,14 +136,25 @@ export default {
     getRequestQuickDatas () {
       return { startPage: 1, pageSize: 10 }
     },
+    // 按起止地点找车
+    handleSearchOrder () {
+      const _this_ = this
+      const { startAddr, endAddr } = this.search
+      const query = {
+        publishType: 1,
+        // 1车主发布，2乘客发布
+        orderType: _this_.identity === 0 ? 1 : 2,
+        startAddr,
+        endAddr
+      }
+      this.$router.push({ path: '/common/searchline/list', query })
+    },
     // 显示当前定位城市
     getPosition () {
       if (isEmpty(this.position.city) && isEmpty(this.position.county)) {
         return '请选择城市'
       } else {
-        if (isEmpty(this.position.county)) {
-          return this.position.city.shortName
-        } else return `${this.position.city.shortName} · ${this.position.county.shortName}`
+        return this.location
       }
     },
     // 点击选择城市
@@ -146,8 +162,8 @@ export default {
       this.$router.push('/common/city')
     },
     // 进入详情页面
-    handleLinkDetail () {
-      this.$router.push('/common/order/detail')
+    handleLinkDetail (record) {
+      this.$router.push({ name: 'OrderDetail', query: { record: JSON.stringify(record) } })
     },
     // 点击订单按钮
     handleClickOrderButton (e) {

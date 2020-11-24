@@ -3,7 +3,7 @@
     <van-icon
       :name="type === 'success' ? 'checked' : 'clear'"
       size=".65rem"
-      :color="type === 'success' ? '#FFCD00' : '#0AD593'"
+      :color="type === 'success' ? '#0AD593' : '#FF6A20'"
     />
     <div class="title">{{title}}</div>
     <div class="tip" v-html="tip"></div>

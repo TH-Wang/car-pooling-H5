@@ -4,8 +4,8 @@
     <custom-form ref="form">
       <!-- 发布类型 -->
       <custom-picker
-        v-model="orderType"
-        name="order_type"
+        v-model="publishType"
+        name="publishType"
         label="发布类型"
         placeholder="请选择发布类型"
         :default-index="1"
@@ -13,7 +13,7 @@
       />
       <!-- 详细表单项 -->
       <custom-item
-        v-for="item in formOptions[orderType]"
+        v-for="item in formOptions[publishType]"
         :key="item.id"
         :options="item"
       />
@@ -79,7 +79,7 @@ export default {
   },
   data: () => ({
     // 选择的发布类型
-    orderType: 0,
+    publishType: 0,
     // 所有的发布类型
     orderMenu: [
       { id: 1, label: '拼车' },

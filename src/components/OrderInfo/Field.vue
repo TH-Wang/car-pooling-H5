@@ -10,7 +10,7 @@
 export default {
   props: {
     label: String,
-    content: String,
+    content: [String, Number],
     // 内容的字体颜色: ['default', 'yellow']
     textColor: {
       type: String,

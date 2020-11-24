@@ -48,6 +48,8 @@
 
 <script>
 import { Image } from 'vant'
+import { isEmpty } from 'lodash'
+import { uploadFile } from '@/api'
 
 export default {
   components: {
@@ -106,10 +108,28 @@ export default {
         this.val = files
       } else {
         const file = files[0]
-        this.val = file
-        this.previewImage = await this.getFileBase64(file)
-        const fileSize = this.getFileSize(file)
-        this.$toast({ message: `图片大小为 ${fileSize}`, position: 'bottom' })
+
+        // 上传服务器
+        this.handleUploadFile(file)
+
+        // 静态显示
+        // this.previewImage = await this.getFileBase64(file)
+        // const fileSize = this.getFileSize(file)
+        // this.$toast({ message: `图片大小为 ${fileSize}`, position: 'bottom' })
+      }
+    },
+    // 发起文件上传请求
+    async handleUploadFile (file) {
+      const formData = new FormData()
+      formData.append('file', file)
+      this.$toast.loading('上传中...')
+      const res = await uploadFile(formData)
+      if (res.data.status === 200) {
+        this.previewImage = res.data.data
+        this.val = res.data.data
+        this.$toast.clear()
+      } else {
+        this.$toast.fail('上传失败' + '\n' + res.data.msg)
       }
     },
     // 获取file的base64编码
@@ -147,7 +167,7 @@ export default {
     },
     // 表单验证
     validate () {
-      if (this.required && this.val === null) {
+      if (this.required && isEmpty(this.val)) {
         this.error = true
         return false
       } else return true
