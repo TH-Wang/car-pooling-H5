@@ -103,7 +103,9 @@ export default {
       // 表单数据
       const data = {
         ...values,
-        // 发布类型：车主发布
+        cost: parseInt(values.cost),
+        peopel: parseInt(values.peopel),
+        // 发布类型：乘客发布
         orderType: 2
       }
       // 通知父组件做提交相关操作

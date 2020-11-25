@@ -46,7 +46,7 @@
 
     <!-- 操作成功 -->
     <div v-show="showLayer" class="feedback-layer">
-      <feedback type="success" title="操作成功" tip="您的手机号：15219076783" />
+      <feedback type="success" title="修改成功" :tip="`您的手机号：${successPhone}`" />
       <main-button
         style="margin-top: 1rem"
         center
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { updatePhoneToOne, updatePhoneToTwo } from '@/api'
 import { Input } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import Feedback from '@/components/Feedback'
@@ -71,22 +72,43 @@ export default {
   },
   data: () => ({
     phone: '',
-    showLayer: false
+    showLayer: false,
+    successPhone: ''
   }),
   methods: {
     async handleGetCode () {
       try {
         await this.handleChangeCodeStatus()
+        const res = await updatePhoneToOne(this.phone)
+        const { status, msg } = res.data
+        if (status === 200) {
+          setTimeout(() => {
+            this.$dialog.alert({
+              message: `您的验证码为【${res.data.data}】，五分钟内有效，请妥善保管！`
+            })
+          }, 2000)
+        } else {
+          this.$dialog.alert({
+            title: '获取失败',
+            message: msg
+          })
+        }
       } catch (error) {
         console.log(error)
       }
     },
     // 表单提交
-    handleSubmit () {
+    async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
       if (err) return
       console.log(values)
-      this.showLayer = true
+      const res = await updatePhoneToTwo(values)
+      if (res.data.status === 200) {
+        const phone = this.phone
+        this.successPhone = phone
+        this.showLayer = true
+        this.$store.commit('setUserInfo', { key: 'phone', value: phone })
+      }
     }
   },
   mounted () {

@@ -30,7 +30,7 @@
     </div>
 
     <!-- 搜索卡片 -->
-    <search-card useStore @search="handleSearchOrder" />
+    <search-card :buttonColor="buttonColor" useStore @search="handleSearchOrder" />
 
     <!-- 快捷路线 -->
     <quick-line
@@ -65,7 +65,7 @@
       >
         <template #button>
           <mini-button
-            color="yellow"
+            :color="buttonColor"
             :orderId="item.id"
             @click="handleLinkDetail"
           >立即预订</mini-button>
@@ -114,21 +114,26 @@ export default {
   computed: {
     // 全局存储城市区县数据
     ...mapState(['user', 'position', 'search']),
-    ...mapGetters(['identity', 'location'])
+    ...mapGetters(['identity', 'location']),
+    buttonColor () {
+      return this.identity === 0 ? 'yellow' : 'green'
+    }
   },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
       // 地区id
-      // const county = isEmpty(this.position.county)
-      //   ? this.position.city.code
-      //   : this.position.county.code
+      const county = isEmpty(this.position.county)
+        ? this.position.city.code
+        : this.position.county.code
       // 今天日期
       const today = moment().format('YYYY-MM-DD 00:00:00')
+      // 通过身份判断发布类型
+      const orderType = this.identity === 0 ? 1 : 2
       return {
-        county: 0,
+        county,
         startTime: today,
-        orderType: 1, // 1-车主发布 2-乘客发布
+        orderType, // 1-车主发布 2-乘客发布
         publishType: 1
       }
     },

@@ -69,7 +69,7 @@
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat">
-          人数<span :class="`num-${color}`">3</span>
+          人数<span :class="`num-${color}`">{{record.orderNum}}</span>
         </div>
         <slot name="button"></slot>
       </div>

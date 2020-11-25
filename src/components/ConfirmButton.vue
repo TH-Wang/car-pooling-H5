@@ -13,6 +13,7 @@
       :color="buttonColor"
       :menu="menu"
       :menuVisible="menuVisible"
+      @click="handleClick"
       @cancel="handleCancel"
       @report="$emit('report')"
     >预约成功</mini-button>
@@ -48,6 +49,8 @@ export default {
   methods: {
     // 点击按钮事件
     handleClick () {
+      console.log(this.status)
+      console.log(this.menuVisible)
       // 切换菜单的显示状态
       if (this.status > 0) this.menuVisible = !this.menuVisible
       // 触发确认预约事件

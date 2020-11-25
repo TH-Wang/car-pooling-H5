@@ -181,8 +181,7 @@ export default {
     },
     // 进入认证页面
     handleLinkAuth (e, type, url) {
-      // if (!this.Authed(type))
-      this.$router.push(url)
+      if (!this.Authed(type)) this.$router.push(url)
     },
     // 判断是否已认证
     Authed (type) {
@@ -257,7 +256,7 @@ export default {
   border-radius: 5px;
   height: .4rem;
   padding: 0 .1rem;
-  border: solid 1px $sub-text;
+  border: solid 1px $tip-text;
   box-sizing: border-box;
 }
 </style>

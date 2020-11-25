@@ -30,7 +30,7 @@ export default {
   getters: {
     // 获取用户身份：0乘客，1车主
     identity (state) {
-      return state.info.carstatus === 'YES' ? 0 : 1
+      return state.info.carstatus === 'YES' ? 1 : 0
     }
   }
 }

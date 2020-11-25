@@ -3,6 +3,7 @@ node_modules
 /dist
 dist.*
 server.js
+task.md
 
 # local env files
 .env.local

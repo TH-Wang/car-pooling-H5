@@ -74,7 +74,7 @@ export const driver = [
   [{
     id: '2-1',
     type: 'timer',
-    name: 'start_time',
+    name: 'startTime',
     label: '出发时间',
     title: '出发时间',
     placeholder: '请选择出发时间',
@@ -82,7 +82,7 @@ export const driver = [
   }, {
     id: '2-2',
     type: 'timer',
-    name: 'back_time',
+    name: 'endTime',
     label: '返程时间',
     title: '返程时间',
     placeholder: '请选择返程时间',
@@ -100,14 +100,14 @@ export const driver = [
   {
     id: '2-4',
     type: 'picker',
-    name: 'car_type',
+    name: 'vehicleType',
     label: '车型',
     placeholder: '请选择车型',
     columns: [{ id: 0, label: '小面包车' }, { id: 1, label: '轿车' }, { id: 2, label: 'SUV' }]
   }, {
     id: '2-5',
     type: 'field',
-    name: 'seat',
+    name: 'seatNum',
     label: '余座',
     placeholder: '请输入余座',
     inputType: 'tel',
@@ -115,7 +115,7 @@ export const driver = [
   }, {
     id: '2-6',
     type: 'field',
-    name: 'price',
+    name: 'cost',
     label: 'A费',
     placeholder: '请设置费用'
   }, {
@@ -145,14 +145,14 @@ export const driver = [
     {
       id: '1-2',
       type: 'timer',
-      name: 'time',
+      name: 'startTime',
       label: '时间',
       placeholder: '请选择时间',
       clearable: true
     }, {
       id: '1-3',
       type: 'picker',
-      name: 'car_type',
+      name: 'vehicleType',
       label: '车型',
       placeholder: '请选择车型',
       columns: [{ id: 0, label: '小面包车' }, { id: 1, label: '轿车' }, { id: 2, label: 'SUV' }]
@@ -171,7 +171,7 @@ export const driver = [
     }, {
       id: '2-6',
       type: 'field',
-      name: 'price',
+      name: 'cost',
       label: 'A费',
       placeholder: '请设置费用'
     }
@@ -180,7 +180,7 @@ export const driver = [
   [{
     id: '4-1',
     type: 'timer',
-    name: 'start_time',
+    name: 'startTime',
     label: '出发时间',
     title: '出发时间',
     placeholder: '请选择出发时间',
@@ -188,7 +188,7 @@ export const driver = [
   }, {
     id: '4-2',
     type: 'timer',
-    name: 'back_time',
+    name: 'endTime',
     label: '返程时间',
     title: '返程时间',
     placeholder: '请选择返程时间',
@@ -196,14 +196,14 @@ export const driver = [
   }, {
     id: '4-3',
     type: 'picker',
-    name: 'car_type',
+    name: 'vehicleType',
     label: '车型',
     placeholder: '请选择车型',
     columns: [{ id: 0, label: '小面包车' }, { id: 1, label: '轿车' }, { id: 2, label: 'SUV' }]
   }, {
     id: '4-4',
     type: 'field',
-    name: 'seat',
+    name: 'seatNum',
     label: '余座',
     placeholder: '请输入余座',
     inputType: 'tel',
@@ -211,7 +211,7 @@ export const driver = [
   }, {
     id: '4-5',
     type: 'field',
-    name: 'price',
+    name: 'cost',
     label: 'A费',
     placeholder: '请设置费用'
   }]
@@ -270,7 +270,7 @@ export const customer = [
   [{
     id: '2-1',
     type: 'timer',
-    name: 'start_time',
+    name: 'startTime',
     label: '出发时间',
     title: '出发时间',
     placeholder: '请选择出发时间',
@@ -278,7 +278,7 @@ export const customer = [
   }, {
     id: '2-2',
     type: 'timer',
-    name: 'back_time',
+    name: 'endTime',
     label: '返程时间',
     title: '返程时间',
     placeholder: '请选择返程时间',
@@ -300,11 +300,11 @@ export const customer = [
     inputType: 'tel',
     maxLength: 1,
     placeholder: '请输入乘坐人数',
-    rules: [{ required: true }, { pattern: /^\d$/, message: '请输入数字' }]
+    rules: [{ required: true }]
   }, {
     id: '2-5',
     type: 'field',
-    name: 'price',
+    name: 'cost',
     label: 'A费',
     placeholder: '请设置费用'
   }],
@@ -321,14 +321,14 @@ export const customer = [
     {
       id: '3-2',
       type: 'timer',
-      name: 'time',
+      name: 'startTime',
       label: '时间',
       placeholder: '请选择时间',
       clearable: true
     }, {
       id: '3-3',
       type: 'field',
-      name: 'count',
+      name: 'goodsNum',
       label: '物品件数',
       placeholder: '请输入物品件数',
       inputType: 'tel'
@@ -347,7 +347,7 @@ export const customer = [
     }, {
       id: '3-6',
       type: 'field',
-      name: 'price',
+      name: 'cost',
       label: 'A费',
       placeholder: '请设置费用'
     }

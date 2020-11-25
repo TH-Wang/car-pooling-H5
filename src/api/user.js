@@ -1,6 +1,12 @@
 import axios from './http'
 
-export default { sendCode, userCodeLogin, updateUserInfo }
+export default {
+  sendCode,
+  userCodeLogin,
+  updateUserInfo,
+  updatePhoneToOne,
+  updatePhoneToTwo
+}
 
 // 获取短信验证码
 function sendCode ({ phone, type }) {
@@ -24,6 +30,24 @@ function userCodeLogin ({ phone, code }) {
 function updateUserInfo (params) {
   return axios({
     url: '/user/updateUserInfo',
+    method: 'POST',
+    params
+  })
+}
+
+// 修改手机号第一步：获取验证码
+function updatePhoneToOne (phone) {
+  return axios({
+    url: '/user/updatePhoneToOne',
+    method: 'POST',
+    params: { phone, code: '' }
+  })
+}
+
+// 修改手机号第二步：验证新手机号和验证码
+function updatePhoneToTwo (params) {
+  return axios({
+    url: '/user/updatePhoneToTwo',
     method: 'POST',
     params
   })

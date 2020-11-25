@@ -191,7 +191,10 @@ export default {
         startPage: 1,
         pageSize: 3
       })
-      this.list = res.data.data.list
+      this.list = res.data.data.list.map(item => {
+        item.startTime = item.passengerStartTime
+        return item
+      })
     },
     // 刷新预约订单信息
     handleRetry () {

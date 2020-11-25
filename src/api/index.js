@@ -13,6 +13,8 @@ import verification from './verification'
 export const sendCode = user.sendCode
 export const userCodeLogin = user.userCodeLogin
 export const updateUserInfo = user.updateUserInfo
+export const updatePhoneToOne = user.updatePhoneToOne
+export const updatePhoneToTwo = user.updatePhoneToTwo
 
 // 账户模块
 export const selectAccountInfo = account.selectAccountInfo
