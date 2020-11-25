@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @click="$emit('click')">
 
     <!-- 顶部主要信息 -->
     <div class="header">
@@ -43,7 +43,7 @@
       </div>
       <!-- 途径点 -->
       <div class="detail" v-if="showLineDetail">
-        <span>途径点</span> | 重庆北站 - 紫金山地铁站 - 人民路红十字会 - 二七地铁站 - 重庆一中 - 医学院地铁站 - 京广路 - 崇山路 - 新城区路口 - 体育路 - 中兴路 - 体育村 - 重庆西站
+        <span>途径点</span> | {{passPointLis}}
       </div>
       <!-- 备注 -->
       <div class="detail">
@@ -69,7 +69,7 @@
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat">
-          人数<span :class="`num-${color}`">{{record.orderNum}}</span>
+          人数<span :class="`num-${color}`">{{record.orderNum || record.seatNum}}</span>
         </div>
         <slot name="button"></slot>
       </div>
@@ -97,6 +97,12 @@ export default {
     showLineDetail: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    // 途径点拼接字符串
+    passPointLis () {
+      return this.record.passPointLis.map(i => i.pointName).join('-')
     }
   }
 }

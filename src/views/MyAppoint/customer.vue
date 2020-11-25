@@ -12,8 +12,13 @@
       </template>
     </van-notice-bar>
 
+    <!-- 如果列表数据为空 -->
+    <div v-if="list.length === 0" @click="handleRetry">
+      <van-empty description="暂无预约订单，点击刷新" />
+    </div>
     <!-- 预约订单 -->
     <hitchhike-order
+      v-else
       v-for="(item, index) in list"
       :key="index"
       :record="item"
@@ -21,14 +26,12 @@
     >
       <!-- 预约按钮 -->
       <template #button>
-        <mini-button
-          color="yellow"
-          :orderId="item.id"
-          :menu="orderMenu"
-          :menuVisible="menuVisibleId === item.id"
-          @click="handleClickReserve"
-          @cancel="handleOrderCancel"
-        >确认预约</mini-button>
+        <confirm-button
+          :status="item.status"
+          @confirm="handleOrderConfirm($event, item.orderId)"
+          @cancel="handleOrderCancel($event, item.orderId)"
+          @report="handleOrderReport($event, item.orderId)"
+        />
       </template>
     </hitchhike-order>
   </div>
@@ -36,8 +39,9 @@
 
 <script>
 import { NoticeBar } from 'vant'
+import { getOrdering, confirmOrder } from '@/api'
 import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
-import MiniButton from '@/components/MiniButton'
+import ConfirmButton from '@/components/ConfirmButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 
 export default {
@@ -45,12 +49,12 @@ export default {
   components: {
     'van-notice-bar': NoticeBar,
     'hitchhike-order': HitchhikeOrder,
-    'mini-button': MiniButton
+    'confirm-button': ConfirmButton
   },
   data: () => ({
     // 显示公告栏
-    show: true,
-    list: new Array(3).fill({}).map((e, idx) => ({ id: `${Date.now()}-${idx}` })),
+    show: false,
+    list: [],
     menuVisibleId: null,
     orderMenu: [
       { type: 'cancel', text: '取消预约' },
@@ -58,15 +62,48 @@ export default {
     ]
   }),
   methods: {
-    handleClickReserve (e) {
-      console.log('[点击预约]')
-      this.menuVisibleId = this.menuVisibleId === e.id ? null : e.id
+    async handleRequest () {
+      // 我是乘客，查询我的预约订单
+      const res = await getOrdering({
+        startPage: 1,
+        pageSize: 999
+      })
+      const list = res.data.data.list
+      this.list = list
+      this.show = list.length > 0
+    },
+    // 刷新预约订单信息
+    handleRetry () {
+      this.$toast.loading({
+        message: '加载中...',
+        duration: 1000
+      })
+      this.handleRequest()
+    },
+    // 确认订单
+    async handleOrderConfirm (status, orderId) {
+      // const userId = this.user.info.id
+      const res = await confirmOrder({ orderId, status })
+      if (res.data.msg === '成功') {
+        this.$toast.success('已确认')
+      } else {
+        this.$toast.fail('确认失败，请稍后再试')
+      }
+      this.reqList()
     },
     // 取消预约
-    handleOrderCancel (e) {
-      console.log('[弹出取消菜单]', e)
-      // this.$refs.cancelLayer.show()
+    async handleOrderCancel (status, orderId) {
+      const userId = this.user.info.id
+      const res = await confirmOrder({ orderId, status, userId })
+      console.log(res.data)
+    },
+    // 举报订单
+    handleOrderReport () {
+      console.log('举报订单')
     }
+  },
+  created () {
+    this.handleRequest()
   }
 }
 </script>

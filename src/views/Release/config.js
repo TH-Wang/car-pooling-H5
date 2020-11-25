@@ -2,11 +2,9 @@
 
 // const userPhone = store.state.user.info.phone
 
-export const driver = [
-  // 占位
-  [],
+export const driver = {
   // 拼车
-  [
+  1: [
   //   {
   //   id: '1-1',
   //   type: 'field',
@@ -71,7 +69,7 @@ export const driver = [
     }
   ],
   // 上下班拼车
-  [{
+  4: [{
     id: '2-1',
     type: 'timer',
     name: 'startTime',
@@ -132,7 +130,7 @@ export const driver = [
     placeholder: '请输入体积'
   }],
   // 顺路带物
-  [
+  5: [
   //   {
   //   id: '1-1',
   //   type: 'field',
@@ -143,33 +141,33 @@ export const driver = [
   //   inputType: 'tel'
   // },
     {
-      id: '1-2',
+      id: '3-1',
       type: 'timer',
       name: 'startTime',
       label: '时间',
       placeholder: '请选择时间',
       clearable: true
     }, {
-      id: '1-3',
+      id: '3-2',
       type: 'picker',
       name: 'vehicleType',
       label: '车型',
       placeholder: '请选择车型',
       columns: [{ id: 0, label: '小面包车' }, { id: 1, label: '轿车' }, { id: 2, label: 'SUV' }]
     }, {
-      id: '2-7',
+      id: '3-3',
       type: 'field',
       name: 'weight',
       label: '重量',
       placeholder: '请输入重量'
     }, {
-      id: '2-8',
+      id: '3-4',
       type: 'field',
       name: 'volume',
       label: '体积',
       placeholder: '请输入体积'
     }, {
-      id: '2-6',
+      id: '3-5',
       type: 'field',
       name: 'cost',
       label: 'A费',
@@ -177,7 +175,7 @@ export const driver = [
     }
   ],
   // 旅游包车
-  [{
+  6: [{
     id: '4-1',
     type: 'timer',
     name: 'startTime',
@@ -215,7 +213,7 @@ export const driver = [
     label: 'A费',
     placeholder: '请设置费用'
   }]
-]
+}
 
 export const customer = [
   // 占位
@@ -245,7 +243,7 @@ export const customer = [
       inputType: 'tel',
       maxLength: 1,
       placeholder: '请输入乘坐人数',
-      rules: [{ required: true }, { pattern: /^\d$/, message: '请输入数字' }]
+      rules: [{ required: true }]
     }, {
       id: '1-4',
       type: 'field',
@@ -261,7 +259,7 @@ export const customer = [
     }, {
       id: '1-6',
       type: 'field',
-      name: 'price',
+      name: 'cost',
       label: 'A费',
       placeholder: '请设置费用'
     }

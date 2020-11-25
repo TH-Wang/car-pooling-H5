@@ -79,13 +79,13 @@ export default {
   },
   data: () => ({
     // 选择的发布类型
-    publishType: 0,
+    publishType: 1,
     // 所有的发布类型
     orderMenu: [
       { id: 1, label: '拼车' },
-      { id: 2, label: '上下班拼车' },
-      { id: 3, label: '顺路带物' },
-      { id: 4, label: '旅游包车' }
+      { id: 4, label: '上下班拼车' },
+      { id: 5, label: '顺路带物' },
+      { id: 6, label: '旅游包车' }
     ],
     // 表单列表
     formOptions: driverConfig,
@@ -114,6 +114,8 @@ export default {
       // 数据类型转换
       if (data.cost) data.cost = parseInt(data.cost)
       if (data.seatNum) data.seatNum = parseInt(data.seatNum)
+      if (data.weight) data.seatNum = parseInt(data.weight)
+      if (data.volume) data.seatNum = parseInt(data.volume)
 
       // 如果没有选择套餐
       if (isEmpty(this.combo)) data.setType = 0

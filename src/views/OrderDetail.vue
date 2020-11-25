@@ -46,6 +46,7 @@
 
 <script>
 import moment from 'moment'
+import { getPublishDetail } from '@/api'
 // import { isEmpty } from 'lodash'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
@@ -59,6 +60,7 @@ export default {
     'main-button': MainButton
   },
   data: () => ({
+    orderId: null,
     record: {
       userName: '',
       vehicleType: '',
@@ -76,6 +78,11 @@ export default {
     }
   },
   methods: {
+    async handleRequest () {
+      const id = this.orderId
+      const res = await getPublishDetail(id)
+      this.record = res.data.data
+    },
     handleBackHome () {
       this.$router.replace('/home')
       location.reload()
@@ -86,10 +93,12 @@ export default {
     }
   },
   created () {
-    this.record = JSON.parse(this.$route.query.record)
+    this.orderId = this.$route.query.id
+    this.handleRequest()
   },
   activated () {
-    this.record = JSON.parse(this.$route.query.record)
+    this.orderId = this.$route.query.id
+    this.handleRequest()
   }
 }
 </script>

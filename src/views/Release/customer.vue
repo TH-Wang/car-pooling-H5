@@ -83,9 +83,9 @@ export default {
     formOptions: customerConfig,
     // 所有的发布类型
     orderMenu: [
-      { id: 2, label: '上下班拼车' },
+      { id: 4, label: '上下班拼车' },
       { id: 1, label: '拼车' },
-      { id: 3, label: '顺路带物' }
+      { id: 5, label: '顺路带物' }
     ],
     agreePact: true,
     agreePackage: false,

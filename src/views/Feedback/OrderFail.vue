@@ -26,7 +26,11 @@
     <feedback type="fail" title="预定失败" />
 
     <!-- 搜索框 -->
-    <search-card style="margin-top: .23rem" type="icon-right" />
+    <search-card
+      v-model="addr"
+      style="margin-top: .23rem"
+      type="icon-right"
+    />
 
     <!-- 热门路线 -->
     <quick-line style="padding-bottom: .20rem" title="热门路线" tagColor="green" />
@@ -47,10 +51,15 @@ export default {
     'quick-line': QuickLine
   },
   data: () => ({
+    addr: {
+      startAddr: null,
+      endAddr: null
+    },
     show: true
   }),
   mounted () {
-    const msg = this.$route.params.msg
+    const { msg, startAddr, endAddr } = this.$route.params
+    this.addr = { startAddr, endAddr }
     this.$dialog.alert({
       message: '对不起！' + msg
     })

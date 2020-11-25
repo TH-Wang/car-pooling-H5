@@ -2,12 +2,7 @@
   <div>
     <!-- 搜索卡片 -->
     <div class="search-card-wrap">
-      <search-card
-        useStore
-        button-text="寻找乘客"
-        button-color="green"
-        @search="handleSearchOrder"
-      />
+      <search-card useStore @search="handleSearchOrder" />
     </div>
 
     <!-- 筛选菜单 -->
@@ -29,26 +24,22 @@
       class="list-container"
     >
       <!-- 订单 -->
-      <hitchhike-order
+      <carry-order
         v-for="(item, index) in list"
         :key="index"
         :record="item"
-        color="green"
+        type="customer"
+        @click="handleLinkDetail($event, item.pprId)"
       >
         <!-- 预约按钮 -->
         <template #button>
           <mini-button
-            color="green"
+            color="yellow"
             :orderId="item.id"
-            :menu="menu"
-            :menuVisible="menuVisibleId === item.id"
-            @click="handleClickReserve"
-            @cancel="handleOrderCancel"
-          >
-            <van-icon style="margin-right: .05rem" size=".18rem" name="phone" />预约
-          </mini-button>
+            @click="handleLinkDetail($event, item.pprId)"
+          >立即预订</mini-button>
         </template>
-      </hitchhike-order>
+      </carry-order>
     </van-list>
   </div>
 </template>
@@ -56,23 +47,21 @@
 <script>
 import moment from 'moment'
 import { mapState } from 'vuex'
-import { List, Icon } from 'vant'
+import { List } from 'vant'
 import { isEmpty } from 'lodash'
 import SearchCard from '@/components/SearchCard'
 import { OrderFilter } from '@/components/Filter/index.js'
-import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
 import MiniButton from '@/components/MiniButton'
-import ButtonMenuMixin from '@/mixins/button-menu-mixin'
+import CarryOrder from '@/components/OrderItem/Carry'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
-  mixins: [ButtonMenuMixin, ListMixin],
+  mixins: [ListMixin],
   components: {
-    'van-icon': Icon,
     'van-list': List,
-    'search-card': SearchCard,
     'order-filter': OrderFilter,
-    'hitchhike-order': HitchhikeOrder,
+    'search-card': SearchCard,
+    'carry-order': CarryOrder,
     'mini-button': MiniButton
   },
   computed: {
@@ -90,21 +79,21 @@ export default {
       return {
         county,
         startTime: today,
-        orderType: 2, // 1-车主发布 2-乘客发布
-        publishType: 4
+        orderType: 1, // 1-车主发布 2-乘客发布
+        publishType: 5 // 顺路带物
       }
     },
-    // 请求快捷路线时，自动调用该函数，获取请求参数
-    getRequestQuickDatas () {
-      return { startPage: 1, pageSize: 10 }
+    // 进入订单详情
+    handleLinkDetail (e, id) {
+      this.$router.push({ path: '/common/order/detail', query: { id } })
     },
     // 按起止地点找车
     handleSearchOrder () {
       const { startAddr, endAddr } = this.search
       const query = {
-        publishType: 4,
+        publishType: 5,
         // 1车主发布，2乘客发布
-        orderType: 2,
+        orderType: 1,
         startAddr,
         endAddr
       }

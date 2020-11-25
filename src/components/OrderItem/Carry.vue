@@ -5,15 +5,15 @@
     <div class="header">
       <!-- 时间 -->
       <div class="time">
-        <div class="time-num">08:00</div>
-        <div class="time-text">今天</div>
+        <div class="time-num">{{record.startTime.slice(-5)}}</div>
+        <div class="time-text">{{fromNow}}</div>
       </div>
       <!-- 主要信息 -->
       <div class="header-main">
         <div class="line-text">
-          <div class="start">重庆北站</div>
+          <div class="start">{{record.startAddr}}</div>
           <img class="arrow" src="@/assets/icons/line-arrow.png" alt="">
-          <div class="end">重庆西站</div>
+          <div class="end">{{record.endAddr}}</div>
         </div>
         <div class="car-info">
           <div class="car-info-item">
@@ -31,18 +31,18 @@
         </div>
       </div>
       <!-- 价格 -->
-      <div :class="`price-${type}`"><span>￥</span>60</div>
+      <div :class="`price-${type}`"><span>￥</span>{{record.cost}}</div>
     </div>
 
     <!-- 详细内容 -->
     <div class="content">
       <div class="content-item">
-        <span>重量</span>100kg以内</div>
+        <span>重量</span>{{record.weight}}kg以内</div>
       <div class="content-item">
-        <span>体积</span>0.5t以内
+        <span>体积</span>{{record.volume}}t以内
       </div>
       <div class="content-item">
-        <span>备注</span>重庆北站到重庆西站顺路可带4人，顺路上下，预定电话确认下
+        <span>备注</span>{{record.remark || '无'}}
       </div>
     </div>
 
@@ -51,7 +51,7 @@
       <!-- 用户信息 -->
       <div class="user-info">
         <div class="avatar"></div>
-        <div class="name ellipsis">杨女士</div>
+        <div class="name ellipsis">{{record.userName}}</div>
         <div class="social">
           <img src="@/assets/icons/order/like.png" alt="">
           <span>1920</span>
@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 
 export default {
   props: {
@@ -81,6 +82,12 @@ export default {
     type: {
       type: String,
       default: 'customer'
+    }
+  },
+  computed: {
+    // 从发布到现在的时间
+    fromNow () {
+      return moment(this.record.startTime).fromNow()
     }
   },
   methods: {

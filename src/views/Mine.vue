@@ -117,10 +117,15 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { Image, Swipe, SwipeItem } from 'vant'
 import { isEmpty } from 'lodash'
-import { selectAccountInfo, getOrdering, confirmOrder } from '@/api'
+import {
+  selectAccountInfo,
+  getOrdering,
+  confirmOrder,
+  driverOrder
+} from '@/api'
 import OverageCard from '@/components/OverageCard'
 import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
 import ConfirmButton from '@/components/ConfirmButton'
@@ -182,19 +187,28 @@ export default {
     }
   }),
   computed: {
-    ...mapState(['user', 'account'])
+    ...mapState(['user', 'account']),
+    ...mapGetters(['identity'])
   },
   methods: {
     // 请求我的预约（前三个）
     async reqList () {
-      const res = await getOrdering({
-        startPage: 1,
-        pageSize: 3
-      })
-      this.list = res.data.data.list.map(item => {
-        item.startTime = item.passengerStartTime
-        return item
-      })
+      let res = null
+      if (this.identity === 0) {
+        // 我是乘客，查询我的预约订单
+        res = await getOrdering({
+          startPage: 1,
+          pageSize: 3
+        })
+      } else {
+        // 我是司机，查询乘客预约我的订单
+        res = await driverOrder({
+          status: 0,
+          startPage: 1,
+          pageSize: 3
+        })
+      }
+      this.list = res.data.data.list
     },
     // 刷新预约订单信息
     handleRetry () {

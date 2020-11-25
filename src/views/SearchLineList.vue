@@ -85,15 +85,15 @@ export default {
       // 今天日期
       const today = moment().format('YYYY-MM-DD 00:00:00')
       // 起止地点
-      const { startAddr, endAddr } = this.dataSource
+      const { startAddr, endAddr, publishType, orderType } = this.dataSource
       // 返回主要参数
       return {
         county,
         startAddr,
         endAddr,
         startTime: today,
-        orderType: 1, // 1-车主发布 2-乘客发布
-        publishType: 1
+        orderType: parseInt(orderType), // 1-车主发布 2-乘客发布
+        publishType: parseInt(publishType)
       }
     },
     // 进入详情页面

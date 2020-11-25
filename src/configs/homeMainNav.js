@@ -2,17 +2,17 @@ export default [
   {
     icon: require('../assets/images/home/main-1.png'),
     title: '短途拼车',
-    path: { path: '/common/carpool/list', query: { type: 'short' } }
+    path: { path: '/common/carpool/list', query: { type: 1 } }
   },
   {
     icon: require('../assets/images/home/main-2.png'),
     title: '城际拼车',
-    path: { path: '/common/carpool/list', query: { type: 'cities' } }
+    path: { path: '/common/carpool/list', query: { type: 2 } }
   },
   {
     icon: require('../assets/images/home/main-3.png'),
     title: '跨省拼车',
-    path: { path: '/common/carpool/list', query: { type: 'province' } }
+    path: { path: '/common/carpool/list', query: { type: 3 } }
   },
   {
     icon: require('../assets/images/home/main-4.png'),

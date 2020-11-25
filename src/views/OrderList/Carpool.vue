@@ -93,7 +93,8 @@ export default {
     'mini-button': MiniButton
   },
   data: () => ({
-    needQuick: true
+    needQuick: true,
+    publishType: 1
   }),
   computed: {
     ...mapState(['position', 'search']),
@@ -108,11 +109,13 @@ export default {
         : this.position.county.code
       // 今天日期
       const today = moment().format('YYYY-MM-DD 00:00:00')
+      // 车单类型
+      const publishType = this.publishType
       return {
         county,
         startTime: today,
         orderType: 1, // 1-车主发布 2-乘客发布
-        publishType: 1
+        publishType
       }
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
@@ -123,8 +126,9 @@ export default {
     handleSearchOrder () {
       const _this_ = this
       const { startAddr, endAddr } = this.search
+      const publishType = this.publishType
       const query = {
-        publishType: 1,
+        publishType,
         // 1车主发布，2乘客发布
         orderType: _this_.identity === 0 ? 1 : 2,
         startAddr,
@@ -148,12 +152,7 @@ export default {
     }
   },
   created () {
-    const type = this.$route.query.type
-    switch (type) {
-      case 'short': this.url = '/short'; return
-      case 'cities': this.url = '/cities'; return
-      case 'province': this.url = '/province'
-    }
+    this.publishType = parseInt(this.$route.query.type)
   },
   mounted () {
     // this.$dialog.confirm({

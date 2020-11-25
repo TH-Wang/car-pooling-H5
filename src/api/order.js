@@ -6,7 +6,9 @@ export default {
   commitOrder,
   getOrdering,
   queryByOrderId,
-  confirmOrder
+  confirmOrder,
+  getPublishDetail,
+  driverOrder
 }
 
 // 按条件找车
@@ -52,6 +54,24 @@ function queryByOrderId (orderId) {
 function confirmOrder (params) {
   return axios({
     url: '/order/confirmOrder',
+    method: 'POST',
+    params
+  })
+}
+
+// 根据id获取拼车单详情
+function getPublishDetail (id) {
+  return axios({
+    url: '/order/getPublishDetail',
+    method: 'POST',
+    params: { id }
+  })
+}
+
+// 司机查询乘客预约的订单
+function driverOrder (params) {
+  return axios({
+    url: '/order/driverOrder',
     method: 'POST',
     params
   })

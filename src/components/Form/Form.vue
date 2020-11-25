@@ -88,6 +88,9 @@ export default {
   },
   mounted () {
     this.collectFields()
+  },
+  updated () {
+    this.collectFields()
   }
 }
 </script>

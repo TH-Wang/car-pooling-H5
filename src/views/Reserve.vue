@@ -119,10 +119,17 @@ export default {
 
       // 发送请求
       const res = await commitOrder(data)
-      if (res.data.data === 1 || res.data.msg === '成功') {
-        this.$router.push('/common/order/feedback/success')
+      if (res.data.msg === '成功') {
+        this.$router.push({
+          path: '/common/order/feedback/success',
+          query: { id: res.data.data }
+        })
       } else {
-        this.$router.push({ name: 'OrderFail', params: { msg: res.data.msg } })
+        const { startAddr, endAddr } = values
+        this.$router.push({
+          name: 'OrderFail',
+          params: { msg: res.data.msg, startAddr, endAddr }
+        })
       }
     }
   },

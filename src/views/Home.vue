@@ -30,7 +30,12 @@
     </div>
 
     <!-- 搜索卡片 -->
-    <search-card :buttonColor="buttonColor" useStore @search="handleSearchOrder" />
+    <search-card
+      :buttonColor="buttonColor"
+      :buttonText="buttonText"
+      useStore
+      @search="handleSearchOrder"
+    />
 
     <!-- 快捷路线 -->
     <quick-line
@@ -61,13 +66,13 @@
         v-for="(item, index) in list"
         :key="index"
         :record="item"
-        @click="handleLinkDetail"
+        @click="handleLinkDetail($event, item.pprId)"
       >
         <template #button>
           <mini-button
             :color="buttonColor"
             :orderId="item.id"
-            @click="handleLinkDetail"
+            @click="handleLinkDetail($event, item.pprId)"
           >立即预订</mini-button>
         </template>
       </carpool-order>
@@ -117,6 +122,9 @@ export default {
     ...mapGetters(['identity', 'location']),
     buttonColor () {
       return this.identity === 0 ? 'yellow' : 'green'
+    },
+    buttonText () {
+      return this.identity === 0 ? '寻找车主' : '寻找乘客'
     }
   },
   methods: {
@@ -167,8 +175,8 @@ export default {
       this.$router.push('/common/city')
     },
     // 进入详情页面
-    handleLinkDetail (record) {
-      this.$router.push({ name: 'OrderDetail', query: { record: JSON.stringify(record) } })
+    handleLinkDetail (e, id) {
+      this.$router.push({ path: '/common/order/detail', query: { id } })
     },
     // 点击订单按钮
     handleClickOrderButton (e) {

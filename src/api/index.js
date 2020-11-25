@@ -30,6 +30,8 @@ export const commitOrder = order.commitOrder
 export const getOrdering = order.getOrdering
 export const queryByOrderId = order.queryByOrderId
 export const confirmOrder = order.confirmOrder
+export const getPublishDetail = order.getPublishDetail
+export const driverOrder = order.driverOrder
 
 // 发布订单模块
 export const insertPublish = publish.insertPublish
