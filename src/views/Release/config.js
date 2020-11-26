@@ -215,11 +215,9 @@ export const driver = {
   }]
 }
 
-export const customer = [
-  // 占位
-  [],
+export const customer = {
   // 拼车
-  [
+  1: [
   //   {
   //   id: '1-1',
   //   type: 'field',
@@ -265,7 +263,7 @@ export const customer = [
     }
   ],
   // 上下班拼车
-  [{
+  4: [{
     id: '2-1',
     type: 'timer',
     name: 'startTime',
@@ -307,7 +305,7 @@ export const customer = [
     placeholder: '请设置费用'
   }],
   // 顺路带物
-  [
+  5: [
   //   {
   //   id: '3-1',
   //   type: 'field',
@@ -350,4 +348,4 @@ export const customer = [
       placeholder: '请设置费用'
     }
   ]
-]
+}

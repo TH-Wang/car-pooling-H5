@@ -7,7 +7,7 @@
       fixed
       placeholder
       :border="false"
-      @click-left="$router.go(-1)"
+      @click-left="$router.replace('/home')"
     />
 
     <van-notice-bar

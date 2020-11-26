@@ -7,7 +7,7 @@
       fixed
       placeholder
       :border="false"
-      @click-left="$router.go(-1)"
+      @click-left="$router.replace('/home')"
     />
 
     <!-- 反馈图标 -->
@@ -53,7 +53,7 @@ export default {
   },
   data: () => ({
     orderId: null,
-    record: {},
+    record: { passPointLis: [] },
     tips: [
       '温馨提示',
       '1.如您行程改变，请尽可能提前退订，<span style="color:#FFCD00">07月09日 08:00</span style="color:#FFCD00">前可<span style="color:#FFCD00">无责退订</span>。',
