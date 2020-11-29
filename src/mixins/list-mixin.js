@@ -52,27 +52,19 @@ export default {
   methods: {
     // 筛选条件发生改变
     handleFilterChange () {
-      this.handleListLoad(1)
+      this.startPage = 1
+      this.handleListLoad()
     },
     // 请求列表
-    async handleListLoad (page, must) {
-      // must: Boolean (是否强制请求，如果是true将会越过判断)
-      if (this.list.length === this.total && !must) {
-        this.finished = true
-        return
-      }
-
-      const _this_ = this
+    async handleListLoad () {
+      const { startPage, pageSize } = this
 
       // 基础参数
-      const data = {
-        startPage: page || _this_.startPage,
-        pageSize: _this_.pageSize
-      }
+      const data = { startPage, pageSize }
 
       // 如果该组件需要额外参数，则直接获取并合并
       if (this.getRequestDatas) {
-        Object.assign(data, _this_.getRequestDatas())
+        Object.assign(data, this.getRequestDatas())
       }
 
       // 组件的自定义api
@@ -88,7 +80,7 @@ export default {
       const { list, total } = mainData
 
       // 如果是首页，则直接设置list，否则插入到尾部
-      if (page === 1 || this.startPage === 1) {
+      if (this.startPage === 1) {
         this.list = list
       } else {
         this.list.push(...list)
@@ -96,6 +88,10 @@ export default {
 
       this.total = total
       this.startPage++
+      this.loading = false
+      if (this.list.length === this.total) {
+        this.finished = true
+      }
     },
     // 请求快捷路线
     async handleQuickListLoad () {
@@ -112,27 +108,25 @@ export default {
       this.quickList = res.data.data.list
     },
     // 点击重试（订单列表）
-    handleRetry () {
-      this.$toast.loading({
-        message: '加载中...',
-        duration: 1000
-      })
-      this.handleListLoad(1)
+    async handleRetry () {
+      this.startPage = 1
+      this.$toast.loading('加载中...')
+      await this.handleListLoad()
+      this.$toast.clear()
     },
     // 点击重试（快捷路线列表）
-    handleRetryQuick () {
-      this.$toast.loading({
-        message: '加载中...',
-        duration: 1000
-      })
-      this.handleQuickListLoad()
+    async handleRetryQuick () {
+      this.startPage = 1
+      this.$toast.loading('加载中...')
+      await this.handleQuickListLoad()
+      this.$toast.clear()
     },
     // 处理下拉刷新
-    handlePullRefresh () {
-      setTimeout(() => {
-        this.refresh = false
-      }, 1000)
-      this.handleListLoad(1, true)
+    async handlePullRefresh () {
+      this.startPage = 1
+      this.finished = false
+      await this.handleListLoad()
+      this.refresh = false
     }
   },
   mounted: async function () {

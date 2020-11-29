@@ -10,16 +10,20 @@
 
     <!-- 搜索框 -->
     <div class="search" @click="$emit('click-search')">
-      <van-icon class="search-icon" name="search" />
+      <van-icon name="search" />
       <div class="input-box">
         <span v-if="button">搜索城市名称查询</span>
         <input
           v-else
           type="text"
+          :value="value"
           placeholder="请输入城市名称查询"
-          @input="handleSearchInput"
+          @input="handleChange"
+          @focus="$emit('focus', true)"
+          @blur="$emit('focus', false)"
         />
       </div>
+      <van-icon v-show="empty" name="clear" color="#ced6e0" @click="$emit('change', '')"/>
     </div>
 
     <!-- 当前地址 -->
@@ -31,15 +35,28 @@
 
 <script>
 import { Icon } from 'vant'
+import { isEmpty } from 'lodash'
 
 export default {
   components: {
     'van-icon': Icon
   },
+  model: {
+    prop: 'value',
+    event: 'change'
+  },
   props: {
+    value: {
+      type: String,
+      default: ''
+    },
     backIcon: {
       type: Boolean,
       default: true
+    },
+    focus: {
+      type: Boolean,
+      default: false
     },
     button: {
       type: Boolean,
@@ -55,14 +72,19 @@ export default {
       default: 'light'
     }
   },
+  computed: {
+    empty () {
+      return !isEmpty(this.value)
+    }
+  },
   methods: {
     // 返回上一页
     handleGoBack () {
       this.$router.go(-1)
     },
     // 搜索事件
-    handleSearchInput (e) {
-      this.$emit('search', { value: e.target.value })
+    handleChange (e) {
+      this.$emit('change', e.target.value)
     }
   }
 }

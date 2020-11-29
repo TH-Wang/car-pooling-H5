@@ -162,6 +162,13 @@ const routes = [
         name: 'SelectCity',
         component: () => import(/* webpackChunkName: "SelectCity" */ '@/views/SelectCity.vue')
       },
+      { // 搜索位置
+        path: '/common/search/location',
+        name: 'SearchLocation',
+        component: () => import(
+          /* webpackChunkName: "SearchLocation" */ '@/views/SearchLocation.vue'
+        )
+      },
       { // 附近的拼车群
         path: '/common/group/nearby',
         name: 'GroupNearby',

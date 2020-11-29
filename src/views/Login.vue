@@ -94,9 +94,11 @@ export default {
     async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
       if (err) return
+      this.$toast.loading('登录中')
       const res = await userCodeLogin(values)
       const { msg, data } = res.data
       if (msg === '成功') {
+        this.$toast.clear()
         const { token, phone } = data
         this.$toast({ message: '登录成功！', type: 'success' })
         this.$store.commit('setStorage', { token, phone, info: data })

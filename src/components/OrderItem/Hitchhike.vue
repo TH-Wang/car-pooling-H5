@@ -7,8 +7,8 @@
       <div class="header-main">
         <!-- 时间段 -->
         <div class="time-num">
-          <span>{{record.startTime.slice(-5)}}</span>
-          <span v-if="record.endTime"> - {{record.endTime.slice(-5)}}</span>
+          <span>{{getHourMinute(record.startTime)}}</span>
+          <span v-if="record.endTime"> - {{getHourMinute(record.endTime)}}</span>
           / {{record.endTime ? '出发·返程' : '出发时间'}}
         </div>
         <!-- 价格 -->
@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { Image } from 'vant'
 
 export default {
@@ -111,6 +112,12 @@ export default {
     // 途径点拼接字符串
     passPointLis () {
       return this.record.passPointLis.map(i => i.pointName).join('-')
+    }
+  },
+  methods: {
+    getHourMinute (time) {
+      if (!time) return '-- --'
+      return moment(time).format('HH:mm')
     }
   }
 }

@@ -19,7 +19,11 @@
         name="arrow-down"
         size="0.12rem"
         class="MINI_BUTTON_MENU_SAFENODE"
-        style="margin-left: .05rem"
+        :style="{
+          marginLeft: '.05rem',
+          transform: `rotateZ(${menuVisible ? '180deg' : '0deg'})`,
+          transition: 'all 0.2s'
+        }"
       />
     </div>
 
@@ -49,7 +53,7 @@ export default {
     'van-icon': Icon
   },
   props: {
-    // ['yellow', 'green', 'blue']
+    // ['yellow', 'green', 'blue', 'red', 'gray']
     color: {
       type: String,
       default: 'yellow'
@@ -127,6 +131,13 @@ export default {
     @extend .button;
     background: #FF6A20;
     box-shadow: 0px 6px 10px -4px rgba(255, 32, 32, 0.5);
+  }
+
+  // 灰色主题
+  .button-gray{
+    @extend .button;
+    background: $tip-text;
+    box-shadow: 0px 6px 10px -4px rgba(38, 38, 38, 0.1);
   }
 
   // 操作下拉菜单

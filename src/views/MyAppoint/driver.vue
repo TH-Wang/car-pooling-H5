@@ -6,7 +6,7 @@
       text="没有合适车辆？马上预约！"
       class="notice-bar"
     >
-      您已成功预约 3 人，还差 <span style="color:#0AD593">1</span> 人就满座了
+      您已成功预约 {{peopleCount}} 人
       <template #right-icon>
         <van-icon name="cross" class="close" @click="show = false"/>
       </template>
@@ -17,7 +17,7 @@
       <van-empty description="暂无预约订单，点击刷新" />
     </div>
     <!-- 预约订单 -->
-    <hitchhike-order
+    <pending-order
       v-else
       v-for="(item, index) in list"
       :key="index"
@@ -28,20 +28,21 @@
       <!-- 预约按钮 -->
       <template #button>
         <confirm-button
+          color="green"
           :status="item.status"
           @confirm="handleOrderConfirm($event, item.orderId)"
           @cancel="handleOrderCancel($event, item.orderId)"
           @report="handleOrderReport($event, item.orderId)"
         />
       </template>
-    </hitchhike-order>
+    </pending-order>
   </div>
 </template>
 
 <script>
 import { NoticeBar } from 'vant'
 import { driverOrder, confirmOrder } from '@/api'
-import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
+import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 
@@ -49,7 +50,7 @@ export default {
   mixins: [ButtonMenuMixin],
   components: {
     'van-notice-bar': NoticeBar,
-    'hitchhike-order': HitchhikeOrder,
+    'pending-order': PendingOrder,
     'confirm-button': ConfirmButton
   },
   data: () => ({
@@ -60,19 +61,27 @@ export default {
     orderMenu: [
       { type: 'cancel', text: '取消预约' },
       { type: 'report', text: '举报' }
-    ]
+    ],
+    peopleCount: 0
   }),
   methods: {
     async handleRequest () {
       // 我是乘客，查询我的预约订单
       const res = await driverOrder({
-        status: 0,
         startPage: 1,
         pageSize: 999
       })
-      const list = res.data.data.list
-      this.list = list
+      const { list } = res.data.data
+      this.list = list.map(item => {
+        item.startTime = item.passengerStartTime
+        item.seatNum = item.orderNum
+        return item
+      })
       this.show = list.length > 0
+      // 计算已预约人数
+      this.peopleCount = list.reduce((prev, item) => {
+        return item.status > 0 ? prev + item.orderNum : prev
+      }, 0)
     },
     // 刷新预约订单信息
     handleRetry () {

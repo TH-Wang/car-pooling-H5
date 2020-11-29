@@ -12,39 +12,37 @@
       <div class="address-box">
         <!-- 起始点 -->
         <div class="address-bar dotted-border">
-          <!-- <span class="address-bar-city">重庆</span>
-          <span class="address-bar-detail">江北区建新北路观音桥</span> -->
           <input
             :value="useStore ? search.startAddr : value.startAddr"
             @input="handleChange($event, 'startAddr')"
             class="address-bar-input"
             type="text"
             placeholder="请输入起点"
+            readonly
           >
-          <van-switch
+          <!-- <van-switch
             v-if="defaultType"
             v-model="startSwtich"
             active-color="#FFCD00"
             size="0.16rem"
-          />
+          /> -->
         </div>
         <!-- 目的地 -->
         <div class="address-bar">
-          <!-- <span class="address-bar-city default">你要去哪儿</span>
-          <span class="address-bar-detail default">地址/街道/酒店/景点</span> -->
           <input
             :value="useStore ? search.endAddr : value.endAddr"
             @input="handleChange($event, 'endAddr')"
             class="address-bar-input"
             type="text"
             placeholder="您要去哪儿  地址/街道/酒店/景点"
+            readonly
           >
-          <van-switch
+          <!-- <van-switch
             v-if="defaultType"
             v-model="startSwtich"
             active-color="#FFCD00"
             size="0.16rem"
-          />
+          /> -->
         </div>
       </div>
       <!-- 右侧切换按钮 -->
@@ -67,13 +65,13 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
-import { Switch } from 'vant'
+// import { Switch } from 'vant'
 import { isEmpty, cloneDeep } from 'lodash'
 import MainButton from '@/components/MainButton'
 
 export default {
   components: {
-    'van-switch': Switch,
+    // 'van-switch': Switch,
     'main-button': MainButton
   },
   model: {

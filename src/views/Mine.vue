@@ -64,18 +64,20 @@
         :key="index"
       >
         <!-- 预约订单 -->
-        <hitchhike-order
+        <pending-order
           :record="item"
           type="driver"
+          :color="buttonColor"
         ><template #button>
             <confirm-button
+              :color="buttonColor"
               :status="item.status"
               @confirm="handleOrderConfirm($event, item.orderId)"
               @cancel="handleOrderCancel($event, item.orderId)"
               @report="handleOrderReport($event, item.orderId)"
             />
           </template>
-        </hitchhike-order>
+        </pending-order>
       </van-swipe-item>
       <!-- 指示器 -->
       <template #indicator>
@@ -127,7 +129,7 @@ import {
   driverOrder
 } from '@/api'
 import OverageCard from '@/components/OverageCard'
-import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
+import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
 // import MiniButton from '@/components/MiniButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
@@ -140,7 +142,7 @@ export default {
     'van-swipe': Swipe,
     'van-swipe-item': SwipeItem,
     'overage-card': OverageCard,
-    'hitchhike-order': HitchhikeOrder,
+    'pending-order': PendingOrder,
     'confirm-button': ConfirmButton,
     // 'mini-button': MiniButton,
     affix: Affix
@@ -188,27 +190,36 @@ export default {
   }),
   computed: {
     ...mapState(['user', 'account']),
-    ...mapGetters(['identity'])
+    ...mapGetters(['identity']),
+    buttonColor () {
+      return this.identity === 0 ? 'yellow' : 'green'
+    }
   },
   methods: {
     // 请求我的预约（前三个）
     async reqList () {
-      let res = null
       if (this.identity === 0) {
         // 我是乘客，查询我的预约订单
-        res = await getOrdering({
+        const res = await getOrdering({
           startPage: 1,
           pageSize: 3
+        })
+        this.list = res.data.data.list.map(item => {
+          item.seatNum = item.orderNum
+          return item
         })
       } else {
         // 我是司机，查询乘客预约我的订单
-        res = await driverOrder({
-          status: 0,
+        const res = await driverOrder({
           startPage: 1,
           pageSize: 3
         })
+        this.list = res.data.data.list.map(item => {
+          item.startTime = item.passengerStartTime
+          item.seatNum = item.orderNum
+          return item
+        })
       }
-      this.list = res.data.data.list
     },
     // 刷新预约订单信息
     handleRetry () {

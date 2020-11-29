@@ -107,6 +107,10 @@ export default {
     @extend .button;
     background-color: $normal-text;
 
+    &-fill{
+      @extend .button-gray;
+    }
+
     &-hollow{
       @extend .button;
       border: solid 1px $tip-text;

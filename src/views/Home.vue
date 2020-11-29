@@ -61,21 +61,7 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    >
-      <carpool-order
-        v-for="(item, index) in list"
-        :key="index"
-        :record="item"
-        @click="handleLinkDetail($event, item.pprId)"
-      >
-        <template #button>
-          <mini-button
-            :color="buttonColor"
-            :orderId="item.id"
-            @click="handleLinkDetail($event, item.pprId)"
-          >立即预订</mini-button>
-        </template>
-      </carpool-order>
+    ><home-order :list="list" @link="handleLinkDetail" />
     </van-list>
 
   </div>
@@ -89,8 +75,7 @@ import { isEmpty } from 'lodash'
 import { OrderFilter } from '@/components/Filter/index.js'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
-import CarpoolOrder from '@/components/OrderItem/Carpool'
-import MiniButton from '@/components/MiniButton'
+import HomeOrder from '@/components/HomeOrder'
 import ListMixin from '@/mixins/list-mixin'
 import mainNavConfig from '@/configs/homeMainNav'
 
@@ -104,8 +89,7 @@ export default {
     'order-filter': OrderFilter,
     'search-card': SearchCard,
     'quick-line': QuickLine,
-    'carpool-order': CarpoolOrder,
-    'mini-button': MiniButton
+    'home-order': HomeOrder
   },
   data: () => ({
     mainNavConfig,
@@ -175,12 +159,8 @@ export default {
       this.$router.push('/common/city')
     },
     // 进入详情页面
-    handleLinkDetail (e, id) {
+    handleLinkDetail (id) {
       this.$router.push({ path: '/common/order/detail', query: { id } })
-    },
-    // 点击订单按钮
-    handleClickOrderButton (e) {
-      console.log('[点击mini按钮]', e)
     }
   },
   created: async function () {

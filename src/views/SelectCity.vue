@@ -1,13 +1,30 @@
 <template>
-  <div class="container">
+  <div class="container" :style="{overflow: `${focus ? 'hidden' : 'auto'}`}">
     <!-- 搜索框 / 导航栏 -->
-    <nav-bar-search mode="dark" @search="handleSearch" />
+    <nav-bar-search
+      mode="dark"
+      v-model="searchValue"
+      @change="handleSearch"
+      @focus="handleFocus"
+    />
     <!-- 占位符 -->
     <div style="height: 50px"></div>
 
     <!-- 当前定位城市 -->
     <div class="current-city">
       当前定位城市·区域 <span>重庆 · 渝北区</span>
+    </div>
+
+    <!-- 通过名称搜索城市列表 -->
+    <div class="search-list" v-show="showSearchList">
+      <van-empty v-show="searchEmpty" image="search" description="抱歉，未找到相关城市" />
+      <div
+        v-for="item in searchList"
+        :key="item.code"
+        class="index-cell"
+        v-html="item.replaceName"
+        @click="selectCityBySearch($event, item)"
+      />
     </div>
 
     <!-- 选择省市区县 -->
@@ -31,7 +48,12 @@
     </div>
 
     <!-- 城市索引列表 -->
-    <van-index-bar v-show="!showCountyList" class="index">
+    <van-index-bar
+      :sticky-offset-top="50"
+      v-show="!showCountyList"
+      class="index"
+      :index-list="position.wordsList"
+    >
       <div v-for="item in position.cityList" :key="item.word">
         <van-index-anchor class="index-anchor" :index="item.word" />
         <div
@@ -55,10 +77,24 @@
 </template>
 
 <script>
+import AMapLoader from '@/utils/mapLoader'
 import { mapState, mapMutations } from 'vuex'
 import { Icon, IndexBar, IndexAnchor } from 'vant'
 import { spell } from 'cnchar'
-import { queryPositionForCity, queryPositionForCounty } from '@/api'
+import { isEmpty, debounce } from 'lodash'
+import {
+  queryPositionForCity,
+  queryPositionForCounty,
+  savePosition,
+  queryPositionByCityName
+} from '@/api'
+import {
+  getLngLatByMap,
+  getLngLatByBrowser,
+  getPosition,
+  transform
+  // getCity
+} from '@/utils/districtSearch'
 import NavBarSearch from '@/components/NavBarSearch'
 
 export default {
@@ -69,6 +105,14 @@ export default {
     'nav-bar-search': NavBarSearch
   },
   data: () => ({
+    // 搜索框是否获取焦点
+    focus: false,
+    // 是否显示搜索列表面板
+    showSearchList: false,
+    // 是否显示搜索空状态
+    searchEmpty: false,
+    // 搜索框输入值
+    searchValue: '',
     // 当前被选择的热门城市code
     activeHotCity: null,
     // 热门城市列表
@@ -83,10 +127,8 @@ export default {
       { code: 934, shortName: '杭州' },
       { code: 2899, shortName: '西安' }
     ],
-    // 城市列表
-    cityList: [],
-    // 区县列表
-    countyList: []
+    // 搜索结果列表
+    searchList: []
   }),
   computed: {
     // 全局存储城市区县数据
@@ -97,7 +139,7 @@ export default {
     },
     // 被选择区县名称
     selectCounty () {
-      return this.position.county ? this.position.county.shortName : '请选择区县'
+      return this.position.county ? this.position.county.name : '请选择区县'
     },
     // 选择城市指示标题的样式
     selectCityStyle () {
@@ -114,10 +156,113 @@ export default {
   },
   methods: {
     // 改变全局定位城市数据的commit
-    ...mapMutations(['setCurPosition', 'setCity', 'setCounty', 'setCityList', 'setCountyList']),
+    ...mapMutations([
+      'setCurPosition', 'setCity', 'setCounty', 'setCityList', 'setCountyList', 'setWordsList'
+    ]),
+    // 定位当前位置
+    async getCurrentPosition () {
+      try {
+        const AMap = await AMapLoader()
+
+        // 使用高德定位
+        const lnglatInfoMap = await getLngLatByMap(AMap)
+        // const { lng, lat } = lnglatInfo
+        // const lnglat = [lng, lat]
+        console.log(lnglatInfoMap)
+
+        // 原生定位
+        const lnglatInfo = await getLngLatByBrowser(AMap)
+        console.log(lnglatInfo)
+        const { longitude, latitude } = lnglatInfo.coords
+        const lnglat = [longitude, latitude]
+
+        const res = await transform(AMap, lnglat)
+        console.log('[转换坐标]')
+        console.log(res)
+
+        // 通过经纬度获取位置信息
+        const position = await getPosition(AMap, lnglat)
+        console.log(position)
+        const { province, district } = position.addressComponent
+        this.$toast.success(`${province} ${district}`)
+      } catch (error) {
+        this.$dialog.alert({
+          message: JSON.stringify(error)
+        })
+      }
+    },
+    // 请求所有城市列表
+    async queryCityList () {
+      if (this.position.cityList.length > 0) return
+
+      const res = await queryPositionForCity()
+      const list = res.data.data
+
+      // 首字母字典对象
+      const wordsIndex = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      const wordsDist = {}
+      for (let i = 0; i < wordsIndex.length; i++) {
+        wordsDist[wordsIndex[i]] = []
+      }
+
+      // 将城市列表匹配到对应字母的子列表中
+      for (let i = 0; i < list.length; i++) {
+        const item = list[i]
+        const word = spell(item.name, 'first', 'up')[0]
+        item.word = word
+        wordsDist[word].push(item)
+      }
+
+      // 将字母对象转换为数组
+      const cityList = []
+      const wordsList = []
+      for (const key in wordsDist) {
+        if (wordsDist[key].length === 0) continue
+        cityList.push({ word: key, list: wordsDist[key] })
+        wordsList.push(key)
+      }
+      this.setCityList(cityList)
+      this.setWordsList(wordsList)
+    },
+    // 选择搜索到的城市
+    selectCityBySearch (e, item) {
+      this.handleResetCity()
+      this.handleQueryCounty(null, item)
+    },
     // 监听搜索事件
-    handleSearch ({ value }) {
-      // console.log(value)
+    handleSearch: debounce(async function (value) {
+      this.toggleSearchList()
+      if (isEmpty(value)) {
+        this.searchList = []
+        return
+      }
+      const res = await queryPositionByCityName(value)
+      const color = '#FFCD00'
+      const reg = new RegExp(value, 'g')
+      const list = res.data.data
+      this.searchEmpty = list.length === 0
+      this.searchList = list.map(item => {
+        item.replaceName = item.shortName.replace(
+          reg,
+          `<span style="color:${color}">${value}</span>`
+        )
+        return item
+      })
+    }, 300),
+    // 监听搜索框获取焦点事件
+    handleFocus (value) {
+      this.focus = value
+      this.toggleSearchList()
+    },
+    // 判断是否显示搜索列表面板
+    toggleSearchList () {
+      if (this.focus && !isEmpty(this.searchValue)) {
+        this.showSearchList = true
+      } else {
+        setTimeout(() => {
+          this.showSearchList = false
+        }, 150)
+      }
     },
     // 选择热门城市
     handleSelectHotCity (e, city) {
@@ -149,6 +294,7 @@ export default {
     // 选择区县
     handleSelectCounty (e, county) {
       this.setCounty(county)
+      savePosition(county.code)
       setTimeout(() => {
         this.$router.go(-1)
       }, 150)
@@ -156,39 +302,13 @@ export default {
     // 重新选择区县
     handleResetCounty () {
       this.setCounty(null)
-    },
-    // 请求所有城市列表
-    async queryCityList () {
-      if (this.position.cityList.length > 0) return
-
-      const res = await queryPositionForCity()
-      const list = res.data.data
-
-      // 首字母字典对象
-      const wordsIndex = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      const wordsDist = {}
-      for (let i = 0; i < wordsIndex.length; i++) {
-        wordsDist[wordsIndex[i]] = []
-      }
-
-      // 将城市列表匹配到对应字母的子列表中
-      for (let i = 0; i < list.length; i++) {
-        const item = list[i]
-        const word = spell(item.name, 'first', 'up')[0]
-        item.word = word
-        wordsDist[word].push(item)
-      }
-
-      // 将字母对象转换为数组
-      const cityList = []
-      for (const key in wordsDist) {
-        cityList.push({ word: key, list: wordsDist[key] })
-      }
-
-      this.setCityList(cityList)
     }
   },
-  created () {
+  created: async function () {
+    // this.getCurrentPosition()
+    // const AMap = await AMapLoader()
+    // getCity(AMap)
+    this.getCurrentPosition()
     this.queryCityList()
   }
 }
@@ -212,6 +332,22 @@ export default {
     span{
       color: $main-text;
       font-weight: bold;
+    }
+  }
+
+  // 搜索结果列表容器
+  .search-list{
+    width: 100%;
+    height: calc(100vh - 50px);
+    position: fixed;
+    top: 50px;
+    left: 0;
+    background-color: #ffffff;
+    // box-shadow: 0 6px 11px -6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+
+    .index-cell{
+      border-color: $normal-text;
     }
   }
 

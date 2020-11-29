@@ -22,6 +22,8 @@ export const selectAccountInfo = account.selectAccountInfo
 // 城市信息模块
 export const queryPositionForCity = position.queryPositionForCity
 export const queryPositionForCounty = position.queryPositionForCounty
+export const savePosition = position.savePosition
+export const queryPositionByCityName = position.queryPositionByCityName
 
 // 订单模块
 export const getCar = order.getCar

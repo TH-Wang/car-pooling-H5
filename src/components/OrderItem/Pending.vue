@@ -5,8 +5,8 @@
     <div class="header">
       <!-- 主要信息 -->
       <div class="header-main">
-        <div class="time-num">08:00</div>
-        <div class="time-text">/ 今天</div>
+        <div class="time-num">{{time}}</div>
+        <div class="time-text">/ {{fromNow}}</div>
         <div class="car-info-item">
           <img src="@/assets/icons/order/location.png" alt="">
           <span>2.5km</span>
@@ -17,7 +17,7 @@
         </div>
       </div>
       <!-- 价格 -->
-      <div class="price"><span>￥</span>60</div>
+      <div class="price"><span>￥</span>{{record.cost}}</div>
     </div>
 
     <!-- 详细信息 -->
@@ -25,19 +25,19 @@
       <!-- 路线信息 -->
       <div class="line-info">
         <span class="start">起</span>
-        <span>重庆北站阳光花园小区</span>
+        <span>{{record.startAddr}}</span>
       </div>
       <div class="line-info gap">
         <span class="end">终</span>
-        <span>重庆西站春天小学</span>
+        <span>{{record.endAddr}}</span>
       </div>
       <!-- 途径点 -->
       <div v-if="hasWay" class="detail">
-        <span>途径点</span> | 重庆北站 - 紫金山地铁站 - 人民路红十字会 - 二七地铁站 - 重庆一中 - 医学院地铁站 - 京广路 - 崇山路 - 新城区路口 - 体育路 - 中兴路 - 体育村 - 重庆西站
+        <span>途径点</span> | {{passPointLis}}
       </div>
       <!-- 备注 -->
       <div class="detail">
-        <span>备注</span> | 周六周日不上班
+        <span>备注</span> | {{record.remark || '无'}}
       </div>
     </div>
 
@@ -46,7 +46,7 @@
       <!-- 用户信息 -->
       <div class="user-info">
         <div class="avatar"></div>
-        <div class="name ellipsis">杨女士</div>
+        <div class="name ellipsis">{{record.userName}}</div>
         <div class="social">
           <img src="@/assets/icons/order/like.png" alt="">
           <span>1920</span>
@@ -58,7 +58,8 @@
       </div>
       <!-- 拼单操作 -->
       <div class="book-order">
-        <div class="seat"><span>人数</span><span class="num-green">3</span></div>
+        <div class="seat"><span>人数</span>
+        <span :class="`num-${color}`">{{record.seatNum}}</span></div>
         <slot name="button"></slot>
       </div>
     </div>
@@ -66,6 +67,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 
 export default {
   props: {
@@ -76,6 +78,26 @@ export default {
     hasWay: {
       type: Boolean,
       drfault: false
+    },
+    color: {
+      type: String,
+      default: 'green'
+    }
+  },
+  computed: {
+    // 时间（小时分钟）
+    time () {
+      return moment(this.record.startTime).format('HH:mm')
+    },
+    // 距离现在多久
+    fromNow () {
+      return moment(this.record.startTime).fromNow()
+    },
+    // 途径点
+    passPointLis () {
+      return this.record.passPointLis
+        ? this.record.passPointLis.map(i => i.pointName).join('-')
+        : ''
     }
   }
 }

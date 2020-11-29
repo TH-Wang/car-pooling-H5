@@ -1,11 +1,13 @@
 <template>
   <div>
-    <!-- 待确认 -->
+    <!-- 乘客等待车主确认 -->
     <mini-button
-      v-if="status === 0"
-      :color="buttonColor"
+      v-if="status === 0 && isCustomer"
+      color="red"
       @click="handleClick"
-    >确认预约</mini-button>
+    >待车主确认</mini-button>
+
+    <!-- 乘客 -->
 
     <!-- 司机或乘客已确认 -->
     <mini-button
@@ -30,7 +32,15 @@ export default {
   },
   props: {
     // 0是待确定，1司机确定，2乘客确定，3司机取消，4乘客取消
-    status: null
+    status: {
+      type: Number,
+      default: 0
+    },
+    // 身份：customer，driver
+    identity: {
+      type: String,
+      default: 'customer'
+    }
   },
   data: () => ({
     menuVisible: false,
@@ -41,9 +51,24 @@ export default {
   }),
   computed: {
     ...mapState(['user']),
-    // 按钮按颜色
     buttonColor () {
-      return this.getIdentity() === 0 ? 'yellow' : 'green'
+      const color = { customer: 'yellow', driver: 'green' }
+      return color[this.identity]
+    },
+    // 乘客
+    isCustomer () {
+      /**
+       * 乘客确定
+       * 乘客等待车主确定
+       *
+       * 车主确定
+       * 车主等待乘客确定
+       */
+      return this.identity === 'customer'
+    },
+    // 车主
+    isDriver () {
+      return this.identity === 'driver'
     }
   },
   methods: {

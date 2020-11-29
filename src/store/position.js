@@ -12,7 +12,9 @@ export default {
     // 所有城市列表
     cityList: [],
     // 当前选择城市中所有区县的列表
-    countyList: []
+    countyList: [],
+    // 城市首字母列表
+    wordsList: []
   },
 
   mutations: {
@@ -32,6 +34,9 @@ export default {
     },
     setCountyList (state, list) {
       state.countyList = list
+    },
+    setWordsList (state, list) {
+      state.wordsList = list
     }
   },
 

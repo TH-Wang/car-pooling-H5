@@ -17,30 +17,32 @@
       <van-empty description="暂无预约订单，点击刷新" />
     </div>
     <!-- 预约订单 -->
-    <hitchhike-order
+    <pending-order
       v-else
       v-for="(item, index) in list"
       :key="index"
       :record="item"
       type="driver"
+      color="yellow"
     >
       <!-- 预约按钮 -->
       <template #button>
         <confirm-button
+          color="yellow"
           :status="item.status"
           @confirm="handleOrderConfirm($event, item.orderId)"
           @cancel="handleOrderCancel($event, item.orderId)"
           @report="handleOrderReport($event, item.orderId)"
         />
       </template>
-    </hitchhike-order>
+    </pending-order>
   </div>
 </template>
 
 <script>
 import { NoticeBar } from 'vant'
 import { getOrdering, confirmOrder } from '@/api'
-import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
+import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 
@@ -48,7 +50,7 @@ export default {
   mixins: [ButtonMenuMixin],
   components: {
     'van-notice-bar': NoticeBar,
-    'hitchhike-order': HitchhikeOrder,
+    'pending-order': PendingOrder,
     'confirm-button': ConfirmButton
   },
   data: () => ({
@@ -68,7 +70,12 @@ export default {
         startPage: 1,
         pageSize: 999
       })
-      const list = res.data.data.list
+      const { list } = res.data.data
+      this.list = list.map(item => {
+        item.startTime = item.passengerStartTime
+        item.seatNum = item.orderNum
+        return item
+      })
       this.list = list
       this.show = list.length > 0
     },
