@@ -1,48 +1,67 @@
 <template>
-  <div class="upload">
+  <div class="main">
+    <!-- 主体内容 -->
+    <div class="upload">
 
-    <!-- 按钮主体 -->
-    <div
-      v-show="!showPreview"
-      class="button-container"
-      @click="handleChooseImage"
-    >
-      <!-- 选择图片按钮 -->
-      <div :class="`button ${error ? 'button-error' : ''}`">
-        <van-icon name="plus" size=".20rem" />
-        <p>{{description}}</p>
+      <!-- 按钮主体 -->
+      <div
+        v-show="showButton"
+        class="button-container"
+        @click="handleChooseImage"
+      >
+        <!-- 选择图片按钮 -->
+        <div :class="`button ${error ? 'button-error' : ''}`">
+          <van-icon name="plus" size=".20rem" />
+          <p>{{description}}</p>
+        </div>
       </div>
+
+      <!-- 单张图片预览 -->
+      <van-image
+        v-show="showSinglePreview"
+        :src="singlePreviewSrc"
+        width="100%"
+        height="1.56rem"
+        fit="fill"
+        class="preview"
+        @click="handleChooseImage"
+      />
+
+      <!-- 清除图片角标 -->
+      <img
+        v-show="showSinglePreview"
+        class="close"
+        src="@/assets/icons/close-sub.png"
+        alt=""
+        @click="val = null"
+      />
+
+      <!-- 文件选择框 -->
+      <input
+        type="file"
+        ref="file"
+        accept="image/*"
+        :multiple="multiple"
+        hidden
+        @change="handleFileChange"
+      />
     </div>
 
-    <!-- 图片预览 -->
-    <van-image
-      v-show="showPreview"
-      :src="previewImage"
-      width="100%"
-      height="1.56rem"
-      fit="fill"
-      class="preview"
-      @click="handleChooseImage"
-    />
-
-    <!-- 清除图片角标 -->
-    <img
-      v-show="showPreview"
-      class="close"
-      src="@/assets/icons/close-sub.png"
-      alt=""
-      @click="val = null"
-    />
-
-    <!-- 文件选择框 -->
-    <input
-      type="file"
-      ref="file"
-      accept="image/*"
-      :multiple="multiple"
-      hidden
-      @change="handleFileChange"
-    />
+    <!-- 多选模式下的图片预览列表 -->
+    <div class="multiple" v-show="multiple && val.length > 0">
+      <div
+        class="multiple-item"
+        v-for="(item, index) in val"
+        :key="item">
+        <van-image class="multiple-item-image" :src="item" fit="cover" />
+        <!-- 清除图片角标 -->
+        <img
+          class="close"
+          src="@/assets/icons/close-sub.png"
+          @click="val.splice(index, 1)"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -84,13 +103,21 @@ export default {
     }
   },
   data: () => ({
-    previewImage: '',
     val: null,
     error: false
   }),
   computed: {
-    showPreview () {
-      return this.val !== null
+    // 是否显示选择图片按钮
+    showButton () {
+      return !this.multiple ? !this.showSinglePreview : true
+    },
+    // 单张图片预览的路径
+    singlePreviewSrc () {
+      return this.multiple ? null : this.val
+    },
+    // 是否显示单张图片的预览
+    showSinglePreview () {
+      return !this.multiple && !isEmpty(this.val)
     }
   },
   methods: {
@@ -102,34 +129,59 @@ export default {
     async handleFileChange (e) {
       // 清除必选的提示
       if (this.error) this.error = false
+      this.$toast.loading({
+        message: '上传中...',
+        duration: 1000000
+      })
+      try {
       // 获取文件
-      const files = e.target.files
-      if (this.multiple) {
-        this.val = files
-      } else {
-        const file = files[0]
-
+        const files = e.target.files
+        // 如果超出限制数量则终止上传
+        if (
+          this.multiple &&
+          (files.length + this.val.length) > this.maxCount
+        ) {
+          this.$toast.clear()
+          this.$toast.fail(`最多上传\n${this.maxCount}张图片`)
+          return
+        }
         // 上传服务器
-        this.handleUploadFile(file)
-
-        // 静态显示
-        // this.previewImage = await this.getFileBase64(file)
-        // const fileSize = this.getFileSize(file)
-        // this.$toast({ message: `图片大小为 ${fileSize}`, position: 'bottom' })
+        const res = await this.uploadFiles(files)
+        // 将结果复制给val
+        if (this.multiple) {
+          this.val.push(...res)
+        } else this.val = res[0]
+        // 反馈
+        this.$toast.clear()
+        this.$toast.success('上传成功')
+      } catch (error) {
+        console.log(error)
+        this.$toast.clear()
+        this.$toast.fail('上传失败\n请稍后重试')
       }
     },
-    // 发起文件上传请求
-    async handleUploadFile (file) {
+    // 并发进行文件上传
+    async uploadFiles (files) {
+      try {
+        const requestList = []
+        for (let i = 0; i < files.length; i++) {
+          requestList.push(this.handleUpload(files[i]))
+        }
+        const res = await Promise.all(requestList)
+        return Promise.resolve(res.map(i => i.data.data))
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    // 图片上传请求
+    async handleUpload (file) {
       const formData = new FormData()
       formData.append('file', file)
-      this.$toast.loading('上传中...')
       const res = await uploadFile(formData)
       if (res.data.status === 200) {
-        this.previewImage = res.data.data
-        this.val = res.data.data
-        this.$toast.clear()
+        return Promise.resolve(res)
       } else {
-        this.$toast.fail('上传失败' + '\n' + res.data.msg)
+        throw new Error('图片上传失败', file)
       }
     },
     // 获取file的base64编码
@@ -177,6 +229,9 @@ export default {
       this.val = null
     }
   },
+  created () {
+    if (this.multiple) this.val = []
+  },
   watch: {
     val: function (newVal) {
       this.$emit('change', newVal)
@@ -223,9 +278,37 @@ export default {
   .close{
     width: 0.24rem;
     height: 0.24rem;
-    position: absolute;
-    right: 0;
-    top: 0;
+  }
+}
+
+.close{
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.multiple{
+  width: 3.45rem;
+  margin: .15rem auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .15rem .12rem;
+
+  &-item{
+    height: .8rem;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+
+    &-image{
+      width: 100%;
+      height: 100%;
+    }
+
+    .close{
+      width: 0.2rem;
+      height: 0.2rem;
+    }
   }
 }
 </style>

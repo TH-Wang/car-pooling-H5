@@ -42,7 +42,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { userDrivingCard } from '@/api'
+import { userDrivingCard, getUserDetail } from '@/api'
 import { Form, Field, Upload } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import formButtonMixin from '@/mixins/form-button-mixin'
@@ -68,8 +68,11 @@ export default {
       const data = { ...values, userId }
       this.$toast.loading('正在提交...')
       const res = await userDrivingCard(data)
+      this.$toast.clear()
       if (res.data.status === 200) {
-        this.$toast.clear()
+        // 更新用户信息
+        const res = await getUserDetail()
+        this.$store.commit('setUserInfo', res.data.data)
         await this.$dialog.alert({
           title: '提交成功',
           message: '请等待后台管理员的审核，审核通过后，便成为认证车主'

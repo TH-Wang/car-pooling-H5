@@ -1,8 +1,10 @@
 import axios from './http'
+import store from '@/store'
 
 export default {
   sendCode,
   userCodeLogin,
+  getUserDetail,
   updateUserInfo,
   updatePhoneToOne,
   updatePhoneToTwo
@@ -24,6 +26,12 @@ function userCodeLogin ({ phone, code }) {
     method: 'POST',
     params: { userPhone: phone, code }
   })
+}
+
+// 获取用户个人信息
+function getUserDetail () {
+  const userId = store.state.user.info.id
+  return axios.get(`/user/getUserDetail?userId=${userId}`)
 }
 
 // 修改个人信息

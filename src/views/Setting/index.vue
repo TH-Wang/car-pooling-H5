@@ -119,7 +119,7 @@
 <script>
 import { mapState } from 'vuex'
 import { Image, ImagePreview } from 'vant'
-import { updateUserInfo, uploadFile } from '@/api'
+import { getUserDetail, updateUserInfo, uploadFile } from '@/api'
 
 export default {
   components: {
@@ -146,15 +146,22 @@ export default {
       const file = e.target.files[0]
       const formData = new FormData()
       formData.append('file', file)
-      this.$toast.loading('上传中...')
-      const res = await uploadFile(formData)
-      if (res.data.status === 200) {
-        this.$store.commit('setUserInfo', {
-          key: 'headimg',
-          value: res.data.data
-        })
+      try {
+        this.$toast.loading('上传中...')
+        // 上传头像图片
+        const res = await uploadFile(formData)
+        // 请求修改头像
+        const updateRes = await updateUserInfo({ headimg: res.data.data })
         this.$toast.clear()
-        this.$toast.success('修改成功')
+        if (updateRes.data.status === 200) {
+          // 更新用户信息
+          await this.resetUserInfo()
+          this.$toast.success('修改成功')
+        } else throw new Error('请求头像失败')
+      } catch (error) {
+        console.log(error)
+        this.$toast.clear()
+        this.$toast.fail('修改失败\n请稍后再试')
       }
     },
     // 点击设置昵称按钮
@@ -170,14 +177,16 @@ export default {
       const username = this.username
       this.$toast.loading('修改中...')
       const res = await updateUserInfo({ username })
+      this.$toast.clear()
       if (res.data.msg === '成功') {
-        this.$store.commit('setUserInfo', {
-          key: 'username',
-          value: username
-        })
-        this.$toast.clear()
+        await this.resetUserInfo()
         this.$toast.success('修改成功')
-      }
+      } else this.$toast.fail('修改失败\n请稍后再试')
+    },
+    // 更新个人信息
+    async resetUserInfo () {
+      const res = await getUserDetail()
+      this.$store.commit('setUserInfo', res.data.data)
     },
     // 进入认证页面
     handleLinkAuth (e, type, url) {

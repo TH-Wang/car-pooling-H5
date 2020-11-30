@@ -18,12 +18,10 @@ export default {
       localStorage.setItem('phone', phone)
       localStorage.setItem('info', JSON.stringify(info))
     },
-    setUserInfo (state, { key, value }) {
-      state[key] = value
-      // 更新localStorage
-      const update = info
-      update[key] = value
-      localStorage.setItem('info', JSON.stringify(update))
+    setUserInfo (state, data) {
+      const newInfo = Object.assign(state.info, data)
+      state.info = newInfo
+      localStorage.setItem('info', JSON.stringify(newInfo))
     }
   },
 

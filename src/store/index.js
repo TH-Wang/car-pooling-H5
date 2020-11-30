@@ -6,6 +6,8 @@ import user from './user'
 import account from './account'
 import position from './position'
 import search from './search'
+import release from './release'
+import history from './history'
 
 Vue.use(Vuex)
 
@@ -22,6 +24,8 @@ export default new Vuex.Store({
     user,
     account,
     position,
-    search
+    search,
+    release,
+    history
   }
 })

@@ -48,7 +48,10 @@
     <div class="user">
       <!-- 用户信息 -->
       <div class="user-info">
-        <div class="avatar"></div>
+        <!-- 头像 -->
+        <div class="avatar">
+          <van-image :src="record.headimg" width="100%" height="100%" fit="cover" round />
+        </div>
         <div class="name ellipsis">{{record.userName}}</div>
         <div class="social">
           <img src="@/assets/icons/order/like.png" alt="">
@@ -71,8 +74,12 @@
 <script>
 import { isEmpty } from 'lodash'
 import moment from 'moment'
+import { Image } from 'vant'
 
 export default {
+  components: {
+    'van-image': Image
+  },
   props: {
     record: {
       type: Object,

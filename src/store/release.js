@@ -2,7 +2,13 @@
 
 export default {
   state: {
-    startAddr: {},
-    endAddr: {}
+    startAddr: { name: '' },
+    endAddr: { name: '' }
+  },
+
+  mutations: {
+    setReleaseAddr (state, { type, value }) {
+      state[type] = value
+    }
   }
 }

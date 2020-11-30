@@ -45,7 +45,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { userIdentityCard } from '@/api'
+import { userIdentityCard, getUserDetail } from '@/api'
 import { Form, Field, Upload } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import formButtonMixin from '@/mixins/form-button-mixin'
@@ -71,8 +71,11 @@ export default {
       const data = { ...values, userId }
       this.$toast.loading('正在验证...')
       const res = await userIdentityCard(data)
+      this.$toast.clear()
       if (res.data.status === 200) {
-        this.$toast.clear()
+        // 更新用户信息
+        const res = await getUserDetail()
+        this.$store.commit('setUserInfo', res.data.data)
         this.$toast.success('验证成功')
         this.$router.go(-1)
       } else {

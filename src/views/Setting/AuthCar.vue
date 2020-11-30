@@ -59,7 +59,7 @@
 import { mapState } from 'vuex'
 import { Collapse, CollapseItem } from 'vant'
 import { max, isEmpty } from 'lodash'
-import { userCarVerification } from '@/api'
+import { userCarVerification, getUserDetail } from '@/api'
 import { Form, Item, Upload } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import formConfig from './carConfig'
@@ -115,6 +115,9 @@ export default {
           message: `第${failArr.join('，')}辆车提交失败，请检查是否为信息缺漏，或稍后再试`
         })
       }
+      // 更新用户信息
+      const res = await getUserDetail()
+      this.$store.commit('setUserInfo', res.data.data)
     },
     // 折叠表单发生变化
     handleCollapseChange (value) {

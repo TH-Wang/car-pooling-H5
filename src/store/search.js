@@ -1,7 +1,7 @@
 export default {
   state: {
-    startAddr: null,
-    endAddr: null
+    startAddr: { name: '' },
+    endAddr: { name: '' }
   },
 
   mutations: {

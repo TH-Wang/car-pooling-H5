@@ -19,7 +19,7 @@
 
         <!-- 搜索卡片 -->
         <div class="search-card-wrap">
-          <search-card ref="driver_search_card" :hasButton="false" v-model="addr" />
+          <search-card search-type="release" ref="driver_search_card" :hasButton="false"/>
         </div>
 
         <driver-form-body ref="driver" @submit="handleSubmit" />
@@ -31,7 +31,7 @@
 
         <!-- 搜索卡片 -->
         <div class="search-card-wrap">
-          <search-card ref="customer_search_card" :hasButton="false" v-model="addr" />
+          <search-card search-type="release" ref="customer_search_card" :hasButton="false"/>
         </div>
 
         <customer-form-body ref="customer" @submit="handleSubmit" />
@@ -72,15 +72,10 @@ export default {
     'driver-form-body': DriverFormBody
   },
   data: () => ({
-    // 起止点
-    addr: {
-      startAddr: '',
-      endAddr: ''
-    },
     tabId: 0
   }),
   computed: {
-    ...mapState(['user', 'position'])
+    ...mapState(['user', 'position', 'release'])
   },
   methods: {
     // 提交
@@ -143,11 +138,23 @@ export default {
 
       // 出发点、目的地、途径点
       const passPointList = []
-      const { startAddr, endAddr } = this.addr
+      const { startAddr, endAddr } = this.release
       // 出发点
-      passPointList.push({ pointName: startAddr, sort: 1, type: 1 })
+      passPointList.push({
+        pointName: startAddr.name,
+        lon: startAddr.location.lng,
+        lat: startAddr.location.lat,
+        sort: 1,
+        type: 1
+      })
       // 目的地
-      passPointList.push({ pointName: endAddr, sort: 2, type: 3 })
+      passPointList.push({
+        pointName: endAddr.name,
+        lon: endAddr.location.lng,
+        lat: endAddr.location.lat,
+        sort: 2,
+        type: 3
+      })
       data.passPointList = passPointList
 
       // 订单状态（进行中）

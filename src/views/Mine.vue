@@ -19,7 +19,7 @@
       <div class="header-tag">
         <div v-if="getConfirm('idnumstatus')" class="header-tag-item-green">身份证认证</div>
         <div v-else class="header-tag-item-gray">未身份认证</div>
-        <div v-if="getConfirm('carstatus')" class="header-tag-item-blue">车主认证</div>
+        <div v-if="getConfirm('car')" class="header-tag-item-blue">车主认证</div>
         <div v-if="getConfirm('group')" class="header-tag-item-yellow">群主认证</div>
         <div v-if="getConfirm('etc')" class="header-tag-item-red">站长认证</div>
         <div v-if="getConfirm('viceAdministrator')" class="header-tag-item-red">副站长认证</div>
@@ -244,7 +244,14 @@ export default {
     },
     // 身份判断
     getConfirm (type) {
-      return this.account.info[type] === 'YES'
+      // 验证车主认证
+      if (type === 'car') {
+        const { driverlicensestatus, carstatus } = this.user.info
+        return driverlicensestatus === 'YES' && carstatus === 'YES'
+      } else {
+        // 其他认证
+        return this.user.info[type] === 'YES'
+      }
     },
     handlePay () {
       console.log('[支付欠费]')

@@ -162,11 +162,18 @@ const routes = [
         name: 'SelectCity',
         component: () => import(/* webpackChunkName: "SelectCity" */ '@/views/SelectCity.vue')
       },
-      { // 搜索位置
-        path: '/common/search/location',
-        name: 'SearchLocation',
+      { // 搜索出发点位置
+        path: '/common/search/pos/start',
+        name: 'SearchPosStart',
         component: () => import(
-          /* webpackChunkName: "SearchLocation" */ '@/views/SearchLocation.vue'
+          /* webpackChunkName: "SearchStartPos" */ '@/views/SearchPosStart.vue'
+        )
+      },
+      { // 搜索目的地位置
+        path: '/common/search/pos/end',
+        name: 'SearchPosEnd',
+        component: () => import(
+          /* webpackChunkName: "SearchStartPos" */ '@/views/SearchPosEnd.vue'
         )
       },
       { // 附近的拼车群

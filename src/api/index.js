@@ -8,10 +8,12 @@ import group from './group'
 import myJourney from './myJourney'
 import file from './file'
 import verification from './verification'
+import complaint from './complaint'
 
 // 用户、登录模块
 export const sendCode = user.sendCode
 export const userCodeLogin = user.userCodeLogin
+export const getUserDetail = user.getUserDetail
 export const updateUserInfo = user.updateUserInfo
 export const updatePhoneToOne = user.updatePhoneToOne
 export const updatePhoneToTwo = user.updatePhoneToTwo
@@ -55,3 +57,7 @@ export const uploadFile = file.uploadFile
 export const userIdentityCard = verification.userIdentityCard
 export const userDrivingCard = verification.userDrivingCard
 export const userCarVerification = verification.userCarVerification
+
+// 投诉模块
+export const addComplaint = complaint.addComplaint
+export const userComplaintDetail = complaint.userComplaintDetail

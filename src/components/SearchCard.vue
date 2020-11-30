@@ -13,8 +13,9 @@
         <!-- 起始点 -->
         <div class="address-bar dotted-border">
           <input
-            :value="useStore ? search.startAddr : value.startAddr"
+            :value="isCommon ? search.startAddr.name : release.startAddr.name"
             @input="handleChange($event, 'startAddr')"
+            @click="handleLinkPos($event, 'start')"
             class="address-bar-input"
             type="text"
             placeholder="请输入起点"
@@ -30,8 +31,9 @@
         <!-- 目的地 -->
         <div class="address-bar">
           <input
-            :value="useStore ? search.endAddr : value.endAddr"
+            :value="isCommon ? search.endAddr.name : release.endAddr.name"
             @input="handleChange($event, 'endAddr')"
+            @click="handleLinkPos($event, 'end')"
             class="address-bar-input"
             type="text"
             placeholder="您要去哪儿  地址/街道/酒店/景点"
@@ -79,6 +81,11 @@ export default {
     event: 'change'
   },
   props: {
+    // 搜索类型 common: 公用，release: 发布页面
+    searchType: {
+      type: String,
+      default: 'common'
+    },
     // ['default', 'icon-right']
     type: {
       type: String,
@@ -95,7 +102,7 @@ export default {
     // 是否使用 store 中缓存的起止点信息
     useStore: {
       type: Boolean,
-      default: false
+      default: true
     },
     // 下部分均与搜索按钮相关
     hasButton: {
@@ -116,9 +123,13 @@ export default {
     }
   },
   computed: {
-    ...mapState(['search']),
+    ...mapState(['search', 'release']),
     defaultType () {
       return this.type === 'default'
+    },
+    // 是否是公用类型
+    isCommon () {
+      return this.searchType === 'common'
     }
   },
   data: () => ({
@@ -138,6 +149,10 @@ export default {
         position[type] = value
         this.$emit('change', position)
       }
+    },
+    // 点击地址输入框
+    handleLinkPos (e, type) {
+      this.$router.push(`/common/search/pos/${type}?type=${this.searchType}`)
     },
     // 点击搜索按钮
     handleSearch () {
