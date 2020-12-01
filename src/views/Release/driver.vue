@@ -60,12 +60,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
 import { isEmpty } from 'lodash'
+import { userCarDetail } from '@/api'
 import { Form, Item, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import ChooseComboLayer from '@/components/Layer/ChooseCombo'
-import { driver as driverConfig } from './config'
+import { getDriverOpts } from './config'
 
 export default {
   components: {
@@ -88,13 +90,31 @@ export default {
       { id: 6, label: '旅游包车' }
     ],
     // 表单列表
-    formOptions: driverConfig,
+    formOptions: {},
     agreePact: true,
     agreePackage: false,
     // 选择套餐
     combo: {}
   }),
+  computed: {
+    ...mapState(['user']),
+    carList () {
+      return this.user.carList.map(item => {
+        const label = item.carBrand + ' ' + item.carModel
+        return { id: item.id, label }
+      })
+    }
+  },
   methods: {
+    // 获取所有的车辆信息
+    async getCarInfo () {
+      if (this.user.carList.length === 0) {
+        const res = await userCarDetail()
+        this.$store.commit('setCarInfo', res.data.data)
+        // 赋值到表单配置上
+        this.formOptions = getDriverOpts(this.carList)
+      }
+    },
     // 提交
     async handleSubmit () {
       // 表单校验并获取值
@@ -137,6 +157,9 @@ export default {
     handleChangeCombo (value) {
       this.combo = value
     }
+  },
+  created: async function () {
+    this.getCarInfo()
   },
   watch: {
     agreePackage: function (newVal) {

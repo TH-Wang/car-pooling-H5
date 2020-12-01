@@ -57,6 +57,7 @@ export const uploadFile = file.uploadFile
 export const userIdentityCard = verification.userIdentityCard
 export const userDrivingCard = verification.userDrivingCard
 export const userCarVerification = verification.userCarVerification
+export const userCarDetail = verification.userCarDetail
 
 // 投诉模块
 export const addComplaint = complaint.addComplaint

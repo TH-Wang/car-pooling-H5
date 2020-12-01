@@ -48,11 +48,11 @@
     </div>
 
     <!-- 多选模式下的图片预览列表 -->
-    <div class="multiple" v-show="multiple && val.length > 0">
+    <div class="multiple" v-if="multiple">
       <div
         class="multiple-item"
         v-for="(item, index) in val"
-        :key="item">
+        :key="item" >
         <van-image class="multiple-item-image" :src="item" fit="cover" />
         <!-- 清除图片角标 -->
         <img

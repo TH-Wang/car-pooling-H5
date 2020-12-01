@@ -2,7 +2,7 @@
 
 // const userPhone = store.state.user.info.phone
 
-export const driver = {
+export const getDriverOpts = (carConfig = []) => ({
   // 拼车
   1: [
   //   {
@@ -29,7 +29,7 @@ export const driver = {
       name: 'vehicleType',
       label: '车型',
       placeholder: '请选择车型',
-      columns: [{ id: 0, label: '小面包车' }, { id: 1, label: '轿车' }, { id: 2, label: 'SUV' }],
+      columns: carConfig,
       rules: [{ required: true }]
     }, {
       id: '1-4',
@@ -101,7 +101,7 @@ export const driver = {
     name: 'vehicleType',
     label: '车型',
     placeholder: '请选择车型',
-    columns: [{ id: 0, label: '小面包车' }, { id: 1, label: '轿车' }, { id: 2, label: 'SUV' }]
+    columns: carConfig
   }, {
     id: '2-5',
     type: 'field',
@@ -153,7 +153,7 @@ export const driver = {
       name: 'vehicleType',
       label: '车型',
       placeholder: '请选择车型',
-      columns: [{ id: 0, label: '小面包车' }, { id: 1, label: '轿车' }, { id: 2, label: 'SUV' }]
+      columns: carConfig
     }, {
       id: '3-3',
       type: 'field',
@@ -197,7 +197,7 @@ export const driver = {
     name: 'vehicleType',
     label: '车型',
     placeholder: '请选择车型',
-    columns: [{ id: 0, label: '小面包车' }, { id: 1, label: '轿车' }, { id: 2, label: 'SUV' }]
+    columns: carConfig
   }, {
     id: '4-4',
     type: 'field',
@@ -213,7 +213,7 @@ export const driver = {
     label: 'A费',
     placeholder: '请设置费用'
   }]
-}
+})
 
 export const customer = {
   // 拼车

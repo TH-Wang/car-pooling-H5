@@ -148,8 +148,8 @@ export default {
         publishType: 1,
         // 1车主发布，2乘客发布
         orderType: _this_.identity === 0 ? 1 : 2,
-        startAddr,
-        endAddr
+        startAddr: startAddr.name,
+        endAddr: endAddr.name
       }
       this.$router.push({ path: '/common/searchline/list', query })
     },

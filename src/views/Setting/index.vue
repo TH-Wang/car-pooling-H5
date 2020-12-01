@@ -93,7 +93,7 @@
     </div>
 
     <!-- 车辆认证 -->
-    <div class="cell" @click="handleLinkAuth($event, 'carstatus', '/common/auth/car')">
+    <div class="cell" @click="handleLinkAuth($event, 'carstatus', '/common/auth/car', true)">
       <div class="cell-left">
         <img src="@/assets/icons/setting/car.png" alt="">车辆认证
       </div>
@@ -189,8 +189,8 @@ export default {
       this.$store.commit('setUserInfo', res.data.data)
     },
     // 进入认证页面
-    handleLinkAuth (e, type, url) {
-      if (!this.Authed(type)) this.$router.push(url)
+    handleLinkAuth (e, type, url, skip) {
+      if (!this.Authed(type) || skip) this.$router.push(url)
     },
     // 判断是否已认证
     Authed (type) {

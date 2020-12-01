@@ -94,8 +94,8 @@ export default {
         publishType: 5,
         // 1车主发布，2乘客发布
         orderType: 1,
-        startAddr,
-        endAddr
+        startAddr: startAddr.name,
+        endAddr: endAddr.name
       }
       this.$router.push({ path: '/common/searchline/list', query })
     }

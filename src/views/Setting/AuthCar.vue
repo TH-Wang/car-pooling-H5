@@ -32,9 +32,9 @@
               :options="item"
             />
             <div class="auth-title">请上传车辆行驶证</div>
-            <custom-upload name="license" description="请上传车辆行驶证" required/>
+            <custom-upload name="carTravelPhoto" description="请上传车辆行驶证" required/>
             <div class="auth-title">车正面照片</div>
-            <custom-upload name="car_front" description="请上传车正面照片" required/>
+            <custom-upload name="carPhoto" description="请上传车正面照片" required/>
           </custom-form>
         </div>
       </van-collapse-item>
@@ -59,7 +59,7 @@
 import { mapState } from 'vuex'
 import { Collapse, CollapseItem } from 'vant'
 import { max, isEmpty } from 'lodash'
-import { userCarVerification, getUserDetail } from '@/api'
+import { userCarVerification, getUserDetail, userCarDetail } from '@/api'
 import { Form, Item, Upload } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import formConfig from './carConfig'
@@ -76,32 +76,54 @@ export default {
   data: () => ({
     activeCollapse: [1],
     count: new Array(3).fill(null),
-    forms: [formConfig]
+    forms: new Array(3).fill(formConfig)
   }),
   computed: {
     ...mapState(['user'])
   },
   methods: {
+    // 更新显示已认证的车辆信息
+    async getCarInfo () {
+      if (this.user.carList.length === 0) {
+        // 发送请求
+        const res = await userCarDetail()
+        // 保存到内存中
+        this.$store.commit('setCarInfo', res.data.data)
+      }
+    },
+    // 更新已认证车辆信息
+    updateAuthedCars () {
+      const authedLen = this.user.carList.length
+      for (let i = 0; i < authedLen; i++) {
+        const itemForm = `form${i + 1}`
+        if (this.$refs[itemForm]) {
+          this.$refs[itemForm][0].setValues(this.user.carList[i])
+        }
+      }
+    },
+    // 提交车辆信息
     async handleSubmit () {
       const failArr = []
       const userId = this.user.info.id
       // 循环提交
-      for (let i = 0; i < this.count.length; i++) {
+      const init = this.user.carList.length
+      for (let i = init; i < this.count.length; i++) {
         const nowCar = i + 1
         // 如果当前车辆信息填写表单还没有渲染，则跳过
         if (!this.$refs['form' + nowCar]) continue
         // 获取表单信息
         const { err, values } = this.$refs['form' + nowCar][0].submit()
         // 表单校验有错误
-        if (err) continue
-        else {
+        if (err) {
+          failArr.push(nowCar)
+          continue
+        } else {
           // 发起请求
           this.$toast.clear()
           this.$toast.loading(`正在校验并提交第${nowCar}辆车...`)
           const data = { ...values, userId }
           const res = await userCarVerification(data)
           if (res.data.status === 200) {
-            this.$refs[`form${nowCar}`][0].clear()
             this.$toast.success(`第${nowCar}辆车提交成功`)
           } else {
             failArr.push(nowCar)
@@ -118,6 +140,8 @@ export default {
       // 更新用户信息
       const res = await getUserDetail()
       this.$store.commit('setUserInfo', res.data.data)
+      // 更新认证车辆信息
+      await this.getCarInfo()
     },
     // 折叠表单发生变化
     handleCollapseChange (value) {
@@ -152,6 +176,13 @@ export default {
         return true
       }
     }
+  },
+  mounted: async function () {
+    await this.getCarInfo()
+    this.updateAuthedCars()
+  },
+  updated () {
+    this.updateAuthedCars()
   }
 }
 </script>

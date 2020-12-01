@@ -6,7 +6,8 @@ export default {
   state: {
     token: storageToken || '',
     loginPhone: phone || '',
-    info: info || {}
+    info: info || {},
+    carList: []
   },
 
   mutations: {
@@ -22,13 +23,16 @@ export default {
       const newInfo = Object.assign(state.info, data)
       state.info = newInfo
       localStorage.setItem('info', JSON.stringify(newInfo))
+    },
+    setCarInfo (state, list) {
+      state.carList = list
     }
   },
 
   getters: {
     // 获取用户身份：0乘客，1车主
     identity (state) {
-      return state.info.carstatus === 'YES' ? 1 : 0
+      return state.info.carstatus === 'YES' && state.info.driverlicensestatus === 'YES' ? 1 : 0
     }
   }
 }

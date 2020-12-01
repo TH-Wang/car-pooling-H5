@@ -5,7 +5,10 @@
       <!-- 指示图标 -->
       <div class="guide-box">
         <img class="point" src="@/assets/icons/start-point.png" alt="">
-        <img v-if="defaultType" class="switch" src="@/assets/icons/switch.png" alt="">
+        <!-- 转换起止点按钮 -->
+        <img v-if="defaultType" class="switch"
+          src="@/assets/icons/switch.png" alt=""
+          @click="handleSwitchPos">
         <img class="point" src="@/assets/icons/end-point.png" alt="">
       </div>
       <!-- 地址显示栏 -->
@@ -157,6 +160,11 @@ export default {
     // 点击搜索按钮
     handleSearch () {
       if (this.validate()) { this.$emit('search') }
+    },
+    // 切换起止点位置
+    handleSwitchPos () {
+      const commitType = this.isCommon ? 'switchSearchAddr' : 'switchReleaseAddr'
+      this.$store.commit(commitType)
     },
     validate () {
       const value = this.useStore ? this.search : this.value
