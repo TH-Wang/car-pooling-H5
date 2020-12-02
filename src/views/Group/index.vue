@@ -8,7 +8,8 @@
       @click-search="$router.push('/common/group/search')"
     >
       <template #left>
-        {{location}} <van-icon name="arrow" />
+        <span @click="$router.push('/common/city')">{{location}}</span>
+        <van-icon name="arrow" />
       </template>
       <template #right>
         <van-icon name="service" size=".18rem" />
@@ -74,6 +75,7 @@ import Affix from '@/components/Affix'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
+  name: 'Group',
   mixins: [ListMixin],
   components: {
     'nav-bar-search': NavBarSearch,

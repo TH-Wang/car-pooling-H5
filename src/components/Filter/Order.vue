@@ -2,25 +2,24 @@
   <div>
     <van-dropdown-menu class="dropdown" active-color="#FFCD00">
 
-      <van-dropdown-item :title="getTitle('time')" :value="values.time"
-        @change="handleChange($event, 'time')" :options="options.time" />
-
-      <van-dropdown-item :title="getTitle('seat')" :value="values.seat"
-        @change="handleChange($event, 'seat')" :options="options.seat" />
-
-      <van-dropdown-item :title="getTitle('font')" :value="values.font"
-        @change="handleChange($event, 'font')" :options="options.font" />
-
-      <van-dropdown-item :title="getTitle('sort')" :value="values.sort"
-        @change="handleChange($event, 'sort')" :options="options.sort" />
+      <van-dropdown-item
+        v-for="(item, index) in filterType"
+        :key="index"
+        :title="getTitle(item)"
+        :value="values[item]"
+        @change="handleChange($event, item)"
+        :options="options[item]"
+      />
 
     </van-dropdown-menu>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import { DropdownMenu, DropdownItem } from 'vant'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 
 export default {
   components: {
@@ -38,45 +37,41 @@ export default {
     }
   },
   data: () => ({
+    filterType: ['area', 'time', 'cost', 'seat'],
     values: {
+      area: 0,
       time: 0,
-      seat: 0,
-      font: 0,
-      sort: 0
+      cost: 0,
+      seat: 0
     },
     title: {
-      time: '出发时间',
-      seat: '余座',
-      font: '字体',
-      sort: '排序'
+      area: '地区',
+      time: '时间',
+      cost: '车价',
+      seat: '余座'
     },
     options: {
-      time: [
-        { text: '全部', value: 0 },
-        { text: '今天(01日)', value: 1 },
-        { text: '明天(02日)', value: 2 },
-        { text: '后天(04日)', value: 3 }
+      area: [],
+      time: [],
+      cost: [
+        { text: '默认', value: 0 },
+        { text: '从低到高', value: 1 },
+        { text: '从高到低', value: 2 }
       ],
       seat: [
         { text: '全部', value: 0 },
         { text: '2座以上', value: 1 },
         { text: '3座以上', value: 2 },
         { text: '4座以上', value: 3 }
-      ],
-      font: [
-        { text: '正常', value: 0 },
-        { text: '稍小', value: 1 },
-        { text: '稍大', value: 2 },
-        { text: '特大', value: 3 }
-      ],
-      sort: [
-        { text: '默认排序', value: 0 },
-        { text: '最早出发', value: 1 },
-        { text: '距离最近', value: 2 }
       ]
     }
   }),
+  computed: {
+    ...mapState(['filters', 'position'])
+  },
   methods: {
+    ...mapMutations(['updateDateOptions']),
+    ...mapActions(['updateAreaOptions']),
     // 获取筛选的标题
     getTitle (type) {
       return this.values[type] === 0
@@ -91,8 +86,24 @@ export default {
       this.values[type] = value
     }
   },
-  mounted () {
-    console.log(this.values)
+  created: async function () {
+    if (
+      !isEmpty(this.position.city) &&
+      this.filters.currentCityCode !== this.position.city.code
+    ) {
+      await this.updateAreaOptions(this.position.city.code)
+    }
+    if (moment() !== this.filters.currentDate) {
+      this.updateDateOptions()
+    }
+    this.options.area = this.filters.areaOptions
+    this.options.time = this.filters.timeOptions
+  },
+  watch: {
+    'position.city': async function (newVal) {
+      await this.updateAreaOptions(newVal.code)
+      this.options.area = this.filters.areaOptions
+    }
   }
 }
 </script>

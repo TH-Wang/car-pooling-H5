@@ -2,7 +2,9 @@
   <div class="transparent-nav-page">
     <!-- 搜索框导航栏 -->
     <nav-bar-search :mode="navbarMode" button @click-search="handleClickSearch">
-      <template #right>定位城市</template>
+      <template #right>
+        <span @click="$router.push('/common/city')">{{location}}</span>
+      </template>
     </nav-bar-search>
 
     <!-- 背景 -->

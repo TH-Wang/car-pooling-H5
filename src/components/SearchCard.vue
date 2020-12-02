@@ -51,7 +51,7 @@
         </div>
       </div>
       <!-- 右侧切换按钮 -->
-      <div v-if="!defaultType" class="switch-button">
+      <div v-if="!defaultType" class="switch-button" @click="handleSwitchPos">
         <img src="@/assets/icons/switch.png" alt="">
       </div>
     </div>

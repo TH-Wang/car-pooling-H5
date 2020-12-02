@@ -17,7 +17,7 @@
       <div class="car-info">
         <div v-if="showCar" class="car-info-item">
           <img src="@/assets/icons/order/car.png" alt="">
-          <span>奔驰E300l</span>
+          <span>{{record.vehicleType}}</span>
         </div>
         <div class="car-info-item">
           <img src="@/assets/icons/order/location.png" alt="">

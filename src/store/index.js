@@ -8,6 +8,7 @@ import position from './position'
 import search from './search'
 import release from './release'
 import history from './history'
+import filters from './filters'
 
 Vue.use(Vuex)
 
@@ -26,6 +27,7 @@ export default new Vuex.Store({
     position,
     search,
     release,
-    history
+    history,
+    filters
   }
 })

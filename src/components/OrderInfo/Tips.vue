@@ -1,5 +1,5 @@
 <template>
-  <div class="tips" :style="`text-align: ${align}`">
+  <div class="tips" :style="`text-align: ${align}`" @click="handleClick">
     <p v-for="(item, index) in tips" :key="index" v-html="item"></p>
   </div>
 </template>
@@ -11,6 +11,11 @@ export default {
     align: {
       type: String,
       default: 'left'
+    }
+  },
+  methods: {
+    handleClick (e) {
+      this.$emit('click', e.target.id)
     }
   }
 }

@@ -31,11 +31,12 @@
     <main-button type="hollow" color="gray" center bold>退订座位</main-button>
 
     <!-- 温馨提示 -->
-    <order-info-tips :tips="tips" />
+    <order-info-tips :tips="tips" @click="handleLink" />
   </div>
 </template>
 
 <script>
+import moment from 'moment'
 import { queryByOrderId } from '@/api'
 import { Field, Phone, Tips } from '@/components/OrderInfo/index'
 import Feedback from '@/components/Feedback'
@@ -54,26 +55,38 @@ export default {
   data: () => ({
     orderId: null,
     record: { passPointLis: [] },
-    tips: [
-      '温馨提示',
-      '1.如您行程改变，请尽可能提前退订，<span style="color:#FFCD00">07月09日 08:00</span style="color:#FFCD00">前可<span style="color:#FFCD00">无责退订</span>。',
-      '2.请在上车后，将分摊费用直接支付车主。'
-    ]
+    refundTime: ''
   }),
   computed: {
     passPointLis () {
       return this.record.passPointLis.map(i => i.pointName).join('-')
+    },
+    tips () {
+      const refundTime = this.refundTime
+      return [
+        '温馨提示',
+        `1.如您行程改变，请尽可能提前退订，
+          <span style="color:#FFCD00">${refundTime}</span>前可
+          <span style="color:#FFCD00" id="NO_LIABILITY">无责退订</span>。`,
+        '2.请在上车后，将分摊费用直接支付车主。'
+      ]
     }
   },
   methods: {
     async handleRequest () {
       const res = await queryByOrderId(this.orderId)
       this.record = res.data.data
+    },
+    handleLink (type) {
+      if (type === 'NO_LIABILITY') {
+        this.$router.push('/common/description?type=liability')
+      }
     }
   },
   created () {
     this.orderId = this.$route.query.id
     this.handleRequest()
+    this.refundTime = moment().add(10, 'minutes').format('MM月DD日 HH:mm')
   },
   mounted () {
     this.$dialog.alert({

@@ -2,12 +2,25 @@
   <div>
     <!-- 乘客等待车主确认 -->
     <mini-button
-      v-if="status === 0 && isCustomer"
-      color="red"
-      @click="handleClick"
+      v-if="status === 5 && isCustomer"
+      :color="color.wait"
     >待车主确认</mini-button>
+    <!-- 乘客确认 -->
+    <mini-button
+      v-if="status === 6 && isCustomer"
+      :color="color.confirm" @click="$emit('confirm', 2)"
+    >立即确认</mini-button>
 
-    <!-- 乘客 -->
+    <!-- 车主确认 -->
+    <mini-button
+      v-if="status === 5 && isDriver"
+      :color="color.confirm" @click="$emit('confirm', 1)"
+    >立即确认</mini-button>
+    <!-- 车主等待乘客确认 -->
+    <mini-button
+      v-if="status === 6 && isDriver"
+      :color="color.wait"
+    >待乘客确认</mini-button>
 
     <!-- 司机或乘客已确认 -->
     <mini-button
@@ -15,7 +28,7 @@
       :color="buttonColor"
       :menu="menu"
       :menuVisible="menuVisible"
-      @click="handleClick"
+      @click="menuVisible = !menuVisible"
       @cancel="handleCancel"
       @report="$emit('report')"
     >预约成功</mini-button>
@@ -43,6 +56,10 @@ export default {
     }
   },
   data: () => ({
+    color: {
+      confirm: 'yellow',
+      wait: 'red'
+    },
     menuVisible: false,
     menu: [
       { type: 'cancel', text: '取消预约' },
@@ -57,13 +74,6 @@ export default {
     },
     // 乘客
     isCustomer () {
-      /**
-       * 乘客确定
-       * 乘客等待车主确定
-       *
-       * 车主确定
-       * 车主等待乘客确定
-       */
       return this.identity === 'customer'
     },
     // 车主
@@ -72,24 +82,10 @@ export default {
     }
   },
   methods: {
-    // 点击按钮事件
-    handleClick () {
-      // 切换菜单的显示状态
-      if (this.status > 0) this.menuVisible = !this.menuVisible
-      // 触发确认预约事件
-      else {
-        const status = this.getIdentity() === 0 ? 2 : 1
-        this.$emit('confirm', status)
-      }
-    },
     // 点击取消预约
     handleCancel () {
-      const status = this.getIdentity() === 0 ? 4 : 3
+      const status = this.isCustomer ? 4 : 3
       this.$emit('cancel', status)
-    },
-    // 身份判断：0乘客，1车主
-    getIdentity () {
-      return this.user.info.carstatus === 'YES' ? 1 : 0
     }
   }
 }

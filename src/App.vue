@@ -1,15 +1,16 @@
 <template>
   <div id="app">
-    <!-- <keep-alive>
-      <router-view v-if="$route.meta.keepAlive" />
-    </keep-alive> -->
-    <router-view />
+    <keep-alive include="Home,Group,Release,Notify,Mine,SelectCity">
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script>
 export default {
-
+  data: () => ({
+    aliveComponents: ['Home', 'Group', 'Release', 'Notify', 'Mine', 'SelectCity']
+  })
 }
 </script>
 

@@ -49,6 +49,7 @@ import { queryUserMessage } from '@/api'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
+  name: 'Notify',
   // ListMixin 负责筛选，以及列表动态加载
   mixins: [ListMixin],
   components: {
@@ -66,6 +67,9 @@ export default {
     notifyTime (time) {
       return moment(time).format('YYYY-MM-DD HH:mm')
     }
+  },
+  activated () {
+    console.log('Notify activated')
   }
 }
 </script>

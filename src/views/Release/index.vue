@@ -58,12 +58,13 @@
 import { mapState } from 'vuex'
 import { Tabs, Tab } from 'vant'
 import { insertPublish } from '@/api'
-import { isEmpty } from 'lodash'
+// import { isEmpty } from 'lodash'
 import SearchCard from '@/components/SearchCard'
 import CustomerFormBody from './customer'
 import DriverFormBody from './driver'
 
 export default {
+  name: 'Release',
   components: {
     'van-tabs': Tabs,
     'van-tab': Tab,
@@ -132,9 +133,9 @@ export default {
       data.mobilePhone = this.user.info.phone
 
       // 地区id
-      data.cnRegionInfoCode = isEmpty(this.position.county)
-        ? this.position.city.code
-        : this.position.county.code
+      // data.cnRegionInfoCode = isEmpty(this.position.county)
+      //   ? this.position.city.code
+      //   : this.position.county.code
 
       // 出发点、目的地、途径点
       const passPointList = []

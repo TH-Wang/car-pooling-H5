@@ -98,6 +98,7 @@ import {
 import NavBarSearch from '@/components/NavBarSearch'
 
 export default {
+  name: 'SelectCity',
   components: {
     'van-icon': Icon,
     'van-index-bar': IndexBar,

@@ -11,7 +11,7 @@
         <template #button>
           <mini-button
             color="yellow"
-            @click="$emit('link', item.pprId)"
+            @click="$emit('reserve', item)"
           >立即预订</mini-button>
         </template>
       </carpool-order>

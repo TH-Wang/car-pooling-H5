@@ -453,6 +453,13 @@ const routes = [
         component: () => import(
           /* webpackChunkName: "ManageGroupMaster" */ '@/views/Manage/ManageGroupMaster.vue'
         )
+      },
+      { // 规则说明页面
+        path: '/common/description',
+        name: 'Description',
+        component: () => import(
+          /* webpackChunkName: "Description" */ '@/views/Description.vue'
+        )
       }
     ]
   }

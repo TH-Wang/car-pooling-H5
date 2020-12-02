@@ -27,7 +27,7 @@
 
     <!-- 搜索框 -->
     <search-card
-      v-model="addr"
+      useStore
       style="margin-top: .23rem"
       type="icon-right"
     />

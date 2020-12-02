@@ -61,7 +61,7 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    ><home-order :list="list" @link="handleLinkDetail" />
+    ><home-order :list="list" @link="handleLinkDetail" @reserve="handleLinkReserve" />
     </van-list>
 
   </div>
@@ -162,6 +162,9 @@ export default {
     // 进入详情页面
     handleLinkDetail (id) {
       this.$router.push({ path: '/common/order/detail', query: { id } })
+    },
+    handleLinkReserve (record) {
+      this.$router.push({ name: 'Reserve', params: record })
     }
   },
   created: async function () {
@@ -172,6 +175,9 @@ export default {
       })
       this.$router.push('/common/city')
     }
+  },
+  activated () {
+    console.log('Home activated')
   }
 }
 </script>

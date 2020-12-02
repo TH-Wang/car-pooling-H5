@@ -136,6 +136,7 @@ import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import Affix from '@/components/Affix'
 
 export default {
+  name: 'Mine',
   mixins: [ButtonMenuMixin],
   components: {
     'van-image': Image,
@@ -275,7 +276,12 @@ export default {
     async handleOrderCancel (status, orderId) {
       const userId = this.user.info.id
       const res = await confirmOrder({ orderId, status, userId })
-      console.log(res.data)
+      if (res.data.msg === '成功') {
+        this.$toast.success('取消成功')
+      } else {
+        this.$toast.fail('取消失败\n请稍后重试')
+      }
+      this.reqList()
     },
     // 举报订单
     handleOrderReport () {

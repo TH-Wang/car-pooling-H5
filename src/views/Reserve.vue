@@ -41,11 +41,13 @@
       <custom-input
         name="startAddr"
         clearable
+        readonly
         placeholder="请输入上车点"
+        @click="handleSearch($event, 'start')"
         :rules="[{required: true}]"
       >
         <template #suffix>
-          <span class="input-link">定位</span>
+          <span class="input-link" @click="handleSearch($event, 'start')">定位</span>
         </template>
       </custom-input>
 
@@ -53,11 +55,13 @@
       <custom-input
         name="endAddr"
         clearable
+        readonly
         placeholder="请输入到达地点"
+        @click="handleSearch($event, 'end')"
         :rules="[{required: true}]"
       >
         <template #suffix>
-          <span class="input-link">定位</span>
+          <span class="input-link" @click="handleSearch($event, 'end')">搜索</span>
         </template>
       </custom-input>
 
@@ -99,20 +103,24 @@ export default {
   },
   data: () => ({
     agree: true,
-    pprId: null
+    record: {}
   }),
   computed: {
-    ...mapState(['user'])
+    ...mapState(['user', 'search'])
   },
   methods: {
+    // 提交预约信息
     async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
       if (err) return
 
       // 提交的数据
-      const pprId = parseInt(this.pprId)
+      const pprId = parseInt(this.record.pprId)
+      const { startAddr, endAddr } = this.search
       const data = {
         ...values,
+        startAddr: startAddr.name,
+        endAddr: endAddr.name,
         orderNum: parseInt(values.orderNum),
         pprIdCar: pprId
       }
@@ -131,17 +139,24 @@ export default {
           params: { msg: res.data.msg, startAddr, endAddr }
         })
       }
+    },
+    // 跳转到搜索位置页面
+    handleSearch (e, type) {
+      this.$router.push(`/common/search/pos/${type}?type=common`)
     }
   },
-  created () {
-    // 获取拼车单pprId
-    const pprId = this.$route.query.pprId
-    this.pprId = pprId
-  },
   mounted () {
+    // 获取拼车单pprId
+    this.record = this.$route.params
+    // 设置位置信息
+    const { startAddr, endAddr } = this.search
     // 设置用户登录的手机号
     const phone = this.user.info.phone
-    this.$refs.form.setValues({ telPhone: phone })
+    this.$refs.form.setValues({
+      startAddr: startAddr.name,
+      endAddr: endAddr.name,
+      telPhone: phone
+    })
   }
 }
 </script>
@@ -162,6 +177,7 @@ export default {
 
   .link{
     font-size: .12rem;
+    color: $main-color;
   }
 }
 
