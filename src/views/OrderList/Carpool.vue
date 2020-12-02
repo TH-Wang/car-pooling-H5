@@ -67,7 +67,6 @@
 import moment from 'moment'
 import { mapGetters, mapState } from 'vuex'
 import { List } from 'vant'
-import { isEmpty } from 'lodash'
 import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
@@ -103,16 +102,11 @@ export default {
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
-      // 地区id
-      const county = isEmpty(this.position.county)
-        ? this.position.city.code
-        : this.position.county.code
       // 今天日期
       const today = moment().format('YYYY-MM-DD 00:00:00')
       // 车单类型
       const publishType = this.publishType
       return {
-        county,
         startTime: today,
         orderType: 1, // 1-车主发布 2-乘客发布
         publishType

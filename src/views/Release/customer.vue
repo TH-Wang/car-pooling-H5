@@ -84,7 +84,9 @@ export default {
     // 所有的发布类型
     orderMenu: [
       { id: 4, label: '上下班拼车' },
-      { id: 1, label: '拼车' },
+      { id: 1, label: '短途拼车' },
+      { id: 2, label: '城际拼车' },
+      { id: 3, label: '跨省拼车' },
       { id: 5, label: '顺路带物' }
     ],
     agreePact: true,

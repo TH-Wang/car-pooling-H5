@@ -84,7 +84,9 @@ export default {
     publishType: 1,
     // 所有的发布类型
     orderMenu: [
-      { id: 1, label: '拼车' },
+      { id: 1, label: '短途拼车' },
+      { id: 2, label: '城际拼车' },
+      { id: 3, label: '跨省拼车' },
       { id: 4, label: '上下班拼车' },
       { id: 5, label: '顺路带物' },
       { id: 6, label: '旅游包车' }
@@ -111,9 +113,9 @@ export default {
       if (this.user.carList.length === 0) {
         const res = await userCarDetail()
         this.$store.commit('setCarInfo', res.data.data)
-        // 赋值到表单配置上
-        this.formOptions = getDriverOpts(this.carList)
       }
+      // 赋值到表单配置上
+      this.formOptions = getDriverOpts(this.carList)
     },
     // 提交
     async handleSubmit () {
