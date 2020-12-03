@@ -50,6 +50,16 @@
       :clearable="options.clearable"
       :required="options.required"
     />
+
+    <customer-area
+      v-else-if="options.type === 'area'"
+      :name="options.name"
+      :label="options.label"
+      :title="options.title"
+      :placeholder="options.placeholder"
+      :clearable="options.clearable"
+      :required="options.required"
+    />
   </div>
 </template>
 
@@ -59,13 +69,15 @@ import Field from './Field'
 import Textarea from './Textarea'
 import Picker from './Picker'
 import Timer from './Timer'
+const Area = () => import('./Area')
 
 export default {
   components: {
     'custom-field': Field,
     'custom-textarea': Textarea,
     'custom-picker': Picker,
-    'custom-timer': Timer
+    'custom-timer': Timer,
+    'customer-area': Area
   },
   props: {
     options: {
@@ -93,15 +105,20 @@ export default {
           type: Boolean,
           default: false
         },
-        // 是否可清除: field、picker、timer
+        // 是否可清除: field、picker、timer、area
         clearable: {
           type: Boolean,
           default: false
         },
-        // 是否必选或必填: textarea、picker、timer
+        // 是否必选或必填: textarea、picker、timer、area
         required: {
           type: Boolean,
           default: false
+        },
+        // 弹出层选择器的标题: timer、area
+        title: {
+          type: String,
+          default: '选择时间'
         },
 
         // field独有props:
@@ -162,11 +179,6 @@ export default {
         defaultTime: {
           type: [Date, String, Boolean],
           default: false
-        },
-        // 时间选择器的标题
-        title: {
-          type: String,
-          default: '选择时间'
         },
 
         // upload独有props:

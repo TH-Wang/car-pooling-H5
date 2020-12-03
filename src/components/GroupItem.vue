@@ -56,7 +56,7 @@ export default {
     }
   },
   data: () => ({
-    keyType: ['', '官方群', '入驻群']
+    keyType: { 1: '官方群', 2: '入驻群' }
   }),
   computed: {
     tagClass () {

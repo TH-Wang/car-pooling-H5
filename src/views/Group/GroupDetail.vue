@@ -26,7 +26,7 @@
     <div class="info-list gap">
       <div class="info-list-title">群信息</div>
       <div class="info-list-cell">
-        <span class="info-list-label">更新时间</span><span>{{time}}</span>
+        <span class="info-list-label">更新时间</span><span>{{time || ''}}</span>
       </div>
       <div class="info-list-cell">
         <span class="info-list-label">群归属地</span><span>{{region}}</span>
@@ -86,7 +86,7 @@ export default {
     // 拼车群id
     groupId: null,
     // 详细信息
-    info: { price: 0 },
+    info: { price: 0, city: '', region: '' },
     tips: [
       '长按二维码扫描或保存进群流程',
       '1.扫码二维码',
@@ -96,7 +96,7 @@ export default {
   }),
   computed: {
     time () {
-      return moment(this.info).format('YYYY-MM-DD')
+      return moment(this.info.createTime).format('YYYY-MM-DD')
     },
     region () {
       return this.info.city + ' · ' + this.info.region
@@ -114,8 +114,8 @@ export default {
       if (price === 0) return '免费'
       else {
         const decimal = price.toString().split('.')[1]
-        const priceText = decimal ? price : price + '.00'
-        return `付费￥${priceText}元进群`
+        const text = decimal ? price : price + '.00'
+        return `付费￥${text}元进群`
       }
     },
     handleBackHome () {

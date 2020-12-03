@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import { cloneDeep } from 'lodash'
+import { addGroup } from '@/api'
 import { Form, Item } from '@/components/Form'
 import Step from '@/components/Step'
 import MainButton from '@/components/MainButton'
@@ -51,10 +53,22 @@ export default {
     formOptions: options
   }),
   methods: {
-    handleSubmit () {
+    async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
       if (!err) console.log(values)
-      this.$router.push('/common/settle/group/finish')
+      const data = cloneDeep(values)
+      data.status = 1
+
+      // 发起请求
+      this.$toast.loading({ message: '提交中', duration: 10000 })
+      const res = await addGroup(data)
+      this.$toast.clear()
+      if (res.data.status === 200) {
+        this.$toast.success('提交成功')
+        this.$router.push('/common/settle/group/finish')
+      } else {
+        this.$toast.fail('上传失败\n请稍后重试')
+      }
     }
   }
 }

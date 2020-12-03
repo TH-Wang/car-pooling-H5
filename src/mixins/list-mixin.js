@@ -130,6 +130,7 @@ export default {
     }
   },
   mounted: async function () {
+    if (this.notReqOnMounted) return
     if (this.needQuick) {
       await this.handleQuickListLoad()
     }

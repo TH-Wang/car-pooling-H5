@@ -45,8 +45,7 @@
         :key="item.id"
         :record="item"
         @click="handleLink($event, item.id)"
-      >
-        <template #right>
+      > <template #right>
           <mini-button>
             <span :class="priceClass(item.price)">{{priceText(item.price)}}</span>
           </mini-button>
@@ -57,14 +56,14 @@
     <!-- 固定按钮 -->
     <affix
       icon="group"
-      content="我是群主 我要入驻"
+      :content="affixContent"
       @click="$router.push('/common/settle/group')"
     />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { List } from 'vant'
 import { selectGroup } from '@/api'
 import NavBarSearch from '@/components/NavBarSearch'
@@ -73,6 +72,7 @@ import GroupItem from '@/components/GroupItem'
 import MiniButton from '@/components/MiniButton'
 import Affix from '@/components/Affix'
 import ListMixin from '@/mixins/list-mixin'
+import { priceClass, priceText } from './utils'
 
 export default {
   name: 'Group',
@@ -93,9 +93,11 @@ export default {
       { id: 2, title: '专线拼车群' },
       { id: 3, title: '创建拼车群' },
       { id: 4, title: '创建拼车群' }
-    ]
+    ],
+    affixContent: ''
   }),
   computed: {
+    ...mapState(['user']),
     ...mapGetters(['location'])
   },
   methods: {
@@ -107,20 +109,17 @@ export default {
       return { list: rows, total }
     },
     // 价格的前缀样式
-    priceClass (price) {
-      return price === 0 ? '' : 'price-prefix'
-    },
+    priceClass,
     // 价格的前缀样式
-    priceText (price) {
-      if (price === 0) return '免费'
-      else {
-        const decimal = price.toString().split('.')[1]
-        return decimal ? price : price + '.00'
-      }
-    },
+    priceText,
     handleLink (e, id) {
       this.$router.push({ path: '/common/group/detail', query: { id } })
     }
+  },
+  created () {
+    this.affixContent = this.user.info.group === 'YES'
+      ? '入驻新群'
+      : '我是群主 我要入驻'
   }
 }
 </script>

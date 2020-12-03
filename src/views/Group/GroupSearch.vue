@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 搜索框导航栏 -->
-    <nav-bar-search mode="dark"/>
+    <nav-bar-search v-model="searchValue" @change="handleSearch" mode="dark"/>
 
     <div class="header">已收录 4629 个高质量拼车群，覆盖全国各省市，欢迎全国各地拼车群入住本平台！</div>
 
@@ -12,31 +12,72 @@
         <div
           v-for="item in hotGroups"
           :key="item.id"
-          :class="`grid-item${item.id === activeHotGroup ? '-active' : ''}`"
-          @click="handleCheckHotGroup($event, item.id)"
+          class="grid-item"
+          @click="handleCheckHotGroup($event, item.name)"
         >{{item.name}}</div>
       </div>
     </div>
 
+    <!-- 底部按钮 -->
     <main-button
       class="footer"
       center
       @click="$router.push('/common/group/area')"
     >按地域找群</main-button>
+
+    <!-- 搜索结果列表 -->
+    <div class="search-list" v-show="showSearchList">
+      <!-- 空状态 -->
+      <van-empty
+        v-if="list.length === 0"
+        description="未搜索到任何内容，请尝试修改搜索地区后再次尝试"
+      />
+      <!-- 列表 -->
+      <van-list
+        v-else
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :error.sync="error"
+        error-text="加载失败，请点击重试"
+        @load="handleListLoad"
+        class="list-container"
+      ><group-item
+          v-for="item in list"
+          :key="item.id"
+          type="group"
+          :record="item"
+          @click="handleLink($event, item.id)"
+        > <template #right>
+            <mini-button>
+              <span :class="priceClass(item.price)">{{priceText(item.price)}}</span>
+            </mini-button>
+          </template>
+        </group-item>
+      </van-list>
+    </div>
   </div>
 </template>
 
 <script>
+import { isEmpty, debounce } from 'lodash'
+import { List } from 'vant'
+import { selectGroup } from '@/api'
 import NavBarSearch from '@/components/NavBarSearch'
 import MainButton from '@/components/MainButton'
+import GroupItem from '@/components/GroupItem'
+import ListMixin from '@/mixins/list-mixin'
+import { priceClass, priceText } from './utils'
 
 export default {
+  mixins: [ListMixin],
   components: {
+    'van-list': List,
     'nav-bar-search': NavBarSearch,
-    'main-button': MainButton
+    'main-button': MainButton,
+    'group-item': GroupItem
   },
   data: () => ({
-    activeHotGroup: null,
     hotGroups: [
       { id: 0, name: '河南4群' },
       { id: 1, name: '北京拼车群' },
@@ -46,11 +87,44 @@ export default {
       { id: 5, name: '西安 - 咸阳' },
       { id: 6, name: '江苏群' },
       { id: 7, name: '顺风车群' }
-    ]
+    ],
+    searchValue: '',
+    notReqOnMounted: true
   }),
+  computed: {
+    showSearchList () {
+      return !isEmpty(this.searchValue)
+    }
+  },
   methods: {
-    handleCheckHotGroup (e, id) {
-      this.activeHotGroup = this.activeHotGroup === id ? null : id
+    // 请求拼车群列表的api函数
+    reqApi: selectGroup,
+    // 返回主要的请求参数
+    getRequestDatas () {
+      const city = this.searchValue
+      return { city }
+    },
+    // 自己处理返回值
+    resDataHandler (res) {
+      const { rows, total } = res.data
+      return { list: rows, total }
+    },
+    // 搜索事件
+    handleSearch: debounce(function () {
+      if (isEmpty(this.searchValue)) return
+      this.startPage = 1
+      this.handleListLoad()
+    }, 300),
+    handleCheckHotGroup (e, name) {
+      this.searchValue = name
+      this.handleSearch()
+    },
+    // 价格的前缀样式
+    priceClass,
+    // 价格的前缀样式
+    priceText,
+    handleLink (e, id) {
+      this.$router.push({ path: '/common/group/detail', query: { id } })
     }
   }
 }
@@ -94,10 +168,29 @@ export default {
   }
 }
 
+// 搜索列表
+.search-list{
+  width: 100%;
+  height: calc(100vh - 50px);
+  padding-top: .2rem;
+  box-sizing: border-box;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  z-index: 9;
+  background-color: white;
+}
+
 .footer{
   position: fixed;
   bottom: .30rem;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.price-prefix::before{
+  content: '￥';
+  margin-right: -2px;
+  font-size: .15rem;
 }
 </style>

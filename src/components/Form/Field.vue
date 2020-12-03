@@ -145,7 +145,7 @@ export default {
         }
         // 正则校验
         if (item.pattern) {
-          if (!item.pattern.test(value)) {
+          if (!new RegExp(item.pattern).test(value)) {
             this.errorMessage = item.message
             return false
           }

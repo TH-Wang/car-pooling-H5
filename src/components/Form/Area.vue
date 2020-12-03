@@ -30,13 +30,21 @@
 
     <!-- 选择表 -->
     <van-popup round position="bottom" v-model="visible">
-      <van-area :title="title" :columns-num="2" @confirm="handleChange" />
+      <van-area
+        :area-list="areaList"
+        :title="title"
+        :columns-num="3"
+        @confirm="handleChange"
+        @cancel="visible = false"
+      />
     </van-popup>
   </div>
 </template>
 
 <script>
 import { Area, Popup } from 'vant'
+import areaList from '@/utils/areaList.js'
+
 export default {
   components: {
     'van-popup': Popup,
@@ -76,23 +84,28 @@ export default {
       default: false
     }
   },
-  computed: {
-    canClear () {
-      return this.clearable && this.val !== null
-    }
-  },
   data: () => ({
     val: null,
     visible: false,
-    error: false
+    error: false,
+    areaList: areaList
   }),
+  computed: {
+    canClear () {
+      return this.clearable && this.val !== null
+    },
+    regionText () {
+      return this.val[1].name + ' ' + this.val[2].name
+    }
+  },
   methods: {
+    // 显示结果字符串
     text () {
       if (this.val === null) {
         if (this.error) return `请选择${this.label}`
         else return this.placeholder
       } else {
-        return this.val
+        return this.val[1].name + ' ' + this.val[2].name
       }
     },
     mainClass () {
@@ -104,8 +117,7 @@ export default {
       return classNames.join(' ')
     },
     handleChange (value) {
-      console.log(value)
-      this.showPicker = false
+      this.visible = false
       this.val = value
     },
     clear () {

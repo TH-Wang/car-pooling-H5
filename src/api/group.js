@@ -1,6 +1,6 @@
 import axios from './http'
 
-export default { selectGroup, selectGroupById }
+export default { selectGroup, selectGroupById, addGroup }
 
 // 查询拼车群列表
 function selectGroup (params) {
@@ -18,4 +18,9 @@ function selectGroupById (id) {
     method: 'POST',
     params: { id }
   })
+}
+
+// 入驻群
+function addGroup (data) {
+  return axios.post('/group/add', data)
 }

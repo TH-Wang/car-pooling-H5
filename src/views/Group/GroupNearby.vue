@@ -3,7 +3,8 @@
     <!-- 顶部导航栏 -->
     <nav-bar-search mode="dark" button @click-search="$router.push('/common/group/search')">
       <template #right>
-        {{location}} <van-icon name="arrow-down" />
+        <span @click="$router.push('/common/city')">{{location}}</span>
+        <van-icon name="arrow-down" size="13px" />
       </template>
     </nav-bar-search>
 
@@ -36,9 +37,8 @@
         v-for="item in list"
         :key="item.id"
         :record="item"
-        @click="handleLink"
-      >
-        <template #right>
+        @click="handleLink($event, item.id)"
+      > <template #right>
           <mini-button>
             <span :class="priceClass(item.price)">{{priceText(item.price)}}</span>
           </mini-button>
@@ -49,13 +49,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { selectGroup } from '@/api'
 import { Icon, List } from 'vant'
 import NavBarSearch from '@/components/NavBarSearch'
 import GroupItem from '@/components/GroupItem'
 import MiniButton from '@/components/MiniButton'
 import ListMixin from '@/mixins/list-mixin'
+import { priceClass, priceText } from './utils'
 
 export default {
   mixins: [ListMixin],
@@ -67,29 +68,30 @@ export default {
     'mini-button': MiniButton
   },
   computed: {
+    ...mapState(['position']),
     ...mapGetters(['location'])
   },
   methods: {
     // 请求拼车群列表的api函数
     reqApi: selectGroup,
+    // 返回主要的请求参数
+    getRequestDatas () {
+      const { city, county } = this.position
+      return {
+        city: city.shortName,
+        region: county.name
+      }
+    },
     // 自己处理返回值
     resDataHandler (res) {
       const { rows, total } = res.data
       return { list: rows, total }
     },
     // 价格的前缀样式
-    priceClass (price) {
-      return price === 0 ? '' : 'price-prefix'
-    },
+    priceClass,
     // 价格的前缀样式
-    priceText (price) {
-      if (price === 0) return '免费'
-      else {
-        const decimal = price.toString().split('.')[1]
-        return decimal ? price : price + '.00'
-      }
-    },
-    handleLink ({ id }) {
+    priceText,
+    handleLink (e, id) {
       this.$router.push({ path: '/common/group/detail', query: { id } })
     }
   }

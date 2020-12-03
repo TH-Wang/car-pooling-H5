@@ -18,7 +18,10 @@
 
     <!-- 二维码信息 -->
     <div class="qrcode-card">
-      <qrcode-card :tips="tips" center />
+      <qrcode-card :tips="tips" center type="person" :record="{
+        groupName: '拼车之家官方客服',
+        wechat_number: 'asinin156465'
+      }" />
     </div>
 
     <!-- 确认按钮 -->

@@ -46,6 +46,7 @@ export const queryUserMessage = message.queryUserMessage
 // 拼车群模块
 export const selectGroup = group.selectGroup
 export const selectGroupById = group.selectGroupById
+export const addGroup = group.addGroup
 
 // 我的行程模块
 export const queryAllJourney = myJourney.queryAllJourney
