@@ -89,7 +89,7 @@ export default {
       location.reload()
     },
     handleLinkReserve () {
-      this.$router.push({ name: 'Reserve', params: this.record })
+      this.$router.push({ path: '/common/reserve', query: { id: this.record.pprId } })
     }
   },
   created () {

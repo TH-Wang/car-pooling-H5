@@ -80,12 +80,7 @@ export default {
         await this.handleChangeCodeStatus()
         // 请求验证码
         const phone = this.$refs.form.getValueField('phone')
-        const res = await sendCode({ phone, type: 'LOGIN' })
-        setTimeout(() => {
-          this.$dialog.alert({
-            message: `您的验证码为【${res.data.data}】，五分钟内有效，请妥善保管！`
-          })
-        }, 2000)
+        await sendCode({ phone, type: 'LOGIN' })
       } catch (error) {
         console.log(error)
       }

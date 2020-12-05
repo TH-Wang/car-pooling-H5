@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Tabs, Tab } from 'vant'
 import CarryDri from './CarryDri'
 import CarryCus from './CarryCus'
@@ -60,6 +61,9 @@ export default {
   data: () => ({
     tabId: 0
   }),
+  computed: {
+    ...mapGetters(['location'])
+  },
   methods: {
     handleClickSearch () {
       console.log('click search')

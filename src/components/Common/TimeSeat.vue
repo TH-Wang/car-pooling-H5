@@ -4,23 +4,28 @@
     <div>{{time}}</div>
     <span class="line">|</span>
     <img src="@/assets/icons/order/seat.png" alt="">
-    <div>余座 <span :class="seatClass">{{seat}}</span></div>
+    <div>余座 <span :class="['seatNum', seatClass]">{{seat}}</span></div>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    type: {
-      type: [String, Number],
-      default: 'doing'
+    state: {
+      type: Number,
+      default: 1
     },
     time: String,
-    seat: [String, Number]
+    seat: [String, Number],
+    stateType: {
+      1: 'doing',
+      2: 'cancel',
+      3: 'finish'
+    }
   },
   computed: {
     seatClass () {
-      return this.type === 'doing' ? 'active' : ''
+      return this.state === 1 ? 'active' : ''
     }
   }
 }
@@ -39,6 +44,10 @@ export default {
 
   .line{
     margin: 0 .15rem;
+  }
+
+  .seatNum{
+    font-size: .14rem;
   }
 
   .active{

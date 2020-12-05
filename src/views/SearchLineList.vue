@@ -53,8 +53,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import moment from 'moment'
-import { isEmpty } from 'lodash'
 import { List } from 'vant'
 import { OrderFilter } from '@/components/Filter/index.js'
 import CarpoolOrder from '@/components/OrderItem/Carpool'
@@ -73,25 +71,23 @@ export default {
     dataSource: {}
   }),
   computed: {
-    ...mapState(['position'])
+    ...mapState(['position', 'search'])
   },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
-      // 地区id
-      const county = isEmpty(this.position.county)
-        ? this.position.city.code
-        : this.position.county.code
-      // 今天日期
-      const today = moment().format('YYYY-MM-DD 00:00:00')
-      // 起止地点
-      const { startAddr, endAddr, publishType, orderType } = this.dataSource
+      // 起点目的地
+      const { startAddr, endAddr } = this.search
+      // 订单信息
+      const { publishType, orderType } = this.dataSource
       // 返回主要参数
       return {
-        county,
-        startAddr,
-        endAddr,
-        startTime: today,
+        startAddr: startAddr.name,
+        startAddrLon: startAddr.location.lng,
+        startAddrLat: startAddr.location.lat,
+        endAddr: endAddr.name,
+        endAddrLon: endAddr.location.lng,
+        endAddrLat: endAddr.location.lat,
         orderType: parseInt(orderType), // 1-车主发布 2-乘客发布
         publishType: parseInt(publishType)
       }

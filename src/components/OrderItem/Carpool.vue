@@ -26,7 +26,7 @@
           </div>
           <div class="car-info-item">
             <img src="@/assets/icons/order/line.png" alt="">
-            <span>95%</span>
+            <span>{{record.similarity || 0}}%</span>
           </div>
         </div>
       </div>
@@ -37,10 +37,10 @@
     <!-- 详细内容 -->
     <div class="content">
       <div class="content-item">
-        <span>途径点</span>{{passPointLis}}
+        <span>途径点</span>{{passPointList}}
       </div>
-      <div v-if="confirmShow('remark')" class="content-item">
-        <span>备注</span>{{record.remark}}
+      <div class="content-item">
+        <span>备注</span>{{record.remark || '无'}}
       </div>
     </div>
 
@@ -72,9 +72,9 @@
 </template>
 
 <script>
-import { isEmpty } from 'lodash'
 import moment from 'moment'
 import { Image } from 'vant'
+import { getPointText } from './utils'
 
 export default {
   components: {
@@ -88,8 +88,8 @@ export default {
   },
   computed: {
     // 途径点拼接字符串
-    passPointLis () {
-      return this.record.passPointLis.map(i => i.pointName).join('-')
+    passPointList () {
+      return getPointText(this.record.passPointList)
     },
     // 时间分钟
     hourMinute () {
@@ -101,10 +101,6 @@ export default {
     }
   },
   methods: {
-    // 判断是否显示
-    confirmShow (key) {
-      return !isEmpty(this.record[key])
-    },
     // 处理点击
     handleClick (e) {
       e.preventDefault()

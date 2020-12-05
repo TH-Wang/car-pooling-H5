@@ -55,7 +55,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { mapState } from 'vuex'
 import { List } from 'vant'
 import SearchCard from '@/components/SearchCard'
@@ -84,10 +83,7 @@ export default {
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
-      // 今天日期
-      const today = moment().format('YYYY-MM-DD 00:00:00')
       return {
-        startTime: today,
         orderType: 2, // 1-车主发布 2-乘客发布
         publishType: 5 // 顺路带物
       }

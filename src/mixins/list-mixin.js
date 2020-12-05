@@ -20,6 +20,7 @@
  */
 
 import { getCar, getCommonRoute } from '@/api'
+import { isEmpty, cloneDeep } from 'lodash'
 
 export default {
   data: () => ({
@@ -38,12 +39,7 @@ export default {
     // 加载失败
     error: false,
     // 筛选选项数据
-    filters: {
-      area: 0,
-      time: 0,
-      cost: 0,
-      seat: 0
-    },
+    filters: {},
     // 列表数据
     list: [],
     // 快捷路线列表
@@ -51,8 +47,9 @@ export default {
   }),
   methods: {
     // 筛选条件发生改变
-    handleFilterChange () {
+    handleFilterChange (filters) {
       this.startPage = 1
+      this.filters = filters
       this.handleListLoad()
     },
     // 请求列表
@@ -65,6 +62,11 @@ export default {
       // 如果该组件需要额外参数，则直接获取并合并
       if (this.getRequestDatas) {
         Object.assign(data, this.getRequestDatas())
+      }
+
+      // 如果有过滤参数
+      if (!isEmpty(this.filters)) {
+        Object.assign(data, cloneDeep(this.filters))
       }
 
       // 组件的自定义api

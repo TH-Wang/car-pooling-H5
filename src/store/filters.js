@@ -27,15 +27,15 @@ export default {
     // 设置日期选择项
     updateDateOptions (state) {
       const formatText = 'DD日'
-      const formatValue = 'YYYY-MM-DD'
+      const formatValue = 'YYYY-MM-DD 00:00:00'
       const today = moment()
       const day2 = moment().add(1, 'days')
       const day3 = moment().add(2, 'days')
       const list = [
         { text: '全部', value: 0 },
-        { text: `今天(${today.format(formatText)})`, value: today.format(formatValue) },
-        { text: `明天(${day2.format(formatText)})`, value: day2.format(formatValue) },
-        { text: `后天(${day3.format(formatText)})`, value: day3.format(formatValue) }
+        { text: `今天(${today.format(formatText)})`, value: 1, date: today.format(formatValue) },
+        { text: `明天(${day2.format(formatText)})`, value: 2, date: day2.format(formatValue) },
+        { text: `后天(${day3.format(formatText)})`, value: 3, date: day3.format(formatValue) }
       ]
       state.timeOptions = list
       state.currentDate = today

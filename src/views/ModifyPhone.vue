@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { updatePhoneToOne, updatePhoneToTwo } from '@/api'
+import { sendCode, updatePhoneToTwo, getUserDetail } from '@/api'
 import { Input } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import Feedback from '@/components/Feedback'
@@ -79,19 +79,14 @@ export default {
     async handleGetCode () {
       try {
         await this.handleChangeCodeStatus()
-        const res = await updatePhoneToOne(this.phone)
+        // 获取验证码
+        const params = { type: 'BINGDINGPHONE' }
+        params.phone = this.phone
+        const res = await sendCode(params)
         const { status, msg } = res.data
-        if (status === 200) {
-          setTimeout(() => {
-            this.$dialog.alert({
-              message: `您的验证码为【${res.data.data}】，五分钟内有效，请妥善保管！`
-            })
-          }, 2000)
-        } else {
-          this.$dialog.alert({
-            title: '获取失败',
-            message: msg
-          })
+        // 如果获取失败
+        if (status !== 200) {
+          this.$dialog.alert({ title: '获取失败', message: msg })
         }
       } catch (error) {
         console.log(error)
@@ -101,14 +96,25 @@ export default {
     async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
       if (err) return
-      console.log(values)
+      // 请求修改手机号
+      this.$toast.loading({ message: '修改中', duration: 10000 })
       const res = await updatePhoneToTwo(values)
+      this.$toast.clear()
       if (res.data.status === 200) {
         const phone = this.phone
         this.successPhone = phone
         this.showLayer = true
-        this.$store.commit('setUserInfo', { key: 'phone', value: phone })
+        await this.resetUserInfo()
+        this.$toast.success('修改成功')
+        this.$router.go(-1)
+      } else {
+        this.$toast.fail('修改失败\n请稍后再试')
       }
+    },
+    // 更新个人信息
+    async resetUserInfo () {
+      const res = await getUserDetail()
+      this.$store.commit('setUserInfo', res.data.data)
     }
   },
   mounted () {

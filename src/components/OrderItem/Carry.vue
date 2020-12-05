@@ -26,7 +26,7 @@
           </div>
           <div class="car-info-item">
             <img src="@/assets/icons/order/line.png" alt="">
-            <span>95%</span>
+            <span>{{record.similarity || 0}}%</span>
           </div>
         </div>
       </div>

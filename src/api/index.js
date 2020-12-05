@@ -29,6 +29,7 @@ export const queryPositionByCityName = position.queryPositionByCityName
 
 // 订单模块
 export const getCar = order.getCar
+export const queryPassengerOrders = order.queryPassengerOrders
 export const getCommonRoute = order.getCommonRoute
 export const commitOrder = order.commitOrder
 export const getOrdering = order.getOrdering

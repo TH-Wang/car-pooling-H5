@@ -28,12 +28,12 @@
       animated
     >
       <!-- 我是乘客 -->
-      <van-tab class="van-tab-wrapper" title="我是乘客">
+      <van-tab class="van-tab-wrapper" title="我的发布">
         <customer-trip-list :manage=manage />
       </van-tab>
 
       <!-- 我是车主 -->
-      <van-tab class="van-tab-wrapper" title="我是车主">
+      <van-tab class="van-tab-wrapper" title="我的行程">
         <driver-trip-list :manage=manage />
       </van-tab>
     </van-tabs>

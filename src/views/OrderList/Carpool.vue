@@ -27,7 +27,7 @@
     />
 
     <!-- 公告栏 -->
-    <notice-bar @reserve="handleClickReserve" />
+    <notice-bar />
 
     <!-- 筛选菜单 -->
     <order-filter @change="handleFilterChange" />
@@ -66,7 +66,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { mapGetters, mapState } from 'vuex'
 import { List } from 'vant'
 import { OrderFilter } from '@/components/Filter/index.js'
@@ -104,12 +103,9 @@ export default {
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
-      // 今天日期
-      const today = moment().format('YYYY-MM-DD 00:00:00')
       // 车单类型
       const publishType = this.publishType
       return {
-        startTime: today,
         orderType: 1, // 1-车主发布 2-乘客发布
         publishType
       }
@@ -134,9 +130,6 @@ export default {
     },
     handleClickSearch () {
       console.log('click search')
-    },
-    handleClickReserve () {
-      this.$router.push('/common/appoint')
     },
     // 进入详情页面
     handleLinkDetail (record) {

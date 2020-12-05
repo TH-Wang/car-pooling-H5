@@ -13,7 +13,7 @@
         </div>
         <div class="car-info-item">
           <img src="@/assets/icons/order/line.png" alt="">
-          <span>95%</span>
+          <span>{{record.similarity || 0}}%</span>
         </div>
       </div>
       <!-- 价格 -->
@@ -25,11 +25,11 @@
       <!-- 路线信息 -->
       <div class="line-info">
         <span class="start">起</span>
-        <span>{{record.startAddr}}</span>
+        <span>{{startAddr || record.startAddr}}</span>
       </div>
       <div class="line-info gap">
         <span class="end">终</span>
-        <span>{{record.endAddr}}</span>
+        <span>{{endAddr || record.endAddr}}</span>
       </div>
       <!-- 途径点 -->
       <div v-if="hasWay" class="detail">
@@ -72,6 +72,7 @@
 <script>
 import moment from 'moment'
 import { Image } from 'vant'
+import { getPointText } from './utils'
 
 export default {
   components: {
@@ -80,7 +81,9 @@ export default {
   props: {
     record: {
       type: Object,
-      default: () => ({})
+      default: () => ({
+        passPointList: []
+      })
     },
     hasWay: {
       type: Boolean,
@@ -92,6 +95,18 @@ export default {
     }
   },
   computed: {
+    // 起止点
+    startAddr () {
+      const ppl = this.record.passPointList
+      const startPoint = ppl ? ppl.find(i => i.type === 1) : null
+      return startPoint ? startPoint.pointName : ''
+    },
+    // 目的地
+    endAddr () {
+      const ppl = this.record.passPointList
+      const endPoint = ppl ? ppl.find(i => i.type === 3) : null
+      return endPoint ? endPoint.pointName : ''
+    },
     // 时间（小时分钟）
     time () {
       return moment(this.record.startTime).format('HH:mm')
@@ -100,11 +115,9 @@ export default {
     fromNow () {
       return moment(this.record.startTime).fromNow()
     },
-    // 途径点
-    passPointLis () {
-      return this.record.passPointLis
-        ? this.record.passPointLis.map(i => i.pointName).join('-')
-        : ''
+    // 途径点拼接字符串
+    passPointList () {
+      return getPointText(this.record.passPointList)
     }
   }
 }

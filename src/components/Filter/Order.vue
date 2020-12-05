@@ -19,7 +19,7 @@
 import moment from 'moment'
 import { mapActions, mapMutations, mapState } from 'vuex'
 import { DropdownMenu, DropdownItem } from 'vant'
-import { cloneDeep, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 
 export default {
   components: {
@@ -60,14 +60,17 @@ export default {
       ],
       seat: [
         { text: '全部', value: 0 },
-        { text: '2座以上', value: 1 },
-        { text: '3座以上', value: 2 },
-        { text: '4座以上', value: 3 }
+        { text: '2座以上', value: 1, seat: 2 },
+        { text: '3座以上', value: 2, seat: 3 },
+        { text: '4座以上', value: 3, seat: 4 }
       ]
     }
   }),
   computed: {
-    ...mapState(['filters', 'position'])
+    ...mapState(['filters', 'position']),
+    remainingSeat () {
+      return this.options.seat.find(i => i.value === this.values.seat).seat
+    }
   },
   methods: {
     ...mapMutations(['updateDateOptions']),
@@ -80,10 +83,17 @@ export default {
     },
     // 筛选选项发生改变
     handleChange (value, type) {
-      const newVal = cloneDeep(this.values)
-      newVal[type] = value
-      this.$emit('change', newVal)
       this.values[type] = value
+      this.$nextTick(() => {
+        const { area, time, cost, seat } = this.values
+        const filterData = {}
+        if (area !== 0) filterData.county = area
+        if (cost !== 0) filterData.carPriceSort = cost
+        if (seat !== 0) filterData.remainingSeat = this.options.seat.find(i => i.value === seat).seat
+        if (time !== 0) filterData.startTime = this.options.time.find(i => i.value === time).date
+        console.log(filterData)
+        this.$emit('change', filterData)
+      })
     }
   },
   created: async function () {

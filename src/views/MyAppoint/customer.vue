@@ -1,16 +1,7 @@
 <template>
   <div :style="show ? 'padding-top: 40px;' : ''">
-    <van-notice-bar
-      v-if="show"
-      left-icon="volume-o"
-      text="没有合适车辆？马上预约！"
-      class="notice-bar"
-    >
-      <template #right-icon>
-        <span class="btn" @click="$router.push('/common/appoint')">马上预约</span>
-        <van-icon name="cross" class="close" @click="show = false"/>
-      </template>
-    </van-notice-bar>
+    <!-- 公告栏 -->
+    <notice-bar position="top" limit="90px" />
 
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
@@ -40,8 +31,8 @@
 </template>
 
 <script>
-import { NoticeBar } from 'vant'
 import { getOrdering, confirmOrder } from '@/api'
+import NoticeBar from '@/components/NoticeBar'
 import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
@@ -49,7 +40,7 @@ import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 export default {
   mixins: [ButtonMenuMixin],
   components: {
-    'van-notice-bar': NoticeBar,
+    'notice-bar': NoticeBar,
     'pending-order': PendingOrder,
     'confirm-button': ConfirmButton
   },

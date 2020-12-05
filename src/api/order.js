@@ -2,6 +2,7 @@ import axios from './http'
 
 export default {
   getCar,
+  queryPassengerOrders,
   getCommonRoute,
   commitOrder,
   getOrdering,
@@ -14,6 +15,11 @@ export default {
 // 按条件找车
 function getCar (carVo) {
   return axios.post('/order/getCar', carVo)
+}
+
+// 车主找人
+function queryPassengerOrders (data) {
+  return axios.post('/order/queryPassengerOrders', data)
 }
 
 // 获取常用路线

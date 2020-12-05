@@ -1,25 +1,34 @@
 <template>
   <div class="trip" @click="$emit('click')">
-    <div class="trip-header">
-      <div :class="`tag tag-${stateMark}`">{{status[record.orderState]}}</div>
-      <start-end class="start-end" :start="record.start" :end="record.end" />
-    </div>
-    <div class="trip-detail">
-      <time-seat :time="record.startTime" :seat="record.seatNum" :type="stateMark" />
+    <div class="main">
+      <div class="trip-header">
+        <!-- 标签 -->
+        <div :class="`tag tag-${statusClass[orderState]}`">
+          {{statusText[orderState]}}
+        </div>
+        <!-- 起止点 -->
+        <start-end class="start-end" :start="record.startPoint" :end="record.endPoint" />
+      </div>
+      <!-- 时间、余座 -->
+      <div class="trip-detail">
+        <time-seat :time="record.startTime" :seat="record.seatNum" :state="orderState" />
+      </div>
     </div>
     <!-- 删除按钮 -->
     <div v-show="showRemove" class="remove-button">
-      <mini-button color="red" @click="$emit('remove')">删除</mini-button>
+      <mini-button color="blue" @click="$emit('action')">操作</mini-button>
     </div>
   </div>
 </template>
 
 <script>
+// import { Icon } from 'vant'
 import { StartEnd, TimeSeat } from '@/components/Common'
 import MiniButton from '@/components/MiniButton'
 
 export default {
   components: {
+    // 'van-icon': Icon,
     'start-end': StartEnd,
     'time-seat': TimeSeat,
     'mini-button': MiniButton
@@ -35,27 +44,20 @@ export default {
     }
   },
   data: () => ({
-    status: {
+    statusText: {
       1: '进行中',
-      2: '进行中',
-      3: '已取消',
-      4: '已取消',
-      5: '已完成'
+      2: '已撤下',
+      3: '已完成'
+    },
+    statusClass: {
+      1: 'doing',
+      2: 'cancel',
+      3: 'finish'
     }
   }),
   computed: {
-    stateMark () {
+    orderState () {
       return this.record.orderState
-    }
-  },
-  methods: {
-    tagText () {
-      switch (this.stateMark) {
-        case 'doing': return '进行中'
-        case 'cancel': return '已撤下'
-        case 'finish': return '已完成'
-        default: return '已完成'
-      }
     }
   }
 }
@@ -64,17 +66,22 @@ export default {
 <style lang="scss" scoped>
 // 容器
 .trip{
-  padding: .20rem 0.70rem .18rem 0;
+  padding: .20rem 0 .18rem 0;
   margin: 0 .15rem;
-  border-bottom: solid 1px $light-color;
+  border-bottom: solid 1px #f3f3f3;
   position: relative;
+  @include flex (space-between, center);
+
+  .main{
+    flex: 1
+  }
 
   &-header{
     @include flex();
     margin-bottom: .05rem;
 
     .tag{
-      width: 0.52rem;
+      width: 0.45rem;
       height: 0.16rem;
       margin-right: .10rem;
       flex-shrink: 0;
@@ -83,25 +90,17 @@ export default {
       @include font (.11rem, #fff);
       transform: translateY(.03rem);
 
-      &-doing{
-        background-color: $sub-color;
-      }
+      &-doing{ background-color: $sub-color }
 
-      &-cancel{
-        background-color: $aid-blue-color;
-      }
+      &-cancel{ background-color: $aid-blue-color }
 
-      &-finish{
-        background-color: $aid-green-color;
-      }
+      &-finish{ background-color: $aid-green-color }
     }
   }
 
   // 删除按钮
   .remove-button{
-    position: absolute;
-    top: .20rem;
-    right: 0;
+    margin-left: .05rem;
   }
 }
 </style>

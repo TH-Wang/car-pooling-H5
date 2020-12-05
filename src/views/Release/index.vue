@@ -132,11 +132,6 @@ export default {
       // 用户手机号
       data.mobilePhone = this.user.info.phone
 
-      // 地区id
-      // data.cnRegionInfoCode = isEmpty(this.position.county)
-      //   ? this.position.city.code
-      //   : this.position.county.code
-
       // 出发点、目的地、途径点
       const passPointList = []
       const { startAddr, endAddr } = this.release

@@ -68,10 +68,10 @@
 </template>
 
 <script>
-import moment from 'moment'
 import { mapGetters, mapState } from 'vuex'
 import { NavBar, Icon, List } from 'vant'
 import { isEmpty } from 'lodash'
+import { getCar, queryPassengerOrders } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
@@ -98,7 +98,6 @@ export default {
       start: '',
       end: ''
     },
-    filters: {},
     needQuick: true
   }),
   computed: {
@@ -113,22 +112,15 @@ export default {
     }
   },
   methods: {
+    reqApi (data) {
+      return this.identity === 0 ? getCar(data) : queryPassengerOrders(data)
+    },
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
-      // 地区id
-      // const county = isEmpty(this.position.county)
-      //   ? this.position.city.code
-      //   : this.position.county.code
-      // 今天日期
-      const today = moment().format('YYYY-MM-DD 00:00:00')
-      // 通过身份判断发布类型
+      if (this.identity === 1) return {}
+      // 通过身份判断发布类型，1-车主发布 2-乘客发布
       const orderType = this.identity === 0 ? 1 : 2
-      return {
-        // county,
-        startTime: today,
-        orderType, // 1-车主发布 2-乘客发布
-        publishType: 1
-      }
+      return { orderType, publishType: 1 }
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
@@ -163,8 +155,8 @@ export default {
     handleLinkDetail (id) {
       this.$router.push({ path: '/common/order/detail', query: { id } })
     },
-    handleLinkReserve (record) {
-      this.$router.push({ name: 'Reserve', params: record })
+    handleLinkReserve (id) {
+      this.$router.push({ path: '/common/reserve', query: { id } })
     }
   },
   created: async function () {

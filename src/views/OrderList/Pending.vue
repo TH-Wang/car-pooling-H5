@@ -61,16 +61,7 @@
         @click="handleLinkDetail"
       >
         <template #button>
-          <mini-button
-            color="green"
-            :orderId="item.id"
-            :menu="menu"
-            :menuVisible="menuVisibleId === item.id"
-            @click="handleLinkDetail"
-            @cancel="handleOrderCancel"
-          >
-            <van-icon style="margin-right: .05rem" size=".18rem" name="phone" />预约
-          </mini-button>
+          <driver-reserve-button :record="item" />
         </template>
       </pending-order>
     </van-list>
@@ -81,16 +72,16 @@
 </template>
 
 <script>
-import moment from 'moment'
+// import moment from 'moment'
 import { mapGetters, mapState } from 'vuex'
-import { List, Icon } from 'vant'
+import { List } from 'vant'
+import { queryPassengerOrders } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
 import PendingOrder from '@/components/OrderItem/Pending'
-import MiniButton from '@/components/MiniButton'
-// import NoticeBar from '@/components/NoticeBar'
+import DriverReserveButton from '@/components/DriverReserveButton'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'
 import ListMixin from '@/mixins/list-mixin'
@@ -102,17 +93,14 @@ export default {
   components: {
     'van-list': List,
     'order-filter': OrderFilter,
-    'van-icon': Icon,
-    // 'notice-bar': NoticeBar,
     'nav-bar-search': NavBarSearch,
     'search-card': SearchCard,
     'quick-line': QuickLine,
     'pending-order': PendingOrder,
-    'mini-button': MiniButton,
+    'driver-reserve-button': DriverReserveButton,
     'cancel-reserve-layer': CancelReserveLayer
   },
   data: () => ({
-    url: '',
     menuVisibleId: null,
     menu: [{ type: 'cancel', text: '取消预约' }],
     needQuick: true
@@ -122,16 +110,8 @@ export default {
     ...mapGetters(['location'])
   },
   methods: {
-    // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
-    getRequestDatas () {
-      // 今天日期
-      const today = moment().format('YYYY-MM-DD 00:00:00')
-      return {
-        startTime: today,
-        orderType: 2, // 1-车主发布 2-乘客发布
-        publishType: 1
-      }
-    },
+    // 自定义请求函数
+    reqApi: queryPassengerOrders,
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
       return { startPage: 1, pageSize: 10 }

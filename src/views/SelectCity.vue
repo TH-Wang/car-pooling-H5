@@ -187,9 +187,9 @@ export default {
         const { province, district } = position.addressComponent
         this.$toast.success(`${province} ${district}`)
       } catch (error) {
-        this.$dialog.alert({
-          message: JSON.stringify(error)
-        })
+        // this.$dialog.alert({
+        //   message: JSON.stringify(error)
+        // })
       }
     },
     // 请求所有城市列表

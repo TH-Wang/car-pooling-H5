@@ -103,7 +103,7 @@ export default {
   },
   data: () => ({
     agree: true,
-    record: {}
+    pprId: null
   }),
   computed: {
     ...mapState(['user', 'search'])
@@ -115,7 +115,7 @@ export default {
       if (err) return
 
       // 提交的数据
-      const pprId = parseInt(this.record.pprId)
+      const pprId = parseInt(this.pprId)
       const { startAddr, endAddr } = this.search
       const data = {
         ...values,
@@ -147,7 +147,7 @@ export default {
   },
   mounted () {
     // 获取拼车单pprId
-    this.record = this.$route.params
+    this.pprId = this.$route.query.id
     // 设置位置信息
     const { startAddr, endAddr } = this.search
     // 设置用户登录的手机号
