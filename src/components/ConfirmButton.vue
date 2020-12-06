@@ -32,6 +32,14 @@
       @cancel="handleCancel"
       @report="$emit('report')"
     >预约成功</mini-button>
+
+    <!-- 已取消 -->
+    <mini-button v-if="status === 3" color="gray" >
+      {{isDriver ? '已取消' : '车主已取消'}}
+    </mini-button>
+    <mini-button v-if="status === 4" color="gray" >
+      {{isCustomer ? '已取消' : '乘客已取消'}}
+    </mini-button>
   </div>
 </template>
 

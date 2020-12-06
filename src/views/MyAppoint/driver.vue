@@ -1,9 +1,9 @@
 <template>
-  <div :style="show ? 'padding-top: 40px;' : ''">
+  <div :style="show && isDriver ? 'padding-top: 40px;' : ''">
     <van-notice-bar
-      v-if="show"
+      v-if="isDriver"
+      v-model="show"
       left-icon="volume-o"
-      text="没有合适车辆？马上预约！"
       class="notice-bar"
     >
       您已成功预约 {{peopleCount}} 人
@@ -13,83 +13,118 @@
     </van-notice-bar>
 
     <!-- 如果列表数据为空 -->
-    <div v-if="list.length === 0" @click="handleRetry">
-      <van-empty description="暂无预约订单，点击刷新" />
+    <div v-if="list.length === 0" @click="isDriver ? handleRetry : void 0">
+      <van-empty :description="isDriver ? '暂无预约订单，点击刷新' : '可在我的乘客查看您的预约'" />
     </div>
     <!-- 预约订单 -->
-    <pending-order
-      v-else
-      v-for="(item, index) in list"
-      :key="index"
-      :record="item"
-      type="custom"
-      color="green"
-    >
-      <!-- 预约按钮 -->
-      <template #button>
-        <confirm-button
+    <van-pull-refresh v-else v-model="refresh" @refresh="handlePullRefresh">
+    <!-- 拼单列表 -->
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :error.sync="error"
+        error-text="加载失败，请点击重试"
+        @load="handleListLoad"
+        class="list-container"
+      >
+        <pending-order
+          v-for="(item, index) in list"
+          :key="index"
+          :record="item"
+          type="custom"
           color="green"
-          :status="item.status"
-          @confirm="handleOrderConfirm($event, item.orderId)"
-          @cancel="handleOrderCancel($event, item.orderId)"
-          @report="handleOrderReport($event, item.orderId)"
-        />
-      </template>
-    </pending-order>
+        >
+          <!-- 预约按钮 -->
+          <template #button>
+            <confirm-button
+              color="green"
+              :status="item.status"
+              identity="driver"
+              @confirm="handleOrderConfirm($event, item.orderId)"
+              @cancel="handleOrderCancel($event, item.orderId)"
+              @report="handleOrderReport($event, item.orderId)"
+            />
+          </template>
+        </pending-order>
+      </van-list>
+      <div style="height:.5rem"></div>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
-import { NoticeBar } from 'vant'
+import { mapGetters, mapState } from 'vuex'
+import { NoticeBar, PullRefresh, List } from 'vant'
 import { driverOrder, confirmOrder } from '@/api'
 import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
+import ListMixin from '@/mixins/list-mixin'
 
 export default {
-  mixins: [ButtonMenuMixin],
+  mixins: [ListMixin, ButtonMenuMixin],
   components: {
     'van-notice-bar': NoticeBar,
+    'van-list': List,
+    'van-pull-refresh': PullRefresh,
     'pending-order': PendingOrder,
     'confirm-button': ConfirmButton
   },
   data: () => ({
-    // 显示公告栏
-    show: false,
-    list: [],
+    show: true,
     menuVisibleId: null,
     orderMenu: [
       { type: 'cancel', text: '取消预约' },
       { type: 'report', text: '举报' }
-    ],
-    peopleCount: 0
+    ]
   }),
+  computed: {
+    ...mapState(['user']),
+    ...mapGetters(['identity']),
+    isDriver () {
+      return this.identity === 1
+    },
+    peopleCount () {
+      return this.list.filter(i => i.status === 1).length
+    }
+  },
   methods: {
-    async handleRequest () {
+    // 请求列表
+    async handleListLoad () {
       // 我是乘客，查询我的预约订单
       const res = await driverOrder({
         startPage: 1,
         pageSize: 999
       })
-      const { list } = res.data.data
-      this.list = list.map(item => {
+      const { list, total } = res.data.data
+      const result = list.map(item => {
         item.startTime = item.passengerStartTime
         item.seatNum = item.orderNum
         return item
       })
-      this.show = list.length > 0
-      // 计算已预约人数
-      this.peopleCount = list.reduce((prev, item) => {
-        return item.status > 0 ? prev + item.orderNum : prev
-      }, 0)
+      // 如果是首页，则直接设置list，否则插入到尾部
+      if (this.startPage === 1) {
+        this.list = result
+      } else {
+        this.list.push(...result)
+      }
+
+      this.total = total
+      this.startPage++
+      this.loading = false
+      if (this.list.length === this.total) {
+        this.finished = true
+      }
     },
     // 刷新预约订单信息
-    handleRetry () {
+    async handleRetry () {
       this.$toast.loading({
         message: '加载中...',
-        duration: 1000
+        duration: 10000
       })
-      this.handleRequest()
+      await this.handleListLoad()
+      this.$toast.clear()
     },
     // 确认订单
     async handleOrderConfirm (status, orderId) {
@@ -100,21 +135,24 @@ export default {
       } else {
         this.$toast.fail('确认失败，请稍后再试')
       }
-      this.reqList()
+      this.handleRetry()
     },
     // 取消预约
     async handleOrderCancel (status, orderId) {
       const userId = this.user.info.id
       const res = await confirmOrder({ orderId, status, userId })
-      console.log(res.data)
+      if (res.data.msg === '成功') {
+        this.$toast.success('取消成功')
+      } else {
+        this.$toast.fail('取消失败\n请稍后重试')
+      }
+      this.startPage = 1
+      this.handleListLoad()
     },
     // 举报订单
     handleOrderReport () {
       console.log('举报订单')
     }
-  },
-  created () {
-    this.handleRequest()
   }
 }
 </script>
@@ -127,6 +165,7 @@ export default {
   position: fixed;
   top: 90px;
   left: 0;
+  z-index: 9;
 }
 
 .btn{

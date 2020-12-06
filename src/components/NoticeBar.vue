@@ -9,7 +9,7 @@
     >
       <template #right-icon>
         <span class="btn" @click="handleRelease">马上预约</span>
-        <van-icon name="cross" class="close" @click="show = false"/>
+        <van-icon name="cross" class="close" @click="$emit('change', false)"/>
       </template>
     </van-notice-bar>
   </transition>
@@ -23,7 +23,15 @@ export default {
     'van-icon': Icon,
     'van-notice-bar': NoticeBar
   },
+  model: {
+    prop: 'show',
+    event: 'change'
+  },
   props: {
+    show: {
+      type: Boolean,
+      default: true
+    },
     position: {
       type: String,
       default: 'bottom'
@@ -33,9 +41,6 @@ export default {
       default: '0'
     }
   },
-  data: () => ({
-    show: true
-  }),
   computed: {
     positionStyle () {
       return `${this.position}: ${this.limit}`
@@ -57,6 +62,7 @@ export default {
   position: fixed;
   left: 0;
   z-index: 10;
+  z-index: 9;
 }
 
 .btn{

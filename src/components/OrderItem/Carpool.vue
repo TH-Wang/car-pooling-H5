@@ -20,11 +20,11 @@
             <img src="@/assets/icons/order/car.png" alt="">
             <span>{{record.vehicleType}}</span>
           </div>
-          <div class="car-info-item">
+          <div v-if="record.distance" class="car-info-item" style="margin-left: .25rem">
             <img src="@/assets/icons/order/location.png" alt="">
-            <span>2.5km</span>
+            <span>{{distance}}</span>
           </div>
-          <div class="car-info-item">
+          <div class="car-info-item" style="margin-left: .25rem">
             <img src="@/assets/icons/order/line.png" alt="">
             <span>{{record.similarity || 0}}%</span>
           </div>
@@ -98,6 +98,12 @@ export default {
     // 从发布到现在的时间
     fromNow () {
       return moment(this.record.startTime).fromNow()
+    },
+    // 距离
+    distance () {
+      const distance = this.record.distance
+      if (distance > 1000) return (distance / 1000).toFixed(2) + 'km'
+      return distance + 'm'
     }
   },
   methods: {
@@ -172,7 +178,7 @@ export default {
       // 辅助信息
       .car-info{
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
         margin-top: .08rem;
 

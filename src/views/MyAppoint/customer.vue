@@ -1,52 +1,70 @@
 <template>
-  <div :style="show ? 'padding-top: 40px;' : ''">
+  <div :style="show && isCustom ? 'padding-top: 40px;' : ''">
     <!-- 公告栏 -->
-    <notice-bar position="top" limit="90px" />
+    <notice-bar v-model="show" v-if="isCustom" position="top" limit="90px" />
 
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
       <van-empty description="暂无预约订单，点击刷新" />
     </div>
     <!-- 预约订单 -->
-    <pending-order
-      v-else
-      v-for="(item, index) in list"
-      :key="index"
-      :record="item"
-      type="driver"
-      color="yellow"
-    >
-      <!-- 预约按钮 -->
-      <template #button>
-        <confirm-button
+    <van-pull-refresh v-else v-model="refresh" @refresh="handlePullRefresh">
+      <!-- 拼单列表 -->
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        :error.sync="error"
+        error-text="加载失败，请点击重试"
+        @load="handleListLoad"
+        class="list-container"
+      >
+        <pending-order
+          v-for="(item, index) in list"
+          :key="index"
+          :record="item"
+          type="driver"
           color="yellow"
-          :status="item.status"
-          @confirm="handleOrderConfirm($event, item.orderId)"
-          @cancel="handleOrderCancel($event, item.orderId)"
-          @report="handleOrderReport($event, item.orderId)"
-        />
-      </template>
-    </pending-order>
+        >
+          <!-- 预约按钮 -->
+          <template #button>
+            <confirm-button
+              color="yellow"
+              :status="item.status"
+              @confirm="handleOrderConfirm($event, item.orderId)"
+              @cancel="handleOrderCancel($event, item.orderId)"
+              @report="handleOrderReport($event, item.orderId)"
+            />
+          </template>
+        </pending-order>
+      </van-list>
+      <div style="height:.5rem"></div>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
+import { PullRefresh, List } from 'vant'
 import { getOrdering, confirmOrder } from '@/api'
 import NoticeBar from '@/components/NoticeBar'
 import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
+import ListMixin from '@/mixins/list-mixin'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
-  mixins: [ButtonMenuMixin],
+  mixins: [ListMixin, ButtonMenuMixin],
   components: {
     'notice-bar': NoticeBar,
+    'van-list': List,
+    'van-pull-refresh': PullRefresh,
     'pending-order': PendingOrder,
     'confirm-button': ConfirmButton
   },
   data: () => ({
     // 显示公告栏
-    show: false,
+    show: true,
     list: [],
     menuVisibleId: null,
     orderMenu: [
@@ -54,29 +72,45 @@ export default {
       { type: 'report', text: '举报' }
     ]
   }),
+  computed: {
+    ...mapState(['user']),
+    ...mapGetters(['identity']),
+    isCustom () {
+      return this.identity === 0
+    }
+  },
   methods: {
-    async handleRequest () {
+    async handleListLoad () {
       // 我是乘客，查询我的预约订单
-      const res = await getOrdering({
-        startPage: 1,
-        pageSize: 999
-      })
-      const { list } = res.data.data
-      this.list = list.map(item => {
-        item.startTime = item.passengerStartTime
+      const { startPage, pageSize } = this
+      const res = await getOrdering({ startPage, pageSize })
+      const { list, total } = res.data.data
+      const result = list.map(item => {
         item.seatNum = item.orderNum
         return item
       })
-      this.list = list
-      this.show = list.length > 0
+      // 如果是首页，则直接设置list，否则插入到尾部
+      if (this.startPage === 1) {
+        this.list = result
+      } else {
+        this.list.push(...result)
+      }
+
+      this.total = total
+      this.startPage++
+      this.loading = false
+      if (this.list.length === this.total) {
+        this.finished = true
+      }
     },
     // 刷新预约订单信息
-    handleRetry () {
+    async handleRetry () {
       this.$toast.loading({
         message: '加载中...',
-        duration: 1000
+        duration: 10000
       })
-      this.handleRequest()
+      await this.handleListLoad()
+      this.$toast.clear()
     },
     // 确认订单
     async handleOrderConfirm (status, orderId) {
@@ -87,21 +121,24 @@ export default {
       } else {
         this.$toast.fail('确认失败，请稍后再试')
       }
-      this.reqList()
+      this.handleRetry()
     },
     // 取消预约
     async handleOrderCancel (status, orderId) {
       const userId = this.user.info.id
       const res = await confirmOrder({ orderId, status, userId })
-      console.log(res.data)
+      if (res.data.msg === '成功') {
+        this.$toast.success('取消成功')
+      } else {
+        this.$toast.fail('取消失败\n请稍后重试')
+      }
+      this.startPage = 1
+      this.handleListLoad()
     },
     // 举报订单
     handleOrderReport () {
       console.log('举报订单')
     }
-  },
-  created () {
-    this.handleRequest()
   }
 }
 </script>

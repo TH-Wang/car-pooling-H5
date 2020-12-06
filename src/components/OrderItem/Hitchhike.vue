@@ -19,9 +19,9 @@
           <img src="@/assets/icons/order/car.png" alt="">
           <span>{{record.vehicleType}}</span>
         </div>
-        <div class="car-info-item">
+        <div class="car-info-item" v-if="record.distance">
           <img src="@/assets/icons/order/location.png" alt="">
-          <span>2.5km</span>
+          <span>{{distance}}</span>
         </div>
         <div class="car-info-item">
           <img src="@/assets/icons/order/line.png" alt="">
@@ -113,6 +113,12 @@ export default {
     // 途径点拼接字符串
     passPointList () {
       return getLineText(this.record.passPointList)
+    },
+    // 距离
+    distance () {
+      const distance = this.record.distance
+      if (distance > 1000) return (distance / 1000).toFixed(2) + 'km'
+      return distance + 'm'
     }
   },
   methods: {

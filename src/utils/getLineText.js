@@ -5,6 +5,7 @@ export function getPointText (passPointList) {
 }
 
 export function getLineText (passPointList) {
+  if (!passPointList) return ''
   let start, line, end
   for (let i = 0; i < passPointList.length; i++) {
     const { type, pointName } = passPointList[i]

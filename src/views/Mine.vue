@@ -54,7 +54,7 @@
 
     <!-- 预约为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
-      <van-empty description="暂无预约，点击刷新" />
+      <van-empty :description="identity === 0 ? '暂无预约，点击刷新' : '暂无乘客预约，点击刷新'" />
     </div>
     <!-- 预约订单轮播 -->
     <van-swipe indicator-color="#FFCD00" @change="handleSwipeChange">
@@ -72,6 +72,7 @@
             <confirm-button
               :color="buttonColor"
               :status="item.status"
+              :identity="identity === 0 ? 'customer' : 'driver'"
               @confirm="handleOrderConfirm($event, item.orderId)"
               @cancel="handleOrderCancel($event, item.orderId)"
               @report="handleOrderReport($event, item.orderId)"
@@ -197,7 +198,7 @@ export default {
     }
   },
   methods: {
-    // 请求我的预约（前三个）
+    // 请求我的预约
     async reqList () {
       if (this.identity === 0) {
         // 我是乘客，查询我的预约订单
@@ -213,7 +214,8 @@ export default {
         // 我是司机，查询乘客预约我的订单
         const res = await driverOrder({
           startPage: 1,
-          pageSize: 3
+          pageSize: 99,
+          status: 5
         })
         this.list = res.data.data.list.map(item => {
           item.startTime = item.passengerStartTime

@@ -36,6 +36,7 @@
 
 <script>
 import { cloneDeep } from 'lodash'
+import { mapState } from 'vuex'
 import { addGroup } from '@/api'
 import { Form, Item } from '@/components/Form'
 import Step from '@/components/Step'
@@ -52,12 +53,22 @@ export default {
   data: () => ({
     formOptions: options
   }),
+  computed: {
+    ...mapState(['user'])
+  },
   methods: {
     async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
-      if (!err) console.log(values)
+      if (err) return
       const data = cloneDeep(values)
+      // 状态
       data.status = 1
+      // 地区
+      data.city = values.area[1].name
+      data.region = values.area[2].name
+      delete data.area
+      // 用户id
+      data.userId = this.user.info.id
 
       // 发起请求
       this.$toast.loading({ message: '提交中', duration: 10000 })
