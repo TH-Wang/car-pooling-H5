@@ -2,6 +2,19 @@
   <div>
 
     <custom-form ref="form">
+      <!-- 途径点（路线） -->
+      <custom-textarea
+        v-show="needLine"
+        name="line"
+        label="路线"
+        :link="allInputStartEnd ? '点击输入途径点' : '请先选择地点'"
+        custom
+        @click="handleOpenLine"
+        @link="handleOpenLine"
+      ><template>
+          <div :style="emptyLine ? 'color: #999' : ''">{{lineText}}</div>
+        </template>
+      </custom-textarea>
       <!-- 发布类型 -->
       <custom-picker
         v-model="publishType"
@@ -56,6 +69,24 @@
       @close="handlePopupClose"
       @submit="handleChangeCombo"
     />
+
+    <!-- 输入路线的对话框 -->
+    <van-dialog
+      v-model="inputLine"
+      confirm-button-color="#0AD593"
+      width="2.80rem"
+      @confirm="handleChangeMiddlePoint"
+    ><div class="line-input-container">
+        <div><b>{{release.startAddr.name || 'xx'}}出发</b></div>
+        <textarea
+          type="text"
+          ref="textarea"
+          :placeholder="defaultText"
+          rows="4"
+        />
+        <div><b>目的地：{{release.endAddr.name || 'xx'}}</b></div>
+      </div>
+    </van-dialog>
   </div>
 </template>
 
@@ -79,6 +110,7 @@ export default {
     'main-button': MainButton,
     'choose-combo-layer': ChooseComboLayer
   },
+  props: {},
   data: () => ({
     // 选择的发布类型
     publishType: 1,
@@ -95,16 +127,46 @@ export default {
     formOptions: {},
     agreePact: true,
     agreePackage: false,
+    // 中间点
+    middlePoint: '',
+    // 显示输入路线的对话框
+    inputLine: false,
     // 选择套餐
     combo: {}
   }),
   computed: {
-    ...mapState(['user']),
+    ...mapState(['user', 'release']),
+    // 路线模板
+    lineText () {
+      const { startAddr, endAddr } = this.release
+      if (!this.allInputStartEnd) return ''
+      return `${startAddr.name || 'xx'}出发，${this.middlePoint || this.defaultText}，目的地：${endAddr.name || 'xx'}`
+    },
+    // 途径点模板
+    defaultText () {
+      if (!this.allInputStartEnd) return ''
+      return this.judgeType() === 3
+        ? '途径xx站（推荐上车），xx站上高速，xx站下高速'
+        : '途径xx路、x号线xx地铁/轻轨站（推荐上车点），xx下高速'
+    },
     carList () {
       return this.user.carList.map(item => {
-        const label = item.carBrand + ' ' + item.carModel
-        return { id: item.id, label }
+        // const label = item.carBrand + ' ' + item.carModel
+        return { id: item.id, label: item.carModel }
       })
+    },
+    // 需要用户输入路线
+    needLine () {
+      return this.publishType <= 4
+    },
+    // 路线是否为空
+    emptyLine () {
+      return isEmpty(this.middlePoint)
+    },
+    // 是否起始点和终止点都显示了
+    allInputStartEnd () {
+      const { startAddr, endAddr } = this.release
+      return !isEmpty(startAddr.name) && !isEmpty(endAddr.name)
     }
   },
   methods: {
@@ -139,6 +201,11 @@ export default {
       if (data.weight) data.seatNum = parseInt(data.weight)
       if (data.volume) data.seatNum = parseInt(data.volume)
 
+      // 如果需要传途径点
+      if (this.needLine) {
+        data.middlePoint = this.middlePoint
+      }
+
       // 如果没有选择套餐
       if (isEmpty(this.combo)) data.setType = 0
 
@@ -149,6 +216,15 @@ export default {
     clearForm () {
       this.$refs.form.clear()
     },
+    // 打开输入路线的对话框
+    handleOpenLine () {
+      this.inputLine = true
+      this.$nextTick(() => { this.$refs.textarea.focus() })
+    },
+    // 改变途径点
+    handleChangeMiddlePoint () {
+      this.middlePoint = this.$refs.textarea.value
+    },
     // 弹出层关闭
     handlePopupClose () {
       if (JSON.stringify(this.combo) === '{}') {
@@ -158,15 +234,34 @@ export default {
     // 选择套餐
     handleChangeCombo (value) {
       this.combo = value
+    },
+    // 判断拼车单类型
+    judgeType () {
+      if (!this.allInputStartEnd) return 1
+      const { startAddr, endAddr } = this.release
+      if (startAddr.pname !== endAddr.pname) return 3
+      if (startAddr.cityname === endAddr.cityname) {
+        return startAddr.adname === endAddr.adname ? 1 : 2
+      }
+      return 1
     }
   },
   created: async function () {
     this.getCarInfo()
   },
+  mounted () {
+    this.$refs.form.setValueField('line', this.line)
+  },
   watch: {
     agreePackage: function (newVal) {
       if (newVal) this.$refs.layer.show()
       else this.combo = {}
+    },
+    allInputStartEnd: function (newVal) {
+      console.log('监听到变化')
+      if (newVal) {
+        this.$refs.form.setValueField('publishType', this.judgeType())
+      }
     }
   }
 }
@@ -174,4 +269,14 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/release.scss';
+.line-input-container{
+  padding: .20rem;
+
+  textarea{
+    border: none;
+    width: 100%;
+    // background-color: #f5f5f5;
+    margin: .05rem 0;
+  }
+}
 </style>

@@ -58,7 +58,7 @@
 import { mapState } from 'vuex'
 import { Tabs, Tab } from 'vant'
 import { insertPublish } from '@/api'
-// import { isEmpty } from 'lodash'
+import { cloneDeep } from 'lodash'
 import SearchCard from '@/components/SearchCard'
 import CustomerFormBody from './customer'
 import DriverFormBody from './driver'
@@ -91,7 +91,7 @@ export default {
       // 3. 提示收取信息费
       await this.alertCost()
       // 4. 发起请求
-      await this.handleRequest(data)
+      await this.handleRequest(cloneDeep(data))
       // 5. 通知子组件清空表单
       this.$refs[type].clearForm()
     },
@@ -135,26 +135,36 @@ export default {
       // 出发点、目的地、途径点
       const passPointList = []
       const { startAddr, endAddr } = this.release
+      let sort = 0
       // 出发点
       passPointList.push({
         pointName: startAddr.name,
         lon: startAddr.location.lng,
         lat: startAddr.location.lat,
-        sort: 1,
+        sort: ++sort,
         type: 1
       })
+      // 途径点
+      if (data.middlePoint) {
+        passPointList.push({
+          pointName: data.middlePoint,
+          sort: ++sort,
+          type: 2
+        })
+        delete data.middlePoint
+      }
       // 目的地
       passPointList.push({
         pointName: endAddr.name,
         lon: endAddr.location.lng,
         lat: endAddr.location.lat,
-        sort: 2,
+        sort: ++sort,
         type: 3
       })
       data.passPointList = passPointList
-
       // 订单状态（进行中）
       data.orderState = 1
+      console.log(data)
 
       // 发起请求
       const res = await insertPublish(data)

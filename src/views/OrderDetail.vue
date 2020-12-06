@@ -25,7 +25,7 @@
       <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
       <order-info-field icon-type="seat" label="余座" :content="record.seatNum" text-color="yellow" />
       <order-info-field icon-type="time" label="出发时间" :content="startTime" />
-      <order-info-field icon-type="address" label="途径点" :content="passPointLis" />
+      <order-info-field icon-type="address" label="途径点" :content="passPointList" />
       <order-info-field icon-type="remark" label="备注" :content="record.remark" />
 
       <!-- 地图 -->
@@ -52,6 +52,7 @@ import { getPublishDetail } from '@/api'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
+import { getLineText } from '@/utils/getLineText'
 
 export default {
   components: {
@@ -74,8 +75,9 @@ export default {
     startTime () {
       return moment(this.record.startTime).format('MM月DD日 HH:mm')
     },
-    passPointLis () {
-      return this.record.passPointLis.map(i => i.pointName).join('-')
+    // 途径点拼接字符串
+    passPointList () {
+      return getLineText(this.record.passPointList)
     }
   },
   methods: {

@@ -58,13 +58,13 @@
 
   .label{
     margin-bottom: .05rem;
-    @include flex ($align: baseline);
+    @include flex (space-between, baseline);
 
     div{ flex-shrink: 0 }
     
     .error-tip{ flex: 1; }
 
-    .link{ color: $main-color }
+    .link{ color: $sub-text }
   }
 
   textarea{

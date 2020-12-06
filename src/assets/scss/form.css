@@ -63,7 +63,7 @@
   margin-bottom: .05rem;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: baseline;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .custom-textarea .label .link {
-  color: #FFCD00;
+  color: #8C8C8C;
 }
 
 .custom-textarea textarea {

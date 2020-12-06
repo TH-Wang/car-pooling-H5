@@ -7,11 +7,15 @@
           {{statusText[orderState]}}
         </div>
         <!-- 起止点 -->
-        <start-end class="start-end" :start="record.startPoint" :end="record.endPoint" />
+        <start-end class="start-end" :start="startAddrName" :end="endAddrName" />
       </div>
       <!-- 时间、余座 -->
       <div class="trip-detail">
-        <time-seat :time="record.startTime" :seat="record.seatNum" :state="orderState" />
+        <time-seat
+          :time="record.startTime"
+          :seat="record.seatNum || record.remainSeat"
+          :state="orderState"
+        />
       </div>
     </div>
     <!-- 删除按钮 -->
@@ -58,6 +62,16 @@ export default {
   computed: {
     orderState () {
       return this.record.orderState
+    },
+    startAddrName () {
+      return this.record.startAddr
+        ? this.record.startAddr
+        : this.record.passPointList[0].pointName
+    },
+    endAddrName () {
+      return this.record.endAddr
+        ? this.record.endAddr
+        : this.record.passPointList.find(i => i.type === 3).pointName
     }
   }
 }

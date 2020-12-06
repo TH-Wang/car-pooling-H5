@@ -17,7 +17,7 @@
           :key="item.id"
           :record="item"
           :show-remove="manage"
-          @click="handleLinkDetail($event, item.id)"
+          @click="handleLinkDetail($event, item)"
           @remove="handleRemove(item.id)"
         />
       </van-list>
@@ -27,7 +27,7 @@
 
 <script>
 import { PullRefresh, List } from 'vant'
-import { queryAllJourney } from '@/api'
+import { queryPublish } from '@/api'
 import TripItem from './TripItem'
 import ListMixin from '@/mixins/list-mixin'
 
@@ -47,22 +47,19 @@ export default {
   },
   methods: {
     // 请求api函数
-    reqApi: queryAllJourney,
-    // 返回主要参数
-    getRequestDatas () {
-      return { journeyType: 2 }
-    },
+    reqApi: queryPublish,
     // 自定义处理返回值
     resDataHandler (res) {
-      const { rows, total } = res.data
-      return { list: rows, total }
+      const { data, total } = res.data
+      return { list: data, total }
     },
     // 查看行程详情
-    handleLinkDetail (e, id) {
-      this.$router.push({
-        path: '/common/tripinfo/customer',
-        query: { id }
-      })
+    handleLinkDetail (e, record) {
+      const { orderType, id } = record
+      const path = orderType === 1
+        ? '/common/tripinfo/driver'
+        : '/common/orderDetail'
+      this.$router.push({ path, query: { id } })
     }
   }
 }

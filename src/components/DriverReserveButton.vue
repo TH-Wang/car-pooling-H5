@@ -26,7 +26,7 @@ export default {
       this.$toast.loading({ message: '正在预约', duration: 10000 })
       const pprIdCar = this.record.id
       try {
-        const res = await commitOrder({ pprIdCar })
+        const res = await commitOrder({ pprIdCar, status: 6 })
         this.$toast.clear()
         // 处理请求结果
         const { status, msg } = res.data

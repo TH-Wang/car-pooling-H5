@@ -33,7 +33,7 @@
       </van-tab>
 
       <!-- 我是车主 -->
-      <van-tab class="van-tab-wrapper" title="我的行程">
+      <van-tab class="van-tab-wrapper" title="我的订单">
         <driver-trip-list :manage=manage />
       </van-tab>
     </van-tabs>

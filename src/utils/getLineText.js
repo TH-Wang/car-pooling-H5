@@ -14,5 +14,5 @@ export function getLineText (passPointList) {
       case 3: end = pointName; break
     }
   }
-  return `${start}出发，${line}，目的地：${end}`
+  return line ? `${start}出发，${line}，目的地：${end}` : `${start}出发，目的地：${end}`
 }

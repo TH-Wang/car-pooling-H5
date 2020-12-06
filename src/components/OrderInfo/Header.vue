@@ -56,7 +56,7 @@ export default {
   methods: {
     stateImage () {
       let imageName = 'doing'
-      if (this.record.state !== 'doing') {
+      if (this.record.state > 1) {
         imageName = 'finish'
       }
       return require(`@/assets/icons/order-state/${imageName}.png`)

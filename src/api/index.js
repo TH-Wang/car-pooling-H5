@@ -40,6 +40,8 @@ export const driverOrder = order.driverOrder
 
 // 发布订单模块
 export const insertPublish = publish.insertPublish
+export const queryPublish = publish.queryPublish
+export const queryPublishById = publish.queryPublishById
 
 // 消息模块
 export const queryUserMessage = message.queryUserMessage
@@ -50,7 +52,8 @@ export const selectGroupById = group.selectGroupById
 export const addGroup = group.addGroup
 
 // 我的行程模块
-export const queryAllJourney = myJourney.queryAllJourney
+export const selectMyPassenger = myJourney.selectMyPassenger
+export const selectByPassengerDriverDetail = myJourney.selectByPassengerDriverDetail
 
 // 上传文件模块
 export const uploadFile = file.uploadFile

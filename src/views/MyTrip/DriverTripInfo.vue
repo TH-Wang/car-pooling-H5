@@ -12,11 +12,11 @@
     <!-- 顶部 -->
     <order-info-header
       :record="{
-        start: '重庆西站',
-        end: '重庆北站',
-        state: $route.query.state,
-        time: '2020-03-23  08:00',
-        seat: 3}"
+        startAddr: startAddrName,
+        endAddr: endAddrName,
+        state: record.orderState,
+        startTime: startTime,
+        seatNum: record.remainSeat}"
       content-type="state"
       show-time-seat
     />
@@ -27,30 +27,30 @@
 
       <div
         class="info"
-        v-for="(item, index) in dataSource.customers"
-        :key="index"
+        v-for="(item, index) in record.myPassengerDetailVoList"
+        :key="item.pprId"
         @click="$router.push({path: '/common/my/custinfo', query: {state: $route.query.state}})"
       >
         <div class="info-index">{{index+1}}</div>
         <div v-if="stateMark" class="info-phone">
           <van-icon name="phone" size=".14rem" color="#FFAE20" />
-          {{item.phone}}
+          {{item.mobilePhone}}
         </div>
         <div class="info-field" :style="`${stateMark ? 'width:2.25rem' : ''}`">
           <span class="info-field-label">乘客</span>
-          <span class="info-field-text">{{item.name}}</span>
+          <span class="info-field-text">{{item.userName}}</span>
         </div>
         <div class="info-field">
           <span class="info-field-label">出发地点</span>
-          <span class="info-field-text">{{item.start}}</span>
+          <span class="info-field-text">{{item.startAddr}}</span>
         </div>
         <div class="info-field">
           <span class="info-field-label">到达地点</span>
-          <span class="info-field-text">{{item.end}}</span>
+          <span class="info-field-text">{{item.endAddr}}</span>
         </div>
         <div class="info-field">
           <span class="info-field-label">出发时间</span>
-          <span class="info-field-text">{{item.time}}</span>
+          <span class="info-field-text">{{item.startTime}}</span>
         </div>
       </div>
     </div>
@@ -67,8 +67,11 @@
 </template>
 
 <script>
+import moment from 'moment'
+import { selectByPassengerDriverDetail } from '@/api'
 import { Header, Tips } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
+import { getLineText } from '@/utils/getLineText'
 
 export default {
   components: {
@@ -77,27 +80,46 @@ export default {
     'map-view': MapView
   },
   data: () => ({
+    orderId: null,
+    record: {},
     tips: [
       '温馨提示',
       '请在到达目的地后，向乘客<span style="color:#FFCD00">收取分摊费用</span>，平台不代收费用。'
-    ],
-    dataSource: {
-      customers: [
-        { name: '陈女士', start: '重庆北站', end: '重庆西站', time: '07月09日 08:00', phone: '15704602398' },
-        { name: '陈女士', start: '新牌坊', end: '大学城', time: '07月09日 08:30', phone: '15704602398' },
-        { name: '陈女士', start: '加州', end: '重庆西站', time: '07月09日 08:30', phone: '15704602398' },
-        { name: '陈女士', start: '重庆北站', end: '重庆西站', time: '07月09日 08:00', phone: '15704602398' }
-      ],
-      state: 'doing'
-    }
+    ]
   }),
   computed: {
     stateMark () {
       return this.dataSource.state === 'doing'
+    },
+    startAddrName () {
+      if (this.record.pstartAddr) return this.record.pstartAddr
+      if (this.record.passPointList) return this.record.passPointList[0].pointName
+      return ''
+    },
+    endAddrName () {
+      if (this.record.pendAddr) return this.record.pendAddr
+      if (this.record.passPointList) return this.record.passPointList.find(i => i.type === 3).pointName
+      return ''
+    },
+    startTime () {
+      if (!this.record.startTime) return ''
+      return moment(this.record.startTime).format('YYYY-MM-DD HH:mm')
+    },
+    // 途径点拼接字符串
+    passPointList () {
+      return getLineText(this.record.passPointList)
     }
   },
-  mounted () {
-    this.dataSource.state = this.$route.query.state
+  methods: {
+    async handleReq () {
+      const res = await selectByPassengerDriverDetail(this.orderId)
+      this.record = res.data.data[0]
+    }
+  },
+  mounted: async function () {
+    this.orderId = this.$route.query.id
+    await this.handleReq()
+    console.log(this.startAddrName)
   }
 }
 </script>

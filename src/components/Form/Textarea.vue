@@ -3,10 +3,12 @@
     <div class="custom-textarea">
       <div class="label">
         <div>{{label}}</div>
-        <div class="link" @click="$router.push(linkPath)">{{link}}</div>
+        <div class="link link-default" @click="$emit('link')">{{link}}</div>
       </div>
-      <div class="main">
+      <div class="main" @click="$emit('click')">
+        <slot v-if="custom"></slot>
         <textarea
+          v-else
           v-model="val"
           :class="textareaClass"
           :rows="rows"
@@ -46,8 +48,6 @@ export default {
       type: String,
       default: ''
     },
-    // 链接按钮跳转的路径
-    linkPath: String,
     // 只读模式
     readonly: {
       type: Boolean,
@@ -55,6 +55,11 @@ export default {
     },
     // 是否必填
     required: {
+      type: Boolean,
+      default: false
+    },
+    // 是否自己填充内容
+    custom: {
       type: Boolean,
       default: false
     }
@@ -107,4 +112,8 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/form.scss';
+
+.link-default{
+  color: $tip-text;
+}
 </style>

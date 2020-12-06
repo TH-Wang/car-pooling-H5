@@ -37,7 +37,7 @@
 
 <script>
 import { PullRefresh, List, ActionSheet } from 'vant'
-import { queryAllJourney } from '@/api'
+import { selectMyPassenger } from '@/api'
 import TripItem from './TripItem'
 import ListMixin from '@/mixins/list-mixin'
 
@@ -71,15 +71,13 @@ export default {
   }),
   methods: {
     // 请求api函数
-    reqApi: queryAllJourney,
-    // 返回主要参数
-    getRequestDatas () {
-      return { journeyType: 1 }
-    },
-    // 自定义处理返回值
+    reqApi: selectMyPassenger,
     resDataHandler (res) {
-      const { rows, total } = res.data
-      return { list: rows, total }
+      const { list, total } = res.data.data
+      return {
+        list: list.filter(i => i.journeyType === 2),
+        total
+      }
     },
     // 弹出操作菜单
     openAction (record) {
@@ -93,7 +91,7 @@ export default {
     // 查看行程详情
     handleLinkDetail (e, id) {
       this.$router.push({
-        path: '/common/tripinfo/driver',
+        path: '/common/order/detail',
         query: { id }
       })
     }

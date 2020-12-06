@@ -122,7 +122,8 @@ export default {
         startAddr: startAddr.name,
         endAddr: endAddr.name,
         orderNum: parseInt(values.orderNum),
-        pprIdCar: pprId
+        pprIdCar: pprId,
+        status: 5
       }
 
       // 发送请求

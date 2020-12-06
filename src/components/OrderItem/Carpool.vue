@@ -74,7 +74,7 @@
 <script>
 import moment from 'moment'
 import { Image } from 'vant'
-import { getPointText } from './utils'
+import { getLineText } from '@/utils/getLineText'
 
 export default {
   components: {
@@ -89,7 +89,7 @@ export default {
   computed: {
     // 途径点拼接字符串
     passPointList () {
-      return getPointText(this.record.passPointList)
+      return getLineText(this.record.passPointList)
     },
     // 时间分钟
     hourMinute () {

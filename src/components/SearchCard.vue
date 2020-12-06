@@ -167,13 +167,13 @@ export default {
       this.$store.commit(commitType)
     },
     validate () {
-      const value = this.useStore ? this.search : this.value
+      const value = this.isCommon ? this.search : this.release
       const { startAddr, endAddr } = value
-      if (isEmpty(startAddr)) {
+      if (isEmpty(startAddr) || isEmpty(startAddr.name)) {
         this.$toast({ message: '请先输入您的位置' })
         return false
       }
-      if (isEmpty(endAddr)) {
+      if (isEmpty(endAddr) || isEmpty(endAddr.name)) {
         this.$toast({ message: '请输入您要去哪' })
         return false
       }
