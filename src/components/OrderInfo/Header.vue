@@ -21,7 +21,7 @@
       </div>
     </div>
     <!-- 起止路线 -->
-    <start-end :start="record.startAddr" :end="record.endAddr" />
+    <start-end :start="record.startAddr" :end="record.endAddr" narrow />
     <!-- 时间余座 -->
     <div v-if="showTimeSeat" class="time-seat">
       <time-seat :time="record.startTime" :seat="record.seatNum" :type="record.type" />

@@ -22,9 +22,9 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    >
+    ><work-order :list="list" type="hitDri" />
       <!-- 订单 -->
-      <hitchhike-order
+      <!-- <hitchhike-order
         v-for="(item, index) in list"
         :key="index"
         :record="item"
@@ -32,7 +32,6 @@
         showCar showLineDetail
         @click="handleLinkDetail($event, item.pprId)"
       >
-        <!-- 预约按钮 -->
         <template #button>
           <mini-button
             color="yellow"
@@ -40,7 +39,7 @@
             @click="handleLinkDetail($event, item.pprId)"
           >立即预订</mini-button>
         </template>
-      </hitchhike-order>
+      </hitchhike-order> -->
     </van-list>
   </div>
 </template>
@@ -50,8 +49,9 @@ import { mapState } from 'vuex'
 import { List } from 'vant'
 import SearchCard from '@/components/SearchCard'
 import { OrderFilter } from '@/components/Filter/index.js'
-import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
-import MiniButton from '@/components/MiniButton'
+import WorkOrder from '@/components/WorkOrder'
+// import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
+// import MiniButton from '@/components/MiniButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import ListMixin from '@/mixins/list-mixin'
 
@@ -61,8 +61,9 @@ export default {
     'van-list': List,
     'search-card': SearchCard,
     'order-filter': OrderFilter,
-    'hitchhike-order': HitchhikeOrder,
-    'mini-button': MiniButton
+    'work-order': WorkOrder
+    // 'hitchhike-order': HitchhikeOrder,
+    // 'mini-button': MiniButton
   },
   computed: {
     ...mapState(['position', 'search'])
@@ -83,6 +84,7 @@ export default {
     handleSearchOrder () {
       const { startAddr, endAddr } = this.search
       const query = {
+        workType: 'hitDri',
         publishType: 4,
         // 1车主发布，2乘客发布
         orderType: 1,

@@ -34,8 +34,8 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    >
-      <carpool-order
+    ><work-order :list="list" :type="dataSource.workType" />
+      <!-- <carpool-order
         v-for="(item, index) in list"
         :key="index"
         :record="item"
@@ -48,7 +48,7 @@
             @click="handleConfirm"
           >立即预订</mini-button>
         </template>
-      </carpool-order>
+      </carpool-order> -->
     </van-list>
   </div>
 </template>
@@ -57,17 +57,20 @@
 import { mapState } from 'vuex'
 import { List } from 'vant'
 import { OrderFilter } from '@/components/Filter/index.js'
-import CarpoolOrder from '@/components/OrderItem/Carpool'
+import WorkOrder from '@/components/WorkOrder'
+// import CarpoolOrder from '@/components/OrderItem/Carpool'
+// import MiniButton from '@/components/MiniButton'
 import ListMixin from '@/mixins/list-mixin'
-import MiniButton from '@/components/MiniButton'
 
 export default {
   mixins: [ListMixin],
   components: {
     'van-list': List,
     'order-filter': OrderFilter,
-    'carpool-order': CarpoolOrder,
-    'mini-button': MiniButton
+    'work-order': WorkOrder,
+    WorkOrder
+    // 'carpool-order': CarpoolOrder,
+    // 'mini-button': MiniButton
   },
   data: () => ({
     dataSource: {}

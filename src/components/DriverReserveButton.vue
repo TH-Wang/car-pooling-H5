@@ -6,16 +6,19 @@
 </template>
 
 <script>
-import { commitOrder } from '@/api'
+import { appointmentPassenger } from '@/api'
 import MiniButton from '@/components/MiniButton'
+import callPhone from '@/utils/callPhone'
 
 export default {
   components: {
     'mini-button': MiniButton
   },
   props: {
-    record: Object,
-    default: () => ({})
+    record: {
+      type: Object,
+      default: () => ({})
+    }
   },
   data: () => ({
     hasReserve: false
@@ -24,9 +27,9 @@ export default {
     // 司机预约
     async handleReserve (e, record) {
       this.$toast.loading({ message: '正在预约', duration: 10000 })
-      const pprIdCar = this.record.id
+      const orderId = this.record.id
       try {
-        const res = await commitOrder({ pprIdCar, status: 6 })
+        const res = await appointmentPassenger(orderId)
         this.$toast.clear()
         // 处理请求结果
         const { status, msg } = res.data
@@ -46,14 +49,15 @@ export default {
       }
     },
     // 提示车主尽快联系乘客，并展示手机号码
-    handleTipPhone (phone) {
+    async handleTipPhone (phone) {
       const phoneHtml = '<strong style="color:#FFCD00">' + this.record.mobilePhone + '</strong>'
-      this.$dialog.confirm({
+      await this.$dialog.confirm({
         title: '预约成功',
         message: '请及时联系沟通让乘客尽快确认，乘客电话' + phoneHtml,
         confirmButtonText: '立即拨打',
         allowHtml: true
       })
+      callPhone(this.phone)
     },
     // 提示车主先发布订单
     async handleTipRelease (msg) {

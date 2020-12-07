@@ -57,7 +57,7 @@
 <script>
 import { mapState } from 'vuex'
 import { Tabs, Tab } from 'vant'
-import { insertPublish } from '@/api'
+import { insertPublish, inesrtPublishPassenger } from '@/api'
 import { cloneDeep } from 'lodash'
 import SearchCard from '@/components/SearchCard'
 import CustomerFormBody from './customer'
@@ -91,8 +91,26 @@ export default {
       // 3. 提示收取信息费
       await this.alertCost()
       // 4. 发起请求
-      await this.handleRequest(cloneDeep(data))
-      // 5. 通知子组件清空表单
+      let res
+      if (type === 'driver') {
+        res = await this.driverRequest(cloneDeep(data))
+      } else if (type === 'customer') {
+        res = await this.customerRequest(cloneDeep(data))
+      }
+      // 5. 处理反馈
+      if (res.data.status === -4) {
+        // 如果token失效
+        this.$dialog.alert({ message: '请重新登录' })
+        this.$router.push('/common/login')
+        return
+      } else if (res.data.status !== 200) {
+        // 发布失败
+        this.$toast.fail('发布失败\n请稍后再试')
+        return
+      }
+      // 如果发布成功
+      this.$toast.success('发布成功')
+      // 6. 通知子组件清空表单
       this.$refs[type].clearForm()
     },
     // 提示确认手机号
@@ -127,11 +145,36 @@ export default {
         }, 300)
       })
     },
-    // 发送请求
-    async handleRequest (data) {
+    // 发送请求（乘客发布）
+    customerRequest (data) {
+      // 用户手机号
+      data.telPhone = this.user.info.phone
+      // 获取起止点信息
+      const { startAddr, endAddr } = this.release
+      data.startAddr = startAddr.name
+      data.endAddr = endAddr.name
+      // 删除多余的中间路线字段
+      delete data.middlePoint
+      return inesrtPublishPassenger(data)
+    },
+    // 发送请求（司机发布）
+    driverRequest (data) {
       // 用户手机号
       data.mobilePhone = this.user.info.phone
 
+      // 获取起止点、途径点信息
+      data.passPointList = this.getLineData(data)
+      // 删除多余的中间路线字段
+      delete data.middlePoint
+
+      // 订单状态（进行中）
+      data.orderState = 1
+
+      // 发起请求
+      return insertPublish(data)
+    },
+    // 获取起点、终点和途径点
+    getLineData (data) {
       // 出发点、目的地、途径点
       const passPointList = []
       const { startAddr, endAddr } = this.release
@@ -161,21 +204,7 @@ export default {
         sort: ++sort,
         type: 3
       })
-      data.passPointList = passPointList
-      // 订单状态（进行中）
-      data.orderState = 1
-      console.log(data)
-
-      // 发起请求
-      const res = await insertPublish(data)
-      // 如果token失效
-      if (res.data.status === -4) {
-        this.$dialog.alert({ message: '请重新登录' })
-        this.$router.push('/common/login')
-        return
-      }
-      // 如果发布成功
-      this.$toast.success('发布成功')
+      return passPointList
     }
   }
 }

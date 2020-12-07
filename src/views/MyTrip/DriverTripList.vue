@@ -1,15 +1,17 @@
 <template>
   <div>
-    <van-pull-refresh v-model="refresh" @refresh="handlePullRefresh">
-    <van-empty description="暂无行程" v-if="list.length === 0" />
+    <div v-if="list.length === 0" @click="handleRetry">
+      <van-empty description="暂无行程，点击刷新" />
+    </div>
+    <van-pull-refresh v-else v-model="refresh" @refresh="handlePullRefresh">
       <!-- 拼单列表 -->
       <van-list
-        v-else
         v-model="loading"
         :finished="finished"
         finished-text="没有更多了"
         :error.sync="error"
         error-text="加载失败，请点击重试"
+        offset="100"
         @load="handleListLoad"
         class="list-container"
       >
@@ -57,7 +59,6 @@ export default {
     }
   },
   data: () => ({
-    pageSize: 20,
     showAction: false,
     actions: [{ name: '分享', subname: '分享给你的小伙伴' },
       { name: '删除', color: '#ee0a24' }],
@@ -72,13 +73,13 @@ export default {
   methods: {
     // 请求api函数
     reqApi: selectMyPassenger,
-    resDataHandler (res) {
-      const { list, total } = res.data.data
-      return {
-        list: list.filter(i => i.journeyType === 2),
-        total
-      }
-    },
+    // resDataHandler (res) {
+    //   const { list, total } = res.data.data
+    //   return {
+    //     list: list.filter(i => i.journeyType === 2),
+    //     total
+    //   }
+    // },
     // 弹出操作菜单
     openAction (record) {
       console.log(record)
@@ -91,7 +92,7 @@ export default {
     // 查看行程详情
     handleLinkDetail (e, id) {
       this.$router.push({
-        path: '/common/order/detail',
+        path: '/common/tripinfo/driver',
         query: { id }
       })
     }

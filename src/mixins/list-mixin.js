@@ -88,12 +88,14 @@ export default {
         this.list.push(...list)
       }
 
-      this.total = total
-      this.startPage++
-      this.loading = false
-      if (this.list.length === this.total) {
-        this.finished = true
-      }
+      this.$nextTick(() => {
+        this.total = total
+        this.startPage++
+        this.loading = false
+        if (this.list.length === this.total) {
+          this.finished = true
+        }
+      })
     },
     // 请求快捷路线
     async handleQuickListLoad () {
@@ -127,8 +129,11 @@ export default {
     async handlePullRefresh () {
       this.startPage = 1
       this.finished = false
-      await this.handleListLoad()
-      this.refresh = false
+      this.$nextTick(async () => {
+        console.log('---刷新---')
+        await this.handleListLoad()
+        this.refresh = false
+      })
     }
   },
   mounted: async function () {

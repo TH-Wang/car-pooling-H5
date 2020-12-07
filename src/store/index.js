@@ -9,6 +9,7 @@ import search from './search'
 import release from './release'
 import history from './history'
 import filters from './filters'
+import map from './map'
 
 Vue.use(Vuex)
 
@@ -28,6 +29,7 @@ export default new Vuex.Store({
     search,
     release,
     history,
-    filters
+    filters,
+    map
   }
 })

@@ -5,20 +5,20 @@ export default [
     label: '申请区域',
     placeholder: '请选择申请区域'
   },
-  {
-    type: 'picker',
-    name: 'type',
-    label: '站长类型',
-    placeholder: '请选择站长类型',
-    columns: [{ id: 1, label: '站长' }, { id: 2, label: '副站长' }]
-  },
-  {
-    type: 'picker',
-    name: 'way',
-    label: '最初渠道',
-    placeholder: '请选择最初渠道',
-    columns: [{ id: 1, label: '公众号' }, { id: 2, label: '拼车群' }]
-  },
+  // {
+  //   type: 'picker',
+  //   name: 'type',
+  //   label: '站长类型',
+  //   placeholder: '请选择站长类型',
+  //   columns: [{ id: 1, label: '站长' }, { id: 2, label: '副站长' }]
+  // },
+  // {
+  //   type: 'picker',
+  //   name: 'way',
+  //   label: '最初渠道',
+  //   placeholder: '请选择最初渠道',
+  //   columns: [{ id: 1, label: '公众号' }, { id: 2, label: '拼车群' }]
+  // },
   {
     type: 'field',
     name: 'realName',

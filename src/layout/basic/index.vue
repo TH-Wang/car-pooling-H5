@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <div id="main">
-      <router-view />
+      <keep-alive :include="['Home','Group','Release','Mine','SelectCity']">
+        <router-view />
+      </keep-alive>
     </div>
     <tabbar />
   </div>
@@ -11,6 +13,7 @@
 import tabbar from './tabbar'
 
 export default {
+  name: 'Basic',
   components: {
     tabbar: tabbar
   }

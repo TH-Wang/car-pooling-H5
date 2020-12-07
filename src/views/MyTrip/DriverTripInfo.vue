@@ -12,8 +12,8 @@
     <!-- 顶部 -->
     <order-info-header
       :record="{
-        startAddr: startAddrName,
-        endAddr: endAddrName,
+        startAddr: record.pstartAddr,
+        endAddr: record.pendAddr,
         state: record.orderState,
         startTime: startTime,
         seatNum: record.remainSeat}"
@@ -89,7 +89,7 @@ export default {
   }),
   computed: {
     stateMark () {
-      return this.dataSource.state === 'doing'
+      return this.record.orderState === 1 ? 'doing' : 'finish'
     },
     startAddrName () {
       if (this.record.pstartAddr) return this.record.pstartAddr

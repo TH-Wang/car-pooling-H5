@@ -53,8 +53,8 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    >
-      <pending-order
+    ><work-order :list="list" type="pending" />
+      <!-- <pending-order
         v-for="(item, index) in list"
         :key="index"
         :record="item"
@@ -63,7 +63,7 @@
         <template #button>
           <driver-reserve-button :record="item" />
         </template>
-      </pending-order>
+      </pending-order> -->
     </van-list>
 
     <!-- 取消预约弹出层 -->
@@ -80,8 +80,9 @@ import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
-import PendingOrder from '@/components/OrderItem/Pending'
-import DriverReserveButton from '@/components/DriverReserveButton'
+import WorkOrder from '@/components/WorkOrder'
+// import PendingOrder from '@/components/OrderItem/Pending'
+// import DriverReserveButton from '@/components/DriverReserveButton'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'
 import ListMixin from '@/mixins/list-mixin'
@@ -96,8 +97,9 @@ export default {
     'nav-bar-search': NavBarSearch,
     'search-card': SearchCard,
     'quick-line': QuickLine,
-    'pending-order': PendingOrder,
-    'driver-reserve-button': DriverReserveButton,
+    'work-order': WorkOrder,
+    // 'pending-order': PendingOrder,
+    // 'driver-reserve-button': DriverReserveButton,
     'cancel-reserve-layer': CancelReserveLayer
   },
   data: () => ({
@@ -107,7 +109,7 @@ export default {
   }),
   computed: {
     ...mapState(['position', 'search']),
-    ...mapGetters(['location'])
+    ...mapGetters(['location', 'identity'])
   },
   methods: {
     // 自定义请求函数
@@ -121,6 +123,7 @@ export default {
       const _this_ = this
       const { startAddr, endAddr } = this.search
       const query = {
+        workType: 'pending',
         publishType: 1,
         // 1车主发布，2乘客发布
         orderType: _this_.identity === 0 ? 1 : 2,

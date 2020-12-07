@@ -23,7 +23,7 @@
     <div class="banner"></div>
 
     <!-- tabs -->
-    <scroll-tabs :tabs="tabs" v-model="tabsId" />
+    <scroll-tabs :tabs="tabs" v-model="tabsId" @change="handleSwitchType" />
 
     <!-- 如果群列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
@@ -90,23 +90,41 @@ export default {
     tabs: [
       { id: 0, title: '附近拼车群' },
       { id: 1, title: '最新拼车群' },
-      { id: 2, title: '专线拼车群' },
-      { id: 3, title: '创建拼车群' },
-      { id: 4, title: '创建拼车群' }
+      { id: 2, title: '专线拼车群' }
     ],
     affixContent: ''
   }),
   computed: {
     ...mapState(['user']),
-    ...mapGetters(['location'])
+    ...mapGetters(['location']),
+    // 是否专线
+    isSpecial () {
+      return this.tabsId === 1
+    },
+    // 是否最新
+    newDate () {
+      return this.tabsId === 2
+    }
   },
   methods: {
     // 请求拼车群列表的api函数
     reqApi: selectGroup,
+    // 返回筛选参数
+    getRequestDatas () {
+      const { isSpecial, newDate } = this
+      return { isSpecial, newDate }
+    },
     // 自己处理返回值
     resDataHandler (res) {
       const { rows, total } = res.data
       return { list: rows, total }
+    },
+    // 切换查询类型
+    async handleSwitchType () {
+      this.startPage = 1
+      this.$toast.loading({ message: '加载中', duration: 10000 })
+      await this.handleListLoad()
+      this.$toast.clear()
     },
     // 价格的前缀样式
     priceClass,

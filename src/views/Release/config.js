@@ -215,14 +215,14 @@ const cusCarpool = [
   {
     id: '1-2',
     type: 'timer',
-    name: 'time',
+    name: 'passengerStartTime',
     label: '时间',
     placeholder: '请选择时间',
     clearable: true
   }, {
     id: '1-3',
     type: 'field',
-    name: 'people',
+    name: 'orderNum',
     label: '人数',
     inputType: 'tel',
     maxLength: 1,
@@ -258,7 +258,7 @@ export const customer = {
   4: [{
     id: '2-1',
     type: 'timer',
-    name: 'startTime',
+    name: 'passengerStartTime',
     label: '出发时间',
     title: '出发时间',
     placeholder: '请选择出发时间',
@@ -266,24 +266,16 @@ export const customer = {
   }, {
     id: '2-2',
     type: 'timer',
-    name: 'endTime',
+    name: 'returnTime',
     label: '返程时间',
     title: '返程时间',
     placeholder: '请选择返程时间',
     clearable: true
   },
-  // {
-  //   id: '2-3',
-  //   type: 'field',
-  //   name: 'phone',
-  //   label: '手机号',
-  //   placeholder: '请输入手机号',
-  //   inputType: 'tel'
-  // },
   {
     id: '2-4',
     type: 'field',
-    name: 'people',
+    name: 'orderNum',
     label: '人数',
     inputType: 'tel',
     maxLength: 1,
@@ -298,18 +290,10 @@ export const customer = {
   }],
   // 顺路带物
   5: [
-  //   {
-  //   id: '3-1',
-  //   type: 'field',
-  //   name: 'phone',
-  //   label: '手机号',
-  //   placeholder: '请输入手机号',
-  //   inputType: 'tel'
-  // },
     {
       id: '3-2',
       type: 'timer',
-      name: 'startTime',
+      name: 'passengerStartTime',
       label: '时间',
       placeholder: '请选择时间',
       clearable: true

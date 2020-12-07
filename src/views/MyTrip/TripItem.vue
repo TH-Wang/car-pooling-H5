@@ -7,7 +7,7 @@
           {{statusText[orderState]}}
         </div>
         <!-- 起止点 -->
-        <start-end class="start-end" :start="startAddrName" :end="endAddrName" />
+        <start-end class="start-end" :start="record.startAddr" :end="record.endAddr" />
       </div>
       <!-- 时间、余座 -->
       <div class="trip-detail">

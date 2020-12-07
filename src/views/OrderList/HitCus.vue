@@ -27,15 +27,14 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    >
+    ><work-order :list="list" type="hitCus" />
       <!-- 订单 -->
-      <hitchhike-order
+      <!-- <hitchhike-order
         v-for="(item, index) in list"
         :key="index"
         :record="item"
         color="green"
       >
-        <!-- 预约按钮 -->
         <template #button>
           <mini-button
             color="green"
@@ -48,30 +47,32 @@
             <van-icon style="margin-right: .05rem" size=".18rem" name="phone" />预约
           </mini-button>
         </template>
-      </hitchhike-order>
+      </hitchhike-order> -->
     </van-list>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { List, Icon } from 'vant'
+import { List } from 'vant'
 import SearchCard from '@/components/SearchCard'
 import { OrderFilter } from '@/components/Filter/index.js'
-import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
-import MiniButton from '@/components/MiniButton'
+import WorkOrder from '@/components/WorkOrder'
+// import HitchhikeOrder from '@/components/OrderItem/Hitchhike'
+// import MiniButton from '@/components/MiniButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
   mixins: [ButtonMenuMixin, ListMixin],
   components: {
-    'van-icon': Icon,
+    // 'van-icon': Icon,
     'van-list': List,
     'search-card': SearchCard,
     'order-filter': OrderFilter,
-    'hitchhike-order': HitchhikeOrder,
-    'mini-button': MiniButton
+    'work-order': WorkOrder
+    // 'hitchhike-order': HitchhikeOrder,
+    // 'mini-button': MiniButton
   },
   computed: {
     ...mapState(['position', 'search'])
@@ -92,6 +93,7 @@ export default {
     handleSearchOrder () {
       const { startAddr, endAddr } = this.search
       const query = {
+        workType: 'hitCus',
         publishType: 4,
         // 1车主发布，2乘客发布
         orderType: 2,

@@ -11,13 +11,18 @@
 
     <!-- 顶部 -->
     <order-info-header :record="{
-      start: startAddrName,
-      end: endAddrName,
+      startAddr: record.startAddr,
+      endAddr: record.endAddr,
       state: record.orderState
     }" content-type="state" />
 
+    <!-- 如果没有司机确认 -->
+    <div class="content-card" v-if="!hasReversed">
+      <van-empty description="暂无车主预约"/>
+    </div>
+
     <!-- 详情卡片 -->
-    <div class="content-card">
+    <div class="content-card" v-else>
       <!-- 地图 -->
       <map-view />
 
@@ -31,19 +36,31 @@
       <order-info-phone :phone="record.mobilePhone"/>
     </div>
 
-    <main-button v-if="record.orderState === 1" color="gray" type="hollow" center>退订座位</main-button>
+    <main-button
+      v-if="record.orderState === 1"
+      color="gray" type="hollow" center
+      @click="showRefund = true"
+    >退订座位</main-button>
 
     <!-- 温馨提示 -->
     <order-info-tips v-if="record.orderState === 1" :tips="tips" />
+
+    <!-- 退订弹窗 -->
+    <refund-order-layer
+      :visible="showRefund"
+      @close="showRefund = false"
+      @submit="handleRefund"
+    />
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { queryPublishById } from '@/api'
+import { selectByPassengerDetail, confirmOrder } from '@/api'
 import { Header, Field, Phone, Tips } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
+import RefundOrderLayer from '@/components/Layer/RefundOrder'
 import { getLineText } from '@/utils/getLineText'
 
 export default {
@@ -53,23 +70,21 @@ export default {
     'order-info-phone': Phone,
     'order-info-tips': Tips,
     'map-view': MapView,
+    'refund-order-layer': RefundOrderLayer,
     'main-button': MainButton
   },
   data: () => ({
     orderId: '',
     record: {},
-    stateMark: ''
+    stateMark: '',
+    showRefund: false
   }),
   computed: {
-    startAddrName () {
-      if (this.record.startAddr) return this.record.startAddr
-      if (this.record.passPointList) return this.record.passPointList[0].pointName
-      return ''
-    },
-    endAddrName () {
-      if (this.record.endAddr) return this.record.endAddr
-      if (this.record.passPointList) return this.record.passPointList.find(i => i.type === 3).pointName
-      return ''
+    // 判断是否有车主预约
+    hasReversed () {
+      if (!this.record.status) return false
+      const status = this.record.status
+      return status !== 0 && status !== 5
     },
     startTime () {
       if (!this.record.startTime) return ''
@@ -77,7 +92,7 @@ export default {
     },
     // 途径点拼接字符串
     passPointList () {
-      return getLineText(this.record.passPointList)
+      return getLineText(this.record.passPointLis)
     },
     tips () {
       const refundTime = this.refundTime
@@ -93,8 +108,19 @@ export default {
   methods: {
     // 请求详情信息
     async reqInfo () {
-      const res = await queryPublishById(this.orderId)
+      const res = await selectByPassengerDetail(this.orderId)
       this.record = res.data.data[0]
+    },
+    // 退订
+    async handleRefund (e, data) {
+      // 判断是乘客取消还是司机取消
+      const status = this.identity === 0 ? 4 : 3
+      const orderId = this.record.orderId
+      const res = await confirmOrder({ status, orderId, ...data })
+      if (res.data.msg === '成功') {
+        this.$toast.success('退订成功！')
+        this.$router.go(-1)
+      }
     }
   },
   mounted () {

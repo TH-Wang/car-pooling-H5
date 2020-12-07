@@ -83,7 +83,7 @@
     </div>
 
     <!-- 路线地图 -->
-    <div class="map"></div>
+    <map-view />
   </div>
 </template>
 
@@ -92,21 +92,30 @@ import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
 import { commitOrder } from '@/api'
 import { Form, Input } from '@/components/Form'
+import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 
 export default {
+  name: 'Reserve',
   components: {
     'van-checkbox': Checkbox,
     'custom-form': Form,
     'custom-input': Input,
-    'main-button': MainButton
+    'main-button': MainButton,
+    'map-view': MapView
   },
   data: () => ({
     agree: true,
     pprId: null
   }),
   computed: {
-    ...mapState(['user', 'search'])
+    ...mapState(['user', 'search']),
+    startAddrName () {
+      return this.search.startAddr.name
+    },
+    endAddrName () {
+      return this.search.endAddr.name
+    }
   },
   methods: {
     // 提交预约信息
@@ -158,6 +167,14 @@ export default {
       endAddr: endAddr.name,
       telPhone: phone
     })
+  },
+  watch: {
+    startAddrName: function (newVal) {
+      this.$refs.form.setValueField('startAddr', newVal)
+    },
+    endAddrName: function (newVal) {
+      this.$refs.form.setValueField('endAddr', newVal)
+    }
   }
 }
 </script>

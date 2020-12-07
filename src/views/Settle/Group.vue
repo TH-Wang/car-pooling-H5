@@ -65,7 +65,7 @@ export default {
       data.status = 1
       // 地区
       data.city = values.area[1].name
-      data.region = values.area[2].name
+      data.regionName = values.area[2].name
       delete data.area
       // 用户id
       data.userId = this.user.info.id

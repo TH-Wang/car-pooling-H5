@@ -54,6 +54,7 @@
       <main-button width="2.10rem" color="yellow" type="gradient">{{priceText()}}</main-button>
     </div>
 
+    <!-- 群二维码 -->
     <overlay v-model="showQRcode">
       <div class="code-card">
         <qrcode-card :record="info" :tips="tips" center />
@@ -123,6 +124,14 @@ export default {
       location.reload()
     },
     handleShowCode () {
+      if (this.info.price > 0) {
+        this.$dialog.alert({
+          title: '付费进群',
+          message: '亲爱的用户该群为付费群，<span style="color: #FFCD00">完成付费</span>后即可查看二维码',
+          allowHtml: true
+        })
+        return
+      }
       this.showQRcode = true
     }
   },

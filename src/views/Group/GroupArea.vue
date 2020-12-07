@@ -29,7 +29,7 @@
     <!-- 空状态 -->
     <van-empty
       v-if="list.length === 0"
-      description="未搜索到任何内容，请尝试切换地区后再次尝试"
+      description="未搜索到该地区的任何内容"
     />
     <!-- 群列表 -->
     <van-list

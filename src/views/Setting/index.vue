@@ -113,6 +113,8 @@
         <van-icon name="arrow"/>
       </div>
     </div>
+
+    <div class="logout" @click="handleLogout">退出登录</div>
   </div>
 </template>
 
@@ -195,6 +197,10 @@ export default {
     // 判断是否已认证
     Authed (type) {
       return this.user.info[type] === 'YES'
+    },
+    // 退出登录
+    handleLogout () {
+      this.$router.push('/common/login')
     }
   }
 }
@@ -267,5 +273,12 @@ export default {
   padding: 0 .1rem;
   border: solid 1px $tip-text;
   box-sizing: border-box;
+}
+// 退出登录按钮
+.logout{
+  width: 1rem;
+  text-align: center;
+  margin: .5rem auto .3rem auto;
+  @include font(.16rem, $main-color);
 }
 </style>

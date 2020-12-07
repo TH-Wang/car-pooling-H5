@@ -10,6 +10,7 @@ import file from './file'
 import verification from './verification'
 import complaint from './complaint'
 import station from './station'
+import unsubscribe from './unsubscribe'
 
 // 用户、登录模块
 export const sendCode = user.sendCode
@@ -38,9 +39,11 @@ export const queryByOrderId = order.queryByOrderId
 export const confirmOrder = order.confirmOrder
 export const getPublishDetail = order.getPublishDetail
 export const driverOrder = order.driverOrder
+export const appointmentPassenger = order.appointmentPassenger
 
 // 发布订单模块
 export const insertPublish = publish.insertPublish
+export const inesrtPublishPassenger = publish.inesrtPublishPassenger
 export const queryPublish = publish.queryPublish
 export const queryPublishById = publish.queryPublishById
 
@@ -55,6 +58,8 @@ export const addGroup = group.addGroup
 // 我的行程模块
 export const selectMyPassenger = myJourney.selectMyPassenger
 export const selectByPassengerDriverDetail = myJourney.selectByPassengerDriverDetail
+export const selectMyJourney = myJourney.selectMyJourney
+export const selectByPassengerDetail = myJourney.selectByPassengerDetail
 
 // 上传文件模块
 export const uploadFile = file.uploadFile
@@ -71,3 +76,6 @@ export const userComplaintDetail = complaint.userComplaintDetail
 
 // 站长模块
 export const postApplication = station.postApplication
+
+// 退订板块
+export const selectUnsubscribeReason = unsubscribe.selectUnsubscribeReason

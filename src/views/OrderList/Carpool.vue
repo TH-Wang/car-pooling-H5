@@ -47,7 +47,8 @@
       @load="handleListLoad"
       class="list-container"
     >
-      <carpool-order
+      <work-order :list="list" type="carpool" />
+      <!-- <carpool-order
         v-for="(item, index) in list"
         :key="index"
         :record="item"
@@ -60,7 +61,7 @@
             @click="handleLinkDetail($event, item.pprId)"
           >立即预订</mini-button>
         </template>
-      </carpool-order>
+      </carpool-order> -->
     </van-list>
   </div>
 </template>
@@ -72,8 +73,9 @@ import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
-import CarpoolOrder from '@/components/OrderItem/Carpool'
-import MiniButton from '@/components/MiniButton'
+import WorkOrder from '@/components/WorkOrder'
+// import CarpoolOrder from '@/components/OrderItem/Carpool'
+// import MiniButton from '@/components/MiniButton'
 import NoticeBar from '@/components/NoticeBar'
 import NavbarMixin from '@/mixins/navbar-mixin'
 import ListMixin from '@/mixins/list-mixin'
@@ -89,8 +91,9 @@ export default {
     'nav-bar-search': NavBarSearch,
     'search-card': SearchCard,
     'quick-line': QuickLine,
-    'carpool-order': CarpoolOrder,
-    'mini-button': MiniButton
+    'work-order': WorkOrder
+    // 'carpool-order': CarpoolOrder,
+    // 'mini-button': MiniButton
   },
   data: () => ({
     needQuick: true,
@@ -98,7 +101,7 @@ export default {
   }),
   computed: {
     ...mapState(['position', 'search']),
-    ...mapGetters(['location'])
+    ...mapGetters(['location', 'identity'])
   },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
@@ -119,7 +122,9 @@ export default {
       const _this_ = this
       const { startAddr, endAddr } = this.search
       const publishType = this.publishType
+      console.log(this.identity)
       const query = {
+        workType: 'carpool',
         publishType,
         // 1车主发布，2乘客发布
         orderType: _this_.identity === 0 ? 1 : 2,
@@ -134,10 +139,6 @@ export default {
     // 进入详情页面
     handleLinkDetail (e, id) {
       this.$router.push({ path: '/common/order/detail', query: { id } })
-    },
-    // 点击订单按钮
-    handleClickOrderButton (e) {
-      console.log('[点击mini按钮]', e)
     }
   },
   created () {

@@ -3,7 +3,11 @@ import axios from './http'
 export default { selectGroup, selectGroupById, addGroup }
 
 // 查询拼车群列表
-function selectGroup (params) {
+function selectGroup (data) {
+  const params = Object.assign({
+    isSpecial: false,
+    newDate: false
+  }, data)
   return axios({
     url: '/group/select',
     method: 'POST',

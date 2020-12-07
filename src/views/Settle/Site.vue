@@ -54,7 +54,7 @@
 <script>
 import { mapState } from 'vuex'
 import { cloneDeep } from 'lodash'
-import { postApplication } from '@/api'
+import { sendCode, postApplication } from '@/api'
 import { Form, Item, Field } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import options from './siteOptions'
@@ -80,6 +80,9 @@ export default {
       try {
         // 判断或改变验证码当前状态：vertify-code-mixin
         await this.handleChangeCodeStatus()
+        // 请求验证码
+        const phone = this.$refs.form.getValueField('phone')
+        await sendCode({ phone, type: 'LOGIN' })
       } catch (error) {
         console.warn('The code is pending')
       }
@@ -91,7 +94,7 @@ export default {
       const data = cloneDeep(values)
       // 地区
       data.city = values.area[1].name
-      data.region = values.area[2].name
+      data.areaName = values.area[2].name
       delete data.area
       // 用户id
       data.userId = this.user.info.id
@@ -101,12 +104,22 @@ export default {
       const res = await postApplication(data)
       this.$toast.clear()
       if (res.data.status === 200) {
+        // 如果提交成功
         await this.$dialog.alert({
           title: '提交成功',
           message: '已为您提交成功，请耐心等待管理员的审核，感谢您的加入！'
         })
         this.$router.push('/common/settle/group/finish')
+      } else if (res.data.status === -2) {
+        // 如果未进行实名认证
+        await this.$dialog.confirm({
+          message: '您还没有完成实名认证，是否立即认证',
+          confirmButtonText: '立即认证',
+          showCancelButton: true
+        })
+        this.$router.push('/common/auth/idcard')
       } else {
+        // 提交失败
         this.$dialog.alert({
           title: '提交失败',
           message: res.data.msg

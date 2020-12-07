@@ -3,18 +3,33 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
+import { isEmpty } from 'lodash'
 import mapLoader from '@/utils/mapLoader'
 
 export default {
+  computed: {
+    ...mapState(['map'])
+  },
+  data: () => ({
+    mapView: null
+  }),
+  methods: {
+    ...mapMutations(['setMapLoader'])
+  },
   mounted: async function () {
-    const AMap = await mapLoader()
+    if (isEmpty(this.map.AMap)) {
+      const AMap = await mapLoader()
+      this.setMapLoader(AMap)
+    }
     // eslint-disable-next-line no-unused-vars
-    const map = new AMap.Map('START_END_MAP_VIEW', {
+    const mapView = new this.map.AMap.Map('START_END_MAP_VIEW', {
       // center: [116.397428, 39.90923],
       zoom: 12,
       mapStyle: 'amap://styles/whitesmoke',
       dragEnable: false
     })
+    this.mapView = mapView
   }
 }
 </script>

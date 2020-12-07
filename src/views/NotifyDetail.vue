@@ -24,26 +24,36 @@
       <order-info-phone :phone="record.mobilePhone"/>
     </div>
 
-    <main-button @click="handleRefund" type="hollow" color="gray" center bold>退订座位</main-button>
+    <main-button @click="showRefund = true" type="hollow" color="gray" center>退订座位</main-button>
 
     <!-- 温馨提示 -->
     <order-info-tips :tips="tips" />
+
+    <!-- 退订弹窗 -->
+    <refund-order-layer
+      :visible="showRefund"
+      @close="showRefund = false"
+      @submit="handleRefund"
+    />
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import { queryByOrderId, confirmOrder } from '@/api'
-import { Field, Phone, Tips } from '@/components/OrderInfo/index'
+// import { Field, Phone, Tips } from '@/components/OrderInfo/index'
+import { Tips } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
+import RefundOrderLayer from '@/components/Layer/RefundOrder'
 import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    'order-info-field': Field,
-    'order-info-phone': Phone,
+    // 'order-info-field': Field,
+    // 'order-info-phone': Phone,
     'order-info-tips': Tips,
+    'refund-order-layer': RefundOrderLayer,
     'map-view': MapView,
     'main-button': MainButton
   },
@@ -55,7 +65,8 @@ export default {
       '温馨提示',
       '1.如您行程改变，请尽可能提前退订，<span style="color:#FFCD00">07月09日 08:00</span style="color:#FFCD00">前可<span style="color:#FFCD00">无责退订</span>。',
       '2.请在上车后，将分摊费用直接支付车主。'
-    ]
+    ],
+    showRefund: false
   }),
   computed: {
     ...mapGetters(['identity']),
@@ -70,11 +81,11 @@ export default {
   },
   methods: {
     // 退订
-    async handleRefund () {
+    async handleRefund (e, data) {
       // 判断是乘客取消还是司机取消
       const status = this.identity === 0 ? 4 : 3
       const orderId = this.record.orderId
-      const res = await confirmOrder({ status, orderId })
+      const res = await confirmOrder({ status, orderId, ...data })
       if (res.data.msg === '成功') {
         this.$toast.success('退订成功！')
         this.$router.go(-1)

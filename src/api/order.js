@@ -9,7 +9,8 @@ export default {
   queryByOrderId,
   confirmOrder,
   getPublishDetail,
-  driverOrder
+  driverOrder,
+  appointmentPassenger
 }
 
 // 按条件找车
@@ -80,5 +81,14 @@ function driverOrder (params) {
     url: '/order/driverOrder',
     method: 'POST',
     params
+  })
+}
+
+// 车主取消预约
+function appointmentPassenger (orderId) {
+  return axios({
+    url: '/order/appointmentPassenger',
+    method: 'POST',
+    params: { orderId }
   })
 }

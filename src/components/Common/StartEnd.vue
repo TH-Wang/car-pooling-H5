@@ -1,5 +1,5 @@
 <template>
-  <div class="start-end">
+  <div :class="{'start-end': true, narrow}">
     <div>{{start}}</div>
     <img src="@/assets/icons/line-arrow.png" alt="">
     <div>{{end}}</div>
@@ -10,7 +10,11 @@
 export default {
   props: {
     start: String,
-    end: String
+    end: String,
+    narrow: {
+      type: Boolean,
+      default: false
+    }
   }
 }
 </script>
@@ -26,5 +30,8 @@ export default {
     height: 0.16rem;
     margin: 0 .10rem;
   }
+}
+.narrow{
+  max-width: 2.4rem;
 }
 </style>

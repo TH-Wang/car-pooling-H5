@@ -20,11 +20,11 @@
             <img src="@/assets/icons/order/car.png" alt="">
             <span>{{record.vehicleType}}</span>
           </div>
-          <div v-if="record.distance" class="car-info-item" style="margin-left: .25rem">
+          <div class="car-info-item">
             <img src="@/assets/icons/order/location.png" alt="">
-            <span>{{distance}}</span>
+            <span>{{distance}}km</span>
           </div>
-          <div class="car-info-item" style="margin-left: .25rem">
+          <div class="car-info-item">
             <img src="@/assets/icons/order/line.png" alt="">
             <span>{{record.similarity || 0}}%</span>
           </div>
@@ -46,22 +46,8 @@
 
     <!-- 用户信息及操作按钮 -->
     <div class="user">
-      <!-- 用户信息 -->
-      <div class="user-info">
-        <!-- 头像 -->
-        <div class="avatar">
-          <van-image :src="record.headimg" width="100%" height="100%" fit="cover" round />
-        </div>
-        <div class="name ellipsis">{{record.userName}}</div>
-        <div class="social">
-          <img src="@/assets/icons/order/like.png" alt="">
-          <span>1920</span>
-        </div>
-        <div class="social">
-          <img src="@/assets/icons/order/dislike.png" alt="">
-          <span>10</span>
-        </div>
-      </div>
+      <!-- 用户信息及点赞 -->
+      <social-bar :record="record" />
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat"><span>余座</span><span class="num-yellow">{{record.seatNum}}</span></div>
@@ -73,12 +59,12 @@
 
 <script>
 import moment from 'moment'
-import { Image } from 'vant'
+import SocialBar from './SocialBar'
 import { getLineText } from '@/utils/getLineText'
 
 export default {
   components: {
-    'van-image': Image
+    'social-bar': SocialBar
   },
   props: {
     record: {
@@ -101,9 +87,7 @@ export default {
     },
     // 距离
     distance () {
-      const distance = this.record.distance
-      if (distance > 1000) return (distance / 1000).toFixed(2) + 'km'
-      return distance + 'm'
+      return this.record.distance ? this.record.distance.toFixed(2) : ''
     }
   },
   methods: {
@@ -178,7 +162,7 @@ export default {
       // 辅助信息
       .car-info{
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
         margin-top: .08rem;
 

@@ -1,5 +1,7 @@
 <template>
   <div>
-    <router-view />
+    <keep-alive :include="['Reserve', 'SelectCity']">
+      <router-view />
+    </keep-alive>
   </div>
 </template>

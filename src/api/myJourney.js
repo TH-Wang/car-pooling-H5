@@ -1,8 +1,13 @@
 import axios from './http'
 
-export default { selectMyPassenger, selectByPassengerDriverDetail }
+export default {
+  selectMyPassenger,
+  selectMyJourney,
+  selectByPassengerDriverDetail,
+  selectByPassengerDetail
+}
 
-// 查询我的行程
+// 查询车主的所有行程
 function selectMyPassenger (params) {
   return axios({
     url: '/myJourney/selectMyPassenger',
@@ -11,10 +16,28 @@ function selectMyPassenger (params) {
   })
 }
 
-// 查询司机的行程详情
+// 查询乘客的所有行程
+function selectMyJourney (params) {
+  return axios({
+    url: '/myJourney/selectMyJourney',
+    method: 'POST',
+    params
+  })
+}
+
+// 查询车主的行程详情
 function selectByPassengerDriverDetail (id) {
   return axios({
     url: '/myJourney/selectByPassengerDriverDetail',
+    method: 'POST',
+    params: { pprId: id }
+  })
+}
+
+// 查询乘客的行程详情
+function selectByPassengerDetail (id) {
+  return axios({
+    url: '/myJourney/selectByPassengerDetail',
     method: 'POST',
     params: { pprId: id }
   })
