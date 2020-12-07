@@ -51,13 +51,13 @@
         v-for="(item, index) in list"
         :key="index"
         :record="item"
-        @click="handleLinkDetail"
+        @click="handleLinkDetail($event, item.pprId)"
       >
         <template #button>
           <mini-button
             color="yellow"
             :orderId="item.id"
-            @click="handleLinkDetail"
+            @click="handleLinkDetail($event, item.pprId)"
           >立即预订</mini-button>
         </template>
       </carpool-order>
@@ -132,8 +132,8 @@ export default {
       console.log('click search')
     },
     // 进入详情页面
-    handleLinkDetail (record) {
-      this.$router.push({ name: 'OrderDetail', params: { record } })
+    handleLinkDetail (e, id) {
+      this.$router.push({ path: '/common/order/detail', query: { id } })
     },
     // 点击订单按钮
     handleClickOrderButton (e) {

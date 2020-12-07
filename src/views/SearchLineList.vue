@@ -18,10 +18,12 @@
     </van-nav-bar>
 
     <!-- 过滤下拉菜单 -->
-    <order-filter />
+    <order-filter v-model="filters" @change="handleFilterChange"/>
 
     <!-- 如果列表数据为空 -->
-    <van-empty v-if="list.length === 0" description="未搜索到结果~" />
+    <div v-if="list.length === 0" @click="handleRetry">
+      <van-empty description="未搜索到结果~" />
+    </div>
     <!-- 拼单列表 -->
     <van-list
       v-else

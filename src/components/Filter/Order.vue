@@ -91,7 +91,6 @@ export default {
         if (cost !== 0) filterData.carPriceSort = cost
         if (seat !== 0) filterData.remainingSeat = this.options.seat.find(i => i.value === seat).seat
         if (time !== 0) filterData.startTime = this.options.time.find(i => i.value === time).date
-        console.log(filterData)
         this.$emit('change', filterData)
       })
     }

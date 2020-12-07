@@ -9,6 +9,7 @@ import myJourney from './myJourney'
 import file from './file'
 import verification from './verification'
 import complaint from './complaint'
+import station from './station'
 
 // 用户、登录模块
 export const sendCode = user.sendCode
@@ -67,3 +68,6 @@ export const userCarDetail = verification.userCarDetail
 // 投诉模块
 export const addComplaint = complaint.addComplaint
 export const userComplaintDetail = complaint.userComplaintDetail
+
+// 站长模块
+export const postApplication = station.postApplication

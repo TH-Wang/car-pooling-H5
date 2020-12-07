@@ -52,6 +52,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { cloneDeep } from 'lodash'
+import { postApplication } from '@/api'
 import { Form, Item, Field } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import options from './siteOptions'
@@ -68,6 +71,9 @@ export default {
   data: () => ({
     formOptions: options
   }),
+  computed: {
+    ...mapState(['user'])
+  },
   methods: {
     // 获取验证码
     async handleGetCode () {
@@ -78,9 +84,34 @@ export default {
         console.warn('The code is pending')
       }
     },
-    handleSubmit () {
+    // 提交信息
+    async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
-      if (!err) console.log(values)
+      if (err) return
+      const data = cloneDeep(values)
+      // 地区
+      data.city = values.area[1].name
+      data.region = values.area[2].name
+      delete data.area
+      // 用户id
+      data.userId = this.user.info.id
+      console.log(data)
+      // 发起请求
+      this.$toast.loading({ message: '提交中', duration: 10000 })
+      const res = await postApplication(data)
+      this.$toast.clear()
+      if (res.data.status === 200) {
+        await this.$dialog.alert({
+          title: '提交成功',
+          message: '已为您提交成功，请耐心等待管理员的审核，感谢您的加入！'
+        })
+        this.$router.push('/common/settle/group/finish')
+      } else {
+        this.$dialog.alert({
+          title: '提交失败',
+          message: res.data.msg
+        })
+      }
     }
   }
 }

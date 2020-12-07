@@ -58,7 +58,7 @@
         v-for="(item, index) in list"
         :key="index"
         :record="item"
-        @click="handleLinkDetail"
+        @click="handleLinkDetail($event, item.pprId)"
       >
         <template #button>
           <driver-reserve-button :record="item" />
@@ -130,8 +130,8 @@ export default {
       this.$router.push({ path: '/common/searchline/list', query })
     },
     // 进入详情页面
-    handleLinkDetail (record) {
-      this.$router.push({ name: 'OrderDetail', params: { record } })
+    handleLinkDetail (e, id) {
+      this.$router.push({ path: '/common/order/detail', query: { id } })
     },
     handleClickSearch () {
       console.log('click search')
