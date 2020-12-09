@@ -28,20 +28,28 @@
       <order-info-phone :phone="record.mobilePhone"/>
     </div>
 
-    <main-button type="hollow" color="gray" center bold>退订座位</main-button>
+    <main-button
+      @click="showRefund = true"
+      type="hollow" color="gray"
+      center bold
+    >退订座位</main-button>
 
     <!-- 温馨提示 -->
     <order-info-tips :tips="tips" @click="handleLink" />
+
+    <!-- 退订弹窗 -->
+    <refund-order-layer v-model="showRefund" @submit="handleRefund" />
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { queryByOrderId } from '@/api'
+import { queryByOrderId, confirmOrder } from '@/api'
 import { Field, Phone, Tips } from '@/components/OrderInfo/index'
 import Feedback from '@/components/Feedback'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
+import RefundOrderLayer from '@/components/Layer/RefundOrder'
 
 export default {
   components: {
@@ -50,12 +58,14 @@ export default {
     'order-info-tips': Tips,
     'map-view': MapView,
     'main-button': MainButton,
-    feedback: Feedback
+    feedback: Feedback,
+    'refund-order-layer': RefundOrderLayer
   },
   data: () => ({
     orderId: null,
     record: { passPointLis: [] },
-    refundTime: ''
+    refundTime: '',
+    showRefund: false
   }),
   computed: {
     passPointLis () {
@@ -81,6 +91,21 @@ export default {
       if (type === 'NO_LIABILITY') {
         this.$router.push('/common/description?type=liability')
       }
+    },
+    // 退订
+    async handleRefund (data) {
+      // 判断是乘客取消还是司机取消
+      const status = 7
+      const orderId = this.orderId
+      console.log({ status, orderId, ...data })
+      this.showRefund = false
+      const res = await confirmOrder({ status, orderId, ...data })
+      if (res.data.msg === '成功') {
+        this.$toast.success('退订成功！')
+        this.$router.go(-1)
+      }
+      this.startPage = 1
+      this.handleListLoad(true)
     }
   },
   created () {

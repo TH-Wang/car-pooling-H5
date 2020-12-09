@@ -11,6 +11,7 @@ import verification from './verification'
 import complaint from './complaint'
 import station from './station'
 import unsubscribe from './unsubscribe'
+import like from './like'
 
 // 用户、登录模块
 export const sendCode = user.sendCode
@@ -60,6 +61,7 @@ export const selectMyPassenger = myJourney.selectMyPassenger
 export const selectByPassengerDriverDetail = myJourney.selectByPassengerDriverDetail
 export const selectMyJourney = myJourney.selectMyJourney
 export const selectByPassengerDetail = myJourney.selectByPassengerDetail
+export const deleteJourneyById = myJourney.deleteJourneyById
 
 // 上传文件模块
 export const uploadFile = file.uploadFile
@@ -79,3 +81,6 @@ export const postApplication = station.postApplication
 
 // 退订板块
 export const selectUnsubscribeReason = unsubscribe.selectUnsubscribeReason
+
+// 点赞模块
+export const commitLike = like.commitLike

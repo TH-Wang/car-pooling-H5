@@ -152,7 +152,11 @@ export default {
       // 获取起止点信息
       const { startAddr, endAddr } = this.release
       data.startAddr = startAddr.name
+      data.startLon = startAddr.location.lng
+      data.startLat = startAddr.location.lat
       data.endAddr = endAddr.name
+      data.endLon = endAddr.location.lng
+      data.endLat = endAddr.location.lat
       // 删除多余的中间路线字段
       delete data.middlePoint
       return inesrtPublishPassenger(data)

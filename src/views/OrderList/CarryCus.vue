@@ -27,16 +27,14 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    >
-      <!-- 订单 -->
-      <carry-order
+    ><work-order :list="list" type="carryCus" />
+      <!-- <carry-order
         v-for="(item, index) in list"
         :key="index"
         :record="item"
         type="customer"
         @click="handleLinkDetail($event, item.pprId)"
       >
-        <!-- 预约按钮 -->
         <template #button>
           <mini-button
             color="green"
@@ -49,7 +47,7 @@
             <van-icon style="margin-right: .05rem" size=".18rem" name="phone" />预约
           </mini-button>
         </template>
-      </carry-order>
+      </carry-order> -->
     </van-list>
   </div>
 </template>
@@ -57,10 +55,12 @@
 <script>
 import { mapState } from 'vuex'
 import { List } from 'vant'
+import { queryPassengerOrders } from '@/api'
 import SearchCard from '@/components/SearchCard'
 import { OrderFilter } from '@/components/Filter/index.js'
-import MiniButton from '@/components/MiniButton'
-import CarryOrder from '@/components/OrderItem/Carry'
+import WorkOrder from '@/components/WorkOrder'
+// import MiniButton from '@/components/MiniButton'
+// import CarryOrder from '@/components/OrderItem/Carry'
 import ListMixin from '@/mixins/list-mixin'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 
@@ -70,8 +70,9 @@ export default {
     'van-list': List,
     'order-filter': OrderFilter,
     'search-card': SearchCard,
-    'carry-order': CarryOrder,
-    'mini-button': MiniButton
+    'work-order': WorkOrder
+    // 'carry-order': CarryOrder,
+    // 'mini-button': MiniButton
   },
   data: () => ({
     menuVisibleId: null,
@@ -81,10 +82,12 @@ export default {
     ...mapState(['position', 'search'])
   },
   methods: {
+    // 车主找人api
+    reqApi: queryPassengerOrders,
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
       return {
-        orderType: 2, // 1-车主发布 2-乘客发布
+        // orderType: 2, // 1-车主发布 2-乘客发布
         publishType: 5 // 顺路带物
       }
     },
@@ -100,9 +103,10 @@ export default {
     handleSearchOrder () {
       const { startAddr, endAddr } = this.search
       const query = {
+        workType: 'carryCus',
         publishType: 5,
         // 1车主发布，2乘客发布
-        orderType: 2,
+        // orderType: 2,
         startAddr: startAddr.name,
         endAddr: endAddr.name
       }

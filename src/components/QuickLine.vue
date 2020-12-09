@@ -4,7 +4,7 @@
     <div class="header">
       <span class="title">{{title}}</span>
       <span v-if="showLink" class="header-tip">当前线路拼接信息</span>
-      <span v-if="showLink" class="more-btn" @click="$emit('link-more')">查看更多</span>
+      <span v-if="showLink" class="more-btn" @click="handleLinkMore">查看更多</span>
     </div>
 
     <!-- 如果列表数据为空 -->
@@ -35,9 +35,14 @@ export default {
     'line-card': LineCard
   },
   props: {
+    // 数据列表
     dataSource: {
       type: Array,
       default: () => ([])
+    },
+    query: {
+      type: Object,
+      default: () => ({})
     },
     title: {
       type: String,
@@ -48,6 +53,7 @@ export default {
       type: String,
       default: 'yellow'
     },
+    // 展示tip和链接按钮
     showLink: {
       type: Boolean,
       default: true
@@ -57,17 +63,21 @@ export default {
     ...mapGetters(['identity'])
   },
   methods: {
+    // 搜索快捷路线的拼车单
     handleClick (e, record) {
       const _this_ = this
       const { startAddr, endAddr } = record
       const query = {
-        publishType: 1,
-        // 1车主发布，2乘客发布
-        orderType: _this_.identity === 0 ? 1 : 2,
         startAddr,
-        endAddr
+        endAddr,
+        ..._this_.query
       }
       this.$router.push({ path: '/common/searchline/list', query })
+    },
+    // 点击查看更多
+    handleLinkMore () {
+      const query = this.query
+      this.$router.push({ path: '/common/quick/list', query })
     }
   }
 }

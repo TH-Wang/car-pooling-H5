@@ -7,8 +7,8 @@
         :key="index"
         :record="item"
         @click="$emit('link', item.pprId)"
-      >
-        <template #button>
+        @like="handleCommitLike($event, item.pprId)"
+      ><template #button>
           <mini-button
             color="yellow"
             @click="$emit('reserve', item.pprId)"
@@ -23,6 +23,7 @@
       v-for="(item, index) in list"
       :key="index"
       :record="item"
+      @like="handleCommitLike($event, item.orderId)"
     >
       <template #button>
         <driver-reserve-button :record="item" />
@@ -33,7 +34,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { commitOrder } from '@/api'
+import { commitOrder, commitLike } from '@/api'
 import CarpoolOrder from '@/components/OrderItem/Carpool'
 import PendingOrder from '@/components/OrderItem/Pending'
 import MiniButton from '@/components/MiniButton'
@@ -97,6 +98,21 @@ export default {
         confirmButtonText: '立即拨打',
         allowHtml: true
       })
+    },
+    // 点赞
+    async handleCommitLike (isLike, pprId) {
+      const res = await commitLike(isLike, pprId)
+      if (res.data.status === 1 && res.data.msg === '点赞成功') {
+        this.handleRefreshLike(isLike, pprId)
+      } else {
+        this.$toast.fail('操作失败')
+      }
+    },
+    // 更新订单的点赞状态
+    handleRefreshLike (isLike, pprId) {
+      const idKey = this.identity === 0 ? 'pprId' : 'orderId'
+      const el = this.list.find(i => i[idKey] === pprId)
+      if (isLike === 1) el.isDo = 1
     }
   }
 }

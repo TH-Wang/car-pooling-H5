@@ -22,16 +22,14 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    >
-      <!-- 订单 -->
-      <carry-order
+    ><work-order :list="list" type="carryDri" />
+      <!-- <carry-order
         v-for="(item, index) in list"
         :key="index"
         :record="item"
         type="customer"
         @click="handleLinkDetail($event, item.pprId)"
       >
-        <!-- 预约按钮 -->
         <template #button>
           <mini-button
             color="yellow"
@@ -39,7 +37,7 @@
             @click="handleLinkDetail($event, item.pprId)"
           >立即预订</mini-button>
         </template>
-      </carry-order>
+      </carry-order> -->
     </van-list>
   </div>
 </template>
@@ -49,8 +47,9 @@ import { mapState } from 'vuex'
 import { List } from 'vant'
 import SearchCard from '@/components/SearchCard'
 import { OrderFilter } from '@/components/Filter/index.js'
-import MiniButton from '@/components/MiniButton'
-import CarryOrder from '@/components/OrderItem/Carry'
+import WorkOrder from '@/components/WorkOrder'
+// import CarryOrder from '@/components/OrderItem/Carry'
+// import MiniButton from '@/components/MiniButton'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
@@ -59,8 +58,9 @@ export default {
     'van-list': List,
     'order-filter': OrderFilter,
     'search-card': SearchCard,
-    'carry-order': CarryOrder,
-    'mini-button': MiniButton
+    'work-order': WorkOrder
+    // 'carry-order': CarryOrder,
+    // 'mini-button': MiniButton
   },
   computed: {
     ...mapState(['position', 'search'])
@@ -81,6 +81,7 @@ export default {
     handleSearchOrder () {
       const { startAddr, endAddr } = this.search
       const query = {
+        workType: 'carryDri',
         publishType: 5,
         // 1车主发布，2乘客发布
         orderType: 1,

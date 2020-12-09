@@ -21,25 +21,16 @@
           :record="item"
           :show-remove="manage"
           @click="handleLinkDetail($event, item.id)"
-          @action="openAction(item)"
+          @remove="handleRemove(item.id)"
         />
       </van-list>
     </van-pull-refresh>
-
-    <!-- 操作菜单 -->
-    <van-action-sheet
-      v-model="showAction"
-      :actions="actions"
-      cancel-text="取消"
-      @cancel="showAction = false"
-      @select="handleAction"
-    />
   </div>
 </template>
 
 <script>
-import { PullRefresh, List, ActionSheet } from 'vant'
-import { selectMyPassenger } from '@/api'
+import { PullRefresh, List } from 'vant'
+import { selectMyPassenger, deleteJourneyById } from '@/api'
 import TripItem from './TripItem'
 import ListMixin from '@/mixins/list-mixin'
 
@@ -49,7 +40,6 @@ export default {
   components: {
     'van-pull-refresh': PullRefresh,
     'van-list': List,
-    'van-action-sheet': ActionSheet,
     'trip-item': TripItem
   },
   props: {
@@ -73,13 +63,6 @@ export default {
   methods: {
     // 请求api函数
     reqApi: selectMyPassenger,
-    // resDataHandler (res) {
-    //   const { list, total } = res.data.data
-    //   return {
-    //     list: list.filter(i => i.journeyType === 2),
-    //     total
-    //   }
-    // },
     // 弹出操作菜单
     openAction (record) {
       console.log(record)
@@ -95,6 +78,26 @@ export default {
         path: '/common/tripinfo/driver',
         query: { id }
       })
+    },
+    // 删除行程
+    async handleRemove (id) {
+      try {
+        await this.$dialog.confirm({ message: '是否删除该条行程？' })
+        const res = await deleteJourneyById({ id, journeyType: 1 })
+        if (res.data.status === 200) {
+          this.$toast.success('删除成功')
+          this.handleDeleteItem(id)
+        } else {
+          this.$toast.fail('删除失败\n请稍后再试')
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 从列表中删除某个元素
+    handleDeleteItem (id) {
+      const index = this.list.findIndex(i => i.id === id)
+      this.list.splice(index, 1)
     }
   }
 }

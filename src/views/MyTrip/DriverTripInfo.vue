@@ -24,17 +24,19 @@
     <!-- 乘客信息 -->
     <div class="page-title">
       <p>乘客信息</p>
-
+      <van-empty v-if="record.myPassengerDetailVoList.length === 0" description="暂无预约成功的乘客"></van-empty>
+      <!-- 乘客信息列表 -->
       <div
         class="info"
+        v-else
         v-for="(item, index) in record.myPassengerDetailVoList"
         :key="item.pprId"
-        @click="$router.push({path: '/common/my/custinfo', query: {state: $route.query.state}})"
+        @click="handleLinkDetail($event, item.orderId)"
       >
         <div class="info-index">{{index+1}}</div>
-        <div v-if="stateMark" class="info-phone">
+        <div v-if="stateMark" class="info-phone" @click.stop="handleCall($event, item.telPhone)">
           <van-icon name="phone" size=".14rem" color="#FFAE20" />
-          {{item.mobilePhone}}
+          {{item.telPhone}}
         </div>
         <div class="info-field" :style="`${stateMark ? 'width:2.25rem' : ''}`">
           <span class="info-field-label">乘客</span>
@@ -50,7 +52,7 @@
         </div>
         <div class="info-field">
           <span class="info-field-label">出发时间</span>
-          <span class="info-field-text">{{item.startTime}}</span>
+          <span class="info-field-text">{{startTime}}</span>
         </div>
       </div>
     </div>
@@ -72,6 +74,7 @@ import { selectByPassengerDriverDetail } from '@/api'
 import { Header, Tips } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import { getLineText } from '@/utils/getLineText'
+import callPhone from '@/utils/callPhone'
 
 export default {
   components: {
@@ -81,7 +84,7 @@ export default {
   },
   data: () => ({
     orderId: null,
-    record: {},
+    record: { myPassengerDetailVoList: [] },
     tips: [
       '温馨提示',
       '请在到达目的地后，向乘客<span style="color:#FFCD00">收取分摊费用</span>，平台不代收费用。'
@@ -111,15 +114,28 @@ export default {
     }
   },
   methods: {
+    // 请求乘客列表
     async handleReq () {
       const res = await selectByPassengerDriverDetail(this.orderId)
       this.record = res.data.data[0]
+    },
+    // 查看乘客详情信息
+    handleLinkDetail (e, id) {
+      this.$router.push({ path: '/common/my/custinfo', query: { id } })
+    },
+    // 拨打乘客电话
+    async handleCall (e, phone) {
+      await this.$dialog.confirm({
+        message: '是否向该乘客的手机号<span style="color:#FFCD00">' + phone + '</span>拨打电话',
+        confirmButtonText: '立即拨打',
+        showCancelButton: true
+      })
+      callPhone(phone)
     }
   },
   mounted: async function () {
     this.orderId = this.$route.query.id
     await this.handleReq()
-    console.log(this.startAddrName)
   }
 }
 </script>

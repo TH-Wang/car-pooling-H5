@@ -131,6 +131,8 @@ export default {
           }
         }
       }
+      // 更新车辆信息
+      this.updateAuthedCars()
       // 向用户反馈提交失败的车辆信息
       if (failArr.length > 0) {
         this.$dialog.alert({
@@ -141,7 +143,7 @@ export default {
       const res = await getUserDetail()
       this.$store.commit('setUserInfo', res.data.data)
       // 更新认证车辆信息
-      await this.getCarInfo()
+      // await this.getCarInfo()
     },
     // 折叠表单发生变化
     handleCollapseChange (value) {

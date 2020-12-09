@@ -1,12 +1,13 @@
 <template>
   <div>
     <van-popup
-      v-model="visible"
+      ref="popup"
+      v-model="show"
       position="bottom"
       round
       closeable
       safe-area-inset-bottom
-      @closed="$emit('close')"
+      @closed="handleClose"
     >
       <div class="content">
         <!-- 标题、描述 -->
@@ -43,7 +44,11 @@
         />
 
         <!-- 提交按钮 -->
-        <main-button width="100%" @click="handleSubmit">提交</main-button>
+        <main-button
+          width="100%"
+          @click="handleSubmit"
+          style="margin-top: .25rem"
+        >提交</main-button>
       </div>
     </van-popup>
   </div>
@@ -60,6 +65,10 @@ export default {
     'van-switch': Switch,
     'main-button': MainButton
   },
+  model: {
+    prop: 'visible',
+    event: 'change'
+  },
   props: {
     visible: {
       type: Boolean,
@@ -67,8 +76,9 @@ export default {
     }
   },
   data: () => ({
+    show: false,
     reasonId: 0,
-    reasonList: ['联系不上车主', '车辆信息不符', '行程有变', '车主没有座位'],
+    reasonList: [],
     complaint: false,
     complaintContent: ''
   }),
@@ -77,16 +87,25 @@ export default {
     async reqReasonList () {
       const res = await selectUnsubscribeReason()
       this.reasonList = res.data.data
+      this.reasonId = res.data.data[0].id
     },
     // 提交
     handleSubmit () {
       const unsubscribeResonId = this.reasonId
       const context = this.complaintContent
       this.$emit('submit', { unsubscribeResonId, context })
+    },
+    handleClose () {
+      this.$emit('change', false)
     }
   },
   created () {
     this.reqReasonList()
+  },
+  watch: {
+    visible: function (newVal) {
+      this.show = newVal
+    }
   }
 }
 </script>
@@ -159,7 +178,6 @@ export default {
     width: 100%;
     height: .6rem;
     border-radius: 4px;
-    margin-bottom: .2rem;
   }
 }
 </style>

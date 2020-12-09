@@ -50,22 +50,26 @@ export default {
     handleFilterChange (filters) {
       this.startPage = 1
       this.filters = filters
-      this.handleListLoad()
+      this.handleListLoad(true)
     },
     // 请求列表
-    async handleListLoad () {
+    async handleListLoad (deep) {
+      if (this.total === this.list.length && !deep) return
+
       const { startPage, pageSize } = this
 
       // 基础参数
-      const data = { startPage, pageSize }
+      const data = cloneDeep({ startPage, pageSize })
 
       // 如果该组件需要额外参数，则直接获取并合并
       if (this.getRequestDatas) {
+        // data = { ...data, ...this.getRequestDatas() }
         Object.assign(data, this.getRequestDatas())
       }
 
       // 如果有过滤参数
       if (!isEmpty(this.filters)) {
+        // data = { ...data, ...cloneDeep(this.filters) }
         Object.assign(data, cloneDeep(this.filters))
       }
 
@@ -130,17 +134,20 @@ export default {
       this.startPage = 1
       this.finished = false
       this.$nextTick(async () => {
-        console.log('---刷新---')
-        await this.handleListLoad()
+        await this.handleListLoad(true)
         this.refresh = false
       })
     }
   },
   mounted: async function () {
-    if (this.notReqOnMounted) return
-    if (this.needQuick) {
-      await this.handleQuickListLoad()
+    try {
+      if (this.notReqOnMounted) return
+      if (this.needQuick) {
+        await this.handleQuickListLoad()
+      }
+      await this.handleListLoad()
+    } catch (error) {
+      console.log(error)
     }
-    await this.handleListLoad()
   }
 }

@@ -12,7 +12,7 @@
 
     <!-- 当前定位城市 -->
     <div class="current-city">
-      当前定位城市·区域 <span>重庆 · 渝北区</span>
+      当前定位城市·区域 <span>{{location}}</span>
     </div>
 
     <!-- 热门城市 -->
@@ -29,11 +29,13 @@
     </div>
 
     <!-- 快捷路线 -->
-    <quick-line :show-link="false" />
+    <quick-line :dataSource="list" :query="query" :show-link="false" @retry="handleRetry" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { getCommonRoute } from '@/api'
 import QuickLine from '@/components/QuickLine'
 
 export default {
@@ -41,19 +43,42 @@ export default {
     'quick-line': QuickLine
   },
   data: () => ({
+    query: {},
+    list: [],
     activeHotCity: 1,
     hotCities: [
-      { id: 0, name: '北京' },
-      { id: 1, name: '重庆' },
-      { id: 2, name: '上海' },
-      { id: 3, name: '深圳' },
-      { id: 4, name: '成都' },
-      { id: 5, name: '广州' },
-      { id: 6, name: '哈尔滨' },
-      { id: 7, name: '杭州' },
-      { id: 8, name: '西安' }
+      { id: 0, name: '渝中区' },
+      { id: 1, name: '渝北区' },
+      { id: 2, name: '江北区' },
+      { id: 3, name: '沙坪坝区' },
+      { id: 4, name: '南岸区' },
+      { id: 5, name: '大渡口区' },
+      { id: 6, name: '北碚区' },
+      { id: 7, name: '巴南区' },
+      { id: 8, name: '江津区' }
     ]
-  })
+  }),
+  computed: {
+    ...mapGetters(['location'])
+  },
+  methods: {
+    async handleRequest () {
+      const res = await getCommonRoute({
+        startPage: 1,
+        pageSize: 10
+      })
+      this.list = res.data.data.list
+    },
+    async handleRetry () {
+      this.$toast.loading({ message: '加载中', duration: 10000 })
+      await this.handleRequest()
+      this.$toast.clear()
+    }
+  },
+  created () {
+    this.query = this.$route.query
+    this.handleRequest()
+  }
 }
 </script>
 

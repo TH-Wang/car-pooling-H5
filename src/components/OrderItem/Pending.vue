@@ -44,11 +44,11 @@
     <!-- 用户信息及操作按钮 -->
     <div class="user">
       <!-- 用户信息及点赞 -->
-      <social-bar :record="record" />
+      <social-bar :record="record" @like="(type)=>{$emit('like', type)}" />
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat"><span>人数</span>
-        <span :class="`num-${color}`">{{record.seatNum}}</span></div>
+        <span :class="`num-${color}`">{{record.remainingSeat || record.orderNum}}</span></div>
         <slot name="button"></slot>
       </div>
     </div>

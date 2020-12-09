@@ -21,7 +21,7 @@
           :record="item"
           :show-remove="manage"
           @click="handleLinkDetail($event, item.orderId)"
-          @remove="handleRemove(item.id)"
+          @remove="handleRemove(item.orderId)"
         />
       </van-list>
     </van-pull-refresh>
@@ -30,7 +30,7 @@
 
 <script>
 import { PullRefresh, List } from 'vant'
-import { selectMyJourney } from '@/api'
+import { selectMyJourney, deleteJourneyById } from '@/api'
 import TripItem from './TripItem'
 import ListMixin from '@/mixins/list-mixin'
 
@@ -51,14 +51,29 @@ export default {
   methods: {
     // 请求api函数
     reqApi: selectMyJourney,
-    // // 自定义处理返回值
-    // resDataHandler (res) {
-    //   const { data, total } = res.data
-    //   return { list: data, total }
-    // },
     // 查看行程详情
     handleLinkDetail (e, id) {
       this.$router.push({ path: '/common/tripinfo/customer', query: { id } })
+    },
+    // 删除行程
+    async handleRemove (id) {
+      try {
+        await this.$dialog.confirm({ message: '是否删除该条行程？' })
+        const res = await deleteJourneyById({ id, journeyType: 2 })
+        if (res.data.status === 200) {
+          this.$toast.success('删除成功')
+          this.handleDeleteItem(id)
+        } else {
+          this.$toast.fail('删除失败\n请稍后再试')
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 从列表中删除某个元素
+    handleDeleteItem (id) {
+      const index = this.list.findIndex(i => i.orderId === id)
+      this.list.splice(index, 1)
     }
   }
 }

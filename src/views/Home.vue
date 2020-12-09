@@ -40,6 +40,7 @@
     <!-- 快捷路线 -->
     <quick-line
       :dataSource="quickList"
+      :query="query"
       @retry="handleRetryQuick"
       @link-more="$router.push('/common/quick/list')"
     />
@@ -109,6 +110,16 @@ export default {
     },
     buttonText () {
       return this.identity === 0 ? '寻找车主' : '寻找乘客'
+    },
+    // 搜索路线时传递的参数
+    query () {
+      const identity = this.identity
+      return {
+        workType: identity === 0 ? 'carpool' : 'pending',
+        publishType: 2,
+        // 1车主发布，2乘客发布
+        orderType: identity === 0 ? 1 : 2
+      }
     }
   },
   methods: {
@@ -120,7 +131,7 @@ export default {
       if (this.identity === 1) return {}
       // 通过身份判断发布类型，1-车主发布 2-乘客发布
       const orderType = this.identity === 0 ? 1 : 2
-      return { orderType, publishType: 1 }
+      return { orderType, publishType: 2 }
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
@@ -131,9 +142,7 @@ export default {
       const _this_ = this
       const { startAddr, endAddr } = this.search
       const query = {
-        publishType: 1,
-        // 1车主发布，2乘客发布
-        orderType: _this_.identity === 0 ? 1 : 2,
+        ..._this_.query,
         startAddr: startAddr.name,
         endAddr: endAddr.name
       }

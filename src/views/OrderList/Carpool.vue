@@ -22,8 +22,8 @@
     <!-- 快捷路线 -->
     <quick-line
       :dataSource="quickList"
+      :query="query"
       @retry="handleRetryQuick"
-      @link-more="$router.push('/common/quick/list')"
     />
 
     <!-- 公告栏 -->
@@ -101,7 +101,12 @@ export default {
   }),
   computed: {
     ...mapState(['position', 'search']),
-    ...mapGetters(['location', 'identity'])
+    ...mapGetters(['location', 'identity']),
+    // 搜索路线时传递的参数
+    query () {
+      const publishType = this.publishType
+      return { workType: 'carpool', publishType, orderType: 1 }
+    }
   },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
@@ -121,13 +126,8 @@ export default {
     handleSearchOrder () {
       const _this_ = this
       const { startAddr, endAddr } = this.search
-      const publishType = this.publishType
-      console.log(this.identity)
       const query = {
-        workType: 'carpool',
-        publishType,
-        // 1车主发布，2乘客发布
-        orderType: _this_.identity === 0 ? 1 : 2,
+        ..._this_.query,
         startAddr: startAddr.name,
         endAddr: endAddr.name
       }

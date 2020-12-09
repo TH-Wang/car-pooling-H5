@@ -90,40 +90,43 @@ export default {
     }
   },
   methods: {
+    reqApi: driverOrder,
     // 请求列表
-    async handleListLoad () {
-      // 我是乘客，查询我的预约订单
-      const res = await driverOrder({
-        startPage: 1,
-        pageSize: 999
-      })
-      const { list, total } = res.data.data
-      const result = list.map(item => {
-        item.startTime = item.passengerStartTime
-        item.seatNum = item.orderNum
-        return item
-      })
-      // 如果是首页，则直接设置list，否则插入到尾部
-      if (this.startPage === 1) {
-        this.list = result
-      } else {
-        this.list.push(...result)
-      }
+    // async handleListLoad (deep) {
+    //   if (this.total === this.list.length && !deep) return
 
-      this.total = total
-      this.startPage++
-      this.loading = false
-      if (this.list.length === this.total) {
-        this.finished = true
-      }
-    },
+    //   // 我是乘客，查询我的预约订单
+    //   const res = await driverOrder({
+    //     startPage: 1,
+    //     pageSize: 999
+    //   })
+    //   const { list, total } = res.data.data
+    //   const result = list.map(item => {
+    //     item.startTime = item.passengerStartTime
+    //     item.seatNum = item.orderNum
+    //     return item
+    //   })
+    //   // 如果是首页，则直接设置list，否则插入到尾部
+    //   if (this.startPage === 1) {
+    //     this.list = result
+    //   } else {
+    //     this.list.push(...result)
+    //   }
+
+    //   this.total = total
+    //   this.startPage++
+    //   this.loading = false
+    //   if (this.list.length === this.total) {
+    //     this.finished = true
+    //   }
+    // },
     // 刷新预约订单信息
     async handleRetry () {
       this.$toast.loading({
         message: '加载中...',
         duration: 10000
       })
-      await this.handleListLoad()
+      await this.handleListLoad(true)
       this.$toast.clear()
     },
     // 确认订单
@@ -132,10 +135,11 @@ export default {
       const res = await confirmOrder({ orderId, status })
       if (res.data.msg === '成功') {
         this.$toast.success('已确认')
+        this.handleRefreshStatus(orderId, 1)
+        // this.handleListLoad(true)
       } else {
         this.$toast.fail('确认失败，请稍后再试')
       }
-      this.handleRetry()
     },
     // 取消预约
     async handleOrderCancel (status, orderId) {
@@ -143,11 +147,17 @@ export default {
       const res = await confirmOrder({ orderId, status, userId })
       if (res.data.msg === '成功') {
         this.$toast.success('取消成功')
+        this.handleRefreshStatus(orderId, 4)
+        // this.startPage = 1
+        // this.handleListLoad(true)
       } else {
         this.$toast.fail('取消失败\n请稍后重试')
       }
-      this.startPage = 1
-      this.handleListLoad()
+    },
+    handleRefreshStatus (id, status) {
+      // 预约成功，status: 5 -> 1
+      // 取消预约，status: 1 -> 4
+      this.list.find(i => i.orderId === id).status = status
     },
     // 举报订单
     handleOrderReport () {

@@ -12,6 +12,7 @@ export default {
 
   mutations: {
     setStorage (state, { token, phone, info }) {
+      console.log({ token, phone, info })
       state.token = token
       state.loginPhone = phone
       state.info = info
@@ -23,6 +24,10 @@ export default {
       const newInfo = Object.assign(state.info, data)
       state.info = newInfo
       localStorage.setItem('info', JSON.stringify(newInfo))
+    },
+    setToken (state, token) {
+      state.token = token
+      localStorage.setItem('token', token)
     },
     setCarInfo (state, list) {
       state.carList = list

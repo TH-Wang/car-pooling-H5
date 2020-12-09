@@ -122,7 +122,7 @@ export default {
     // 恢复默认值（清空）
     clear () {
       if (this.defaultIndex !== false) this.val = this.defaultIndex
-      else this.val = this.columns[0].id
+      else if (this.columns[0]) this.val = this.columns[0].id
       if (this.required) this.error = true
     },
     // 获取值

@@ -21,36 +21,39 @@
       <van-empty description="暂无车主预约"/>
     </div>
 
-    <!-- 详情卡片 -->
-    <div class="content-card" v-else>
-      <!-- 地图 -->
-      <map-view />
+    <!-- 如果有司机确认，则展示司机信息 -->
+    <div v-else>
+      <!-- 详情卡片 -->
+      <div class="content-card">
+        <!-- 地图 -->
+        <map-view />
 
-      <!-- 详细信息 -->
-      <order-info-field icon-type="user" label="车主" :content="record.userName" />
-      <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
-      <order-info-field icon-type="time" label="出发时间" :content="startTime" />
-      <order-info-field icon-type="address" label="途径点" :content="passPointList" />
+        <!-- 详细信息 -->
+        <order-info-field icon-type="user" label="车主" :content="record.userName" />
+        <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
+        <order-info-field icon-type="time" label="出发时间" :content="startTime" />
+        <order-info-field icon-type="address" label="途径点" :content="passPointList" />
 
-      <!-- 联系电话 -->
-      <order-info-phone :phone="record.mobilePhone"/>
+        <!-- 联系电话 -->
+        <order-info-phone :phone="record.mobilePhone"/>
+      </div>
+
+      <main-button
+        v-if="record.orderState === 1"
+        color="gray" type="hollow" center
+        @click="showRefund = true"
+      >退订座位</main-button>
+
+      <!-- 温馨提示 -->
+      <order-info-tips v-if="record.orderState === 1" :tips="tips" />
+
+      <!-- 退订弹窗 -->
+      <refund-order-layer
+        :visible="showRefund"
+        @close="showRefund = false"
+        @submit="handleRefund"
+      />
     </div>
-
-    <main-button
-      v-if="record.orderState === 1"
-      color="gray" type="hollow" center
-      @click="showRefund = true"
-    >退订座位</main-button>
-
-    <!-- 温馨提示 -->
-    <order-info-tips v-if="record.orderState === 1" :tips="tips" />
-
-    <!-- 退订弹窗 -->
-    <refund-order-layer
-      :visible="showRefund"
-      @close="showRefund = false"
-      @submit="handleRefund"
-    />
   </div>
 </template>
 
@@ -95,11 +98,11 @@ export default {
       return getLineText(this.record.passPointLis)
     },
     tips () {
-      const refundTime = this.refundTime
+      const insertTime = moment(this.insertTime).add(10, 'minutes').format('MM-DD HH:mm')
       return [
         '温馨提示',
         `1.如您行程改变，请尽可能提前退订，
-          <span style="color:#FFCD00">${refundTime}</span>前可
+          <span style="color:#FFCD00">${insertTime}</span>前可
           <span style="color:#FFCD00" id="NO_LIABILITY">无责退订</span>。`,
         '2.请在上车后，将分摊费用直接支付车主。'
       ]
@@ -112,9 +115,9 @@ export default {
       this.record = res.data.data[0]
     },
     // 退订
-    async handleRefund (e, data) {
+    async handleRefund (data) {
       // 判断是乘客取消还是司机取消
-      const status = this.identity === 0 ? 4 : 3
+      const status = 7
       const orderId = this.record.orderId
       const res = await confirmOrder({ status, orderId, ...data })
       if (res.data.msg === '成功') {

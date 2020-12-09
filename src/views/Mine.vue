@@ -10,7 +10,7 @@
           <div class="header-info-phone">{{user.info.username}}</div>
           <div class="header-info-text">
             我的信用分
-            <span style="margin-right: 5px">{{account.info.credit}}</span>
+            <span style="margin-right: 5px">{{account.info.faithfulValue}}</span>
             <van-icon class="question" name="question-o" />
           </div>
         </div>
@@ -62,22 +62,19 @@
       <van-swipe-item
         v-for="(item, index) in list"
         :key="index"
-      >
-        <!-- 预约订单 -->
-        <pending-order
+      ><pending-order
           :record="item"
           type="driver"
           :color="buttonColor"
         ><template #button>
-            <confirm-button
-              :color="buttonColor"
-              :status="item.status"
-              :identity="identity === 0 ? 'customer' : 'driver'"
-              @confirm="handleOrderConfirm($event, item.orderId)"
-              @cancel="handleOrderCancel($event, item.orderId)"
-              @report="handleOrderReport($event, item.orderId)"
-            />
-          </template>
+          <confirm-button
+            :color="buttonColor"
+            :status="item.status"
+            :identity="identity === 0 ? 'customer' : 'driver'"
+            @confirm="handleOrderConfirm($event, item.orderId)"
+            @cancel="handleOrderCancel($event, item.orderId)"
+            @report="handleOrderReport($event, item.orderId)"
+          /></template>
         </pending-order>
       </van-swipe-item>
       <!-- 指示器 -->
@@ -116,6 +113,9 @@
       content="申请站长"
       @click="$router.push('/common/settle/site/tips')"
     />
+
+    <!-- 退订弹窗 -->
+    <refund-order-layer v-model="showRefund" @submit="handleRefund" />
   </div>
 </template>
 
@@ -135,6 +135,7 @@ import ConfirmButton from '@/components/ConfirmButton'
 // import MiniButton from '@/components/MiniButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import Affix from '@/components/Affix'
+import RefundOrderLayer from '@/components/Layer/RefundOrder'
 
 export default {
   name: 'Mine',
@@ -147,7 +148,8 @@ export default {
     'pending-order': PendingOrder,
     'confirm-button': ConfirmButton,
     // 'mini-button': MiniButton,
-    affix: Affix
+    affix: Affix,
+    'refund-order-layer': RefundOrderLayer
   },
   data: () => ({
     headerIcons: [
@@ -188,7 +190,10 @@ export default {
         title: '我是副站长',
         show: false
       }
-    }
+    },
+    // 需要退订的订单id
+    cancelOrderId: null,
+    showRefund: false
   }),
   computed: {
     ...mapState(['user', 'account']),
@@ -238,18 +243,19 @@ export default {
       if (!isEmpty(this.account.info)) return
       const res = await selectAccountInfo()
       this.$store.commit('setAccountInfo', res.data.data)
+      this.$store.commit('setUserInfo', res.data.data)
 
       // 身份判断
-      const { group, etc, viceAdministrator } = res.data.data
-      this.menuList.group.show = group === 'YES'
-      this.menuList.etc.show = etc === 'YES'
-      this.menuList.viceAdministrator.show = viceAdministrator === 'YES'
+      // const { group, etc, viceAdministrator } = res.data.data
+      // this.menuList.group.show = group === 'YES'
+      // this.menuList.etc.show = etc === 'YES'
+      // this.menuList.viceAdministrator.show = viceAdministrator === 'YES'
     },
     // 身份判断
     getConfirm (type) {
       // 验证车主认证
       if (type === 'car') {
-        const { driverlicensestatus, carstatus } = this.user.info
+        const { driverlicensestatus, carstatus } = this.account.info
         return driverlicensestatus === 'YES' && carstatus === 'YES'
       } else {
         // 其他认证
@@ -274,15 +280,35 @@ export default {
       }
       this.reqList()
     },
-    // 取消预约
+    // 司机取消预约
     async handleOrderCancel (status, orderId) {
-      const userId = this.user.info.id
-      const res = await confirmOrder({ orderId, status, userId })
+      if (this.identity === 0) {
+        this.cancelOrderId = orderId
+        this.showRefund = true
+        return
+      }
+      // 发送请求
+      this.handleReqCancel({ orderId, status })
+    },
+    // 乘客退订
+    async handleRefund (reason) {
+      // 判断是乘客取消还是司机取消
+      const status = this.identity === 0 ? 4 : 3
+      const orderId = this.cancelOrderId
+      const data = { status, orderId, ...reason }
+      this.handleReqCancel(data)
+    },
+    // 发送退订或预约的请求
+    async handleReqCancel (data) {
+      this.$toast.loading({ message: '请求中', duration: 10000 })
+      const res = await confirmOrder(data)
+      this.$toast.clear()
       if (res.data.msg === '成功') {
         this.$toast.success('取消成功')
       } else {
         this.$toast.fail('取消失败\n请稍后重试')
       }
+      this.showRefund = false
       this.reqList()
     },
     // 举报订单

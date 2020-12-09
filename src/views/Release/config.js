@@ -74,7 +74,7 @@ export const getDriverOpts = (carConfig = []) => {
     }, {
       id: '2-2',
       type: 'timer',
-      name: 'endTime',
+      name: 'returnTime',
       label: '返程时间',
       title: '返程时间',
       placeholder: '请选择返程时间',
@@ -180,7 +180,7 @@ export const getDriverOpts = (carConfig = []) => {
     }, {
       id: '4-2',
       type: 'timer',
-      name: 'endTime',
+      name: 'returnTime',
       label: '返程时间',
       title: '返程时间',
       placeholder: '请选择返程时间',

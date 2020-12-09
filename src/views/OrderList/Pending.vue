@@ -109,7 +109,17 @@ export default {
   }),
   computed: {
     ...mapState(['position', 'search']),
-    ...mapGetters(['location', 'identity'])
+    ...mapGetters(['location', 'identity']),
+    // 搜索路线时传递的参数
+    query () {
+      const identity = this.identity
+      return {
+        workType: 'pending',
+        publishType: 1,
+        // 1车主发布，2乘客发布
+        orderType: identity === 0 ? 1 : 2
+      }
+    }
   },
   methods: {
     // 自定义请求函数
@@ -123,10 +133,7 @@ export default {
       const _this_ = this
       const { startAddr, endAddr } = this.search
       const query = {
-        workType: 'pending',
-        publishType: 1,
-        // 1车主发布，2乘客发布
-        orderType: _this_.identity === 0 ? 1 : 2,
+        ..._this_.query,
         startAddr: startAddr.name,
         endAddr: endAddr.name
       }

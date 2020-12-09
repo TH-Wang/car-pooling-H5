@@ -20,19 +20,17 @@
     </div>
     <!-- 删除按钮 -->
     <div v-show="showRemove" class="remove-button">
-      <mini-button color="blue" @click="$emit('action')">操作</mini-button>
+      <mini-button color="red" @click="$emit('remove')">删除</mini-button>
     </div>
   </div>
 </template>
 
 <script>
-// import { Icon } from 'vant'
 import { StartEnd, TimeSeat } from '@/components/Common'
 import MiniButton from '@/components/MiniButton'
 
 export default {
   components: {
-    // 'van-icon': Icon,
     'start-end': StartEnd,
     'time-seat': TimeSeat,
     'mini-button': MiniButton

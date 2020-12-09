@@ -8,8 +8,8 @@
         <!-- 时间段 -->
         <div class="time-num">
           <span>{{getHourMinute(record.startTime)}}</span>
-          <span v-if="record.endTime"> - {{getHourMinute(record.endTime)}}</span>
-          / {{record.endTime ? '出发·返程' : '出发时间'}}
+          <span v-if="record.returnTime"> - {{getHourMinute(record.returnTime)}}</span>
+          / {{record.returnTime ? '出发·返程' : '出发时间'}}
         </div>
         <!-- 价格 -->
         <div :class="`price-${color}`"><span>￥</span>{{record.cost}}</div>
@@ -58,7 +58,7 @@
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat">
-          人数<span :class="`num-${color}`">{{record.orderNum || record.seatNum}}</span>
+          人数<span :class="`num-${color}`">{{record.orderNum || record.remainingSeat}}</span>
         </div>
         <slot name="button"></slot>
       </div>

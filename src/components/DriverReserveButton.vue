@@ -25,9 +25,9 @@ export default {
   }),
   methods: {
     // 司机预约
-    async handleReserve (e, record) {
+    async handleReserve () {
       this.$toast.loading({ message: '正在预约', duration: 10000 })
-      const orderId = this.record.id
+      const orderId = this.record.orderId
       try {
         const res = await appointmentPassenger(orderId)
         this.$toast.clear()

@@ -167,6 +167,12 @@ export default {
     allInputStartEnd () {
       const { startAddr, endAddr } = this.release
       return !isEmpty(startAddr.name) && !isEmpty(endAddr.name)
+    },
+    startAddrName () {
+      return this.release.startAddr.name
+    },
+    endAddrName () {
+      return this.release.endAddr.name
     }
   },
   methods: {
@@ -257,11 +263,19 @@ export default {
       if (newVal) this.$refs.layer.show()
       else this.combo = {}
     },
-    allInputStartEnd: function (newVal) {
-      console.log('监听到变化')
-      if (newVal) {
-        this.$refs.form.setValueField('publishType', this.judgeType())
-      }
+    startAddrName: function (newVal) {
+      if (!this.allInputStartEnd) return
+      const type = this.judgeType()
+      const typeName = this.orderMenu.find(i => i.id === type).label
+      this.$refs.form.setValueField('publishType', type)
+      this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
+    },
+    endAddrName: function (newVal) {
+      if (!this.allInputStartEnd) return
+      const type = this.judgeType()
+      const typeName = this.orderMenu.find(i => i.id === type).label
+      this.$refs.form.setValueField('publishType', type)
+      this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
     }
   }
 }

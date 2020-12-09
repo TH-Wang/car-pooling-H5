@@ -12,13 +12,11 @@
     <!-- 顶部 -->
     <order-info-header
       :record="{
-        start: '重庆西站',
-        end: '重庆北站',
-        state: $route.query.state,
-        time: '2020-03-23  08:00',
-        seat: 3}"
+        startAddr: record.startAddr,
+        endAddr: record.endAddr,
+        state: record.orderState,
+      }"
       content-type="state"
-      show-time-seat
     />
 
     <!-- 详情卡片 -->
@@ -27,19 +25,24 @@
       <map-view />
 
       <!-- 详细信息 -->
-      <order-info-field icon-type="user" label="车主" content="陈女士" />
-      <order-info-field icon-type="car" label="出发地点" content="重庆北站" />
-      <order-info-field icon-type="car" label="到达地点" content="重庆西站" />
-      <order-info-field icon-type="time" label="出发时间" content="07月09日 08:00" />
-      <order-info-field icon-type="address" label="途径点" content="重庆北站 - 紫金山地铁站 - 人民路红十字会 - 二七地铁站 - 重庆一中 - 医学院地铁站 - 京广路 - 崇山路 - 新城区路口 - 体育路 - 中兴路 - 体育村 - 重庆西站" />
+      <order-info-field
+        v-for="(item, index) in infoConfig"
+        :key="index"
+        :icon-type="item[0]"
+        :label="item[1]"
+        :content="record[item[2]]"
+      />
+      <!-- 备注 -->
+      <order-info-field icon-type="remark" label="备注" :content="record.remark || '无'" />
 
       <!-- 联系电话 -->
-      <order-info-phone tipType="customer" phone="15704602398"/>
+      <order-info-phone tipType="customer" :phone="record.mobilePhone"/>
     </div>
   </div>
 </template>
 
 <script>
+import { selectByPassengerDetail } from '@/api'
 import { Header, Field, Phone } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 
@@ -49,6 +52,25 @@ export default {
     'order-info-field': Field,
     'order-info-phone': Phone,
     'map-view': MapView
+  },
+  data: () => ({
+    orderId: null,
+    record: {},
+    infoConfig: [
+      ['user', '乘客', 'userName'],
+      ['car', '出发地点', 'startAddr'],
+      ['car', '到达地点', 'endAddr']
+    ]
+  }),
+  methods: {
+    async handleRequest () {
+      const res = await selectByPassengerDetail(this.orderId)
+      this.record = res.data.data[0]
+    }
+  },
+  created () {
+    this.orderId = this.$route.query.id
+    this.handleRequest()
   }
 }
 </script>

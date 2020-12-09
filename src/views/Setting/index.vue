@@ -189,6 +189,7 @@ export default {
     async resetUserInfo () {
       const res = await getUserDetail()
       this.$store.commit('setUserInfo', res.data.data)
+      this.$store.commit('setToken', res.data.data.token)
     },
     // 进入认证页面
     handleLinkAuth (e, type, url, skip) {

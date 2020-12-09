@@ -60,7 +60,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
+import { isEmpty } from 'lodash'
 import { Form, Item, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import ChooseComboLayer from '@/components/Layer/ChooseCombo'
@@ -93,6 +95,20 @@ export default {
     agreePackage: false,
     combo: {}
   }),
+  computed: {
+    ...mapState(['release']),
+    // 是否起始点和终止点都显示了
+    allInputStartEnd () {
+      const { startAddr, endAddr } = this.release
+      return !isEmpty(startAddr.name) && !isEmpty(endAddr.name)
+    },
+    startAddrName () {
+      return this.release.startAddr.name
+    },
+    endAddrName () {
+      return this.release.endAddr.name
+    }
+  },
   methods: {
     // 发送提交请求
     async handleSubmit () {
@@ -126,20 +142,36 @@ export default {
     // 选择套餐
     handleChangeCombo (value) {
       this.combo = value
+    },
+    // 判断拼车单类型
+    judgeType () {
+      if (!this.allInputStartEnd) return 1
+      const { startAddr, endAddr } = this.release
+      if (startAddr.pname !== endAddr.pname) return 3
+      if (startAddr.cityname === endAddr.cityname) {
+        return startAddr.adname === endAddr.adname ? 1 : 2
+      }
+      return 1
     }
-  },
-  mounted () {
-    // this.$refs.form.setValues({
-    //   car_type: 2,
-    //   order_type: 2,
-    //   phone: '13788889999',
-    //   seat: '1'
-    // })
   },
   watch: {
     agreePackage: function (newVal) {
       if (newVal) this.$refs.layer.show()
       else this.combo = {}
+    },
+    startAddrName: function (newVal) {
+      if (!this.allInputStartEnd) return
+      const type = this.judgeType()
+      const typeName = this.orderMenu.find(i => i.id === type).label
+      this.$refs.form.setValueField('publishType', type)
+      this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
+    },
+    endAddrName: function (newVal) {
+      if (!this.allInputStartEnd) return
+      const type = this.judgeType()
+      const typeName = this.orderMenu.find(i => i.id === type).label
+      this.$refs.form.setValueField('publishType', type)
+      this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
     }
   }
 }

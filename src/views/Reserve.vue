@@ -65,6 +65,13 @@
         </template>
       </custom-input>
 
+      <!-- 备注 -->
+      <custom-input
+        name="remark"
+        clearable
+        placeholder="输入备注"
+      />
+
     </custom-form>
 
     <!-- 立即预定 -->

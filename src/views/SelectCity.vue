@@ -12,7 +12,7 @@
 
     <!-- 当前定位城市 -->
     <div class="current-city">
-      当前定位城市·区域 <span>重庆 · 渝北区</span>
+      当前定位城市·区域 <span>{{location}}</span>
     </div>
 
     <!-- 通过名称搜索城市列表 -->
@@ -78,7 +78,7 @@
 
 <script>
 import AMapLoader from '@/utils/mapLoader'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { Icon, IndexBar, IndexAnchor } from 'vant'
 import { spell } from 'cnchar'
 import { isEmpty, debounce } from 'lodash'
@@ -134,6 +134,7 @@ export default {
   computed: {
     // 全局存储城市区县数据
     ...mapState(['position']),
+    ...mapGetters(['location']),
     // 被选择城市名称
     selectCity () {
       return this.position.city ? this.position.city.shortName : '请选择省市'

@@ -1,46 +1,47 @@
 <template>
-  <div>
-    <!-- 乘客等待车主确认 -->
-    <mini-button
-      v-if="status === 5 && isCustomer"
-      :color="color.wait"
-    >待车主确认</mini-button>
-    <!-- 乘客确认 -->
-    <mini-button
-      v-if="status === 6 && isCustomer"
-      :color="color.confirm" @click="$emit('confirm', 2)"
-    >立即确认</mini-button>
+  <!-- 等待预约 -->
+  <mini-button v-if="status === 0" color="gray">等待预约</mini-button>
 
-    <!-- 车主确认 -->
-    <mini-button
-      v-if="status === 5 && isDriver"
-      :color="color.confirm" @click="$emit('confirm', 1)"
-    >立即确认</mini-button>
-    <!-- 车主等待乘客确认 -->
-    <mini-button
-      v-if="status === 6 && isDriver"
-      :color="color.wait"
-    >待乘客确认</mini-button>
+  <!-- 乘客等待车主确认 -->
+  <mini-button
+    v-else-if="status === 5 && isCustomer"
+    color="red"
+  >待车主确认</mini-button>
+  <!-- 乘客确认 -->
+  <mini-button
+    v-else-if="status === 6 && isCustomer"
+    color="yellow" @click="$emit('confirm', 2)"
+  >立即确认</mini-button>
 
-    <!-- 司机或乘客已确认 -->
-    <mini-button
-      v-if="status === 1 || status === 2"
-      :color="buttonColor"
-      :menu="menu"
-      :menuVisible="menuVisible"
-      @click="menuVisible = !menuVisible"
-      @cancel="handleCancel"
-      @report="$emit('report')"
-    >预约成功</mini-button>
+  <!-- 车主确认 -->
+  <mini-button
+    v-else-if="status === 5 && isDriver"
+    color="green" @click="$emit('confirm', 1)"
+  >立即确认</mini-button>
+  <!-- 车主等待乘客确认 -->
+  <mini-button
+    v-else-if="status === 6 && isDriver"
+    color="red"
+  >待乘客确认</mini-button>
 
-    <!-- 已取消 -->
-    <mini-button v-if="status === 3" color="gray" >
-      {{isDriver ? '已取消' : '车主已取消'}}
-    </mini-button>
-    <mini-button v-if="status === 4" color="gray" >
-      {{isCustomer ? '已取消' : '乘客已取消'}}
-    </mini-button>
-  </div>
+  <!-- 司机或乘客已确认 -->
+  <mini-button
+    v-else-if="status === 1 || status === 2"
+    color="blue"
+    :menu="menu"
+    :menuVisible="menuVisible"
+    @click="menuVisible = !menuVisible"
+    @cancel="handleCancel"
+    @report="$emit('report')"
+  >预约成功</mini-button>
+
+  <!-- 已取消 -->
+  <mini-button v-else-if="status === 3" color="gray" >
+    {{isDriver ? '已取消' : '车主已取消'}}
+  </mini-button>
+  <mini-button v-else-if="status === 4" color="gray" >
+    {{isCustomer ? '已取消' : '乘客已取消'}}
+  </mini-button>
 </template>
 
 <script>
@@ -77,7 +78,7 @@ export default {
   computed: {
     ...mapState(['user']),
     buttonColor () {
-      const color = { customer: 'yellow', driver: 'green' }
+      const color = { customer: 'yellow', driver: 'blue' }
       return color[this.identity]
     },
     // 乘客

@@ -56,6 +56,7 @@
 <script>
 import { mapState } from 'vuex'
 import { List } from 'vant'
+import { getCar, queryPassengerOrders } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import WorkOrder from '@/components/WorkOrder'
 // import CarpoolOrder from '@/components/OrderItem/Carpool'
@@ -79,6 +80,13 @@ export default {
     ...mapState(['position', 'search'])
   },
   methods: {
+    reqApi (data) {
+      const driverReq = ['pending', 'hitCus', 'carryCus']
+      // 如果是乘客查询车主信息
+      if (driverReq.indexOf(this.dataSource.workType) === -1) {
+        return getCar(data)
+      } else return queryPassengerOrders(data)
+    },
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
       // 起点目的地

@@ -12,32 +12,36 @@
     />
 
     <!-- 表单主体 -->
-    <!-- 手机号 -->
-    <custom-input
-      name="phone"
-      ref="phone"
-      clearable
-      input-style="font-size:0.18rem;font-weight:bold"
-      :rules="[{required: true}]"
-    >
-      <template #prefix>
-        <span class="phone-prefix">+86</span>
-      </template>
-    </custom-input>
+    <custom-form ref="form">
+      <!-- 手机号 -->
+      <custom-input
+        v-model="phone"
+        name="phone"
+        ref="phone"
+        clearable
+        input-style="font-size:0.18rem;font-weight:bold"
+        :rules="[{required: true}, {pattern: /^1\d{10}$/g, message: '请输入合理的手机号码'}]"
+      >
+        <template #prefix>
+          <span class="phone-prefix">+86</span>
+        </template>
+      </custom-input>
 
-    <!-- 验证码 -->
-    <custom-input
-      name="code"
-      type="tel"
-      max-length="6"
-      placeholder="请输入验证码"
-      clearable
-      :rules="[{required: true}]"
-    >
-      <template #suffix>
-        <span class="code-suffix" @click="handleGetCode">{{verifyCode.text}}</span>
-      </template>
-    </custom-input>
+      <!-- 验证码 -->
+      <custom-input
+        v-model="code"
+        name="code"
+        type="tel"
+        max-length="6"
+        placeholder="请输入验证码"
+        clearable
+        :rules="[{required: true}, {pattern: /^\d{6}$/g, message: '验证码必须位6位数字'}]"
+      >
+        <template #suffix>
+          <span class="code-suffix" @click="handleGetCode">{{verifyCode.text}}</span>
+        </template>
+      </custom-input>
+    </custom-form>
 
     <!-- 提交按钮 -->
     <div style="margin-top: .50rem">
@@ -58,7 +62,7 @@
 
 <script>
 import { sendCode, updatePhoneToTwo, getUserDetail } from '@/api'
-import { Input } from '@/components/Form'
+import { Form, Input } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import Feedback from '@/components/Feedback'
 import VertifyCode from '@/mixins/vertify-code'
@@ -66,12 +70,14 @@ import VertifyCode from '@/mixins/vertify-code'
 export default {
   mixins: [VertifyCode],
   components: {
+    'custom-form': Form,
     'custom-input': Input,
     'main-button': MainButton,
     feedback: Feedback
   },
   data: () => ({
     phone: '',
+    code: '',
     showLayer: false,
     successPhone: ''
   }),
@@ -115,6 +121,7 @@ export default {
     async resetUserInfo () {
       const res = await getUserDetail()
       this.$store.commit('setUserInfo', res.data.data)
+      this.$store.commit('setToken', res.data.data.token)
     }
   },
   mounted () {

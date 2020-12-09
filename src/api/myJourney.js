@@ -4,7 +4,8 @@ export default {
   selectMyPassenger,
   selectMyJourney,
   selectByPassengerDriverDetail,
-  selectByPassengerDetail
+  selectByPassengerDetail,
+  deleteJourneyById
 }
 
 // 查询车主的所有行程
@@ -40,5 +41,14 @@ function selectByPassengerDetail (id) {
     url: '/myJourney/selectByPassengerDetail',
     method: 'POST',
     params: { pprId: id }
+  })
+}
+
+// 删除我的行程
+function deleteJourneyById (params) {
+  return axios({
+    url: '/myJourney/deleteById',
+    method: 'POST',
+    params
   })
 }

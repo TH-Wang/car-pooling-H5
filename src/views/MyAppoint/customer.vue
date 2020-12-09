@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
 import { PullRefresh, List } from 'vant'
 import { getOrdering, confirmOrder } from '@/api'
 import NoticeBar from '@/components/NoticeBar'
@@ -51,7 +52,6 @@ import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import ListMixin from '@/mixins/list-mixin'
-import { mapGetters, mapState } from 'vuex'
 
 export default {
   mixins: [ListMixin, ButtonMenuMixin],
@@ -80,7 +80,10 @@ export default {
     }
   },
   methods: {
-    async handleListLoad () {
+    // 列表请求
+    async handleListLoad (deep) {
+      if (this.total === this.list.length && !deep) return
+
       // 我是乘客，查询我的预约订单
       const { startPage, pageSize } = this
       const res = await getOrdering({ startPage, pageSize })
@@ -118,22 +121,25 @@ export default {
       const res = await confirmOrder({ orderId, status })
       if (res.data.msg === '成功') {
         this.$toast.success('已确认')
+        this.handleRefreshStatus(orderId, 2)
       } else {
         this.$toast.fail('确认失败，请稍后再试')
       }
-      this.handleRetry()
     },
     // 取消预约
     async handleOrderCancel (status, orderId) {
-      const userId = this.user.info.id
-      const res = await confirmOrder({ orderId, status, userId })
-      if (res.data.msg === '成功') {
-        this.$toast.success('取消成功')
+      const res = await confirmOrder({ status, orderId })
+      if (res.data.status === 200) {
+        this.$toast.success('取消成功！')
+        this.handleRefreshStatus(orderId, 4)
       } else {
-        this.$toast.fail('取消失败\n请稍后重试')
+        this.$toast.fail('取消失败\n请稍后再试')
       }
-      this.startPage = 1
-      this.handleListLoad()
+    },
+    handleRefreshStatus (id, status) {
+      // 预约成功，status: 6 -> 2
+      // 取消预约，status: 2 -> 4
+      this.list.find(i => i.orderId === id).status = status
     },
     // 举报订单
     handleOrderReport () {

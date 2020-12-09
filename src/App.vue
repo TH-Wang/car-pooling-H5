@@ -8,9 +8,7 @@
 
 <script>
 export default {
-  data: () => ({
-    aliveComponents: ['Home', 'Group', 'Release', 'Notify', 'Mine', 'SelectCity']
-  })
+
 }
 </script>
 
