@@ -42,7 +42,7 @@ export default {
           this.handleTipRelease(msg)
         } else {
           // 如果其他原因预约失败
-          this.$toast.fail('预约失败\n请稍后再试')
+          this.$toast.fail(msg)
         }
       } catch (error) {
         this.$toast.fail('预约失败\n请稍后再试')

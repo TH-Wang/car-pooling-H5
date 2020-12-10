@@ -34,6 +34,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { cloneDeep } from 'lodash'
 import { commitOrder, commitLike } from '@/api'
 import CarpoolOrder from '@/components/OrderItem/Carpool'
 import PendingOrder from '@/components/OrderItem/Pending'
@@ -111,8 +112,27 @@ export default {
     // 更新订单的点赞状态
     handleRefreshLike (isLike, pprId) {
       const idKey = this.identity === 0 ? 'pprId' : 'orderId'
-      const el = this.list.find(i => i[idKey] === pprId)
-      if (isLike === 1) el.isDo = 1
+      const elIdx = this.list.findIndex(i => i[idKey] === pprId)
+      const el = this.list[elIdx]
+      const newRecord = cloneDeep(el)
+      newRecord.isDo = isLike
+      if (isLike === 0) {
+        // 取消点赞
+        if (el.isDo === 1 && newRecord.isLike >= 1) newRecord.isLike--
+        // 取消踩
+        else if (el.isDo === 2 && newRecord.isNotLike >= 1) newRecord.isNotLike--
+      } else if (isLike === 1) {
+        // 点赞
+        newRecord.isLike++
+        // 如果已踩则取消踩
+        if (el.isDo === 2) newRecord.isNotLike--
+      } else if (isLike === 2) {
+        // 踩
+        newRecord.isNotLike++
+        // 如果已赞则取消赞
+        if (el.isDo === 1) newRecord.isLike--
+      }
+      this.$set(this.list, elIdx, newRecord)
     }
   }
 }

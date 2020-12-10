@@ -47,7 +47,7 @@
     <!-- 用户信息及操作按钮 -->
     <div class="user">
       <!-- 用户信息及点赞 -->
-      <social-bar :record="record" @like="(type)=>{$emit('like', type)}" />
+      <social-bar :record="record"/>
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat"><span>余座</span><span class="num-yellow">{{record.remainingSeat}}</span></div>
@@ -60,7 +60,7 @@
 <script>
 import moment from 'moment'
 import SocialBar from './SocialBar'
-import { getLineText } from '@/utils/getLineText'
+import { getPointText } from '@/utils/getLineText'
 
 export default {
   components: {
@@ -75,7 +75,7 @@ export default {
   computed: {
     // 途径点拼接字符串
     passPointList () {
-      return getLineText(this.record.passPointList)
+      return getPointText(this.record.passPointList)
     },
     // 时间分钟
     hourMinute () {

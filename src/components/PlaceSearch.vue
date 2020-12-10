@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="container">
     <!-- 顶部搜索框 -->
     <div class="header">
-      <van-icon name="arrow-left" @click="$router.go(-1)" />
+      <van-icon name="arrow-down" @click="$emit('close')" />
       <input
         type="text"
         ref="input"
@@ -14,8 +14,9 @@
       <van-icon
         v-show="!valueIsEmpty"
         name="clear" color="#D1D1D1"
-        @click="searchValue = ''"
+        @click="clear"
       />
+      <div class="cancel-button" @click="$emit('close')">取消</div>
     </div>
 
     <!-- 搜索结果列表 -->
@@ -83,12 +84,17 @@ export default {
         this.$toast({ message: '请检查网络或稍后再试', duration: 1200 })
       }
     },
+    // 清空搜索框内容
+    clear () {
+      this.searchValue = ''
+      this.handleInputFoucs()
+    },
     // 监听用户输入
     handleSearch: debounce(function (e) {
       const { value } = e.target
       if (isEmpty(value)) {
         this.searchEmpty = false
-        this.searchList = this.history.position
+        this.searchList = this.history.passPoint
         return
       }
       this.placeSearch.search(value)
@@ -97,7 +103,7 @@ export default {
     handleInputFoucs () {
       if (isEmpty(this.searchValue)) {
         this.searchEmpty = false
-        this.searchList = this.history.position
+        this.searchList = this.history.passPoint
       }
     },
     // 获得搜索结果
@@ -115,14 +121,9 @@ export default {
       // 添加到历史搜索记录
       this.handleAddSearchHistory(record)
       // 将位置信息记录到store中
-      const data = { type: 'endAddr', value: record }
-      if (this.type === 'common') {
-        this.$store.commit('setSearchAddr', data)
-      } else if (this.type === 'release') {
-        this.$store.commit('setReleaseAddr', data)
-      }
+      this.$emit('search', record)
       setTimeout(() => {
-        this.$router.go(-1)
+        this.$emit('close', false)
       }, 150)
     },
     // 添加到历史记录
@@ -131,7 +132,7 @@ export default {
       const result = cloneDeep(record)
       result.isHistory = true
       result.location = { lng, lat }
-      this.$store.commit('addPositionHistory', result)
+      this.$store.commit('addPassPointHistory', result)
     }
   },
   created () {
@@ -139,7 +140,7 @@ export default {
     const type = this.$route.query.type
     if (type) this.type = type
     // 获取历史搜索记录
-    this.searchList = this.history.position
+    this.searchList = this.history.passPoint
   },
   mounted () {
     // 从store中获取出发点信息
@@ -151,7 +152,26 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 @import '@/assets/scss/placeSearch.scss';
+
+.container{
+  width: 100vw;
+  height: 100vh;
+  background-color: #FFFFFF;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  overflow-y: auto;
+}
+
+.search{
+  max-height: calc(100vh - 0.8rem);
+  overflow-y: auto;
+}
+
+.cancel-button{
+  @include font (.14rem, $sub-text);
+}
 </style>

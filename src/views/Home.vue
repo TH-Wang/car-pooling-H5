@@ -62,7 +62,9 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    ><home-order :list="list" @link="handleLinkDetail" @reserve="handleLinkReserve" />
+    >
+      <!-- <home-order :list="list" @link="handleLinkDetail" @reserve="handleLinkReserve" /> -->
+      <work-order :list="list" :type="query.workType"  />
     </van-list>
 
   </div>
@@ -76,7 +78,7 @@ import { getCar, queryPassengerOrders } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
-import HomeOrder from '@/components/HomeOrder'
+import WorkOrder from '@/components/WorkOrder'
 import ListMixin from '@/mixins/list-mixin'
 import mainNavConfig from '@/configs/homeMainNav'
 
@@ -90,7 +92,7 @@ export default {
     'order-filter': OrderFilter,
     'search-card': SearchCard,
     'quick-line': QuickLine,
-    'home-order': HomeOrder
+    'work-order': WorkOrder
   },
   data: () => ({
     mainNavConfig,
@@ -104,7 +106,7 @@ export default {
   computed: {
     // 全局存储城市区县数据
     ...mapState(['user', 'position', 'search']),
-    ...mapGetters(['identity', 'location']),
+    ...mapGetters(['identity', 'location', 'unGeoLocation']),
     buttonColor () {
       return this.identity === 0 ? 'yellow' : 'green'
     },
@@ -167,18 +169,6 @@ export default {
     handleLinkReserve (id) {
       this.$router.push({ path: '/common/reserve', query: { id } })
     }
-  },
-  created: async function () {
-    if (isEmpty(this.position.city) && isEmpty(this.position.county)) {
-      await this.$dialog.alert({
-        title: '位置信息',
-        message: '请先选择城市，然后向您推荐当地的拼单信息!'
-      })
-      this.$router.push('/common/city')
-    }
-  },
-  activated () {
-    console.log('Home activated')
   }
 }
 </script>

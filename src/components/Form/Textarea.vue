@@ -3,7 +3,7 @@
     <div class="custom-textarea">
       <div class="label">
         <div>{{label}}</div>
-        <div class="link link-default" @click="$emit('link')">{{link}}</div>
+        <div class="link" @click="$emit('link')">{{link}}</div>
       </div>
       <div class="main" @click="$emit('click')">
         <slot v-if="custom"></slot>
@@ -12,7 +12,7 @@
           v-model="val"
           :class="textareaClass"
           :rows="rows"
-          :disabled="readonly"
+          :readonly="readonly"
           :placeholder="placeText"
           @blur="handleBlur"
         ></textarea>

@@ -7,12 +7,10 @@
         v-show="needLine"
         name="line"
         label="路线"
-        :link="allInputStartEnd ? '点击输入途径点' : '请先选择地点'"
         custom
         @click="handleOpenLine"
-        @link="handleOpenLine"
       ><template>
-          <div :style="emptyLine ? 'color: #999' : ''">{{lineText}}</div>
+        <div class="pass-point" :style="emptyLine">{{pointText}}</div>
         </template>
       </custom-textarea>
       <!-- 发布类型 -->
@@ -136,6 +134,14 @@ export default {
   }),
   computed: {
     ...mapState(['user', 'release']),
+    // 路线拼接
+    pointText () {
+      if (this.release.passPointList.length === 0) return '点击选择途径点'
+      const { startAddr, passPointList, endAddr } = this.release
+      return (startAddr.name ? startAddr.name + ' - ' : '') +
+        passPointList.map(i => i.name).join(' - ') +
+        (endAddr.name ? ' - ' + endAddr.name : '')
+    },
     // 路线模板
     lineText () {
       const { startAddr, endAddr } = this.release
@@ -161,7 +167,7 @@ export default {
     },
     // 路线是否为空
     emptyLine () {
-      return isEmpty(this.middlePoint)
+      return this.release.passPointList.length === 0 ? 'color:#999' : ''
     },
     // 是否起始点和终止点都显示了
     allInputStartEnd () {
@@ -224,8 +230,7 @@ export default {
     },
     // 打开输入路线的对话框
     handleOpenLine () {
-      this.inputLine = true
-      this.$nextTick(() => { this.$refs.textarea.focus() })
+      this.$router.push('/common/passpoint')
     },
     // 改变途径点
     handleChangeMiddlePoint () {
@@ -277,12 +282,21 @@ export default {
       this.$refs.form.setValueField('publishType', type)
       this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
     }
+    // pointText: function (newVal) {
+    //   console.log(newVal)
+    //   this.$refs.form.setValueField('line', newVal)
+    // }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/scss/release.scss';
+
+.pass-point{
+  min-height: .3rem;
+}
+
 .line-input-container{
   padding: .20rem;
 

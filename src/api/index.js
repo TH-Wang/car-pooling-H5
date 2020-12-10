@@ -29,6 +29,7 @@ export const queryPositionForCity = position.queryPositionForCity
 export const queryPositionForCounty = position.queryPositionForCounty
 export const savePosition = position.savePosition
 export const queryPositionByCityName = position.queryPositionByCityName
+export const queryPositionByCountyName = position.queryPositionByCountyName
 
 // 订单模块
 export const getCar = order.getCar

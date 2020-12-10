@@ -49,7 +49,11 @@
     <!-- 用户信息及操作按钮 -->
     <div class="user">
       <!-- 用户信息及点赞 -->
-      <social-bar :record="record" />
+      <social-bar
+        :show-like="type === 'customer'"
+        :record="record"
+        @like="(type)=>{$emit('like', type)}"
+      />
       <!-- 拼单操作 -->
       <div class="book-order">
         <slot name="button"></slot>

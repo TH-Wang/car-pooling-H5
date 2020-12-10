@@ -4,7 +4,8 @@ export default {
   queryPositionForCity,
   queryPositionForCounty,
   savePosition,
-  queryPositionByCityName
+  queryPositionByCityName,
+  queryPositionByCountyName
 }
 
 // 查询所有城市列表
@@ -36,5 +37,14 @@ function queryPositionByCityName (name) {
     url: '/position/queryPositionByCityName',
     method: 'POST',
     params: { name }
+  })
+}
+
+// 根据城市code和区县名称，查询区县信息
+function queryPositionByCountyName (code, name) {
+  return axios({
+    url: '/position/queryPositionByCountyName',
+    method: 'POST',
+    params: { code, name }
   })
 }

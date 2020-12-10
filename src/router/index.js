@@ -64,6 +64,13 @@ const routes = [
           /* webpackChunkName: "CarpoolList" */ '@/views/OrderList/Carpool.vue'
         )
       },
+      { // 发布添加途径点
+        path: '/common/passpoint',
+        name: 'PassPoint',
+        component: () => import(
+          /* webpackChunkName: "PassPoint" */ '@/views/Release/PassPoint.vue'
+        )
+      },
       { // 车主找人
         path: '/common/pending/list',
         name: 'PendingList',

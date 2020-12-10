@@ -44,7 +44,7 @@
     <!-- 用户信息及操作按钮 -->
     <div class="user">
       <!-- 用户信息及点赞 -->
-      <social-bar :record="record" @like="(type)=>{$emit('like', type)}" />
+      <social-bar :show-like="false" :record="record" />
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat"><span>人数</span>
@@ -58,7 +58,7 @@
 <script>
 import moment from 'moment'
 import SocialBar from './SocialBar'
-import { getLineText } from '@/utils/getLineText'
+import { getPointText } from '@/utils/getLineText'
 
 export default {
   components: {
@@ -95,7 +95,7 @@ export default {
     },
     // 时间（小时分钟）
     time () {
-      return moment(this.record.startTime).format('HH:mm')
+      return moment(this.record.startTime || this.record.passengerStartTime).format('HH:mm')
     },
     // 距离现在多久
     fromNow () {
@@ -103,7 +103,7 @@ export default {
     },
     // 途径点拼接字符串
     passPointList () {
-      return getLineText(this.record.passPointList)
+      return getPointText(this.record.passPointList)
     },
     // 距离
     distance () {

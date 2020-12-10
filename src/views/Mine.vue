@@ -209,7 +209,7 @@ export default {
         // 我是乘客，查询我的预约订单
         const res = await getOrdering({
           startPage: 1,
-          pageSize: 3
+          pageSize: 5
         })
         this.list = res.data.data.list.map(item => {
           item.seatNum = item.orderNum
@@ -219,8 +219,7 @@ export default {
         // 我是司机，查询乘客预约我的订单
         const res = await driverOrder({
           startPage: 1,
-          pageSize: 99,
-          status: 5
+          pageSize: 5
         })
         this.list = res.data.data.list.map(item => {
           item.startTime = item.passengerStartTime
@@ -255,7 +254,7 @@ export default {
     getConfirm (type) {
       // 验证车主认证
       if (type === 'car') {
-        const { driverlicensestatus, carstatus } = this.account.info
+        const { driverlicensestatus, carstatus } = this.user.info
         return driverlicensestatus === 'YES' && carstatus === 'YES'
       } else {
         // 其他认证

@@ -6,14 +6,15 @@
     </div>
     <div class="name ellipsis">{{record.userName}}</div>
     <!-- 点赞 -->
-    <div class="social">
-      <img v-if="isDo" src="@/assets/icons/order/like-active.png" @click="$emit('like', 1)">
-      <img v-else src="@/assets/icons/order/like.png" @click="$emit('like', 1)">
+    <div class="social" v-if="showLike">
+      <img v-if="record.isDo === 1" src="@/assets/icons/order/like-active.png" @click.stop="$emit('like', 0)">
+      <img v-else src="@/assets/icons/order/like.png" @click.stop="$emit('like', 1)">
       <span>{{record.isLike}}</span>
     </div>
     <!-- 踩 -->
-    <div class="social">
-      <img src="@/assets/icons/order/dislike.png" alt="" @click="$emit('like', 2)">
+    <div class="social" v-if="showLike">
+      <img v-if="record.isDo === 2" src="@/assets/icons/order/dislike-active.png" alt="" @click.stop="$emit('like', 0)">
+      <img v-else src="@/assets/icons/order/dislike.png" alt="" @click.stop="$emit('like', 2)">
       <span>{{record.isNotLike}}</span>
     </div>
   </div>
@@ -30,18 +31,12 @@ export default {
     record: {
       type: Object,
       default: () => ({})
-    }
-  },
-  computed: {
-    isDo () {
-      return this.record.isDo === 1
     },
-    isNotLikeIcon () {
-      const name = this.record.isNotLike ? 'dislike-active' : 'dislike'
-      return require(`@/assets/icons/order/${name}.png`)
+    showLike: {
+      type: Boolean,
+      default: true
     }
-  },
-  methods: {}
+  }
 }
 </script>
 

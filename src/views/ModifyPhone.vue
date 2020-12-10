@@ -35,7 +35,7 @@
         max-length="6"
         placeholder="请输入验证码"
         clearable
-        :rules="[{required: true}, {pattern: /^\d{6}$/g, message: '验证码必须位6位数字'}]"
+        :rules="[{required: true}, {pattern: /^\d{6}$/g, message: '验证码必须为6位数字'}]"
       >
         <template #suffix>
           <span class="code-suffix" @click="handleGetCode">{{verifyCode.text}}</span>
@@ -101,6 +101,7 @@ export default {
     // 表单提交
     async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
+      console.log(values)
       if (err) return
       // 请求修改手机号
       this.$toast.loading({ message: '修改中', duration: 10000 })

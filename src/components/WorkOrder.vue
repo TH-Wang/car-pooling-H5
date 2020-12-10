@@ -100,6 +100,7 @@
 
 <script>
 import { commitLike } from '@/api'
+import { cloneDeep } from 'lodash'
 import CarPool from '@/components/OrderItem/Carpool'
 import Pending from '@/components/OrderItem/Pending'
 import Hitchhike from '@/components/OrderItem/Hitchhike'
@@ -143,9 +144,38 @@ export default {
     },
     // 更新订单的点赞状态
     handleRefreshLike (isLike, pprId) {
-      const idKey = this.identity === 0 ? 'pprId' : 'orderId'
-      const el = this.list.find(i => i[idKey] === pprId)
-      if (isLike === 1) el.isDo = 1
+      const driverType = ['pending', 'hitCus', 'carryCus']
+      // 判断要获取的id类型
+      const idKey = driverType.indexOf(this.type) === -1 ? 'pprId' : 'orderId'
+      // 寻找该订单在列表中的索引
+      const elIdx = this.list.findIndex(i => i[idKey] === pprId)
+      // 获取该订单对象
+      const el = this.list[elIdx]
+      // 深拷贝数据
+      const newRecord = cloneDeep(el)
+      // 更新操作状态
+      newRecord.isDo = isLike
+
+      // 对数量进行判断并操作
+      if (isLike === 0) {
+        // 取消点赞
+        if (el.isDo === 1 && newRecord.isLike >= 1) newRecord.isLike--
+        // 取消踩
+        else if (el.isDo === 2 && newRecord.isNotLike >= 1) newRecord.isNotLike--
+      } else if (isLike === 1) {
+        // 点赞
+        newRecord.isLike++
+        // 如果已踩则取消踩
+        if (el.isDo === 2) newRecord.isNotLike--
+      } else if (isLike === 2) {
+        // 踩
+        newRecord.isNotLike++
+        // 如果已赞则取消赞
+        if (el.isDo === 1) newRecord.isLike--
+      }
+
+      // 将新数据更新到列表中
+      this.$set(this.list, elIdx, newRecord)
     }
   }
 }

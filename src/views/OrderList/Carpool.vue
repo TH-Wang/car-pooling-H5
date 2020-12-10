@@ -27,7 +27,7 @@
     />
 
     <!-- 公告栏 -->
-    <notice-bar />
+    <notice-bar v-model="showNotice" />
 
     <!-- 筛选菜单 -->
     <order-filter @change="handleFilterChange" />
@@ -97,7 +97,8 @@ export default {
   },
   data: () => ({
     needQuick: true,
-    publishType: 1
+    publishType: 1,
+    showNotice: true
   }),
   computed: {
     ...mapState(['position', 'search']),

@@ -17,9 +17,8 @@
 
 <script>
 import moment from 'moment'
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import { DropdownMenu, DropdownItem } from 'vant'
-import { isEmpty } from 'lodash'
 
 export default {
   components: {
@@ -68,6 +67,7 @@ export default {
   }),
   computed: {
     ...mapState(['filters', 'position']),
+    ...mapGetters(['unGeoLocation']),
     remainingSeat () {
       return this.options.seat.find(i => i.value === this.values.seat).seat
     }
@@ -97,7 +97,7 @@ export default {
   },
   created: async function () {
     if (
-      !isEmpty(this.position.city) &&
+      !this.unGeoLocation &&
       this.filters.currentCityCode !== this.position.city.code
     ) {
       await this.updateAreaOptions(this.position.city.code)

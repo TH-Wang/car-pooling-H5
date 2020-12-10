@@ -91,12 +91,9 @@ export default {
       // 3. 提示收取信息费
       await this.alertCost()
       // 4. 发起请求
-      let res
-      if (type === 'driver') {
-        res = await this.driverRequest(cloneDeep(data))
-      } else if (type === 'customer') {
-        res = await this.customerRequest(cloneDeep(data))
-      }
+      const res = type === 'driver'
+        ? await this.driverRequest(cloneDeep(data))
+        : await this.customerRequest(cloneDeep(data))
       // 5. 处理反馈
       if (res.data.status === -4) {
         // 如果token失效
@@ -173,18 +170,18 @@ export default {
 
       // 订单状态（进行中）
       data.orderState = 1
-
+      console.log(data)
       // 发起请求
       return insertPublish(data)
     },
     // 获取起点、终点和途径点
     getLineData (data) {
       // 出发点、目的地、途径点
-      const passPointList = []
-      const { startAddr, endAddr } = this.release
+      const result = []
+      const { startAddr, passPointList, endAddr } = this.release
       let sort = 0
       // 出发点
-      passPointList.push({
+      result.push({
         pointName: startAddr.name,
         lon: startAddr.location.lng,
         lat: startAddr.location.lat,
@@ -192,23 +189,25 @@ export default {
         type: 1
       })
       // 途径点
-      if (data.middlePoint) {
-        passPointList.push({
-          pointName: data.middlePoint,
+      for (let i = 0; i < passPointList.length; i++) {
+        const { name, location } = passPointList[i]
+        result.push({
+          pointName: name,
+          lon: location.lng,
+          lat: location.lat,
           sort: ++sort,
           type: 2
         })
-        delete data.middlePoint
       }
       // 目的地
-      passPointList.push({
+      result.push({
         pointName: endAddr.name,
         lon: endAddr.location.lng,
         lat: endAddr.location.lat,
         sort: ++sort,
         type: 3
       })
-      return passPointList
+      return result
     }
   }
 }

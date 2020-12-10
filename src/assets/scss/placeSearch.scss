@@ -1,0 +1,70 @@
+@import './vars.scss';
+
+// 顶部搜索框
+.header{
+  width: calc(100% - .3rem);
+  height: .5rem;
+  padding: 0 .15rem;
+  box-sizing: border-box;
+  border-radius: .06rem;
+  background-color: #ffffff;
+  box-shadow: 0 3px 15px 0 rgba(0, 0, 0, .1);
+  @include flex (space-between, center);
+  position: fixed;
+  top: .2rem;
+  left: .15rem;
+  z-index: 10;
+
+  input{
+    margin: 0 .05rem 0 .10rem;
+    box-sizing: border-box;
+    flex: 1;
+    border: none;
+  }
+}
+
+// 搜索结果列表
+.search{
+  width: calc(100% - .3rem);
+  max-height: calc(100vh - 1.05rem);
+  overflow: auto;
+  background-color: #ffffff;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+  border-radius: .06rem;
+  position: fixed;
+  top: .8rem;
+  left: .15rem;
+  z-index: 11;
+
+  // 边框
+  &-item + &-item{
+    border-top: solid 1px $linecard-color;
+  }
+
+  // 列表项
+  &-item{
+    padding: .1rem .15rem;
+
+    &:active{
+      background-color: #f5f5f5;
+    }
+
+    &-main{
+      @include flex(space-between, center);
+    }
+
+    &-info{
+      flex: 1;
+      margin-left: .1rem;
+    }
+
+    &-result{
+      @include font (.16rem, $main-text, bold);
+    }
+
+    &-address{
+      margin-top: .03rem;
+      @include font (.12rem, $sub-text);
+    }
+  }
+}

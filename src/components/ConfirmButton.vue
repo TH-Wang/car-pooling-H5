@@ -42,6 +42,9 @@
   <mini-button v-else-if="status === 4" color="gray" >
     {{isCustomer ? '已取消' : '乘客已取消'}}
   </mini-button>
+
+  <!-- 乘客退订 -->
+  <mini-button v-else-if="status === 7" color="gray">乘客退订</mini-button>
 </template>
 
 <script>

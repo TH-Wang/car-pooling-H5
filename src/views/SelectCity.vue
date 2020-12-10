@@ -11,9 +11,7 @@
     <div style="height: 50px"></div>
 
     <!-- 当前定位城市 -->
-    <div class="current-city">
-      当前定位城市·区域 <span>{{location}}</span>
-    </div>
+    <div class="current-city" @click="handleRetry" v-html="locationText"/>
 
     <!-- 通过名称搜索城市列表 -->
     <div class="search-list" v-show="showSearchList">
@@ -86,11 +84,12 @@ import {
   queryPositionForCity,
   queryPositionForCounty,
   savePosition,
-  queryPositionByCityName
+  queryPositionByCityName,
+  queryPositionByCountyName
 } from '@/api'
 import {
   getLngLatByMap,
-  getLngLatByBrowser,
+  // getLngLatByBrowser,
   getPosition,
   transform
   // getCity
@@ -129,19 +128,35 @@ export default {
       { code: 2899, shortName: '西安' }
     ],
     // 搜索结果列表
-    searchList: []
+    searchList: [],
+    // 定位状态，doing：定位中，success：定位成功，fail：定位失败
+    status: 'doing'
   }),
   computed: {
     // 全局存储城市区县数据
     ...mapState(['position']),
-    ...mapGetters(['location']),
+    ...mapGetters(['location', 'unGeoLocation']),
+    locationText () {
+      const textType = {
+        doing: '正在定位中...',
+        success: `当前定位城市·区域 <strong style="color:#262626">${this.location}</strong>`,
+        fail: '<span style="color:#FFCD00">定位失败，请点击重试</span>'
+      }
+      return textType[this.status]
+    },
     // 被选择城市名称
     selectCity () {
-      return this.position.city ? this.position.city.shortName : '请选择省市'
+      const city = this.position.city
+      return city.name === '' && city.shortName === ''
+        ? '请选择省市'
+        : this.position.city.shortName
     },
     // 被选择区县名称
     selectCounty () {
-      return this.position.county ? this.position.county.name : '请选择区县'
+      const county = this.position.county
+      return county.name === '' && county.shortName === ''
+        ? '请选择区县'
+        : this.position.county.name
     },
     // 选择城市指示标题的样式
     selectCityStyle () {
@@ -168,30 +183,55 @@ export default {
 
         // 使用高德定位
         const lnglatInfoMap = await getLngLatByMap(AMap)
-        // const { lng, lat } = lnglatInfo
-        // const lnglat = [lng, lat]
-        console.log(lnglatInfoMap)
-
-        // 原生定位
-        const lnglatInfo = await getLngLatByBrowser(AMap)
-        console.log(lnglatInfo)
-        const { longitude, latitude } = lnglatInfo.coords
-        const lnglat = [longitude, latitude]
+        const { lng, lat } = lnglatInfoMap
+        const lnglat = [lng, lat]
 
         const res = await transform(AMap, lnglat)
-        console.log('[转换坐标]')
+        console.log('[定位调用结果]')
         console.log(res)
 
-        // 通过经纬度获取位置信息
-        const position = await getPosition(AMap, lnglat)
-        console.log(position)
-        const { province, district } = position.addressComponent
-        this.$toast.success(`${province} ${district}`)
+        // 定位成功
+        if (res.info === 'ok') {
+          // 通过经纬度获取位置信息
+          const position = await getPosition(AMap, lnglat)
+          console.log('[坐标转换]')
+          console.log(position)
+          this.handleCacheCityCounty(position)
+        } else {
+          // 定位失败
+          this.status = 'fail'
+        }
       } catch (error) {
-        // this.$dialog.alert({
-        //   message: JSON.stringify(error)
-        // })
+        console.log(error)
+        this.status = 'fail'
       }
+    },
+    // 点击重新定位
+    handleRetry () {
+      if (this.status === 'fail') {
+        this.status = 'doing'
+        this.getCurrentPosition()
+      }
+    },
+    // 存储定位成功的城市地区
+    async handleCacheCityCounty (position) {
+      // 获取省市区信息
+      const { province, city, district } = position.addressComponent
+      this.$toast.success('定位成功')
+      // 通过城市名称请求城市code
+      const res1 = await queryPositionByCityName(city || province)
+      // 获取城市信息
+      const cityInfo = res1.data.data[0]
+      // 通过城市code和区县名称获取区县信息
+      const res2 = await queryPositionByCountyName(cityInfo.code, district)
+      const countyInfo = res2.data.data[0]
+      // 设置城市和区域信息
+      this.setCity(cityInfo)
+      this.setCounty(countyInfo)
+      // 修改定位状态为成功
+      this.status = 'success'
+      // 将定位发送给后端存储
+      savePosition(countyInfo.code)
     },
     // 请求所有城市列表
     async queryCityList () {
@@ -266,6 +306,11 @@ export default {
         }, 150)
       }
     },
+    // 通过城市名称查询城市在数据库中的信息
+    async handleQueryCity (cityName) {
+      const res = await queryPositionByCityName(cityName)
+      this.handleQueryCounty(null, res.data.data[0])
+    },
     // 选择热门城市
     handleSelectHotCity (e, city) {
       let cityData = city
@@ -307,11 +352,15 @@ export default {
     }
   },
   created: async function () {
-    // this.getCurrentPosition()
-    // const AMap = await AMapLoader()
-    // getCity(AMap)
-    this.getCurrentPosition()
-    this.queryCityList()
+    // 如果没有城市信息就定位
+    if (this.unGeoLocation) {
+      this.getCurrentPosition()
+    } else this.status = 'success'
+
+    // 如果没有城市列表就发起请求
+    if (this.position.cityList.length === 0) {
+      this.queryCityList()
+    }
   }
 }
 </script>
