@@ -30,25 +30,20 @@
 
     <!-- 时间选择器 -->
     <van-popup v-model="showPicker" round position="bottom">
-      <van-datetime-picker
-        :type="type"
-        :title="title"
-        :value="oriVal"
-        :min-date="minDate"
-        @confirm="handleChange"
-      />
+      <my-time-picker @confirm="handleChange"/>
     </van-popup>
   </div>
 </template>
 
 <script>
-import { Popup, DatetimePicker } from 'vant'
+import { Popup } from 'vant'
 import moment from 'moment'
+import MyTime from '@/components/Form/MyTime'
 
 export default {
   components: {
     'van-popup': Popup,
-    'van-datetime-picker': DatetimePicker
+    'my-time-picker': MyTime
   },
   model: {
     prop: 'value',
@@ -98,10 +93,9 @@ export default {
     oriVal: new Date(),
     val: null,
     minDate: new Date(),
+    maxDate: moment().add(3, 'months')._d,
     showPicker: false,
-    error: false,
-    minData: null,
-    maxDate: null
+    error: false
   }),
   computed: {
     canClear () {

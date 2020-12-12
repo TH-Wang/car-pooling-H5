@@ -2,7 +2,7 @@
   <div>
     <!-- 导航栏 -->
     <van-nav-bar
-      title="无责退订说明"
+      :title="title"
       fixed
       placeholder
       left-arrow
@@ -28,23 +28,43 @@ const text = {
     '3、当系统判断为有责退订时，将扣除拼友0.2诚信值；',
     '4、诚信值低于1分时，将额外收取1元信息服务费；',
     '5、30天内有2次有责退订免处罚，不扣诚信值；'
+  ],
+  credit: [
+    '为营造诚信拼车氛围，拼车之家实行“诚信值”体系：',
+    '1、拼友手机注册，初始诚信值为1.0分； ',
+    `2、通过${f}实名认证${e}，诚信值+0.5分； `,
+    '3、拼友成功出行（无投诉），诚信值+0.1分；',
+    `4、通过${f}车主认证${e}，诚信值+0.5分；`,
+    `5、拼友退订被判断为${f}有责退订${e}时，诚信值-0.2分；`,
+    '6、拼友不诚信拼车（有投诉），经客服核实后，诚信值-0.2分；',
+    '7、诚信值低于1.0分，将需要额外再支付1元信息服务费；',
+    '8、诚信值每周更新一次，分值低于0分，将被封停账号；'
   ]
 }
+
+const title = {
+  liability: '无责退订说明',
+  credit: '诚信值说明'
+}
+
 export default {
   data: () => ({
     // liability: 无责退订, credit: 诚信分
     type: 'liability',
-    tips: text
+    tips: text,
+    title: ''
   }),
   created () {
-    this.type = this.$route.query.type
+    const { type } = this.$route.query
+    this.type = type
+    this.title = title[type]
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .tips{
-  @include font (.14rem, $main-text);
+  @include font (.13rem, $main-text);
   padding: 0 .15rem;
   margin-top: .20rem;
   margin-bottom: .20rem;

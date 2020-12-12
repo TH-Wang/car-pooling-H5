@@ -467,6 +467,13 @@ const routes = [
         component: () => import(
           /* webpackChunkName: "Description" */ '@/views/Description.vue'
         )
+      },
+      { // 测试页面
+        path: '/common/test',
+        name: 'Test',
+        component: () => import(
+          /* webpackChunkName: "Test" */ '@/views/Test.vue'
+        )
       }
     ]
   }

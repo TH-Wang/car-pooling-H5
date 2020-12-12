@@ -11,7 +11,11 @@
           <div class="header-info-text">
             我的信用分
             <span style="margin-right: 5px">{{account.info.faithfulValue}}</span>
-            <van-icon class="question" name="question-o" />
+            <van-icon
+              class="question"
+              name="question-o"
+              @click="$router.push('/common/description?type=credit')"
+            />
           </div>
         </div>
       </div>

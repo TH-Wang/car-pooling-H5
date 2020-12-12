@@ -116,12 +116,9 @@ export default {
     // 搜索路线时传递的参数
     query () {
       const identity = this.identity
-      return {
-        workType: identity === 0 ? 'carpool' : 'pending',
-        publishType: 2,
-        // 1车主发布，2乘客发布
-        orderType: identity === 0 ? 1 : 2
-      }
+      return identity === 0
+        ? { workType: 'carpool', orderType: 1 }
+        : { workType: 'pending' }
     }
   },
   methods: {

@@ -115,7 +115,6 @@ export default {
       const identity = this.identity
       return {
         workType: 'pending',
-        publishType: 1,
         // 1车主发布，2乘客发布
         orderType: identity === 0 ? 1 : 2
       }

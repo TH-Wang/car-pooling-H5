@@ -82,12 +82,12 @@ export default {
     // 车主找人api
     reqApi: queryPassengerOrders,
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
-    getRequestDatas () {
-      return {
-        // orderType: 2, // 1-车主发布 2-乘客发布
-        publishType: 4
-      }
-    },
+    // getRequestDatas () {
+    //   return {
+    //     // orderType: 2, // 1-车主发布 2-乘客发布
+    //     publishType: 4
+    //   }
+    // },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
       return { startPage: 1, pageSize: 10 }
