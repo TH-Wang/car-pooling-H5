@@ -26,12 +26,12 @@
     <div style="height: .1rem" />
 
     <!-- 快捷路线 -->
-    <quick-line
+    <!-- <quick-line
       :dataSource="quickList"
       tagColor="green"
       @retry="handleRetryQuick"
       @link-more="$router.push('/common/quick/list')"
-    />
+    /> -->
 
     <!-- 公告栏 -->
     <!-- <notice-bar @reserve="handleClickReserve" /> -->
@@ -79,7 +79,7 @@ import { queryPassengerOrders } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
-import QuickLine from '@/components/QuickLine'
+// import QuickLine from '@/components/QuickLine'
 import WorkOrder from '@/components/WorkOrder'
 // import PendingOrder from '@/components/OrderItem/Pending'
 // import DriverReserveButton from '@/components/DriverReserveButton'
@@ -96,7 +96,7 @@ export default {
     'order-filter': OrderFilter,
     'nav-bar-search': NavBarSearch,
     'search-card': SearchCard,
-    'quick-line': QuickLine,
+    // 'quick-line': QuickLine,
     'work-order': WorkOrder,
     // 'pending-order': PendingOrder,
     // 'driver-reserve-button': DriverReserveButton,
@@ -112,17 +112,21 @@ export default {
     ...mapGetters(['location', 'identity']),
     // 搜索路线时传递的参数
     query () {
-      const identity = this.identity
+      // const identity = this.identity
       return {
         workType: 'pending',
         // 1车主发布，2乘客发布
-        orderType: identity === 0 ? 1 : 2
+        // orderType: identity === 0 ? 1 : 2,
+        showAll: 0
       }
     }
   },
   methods: {
     // 自定义请求函数
     reqApi: queryPassengerOrders,
+    getRequestDatas () {
+      return { showAll: 0 }
+    },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
       return { startPage: 1, pageSize: 10 }

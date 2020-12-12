@@ -74,7 +74,8 @@ export default {
     // 'mini-button': MiniButton
   },
   data: () => ({
-    dataSource: {}
+    dataSource: {},
+    positionInfo: null
   }),
   computed: {
     ...mapState(['position', 'search'])
@@ -90,17 +91,13 @@ export default {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
       // 起点目的地
-      const { startAddr, endAddr } = this.search
+      // const { startAddr, endAddr } = this.search
       // 订单信息
-      const { publishType, orderType } = this.dataSource
+      const { startAddr, endAddr, publishType, orderType } = this.dataSource
       // 返回主要参数
       return {
-        startAddr: startAddr.name,
-        startAddrLon: startAddr.location.lng,
-        startAddrLat: startAddr.location.lat,
-        endAddr: endAddr.name,
-        endAddrLon: endAddr.location.lng,
-        endAddrLat: endAddr.location.lat,
+        startAddr,
+        endAddr,
         orderType: parseInt(orderType), // 1-车主发布 2-乘客发布
         publishType: parseInt(publishType)
       }

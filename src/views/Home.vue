@@ -39,6 +39,7 @@
 
     <!-- 快捷路线 -->
     <quick-line
+      v-if="identity === 0"
       :dataSource="quickList"
       :query="query"
       @retry="handleRetryQuick"
@@ -117,8 +118,8 @@ export default {
     query () {
       const identity = this.identity
       return identity === 0
-        ? { workType: 'carpool', orderType: 1 }
-        : { workType: 'pending' }
+        ? { workType: 'carpool', orderType: 1, publishType: 2 }
+        : { workType: 'pending', showAll: 0 }
     }
   },
   methods: {
@@ -127,14 +128,14 @@ export default {
     },
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
-      if (this.identity === 1) return {}
+      if (this.identity === 1) return { showAll: 0 }
       // 通过身份判断发布类型，1-车主发布 2-乘客发布
       const orderType = this.identity === 0 ? 1 : 2
       return { orderType, publishType: 2 }
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
-      return { startPage: 1, pageSize: 10 }
+      return { startPage: 1, pageSize: 10, publishType: 2 }
     },
     // 按起止地点找车
     handleSearchOrder () {

@@ -76,8 +76,15 @@ export default {
     },
     // 点击查看更多
     handleLinkMore () {
-      const query = this.query
-      this.$router.push({ path: '/common/quick/list', query })
+      const { query, dataSource } = this
+      this.$router.push({
+        path: '/common/quick/list',
+        query: {
+          ...query,
+          ...dataSource,
+          quickLine: true
+        }
+      })
     }
   }
 }

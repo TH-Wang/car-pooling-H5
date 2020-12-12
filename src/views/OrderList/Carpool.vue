@@ -121,7 +121,8 @@ export default {
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
-      return { startPage: 1, pageSize: 10 }
+      const publishType = this.publishType
+      return { startPage: 1, pageSize: 10, publishType }
     },
     // 按起止地点找车
     handleSearchOrder () {

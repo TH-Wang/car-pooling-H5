@@ -11,7 +11,8 @@
     <div class="background"></div>
 
     <van-tabs
-      v-model="tabId"
+      :active="$store.state.tabsId.carry"
+      @change="(index) => {$store.commit('changeTabsId', {type: 'carry', index})}"
       color="#fff"
       title-inactive-color="#fafafa"
       title-active-color="#fff"

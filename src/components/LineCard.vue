@@ -1,8 +1,8 @@
 <template>
   <div class="card" @click="$emit('click')">
-    <div class="start">{{record.startAddr}}</div>
+    <div class="start">{{record.startAddrAll}}</div>
     <img class="arrow" src="../assets/icons/line-arrow.png" alt="">
-    <div class="end">{{record.endAddr}}</div>
+    <div class="end">{{record.endAddrAll}}</div>
 
     <!-- 拼单数量 -->
     <div :class="`num-tag-${tagColor}`">{{countTag}}</div>

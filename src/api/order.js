@@ -24,11 +24,11 @@ function queryPassengerOrders (data) {
 }
 
 // 获取常用路线
-function getCommonRoute (params) {
+function getCommonRoute (data) {
   return axios({
     url: '/order/getCommonRoute',
     method: 'POST',
-    params
+    data
   })
 }
 

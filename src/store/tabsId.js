@@ -5,7 +5,9 @@ export default {
     myTrip: 0,
     myOrder: 0,
     tourcar: 0,
-    release: 0
+    release: 0,
+    hitchhike: 0,
+    carry: 0
   },
 
   mutations: {

@@ -119,7 +119,7 @@ export default {
     async handleRetry () {
       this.startPage = 1
       this.$toast.loading('加载中...')
-      await this.handleListLoad()
+      await this.handlePullRefresh()
       this.$toast.clear()
     },
     // 点击重试（快捷路线列表）

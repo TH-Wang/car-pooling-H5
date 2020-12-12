@@ -23,7 +23,7 @@
           v-for="city in hotCities"
           :key="city.id"
           :class="`grid-item${city.id === activeHotCity ? '-active' : ''}`"
-          @click="activeHotCity = city.id"
+          @click="handleCityChange"
         >{{city.name}}</div>
       </div>
     </div>
@@ -37,8 +37,10 @@
 import { mapGetters } from 'vuex'
 import { getCommonRoute } from '@/api'
 import QuickLine from '@/components/QuickLine'
+import ListMixin from '@/mixins/list-mixin'
 
 export default {
+  mixins: [ListMixin],
   components: {
     'quick-line': QuickLine
   },
@@ -59,25 +61,34 @@ export default {
     ]
   }),
   computed: {
-    ...mapGetters(['location'])
+    ...mapGetters(['location']),
+    addrName () {
+      return this.hotCities.find(i => i.id === this.activeHotCity).name
+    }
   },
   methods: {
-    async handleRequest () {
-      const res = await getCommonRoute({
-        startPage: 1,
-        pageSize: 10
-      })
-      this.list = res.data.data.list
+    reqApi: getCommonRoute,
+    // 主要的请求参数
+    getRequestDatas () {
+      const publishType = this.query.publishType
+      const addrName = this.addrName
+      return { publishType, addrName }
     },
+    // 选择的热门城市发生变化
+    handleCityChange (id) {
+      this.activeHotCity = id
+      this.handlePullRefresh()
+    },
+    // 点击重试
     async handleRetry () {
       this.$toast.loading({ message: '加载中', duration: 10000 })
-      await this.handleRequest()
+      await this.handlePullRefresh()
       this.$toast.clear()
     }
   },
   created () {
     this.query = this.$route.query
-    this.handleRequest()
+    this.handleListLoad()
   }
 }
 </script>

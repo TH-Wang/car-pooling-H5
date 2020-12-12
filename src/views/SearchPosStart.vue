@@ -168,6 +168,7 @@ export default {
     },
     // 选择搜索地点
     handleSelect (e, record) {
+      console.log(record)
       const { lng, lat } = record.location
       this.map.setCenter([lng, lat], true, 1000)
       this.setMarker([lng, lat])
