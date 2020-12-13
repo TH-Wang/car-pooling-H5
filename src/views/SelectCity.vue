@@ -76,7 +76,7 @@
 
 <script>
 import AMapLoader from '@/utils/mapLoader'
-import { mapState, mapMutations, mapGetters } from 'vuex'
+import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 import { Icon, IndexBar, IndexAnchor } from 'vant'
 import { spell } from 'cnchar'
 import { isEmpty, debounce } from 'lodash'
@@ -89,11 +89,10 @@ import {
 } from '@/api'
 import {
   getLngLatByMap,
-  // getLngLatByBrowser,
   getPosition,
   transform
-  // getCity
 } from '@/utils/districtSearch'
+import EventBus from '@/utils/eventBus'
 import NavBarSearch from '@/components/NavBarSearch'
 
 export default {
@@ -117,15 +116,15 @@ export default {
     activeHotCity: null,
     // 热门城市列表
     hotCities: [
-      { code: 2, shortName: '北京' },
-      { code: 2324, shortName: '重庆' },
-      { code: 802, shortName: '上海' },
-      { code: 1988, shortName: '深圳' },
-      { code: 2368, shortName: '成都' },
-      { code: 1965, shortName: '广州' },
-      { code: 656, shortName: '哈尔滨' },
-      { code: 934, shortName: '杭州' },
-      { code: 2899, shortName: '西安' }
+      { code: 2, name: '北京市', shortName: '北京' },
+      { code: 2324, name: '重庆市', shortName: '重庆' },
+      { code: 802, name: '上海市', shortName: '上海' },
+      { code: 1988, name: '深圳市', shortName: '深圳' },
+      { code: 2368, name: '成都市', shortName: '成都' },
+      { code: 1965, name: '广州市', shortName: '广州' },
+      { code: 656, name: '哈尔滨市', shortName: '哈尔滨' },
+      { code: 934, name: '杭州市', shortName: '杭州' },
+      { code: 2899, name: '西安市', shortName: '西安' }
     ],
     // 搜索结果列表
     searchList: [],
@@ -168,7 +167,7 @@ export default {
     },
     // 显示区县列表
     showCountyList () {
-      return this.position.countyList.length > 0
+      return this.position.current === 'county'
     }
   },
   methods: {
@@ -176,6 +175,7 @@ export default {
     ...mapMutations([
       'setCurPosition', 'setCity', 'setCounty', 'setCityList', 'setCountyList', 'setWordsList'
     ]),
+    ...mapActions(['resetCounty']),
     // 定位当前位置
     async getCurrentPosition () {
       try {
@@ -217,13 +217,25 @@ export default {
     async handleCacheCityCounty (position) {
       // 获取省市区信息
       const { province, city, district } = position.addressComponent
-      this.$toast.success('定位成功')
       // 通过城市名称请求城市code
       const res1 = await queryPositionByCityName(city || province)
+      // **如果未查询到城市信息
+      if (res1.data.data.length === 0) {
+        this.status = 'fail'
+        this.$toast({ message: '未找到当前位置信息，请手动选择', duration: 1000 })
+        return
+      }
       // 获取城市信息
       const cityInfo = res1.data.data[0]
       // 通过城市code和区县名称获取区县信息
       const res2 = await queryPositionByCountyName(cityInfo.code, district)
+      // **如果未查询到该城市的区县信息
+      if (res2.data.data.length === 0) {
+        this.status = 'fail'
+        this.$toast({ message: '未找到当前位置信息，请手动选择', duration: 2500 })
+        return
+      }
+      // 获取区县列表
       const countyInfo = res2.data.data[0]
       // 设置城市和区域信息
       this.setCity(cityInfo)
@@ -231,7 +243,8 @@ export default {
       // 修改定位状态为成功
       this.status = 'success'
       // 将定位发送给后端存储
-      savePosition(countyInfo.code)
+      await savePosition(countyInfo.code)
+      this.$toast.success('定位成功')
     },
     // 请求所有城市列表
     async queryCityList () {
@@ -268,7 +281,7 @@ export default {
     },
     // 选择搜索到的城市
     selectCityBySearch (e, item) {
-      this.handleResetCity()
+      // this.handleResetCity()
       this.handleQueryCounty(null, item)
     },
     // 监听搜索事件
@@ -313,14 +326,12 @@ export default {
     },
     // 选择热门城市
     handleSelectHotCity (e, city) {
-      let cityData = city
       if (this.activeHotCity === city.code) {
         this.activeHotCity = null
-        cityData = null
       } else {
         this.activeHotCity = city.code
+        this.handleQueryCounty(null, city)
       }
-      this.handleQueryCounty(null, cityData)
     },
     // 根据城市code查询区县（选择城市）
     async handleQueryCounty (e, city) {
@@ -335,20 +346,21 @@ export default {
     // 重新选择城市
     handleResetCity () {
       this.setCurPosition('city')
-      this.setCounty(null)
-      this.setCountyList([])
+      this.resetCounty()
+      // this.setCountyList([])
     },
     // 选择区县
-    handleSelectCounty (e, county) {
+    async handleSelectCounty (e, county) {
       this.setCounty(county)
-      savePosition(county.code)
+      await savePosition(county.code)
       setTimeout(() => {
         this.$router.go(-1)
+        EventBus.$emit('home-refresh')
       }, 150)
     },
     // 重新选择区县
     handleResetCounty () {
-      this.setCounty(null)
+      this.resetCounty()
     }
   },
   created: async function () {
@@ -361,6 +373,16 @@ export default {
     if (this.position.cityList.length === 0) {
       this.queryCityList()
     }
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.unGeoLocation) {
+      next(false)
+      setTimeout(() => {
+        this.$dialog.alert({
+          message: '请选择您当前<strong style="color:#FFCD00">所在的区域</strong>，我们将根据您的位置来推荐内容'
+        })
+      }, 100)
+    } else next()
   }
 }
 </script>

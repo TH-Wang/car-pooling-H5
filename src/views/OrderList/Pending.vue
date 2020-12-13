@@ -104,8 +104,8 @@ export default {
   },
   data: () => ({
     menuVisibleId: null,
-    menu: [{ type: 'cancel', text: '取消预约' }],
-    needQuick: true
+    menu: [{ type: 'cancel', text: '取消预约' }]
+    // needQuick: true
   }),
   computed: {
     ...mapState(['position', 'search']),

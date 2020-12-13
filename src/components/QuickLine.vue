@@ -12,7 +12,7 @@
       <van-empty description="暂无快捷路线，可点击重试" />
     </div>
     <!-- 列表 -->
-    <div class="list-container">
+    <div class="list-container" v-else>
       <line-card
         class="list-item"
         v-for="item in dataSource"
@@ -28,6 +28,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { cloneDeep } from 'lodash'
 import LineCard from './LineCard'
 
 export default {
@@ -65,25 +66,30 @@ export default {
   methods: {
     // 搜索快捷路线的拼车单
     handleClick (e, record) {
-      const _this_ = this
-      const { startAddr, endAddr } = record
+      const params = cloneDeep(this.query)
+      if ('publishType' in params) delete params.publishType
+      const { pname, cityname, startAddr, startAddrAll, endAddr, endAddrAll, startLon, startLat, endLon, endLat } = record
       const query = {
+        pname,
+        cityname,
         startAddr,
+        startAddrAll,
         endAddr,
-        ..._this_.query
+        endAddrAll,
+        startAddrLon: startLon,
+        startAddrLat: startLat,
+        endAddrLon: endLon,
+        endAddrLat: endLat,
+        ...params
       }
       this.$router.push({ path: '/common/searchline/list', query })
     },
     // 点击查看更多
     handleLinkMore () {
-      const { query, dataSource } = this
+      const { query } = this
       this.$router.push({
         path: '/common/quick/list',
-        query: {
-          ...query,
-          ...dataSource,
-          quickLine: true
-        }
+        query
       })
     }
   }

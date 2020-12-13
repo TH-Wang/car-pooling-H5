@@ -201,6 +201,7 @@ export default {
     },
     // 退出登录
     handleLogout () {
+      this.$store.commit('clearToken')
       this.$router.push('/common/login')
     }
   }

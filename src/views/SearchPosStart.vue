@@ -43,7 +43,7 @@
     <div class="result">
       <div class="result-title">出发地点</div>
       <div class="result-name" v-show="position.name">{{position.name}}</div>
-      <div class="result-placeholder" v-show="!position.name">请搜索您的位置</div>
+      <div class="result-placeholder" v-show="!position.name">可在上方搜索位置</div>
       <div class="result-address">{{addressDetail(position)}}</div>
       <main-button :color="buttonColor" @click="handleConfirm">确认</main-button>
       <!-- 定位按钮 -->
@@ -59,6 +59,7 @@ import { mapState } from 'vuex'
 import { debounce, isEmpty, cloneDeep } from 'lodash'
 import { AMapLoaderAndUI } from '@/utils/mapLoader'
 import { initPlaceSearch, initGeolocation } from '@/utils/mapPlugin'
+import { getPosition } from '@/utils/districtSearch'
 import MainButton from '@/components/MainButton'
 
 export default {
@@ -127,8 +128,33 @@ export default {
     },
     // 获取用户当前位置
     handleGetPosition () {
-      this.geolocation.getCurrentPosition((status, result) => {
+      this.geolocation.getCurrentPosition(async (status, result) => {
         if (status !== 'complete') this.$toast('定位失败，请稍后重试')
+        else {
+          // 通过经纬度获取位置信息
+          const { lng, lat } = result.position
+          const position = await getPosition(this.AMap, [lng, lat])
+
+          // 将定位信息显示到地图上
+          const { province, city, district, street } = position.addressComponent
+          const address = position.formattedAddress
+          const matchName = address.match(new RegExp(`(?<=${street})`))
+          if (matchName) {
+            var name = address.slice(matchName.index)
+            const data = {
+              pname: province,
+              cityname: city,
+              adname: district,
+              address: '',
+              name,
+              location: { lng, lat }
+            }
+            console.log(data)
+            this.handleSelect(null, data)
+          } else {
+            this.$toast('位置信息获取失败，请稍后重试')
+          }
+        }
       })
     },
     // 监听用户输入
@@ -168,7 +194,6 @@ export default {
     },
     // 选择搜索地点
     handleSelect (e, record) {
-      console.log(record)
       const { lng, lat } = record.location
       this.map.setCenter([lng, lat], true, 1000)
       this.setMarker([lng, lat])
@@ -243,6 +268,11 @@ export default {
     const key = this.type === 'common' ? 'search' : this.type
     this.position = this[key].startAddr
     this.searchValue = this[key].startAddr.name
+    // 如果没有内容则启用定位
+    if (isEmpty(this.searchValue)) {
+      this.handleGetPosition()
+    }
+
     // 监听地图拖动事件
     if (this.map) {
       this.map.on('mapmove', this.onMapMove)

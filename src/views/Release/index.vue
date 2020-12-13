@@ -220,16 +220,16 @@ export default {
         return {
           ...result,
           pname: cityname,
-          cityname: adname,
-          fullName: `${cityname}${adname}${name}`
+          cityname: adname
+          // fullName: `${cityname}${adname}${name}`
         }
       }
       // 普通城市
       return {
         ...result,
         pname,
-        cityname,
-        fullName: `${pname}${cityname}${name}`
+        cityname
+        // fullName: `${pname}${cityname}${name}`
       }
     }
   }

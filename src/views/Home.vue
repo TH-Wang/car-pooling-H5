@@ -74,8 +74,9 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { NavBar, Icon, List } from 'vant'
-import { isEmpty } from 'lodash'
+import { isEmpty, cloneDeep } from 'lodash'
 import { getCar, queryPassengerOrders } from '@/api'
+import EventBus from '@/utils/eventBus'
 import { OrderFilter } from '@/components/Filter/index.js'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
@@ -102,7 +103,8 @@ export default {
       start: '',
       end: ''
     },
-    needQuick: true
+    needQuick: true,
+    notReqOnMounted: true
   }),
   computed: {
     // 全局存储城市区县数据
@@ -135,16 +137,23 @@ export default {
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
-      return { startPage: 1, pageSize: 10, publishType: 2 }
+      const addrName = this.position.city.name
+      console.log(this.position.city)
+      return { startPage: 1, pageSize: 10, publishType: 2, addrName }
     },
     // 按起止地点找车
     handleSearchOrder () {
-      const _this_ = this
       const { startAddr, endAddr } = this.search
+      const params = cloneDeep(this.query)
+      delete params.publishType
       const query = {
-        ..._this_.query,
+        ...params,
         startAddr: startAddr.name,
-        endAddr: endAddr.name
+        startAddrLon: startAddr.location.lng,
+        startAddrLat: startAddr.location.lat,
+        endAddr: endAddr.name,
+        endAddrLon: endAddr.location.lng,
+        endAddrLat: endAddr.location.lat
       }
       this.$router.push({ path: '/common/searchline/list', query })
     },
@@ -167,6 +176,17 @@ export default {
     handleLinkReserve (id) {
       this.$router.push({ path: '/common/reserve', query: { id } })
     }
+  },
+  created () {
+    this.handleListLoad()
+    if (this.identity === 0) {
+      this.handleQuickListLoad()
+    }
+    // 监听首页刷新事件
+    EventBus.$on('home-refresh', () => {
+      console.log('监听到home-refresh')
+      this.handlePullRefresh()
+    })
   }
 }
 </script>

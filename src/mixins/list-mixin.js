@@ -135,6 +135,7 @@ export default {
       this.finished = false
       this.$nextTick(async () => {
         await this.handleListLoad(true)
+        if (this.needQuick) await this.handleQuickListLoad()
         this.refresh = false
       })
     }

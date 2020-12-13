@@ -10,9 +10,9 @@
     >
       <template #title>
         <div class="line-text">
-          <div class="start ellipsis">{{dataSource.startAddr}}</div>
+          <div class="start ellipsis">{{startAddrName}}</div>
           <img class="arrow" src="@/assets/icons/line-arrow.png" alt="">
-          <div class="end ellipsis">{{dataSource.endAddr}}</div>
+          <div class="end ellipsis">{{endAddrName}}</div>
         </div>
       </template>
     </van-nav-bar>
@@ -56,6 +56,7 @@
 <script>
 import { mapState } from 'vuex'
 import { List } from 'vant'
+import { cloneDeep } from 'lodash'
 import { getCar, queryPassengerOrders } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import WorkOrder from '@/components/WorkOrder'
@@ -78,7 +79,15 @@ export default {
     positionInfo: null
   }),
   computed: {
-    ...mapState(['position', 'search'])
+    ...mapState(['position', 'search']),
+    startAddrName () {
+      if (this.dataSource.startAddrAll) return this.dataSource.startAddrAll
+      else return this.dataSource.startAddr
+    },
+    endAddrName () {
+      if (this.dataSource.endAddrAll) return this.dataSource.endAddrAll
+      else return this.dataSource.endAddr
+    }
   },
   methods: {
     reqApi (data) {
@@ -90,17 +99,19 @@ export default {
     },
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
-      // 起点目的地
-      // const { startAddr, endAddr } = this.search
       // 订单信息
-      const { startAddr, endAddr, publishType, orderType } = this.dataSource
-      // 返回主要参数
-      return {
-        startAddr,
-        endAddr,
-        orderType: parseInt(orderType), // 1-车主发布 2-乘客发布
-        publishType: parseInt(publishType)
+      const dataSource = cloneDeep(this.dataSource)
+      if (dataSource.workType) delete dataSource.workType
+      const data = {
+        ...dataSource,
+        queryAllPosition: 1,
+        orderType: parseInt(dataSource.orderType) // 1-车主发布 2-乘客发布
       }
+      // if (this.dataSource.publishType) {
+      //   data.publishType = parseInt(this.dataSource.publishType)
+      // }
+      // 返回主要参数
+      return data
     },
     // 进入详情页面
     handleLinkDetail (record) {

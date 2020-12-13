@@ -97,6 +97,7 @@
 <script>
 import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
+import EventBus from '@/utils/eventBus'
 import { commitOrder } from '@/api'
 import { Form, Input } from '@/components/Form'
 import MapView from '@/components/MapView'
@@ -145,6 +146,7 @@ export default {
       // 发送请求
       const res = await commitOrder(data)
       if (res.data.msg === '成功') {
+        EventBus.$emit('home-refresh')
         this.$router.push({
           path: '/common/order/feedback/success',
           query: { id: res.data.data }

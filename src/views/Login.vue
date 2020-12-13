@@ -58,6 +58,7 @@
 
 <script>
 import { isEmpty } from 'lodash'
+import store from '@/store'
 import { Form, Input } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import vertifyCodeMixin from '@/mixins/vertify-code'
@@ -110,6 +111,15 @@ export default {
     const phone = this.$store.state.user.loginPhone
     if (!isEmpty(phone)) {
       this.$refs.form.setValues({ phone })
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    if (store.state.user.token) {
+      console.log('跳转到首页')
+      next('/home')
+    } else {
+      console.log('继续留在login页')
+      next(true)
     }
   }
 }

@@ -29,6 +29,10 @@ export default {
       state.token = token
       localStorage.setItem('token', token)
     },
+    clearToken (state) {
+      state.token = null
+      localStorage.removeItem('token')
+    },
     setCarInfo (state, list) {
       state.carList = list
     }
