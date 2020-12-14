@@ -99,11 +99,11 @@ export default {
     ...mapGetters(['location']),
     // 是否专线
     isSpecial () {
-      return this.tabsId === 1
+      return this.tabsId === 2
     },
     // 是否最新
     newDate () {
-      return this.tabsId === 2
+      return this.tabsId === 1
     }
   },
   methods: {
@@ -122,8 +122,9 @@ export default {
     // 切换查询类型
     async handleSwitchType () {
       this.startPage = 1
+      // console.log(this.isSpecial, this.newDate)
       this.$toast.loading({ message: '加载中', duration: 10000 })
-      await this.handleListLoad()
+      await this.handleListLoad(true)
       this.$toast.clear()
     },
     // 价格的前缀样式

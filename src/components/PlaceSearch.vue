@@ -21,7 +21,12 @@
 
     <!-- 搜索结果列表 -->
     <div class="search">
-      <van-empty v-show="searchEmpty" description="抱歉，未找到相关位置，可尝试修改后重试" />
+      <van-empty v-show="searchEmpty">
+        <div style="text-align:center;">
+          <p>未找到相关位置</p>
+          <p>可尝试加上<strong style="color:#FFCD00">当前城市</strong>后重试</p>
+        </div>
+      </van-empty>
       <div class="search-item"
         v-for="item in searchList"
         :key="item.id"
