@@ -5,7 +5,7 @@
     <custom-form ref="form">
       <!-- 发布类型 -->
       <custom-picker
-        v-model="orderType"
+        v-model="publishType"
         name="publishType"
         label="发布类型"
         placeholder="请选择发布类型"
@@ -13,7 +13,7 @@
       />
       <!-- 详细表单项 -->
       <custom-item
-        v-for="item in formOptions[orderType]"
+        v-for="item in formOptions[publishType]"
         :key="item.id"
         :options="item"
       />
@@ -80,15 +80,15 @@ export default {
   },
   data: () => ({
     // 选择的发布类型
-    orderType: 2,
+    publishType: 2,
     // 表单列表
     formOptions: customerConfig,
     // 所有的发布类型
     orderMenu: [
       { id: 4, label: '上下班拼车' },
-      { id: 1, label: '短途拼车' },
-      { id: 2, label: '城际拼车' },
-      { id: 3, label: '跨省拼车' },
+      { id: 1, label: '拼车' },
+      // { id: 2, label: '城际拼车' },
+      // { id: 3, label: '跨省拼车' },
       { id: 5, label: '顺路带物' }
     ],
     agreePact: true,
@@ -126,6 +126,8 @@ export default {
         // 发布类型：乘客发布
         orderType: 2
       }
+      // 订单类型
+      if (this.publishType === 1) data.publishType = this.judgeType()
       // 通知父组件做提交相关操作
       this.$emit('submit', { data, type: 'customer' })
     },
@@ -148,31 +150,36 @@ export default {
       if (!this.allInputStartEnd) return 1
       const { startAddr, endAddr } = this.release
       if (startAddr.pname !== endAddr.pname) return 3
-      if (startAddr.cityname === endAddr.cityname) {
+      if (this.getCityName(startAddr.cityname) === this.getCityName(endAddr.cityname)) {
         return startAddr.adname === endAddr.adname ? 1 : 2
       }
       return 1
+    },
+    getCityName (data) {
+      return ['重庆市', '北京市', '上海市', '天津市'].indexOf(data.pname) === -1
+        ? data.cityname
+        : data.pname
     }
   },
   watch: {
     agreePackage: function (newVal) {
       if (newVal) this.$refs.layer.show()
       else this.combo = {}
-    },
-    startAddrName: function (newVal) {
-      if (!this.allInputStartEnd) return
-      const type = this.judgeType()
-      const typeName = this.orderMenu.find(i => i.id === type).label
-      this.$refs.form.setValueField('publishType', type)
-      this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
-    },
-    endAddrName: function (newVal) {
-      if (!this.allInputStartEnd) return
-      const type = this.judgeType()
-      const typeName = this.orderMenu.find(i => i.id === type).label
-      this.$refs.form.setValueField('publishType', type)
-      this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
     }
+    // startAddrName: function (newVal) {
+    //   if (!this.allInputStartEnd) return
+    //   const type = this.judgeType()
+    //   const typeName = this.orderMenu.find(i => i.id === type).label
+    //   this.$refs.form.setValueField('publishType', type)
+    //   this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
+    // },
+    // endAddrName: function (newVal) {
+    //   if (!this.allInputStartEnd) return
+    //   const type = this.judgeType()
+    //   const typeName = this.orderMenu.find(i => i.id === type).label
+    //   this.$refs.form.setValueField('publishType', type)
+    //   this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
+    // }
   }
 }
 </script>

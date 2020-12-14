@@ -29,8 +29,8 @@
     </div>
 
     <!-- 时间选择器 -->
-    <van-popup v-model="showPicker" round position="bottom">
-      <my-time-picker @confirm="handleChange"/>
+    <van-popup v-model="showPicker" round position="bottom" :lazy-render="false">
+      <my-time-picker ref="timePicker" @confirm="handleChange"/>
     </van-popup>
   </div>
 </template>
@@ -90,7 +90,7 @@ export default {
     }
   },
   data: () => ({
-    oriVal: new Date(),
+    oriVal: moment().format('YYYY-MM-DD HH:mm'),
     val: null,
     minDate: new Date(),
     maxDate: moment().add(3, 'months')._d,
@@ -123,16 +123,27 @@ export default {
       this.showPicker = false
       this.oriVal = value
     },
+    formatter (time) {
+      let formatDate = ''
+      const momentTime = moment(time)
+      const day = momentTime.get('date')
+      if (day === moment().get('date')) formatDate = '今天'
+      else if (day === moment().add(1, 'day').get('date')) formatDate = '明天'
+      else if (day === moment().add(2, 'day').get('date')) formatDate = '后天'
+      else formatDate = momentTime.format('MM月DD日')
+      return `${formatDate} ${momentTime.format('HH:mm')}`
+    },
     clear () {
       this.oriVal = new Date()
       if (this.required) this.error = true
     },
     // 获取值
     getValue () {
-      return this.val
+      return this.oriVal
     },
     setValue (value) {
-      this.val = value
+      this.oriVal = value
+      this.$refs.timePicker.setValue(value)
     },
     validate () {
       if (this.required && this.val === null) {
@@ -144,11 +155,11 @@ export default {
   mounted () {
     if (this.defaultTime !== false) {
       this.val = this.defaultTime
-    } else this.val = moment(this.oriVal).format('YYYY-MM-DD HH:mm')
+    } else this.val = this.formatter(this.oriVal)
   },
   watch: {
     oriVal: function (newVal) {
-      const formatDate = moment(newVal).format('YYYY-MM-DD HH:mm')
+      const formatDate = this.formatter(newVal)
       this.val = formatDate
       this.$emit('change', formatDate)
     }

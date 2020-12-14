@@ -108,23 +108,22 @@ export default {
       // 如果发布成功
       this.$toast.success('发布成功')
       // 6. 通知子组件清空表单
-      this.$refs[type].clearForm()
+      this.$refs[type].resetTime()
+      this.$router.push(`/common/tripshare/${type}`)
     },
     // 提示确认手机号
     async confirmPhone () {
-      try {
+      return new Promise((resolve, reject) => {
         const phone = this.$store.state.user.info.phone
-        return await this.$dialog.confirm({
+        this.$dialog.confirm({
           title: '提示',
           message: `请确认 <span style="color:#FFCD00">${phone}</span> 能联系到你`,
           allowHtml: true,
           confirmButtonText: '确认在用',
           cancelButtonText: '修改手机号'
-        })
-      } catch (error) {
-        // 点击修改手机号
-        this.$router.push('/common/phone/modify')
-      }
+        }).then(() => { resolve() })
+          .catch(() => { this.$router.push('/common/phone/modify') })
+      })
     },
     // 提示收取信息费
     alertCost () {

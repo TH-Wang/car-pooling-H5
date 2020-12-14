@@ -178,5 +178,6 @@ export default {
 
 .cancel-button{
   @include font (.14rem, $sub-text);
+  margin-left: 5px;
 }
 </style>

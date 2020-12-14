@@ -32,26 +32,27 @@ const driCarpool = (carConfig) => ([
     label: 'A费',
     placeholder: '请设置费用',
     rules: [{ required: true }]
-  }, {
-    id: '1-6',
-    type: 'picker',
-    name: 'isTakeGoods',
-    label: '是否带物',
-    columns: [{ id: 0, label: '否' }, { id: 1, label: '是' }]
-  // defaultIndex: 0
-  }, {
-    id: '1-7',
-    type: 'field',
-    name: 'weight',
-    label: '重量',
-    placeholder: '请输入重量'
-  }, {
-    id: '1-8',
-    type: 'field',
-    name: 'volume',
-    label: '体积',
-    placeholder: '请输入体积'
   }
+  // {
+  //   id: '1-6',
+  //   type: 'picker',
+  //   name: 'isTakeGoods',
+  //   label: '是否带物',
+  //   columns: [{ id: 0, label: '否' }, { id: 1, label: '是' }]
+  // // defaultIndex: 0
+  // }, {
+  //   id: '1-7',
+  //   type: 'field',
+  //   name: 'weight',
+  //   label: '重量',
+  //   placeholder: '请输入重量'
+  // }, {
+  //   id: '1-8',
+  //   type: 'field',
+  //   name: 'volume',
+  //   label: '体积',
+  //   placeholder: '请输入体积'
+  // }
 ])
 
 // 车主发布的表单配置项
@@ -60,8 +61,8 @@ export const getDriverOpts = (carConfig = []) => {
   return {
     // 拼车
     1: carpoolList,
-    2: carpoolList,
-    3: carpoolList,
+    // 2: carpoolList,
+    // 3: carpoolList,
     // 上下班拼车
     4: [{
       id: '2-1',
@@ -110,19 +111,21 @@ export const getDriverOpts = (carConfig = []) => {
       name: 'cost',
       label: 'A费',
       placeholder: '请设置费用'
-    }, {
-      id: '2-7',
-      type: 'field',
-      name: 'weight',
-      label: '重量',
-      placeholder: '请输入重量'
-    }, {
-      id: '2-8',
-      type: 'field',
-      name: 'volume',
-      label: '体积',
-      placeholder: '请输入体积'
-    }],
+    }
+    // {
+    //   id: '2-7',
+    //   type: 'field',
+    //   name: 'weight',
+    //   label: '重量',
+    //   placeholder: '请输入重量'
+    // }, {
+    //   id: '2-8',
+    //   type: 'field',
+    //   name: 'volume',
+    //   label: '体积',
+    //   placeholder: '请输入体积'
+    // }
+    ],
     // 顺路带物
     5: [
     //   {
@@ -228,19 +231,21 @@ const cusCarpool = [
     maxLength: 1,
     placeholder: '请输入乘坐人数',
     rules: [{ required: true }]
-  }, {
-    id: '1-4',
-    type: 'field',
-    name: 'weight',
-    label: '重量',
-    placeholder: '请输入重量'
-  }, {
-    id: '1-5',
-    type: 'field',
-    name: 'volume',
-    label: '体积',
-    placeholder: '请输入体积'
-  }, {
+  },
+  // {
+  //   id: '1-4',
+  //   type: 'field',
+  //   name: 'weight',
+  //   label: '重量',
+  //   placeholder: '请输入重量'
+  // }, {
+  //   id: '1-5',
+  //   type: 'field',
+  //   name: 'volume',
+  //   label: '体积',
+  //   placeholder: '请输入体积'
+  // },
+  {
     id: '1-6',
     type: 'field',
     name: 'cost',
@@ -252,8 +257,8 @@ const cusCarpool = [
 export const customer = {
   // 拼车
   1: cusCarpool,
-  2: cusCarpool,
-  3: cusCarpool,
+  // 2: cusCarpool,
+  // 3: cusCarpool,
   // 上下班拼车
   4: [{
     id: '2-1',
