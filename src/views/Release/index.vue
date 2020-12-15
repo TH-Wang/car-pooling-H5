@@ -81,35 +81,40 @@ export default {
   methods: {
     // 提交
     async handleSubmit ({ data, type }) {
-      // 1. 校验起止点信息是否输入
-      if (!this.$refs[type + '_search_card'].validate()) {
-        window.scrollTo(0, 0)
-        return
+      try {
+        // 1. 校验起止点信息是否输入
+        if (!this.$refs[type + '_search_card'].validate()) {
+          window.scrollTo(0, 0)
+          return
+        }
+        // 2. 提示确认手机号
+        await this.confirmPhone()
+        // 3. 提示收取信息费
+        await this.alertCost()
+        // 4. 发起请求
+        const res = type === 'driver'
+          ? await this.driverRequest(cloneDeep(data))
+          : await this.customerRequest(cloneDeep(data))
+        // 5. 处理反馈
+        if (res.data.status === -4) {
+          // 如果token失效
+          this.$dialog.alert({ message: '请重新登录' })
+          this.$router.push('/common/login')
+          return
+        } else if (res.data.status !== 200) {
+          // 发布失败
+          this.$toast.fail('发布失败\n请稍后再试')
+          return
+        }
+        // 6. 通知子组件清空表单
+        this.$refs[type].resetTime()
+        // 如果发布成功
+        this.$toast.success('发布成功')
+        this.$router.push(`/common/tripshare/${type}`)
+        // this.$router.push(`/common/tripshare/${type}?id=${res.data.data.orderId}`)
+      } catch (error) {
+        console.log(error)
       }
-      // 2. 提示确认手机号
-      await this.confirmPhone()
-      // 3. 提示收取信息费
-      await this.alertCost()
-      // 4. 发起请求
-      const res = type === 'driver'
-        ? await this.driverRequest(cloneDeep(data))
-        : await this.customerRequest(cloneDeep(data))
-      // 5. 处理反馈
-      if (res.data.status === -4) {
-        // 如果token失效
-        this.$dialog.alert({ message: '请重新登录' })
-        this.$router.push('/common/login')
-        return
-      } else if (res.data.status !== 200) {
-        // 发布失败
-        this.$toast.fail('发布失败\n请稍后再试')
-        return
-      }
-      // 如果发布成功
-      this.$toast.success('发布成功')
-      // 6. 通知子组件清空表单
-      this.$refs[type].resetTime()
-      this.$router.push(`/common/tripshare/${type}`)
     },
     // 提示确认手机号
     async confirmPhone () {

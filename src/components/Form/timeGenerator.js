@@ -28,7 +28,7 @@ function getDate (idx) {
 function getHour (idx) {
   const list = []
   for (let h = 0; h < 24; h++) {
-    const hour = h < 10 ? '0' + h : h
+    const hour = h < 10 ? `0${h}` : `${h}`
 
     let text
     if (h <= 5) text = '凌晨' + hour
@@ -64,7 +64,7 @@ function getMinute (slice) {
   for (let i = 0; i < 56; i++) {
     if (slice && i < nowMinute) continue
     if (i % 5 === 0) {
-      const minute = i < 10 ? '0' + i : i
+      const minute = i < 10 ? `0${i}` : `${i}`
       list.push({ text: minute + '分', date: minute })
     }
   }

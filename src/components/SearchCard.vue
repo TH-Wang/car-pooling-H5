@@ -39,7 +39,7 @@
             @click="handleLinkPos($event, 'end')"
             class="address-bar-input"
             type="text"
-            placeholder="您要去哪儿  地址/街道/酒店/景点"
+            placeholder="您要去哪儿"
             readonly
           >
           <!-- <van-switch

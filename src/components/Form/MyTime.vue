@@ -41,6 +41,8 @@ export default {
       const oriTime = moment(time)
       const dateIdx = this.getDateIndex(oriTime.format('YYYY-MM-DD'), this.dateList)
       const hourIdx = this.getDateIndex(oriTime.format('HH'), this.dateList[dateIdx].children)
+      console.log(oriTime.format('HH'))
+      console.log([dateIdx, hourIdx])
       const minuteList = this.dateList[dateIdx].children[hourIdx].children
       const minuteIdx = this.getDateIndex(oriTime.format('mm'), minuteList)
       this.$refs.picker.setIndexes([dateIdx, hourIdx, minuteIdx])
