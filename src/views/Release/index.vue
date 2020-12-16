@@ -110,8 +110,7 @@ export default {
         this.$refs[type].resetTime()
         // 如果发布成功
         this.$toast.success('发布成功')
-        this.$router.push(`/common/tripshare/${type}`)
-        // this.$router.push(`/common/tripshare/${type}?id=${res.data.data.orderId}`)
+        this.$router.push(`/common/tripshare/${type}?id=${res.data.data}`)
       } catch (error) {
         console.log(error)
       }

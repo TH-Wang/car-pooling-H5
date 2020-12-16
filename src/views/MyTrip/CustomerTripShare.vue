@@ -14,19 +14,19 @@
 
     <!-- 顶部 -->
     <order-info-header :record="{
-      start: '重庆西站',
-      end: '重庆北站',
-      price: 120
+      startAddr: record.startAddr,
+      endAddr: record.endAddr,
+      cost: record.cost
     }" content-type="price" />
 
     <!-- 详情卡片 -->
     <div class="content-card">
 
       <!-- 详细信息 -->
-      <order-info-field icon-type="user" label="乘客" content="陈女士" />
-      <order-info-field icon-type="seat" label="人数" content="3" text-color="yellow" />
-      <order-info-field icon-type="time" label="出发时间" content="07月09日 08:00" />
-      <order-info-field icon-type="remark" label="备注" content="重庆北站到重庆西站顺路可带4人，顺路上下，预定电话确认下" />
+      <order-info-field icon-type="user" label="乘客" :content="record.userName" />
+      <order-info-field icon-type="seat" label="人数" :content="record.orderNum" text-color="yellow" />
+      <order-info-field icon-type="time" label="出发时间" :content="startTime" />
+      <order-info-field icon-type="remark" label="备注" :content="record.remark || '无'" />
 
       <!-- 地图 -->
       <map-view />
@@ -36,17 +36,20 @@
 
     <!-- 底部按钮组 -->
     <div class="footer-button-group">
-      <main-button width="1.2rem" @click="handleCopy">复制到微信</main-button>
+      <!-- <main-button width="1.2rem" @click="copyToClip">复制到微信</main-button> -->
       <main-button
-        width="2.1rem"
+        width="3.45rem"
         type="gradient"
-        @click="handleCopy"
+        @click="copyToClip"
       >复制内容</main-button>
     </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
+import { isEmpty } from 'lodash'
+import { getPassengerPublishDetail } from '@/api'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
@@ -58,13 +61,55 @@ export default {
     'map-view': MapView,
     'main-button': MainButton
   },
-  methods: {
-    handleCopy () {
-      this.$dialog.alert({
-        title: '复制成功',
-        message: '快去拼车群粘贴吧'
-      })
+  data: () => ({
+    record: {}
+  }),
+  computed: {
+    startTime () {
+      return this.record.passengerStartTime
+        ? moment(this.record.passengerStartTime).format('MM月DD日 HH:mm')
+        : ''
+    },
+    // 起止点名称
+    addrName () {
+      if (isEmpty(this.record)) return ''
+      const passPointList = this.record.passPointList
+      return {
+        startAddr: passPointList.find(i => i.type === 1).pointName,
+        endAddr: passPointList.find(i => i.type === 3).pointName
+      }
+    },
+    // A费
+    cost () {
+      if (!this.record) return ''
+      return this.record.cost
+    },
+    // 复制内容
+    copyContent () {
+      if (!this.record) return ''
+      const { startAddr, endAddr, startTime, vehicleType, seatNum, cost, userName, remark } = this.record
+      const formatTime = moment(startTime).format('MM月DD日 HH:mm')
+      return `【起止地】${startAddr} - ${endAddr}\n【时间】${formatTime}\n【路线】${this.passPointList}\n【车型】${vehicleType || ''}\n【余座】${seatNum}\n【A费】${cost}元/人\n【车主】${userName}\n【备注】${remark}`
     }
+  },
+  methods: {
+    async handleReq () {
+      const res = await getPassengerPublishDetail(this.orderId)
+      this.record = res.data.data
+    },
+    copyToClip () {
+      const aux = document.createElement('textarea')
+      aux.value = this.copyContent
+      document.body.appendChild(aux)
+      aux.select()
+      document.execCommand('copy')
+      document.body.removeChild(aux)
+      this.$toast.success('复制成功')
+    }
+  },
+  created: async function () {
+    this.orderId = this.$route.query.id
+    await this.handleReq()
   }
 }
 </script>

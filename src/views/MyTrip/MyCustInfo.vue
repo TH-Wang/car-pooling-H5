@@ -22,7 +22,7 @@
     <!-- 详情卡片 -->
     <div class="content-card">
       <!-- 地图 -->
-      <map-view />
+      <map-view :info="record.passPointLis" />
 
       <!-- 详细信息 -->
       <order-info-field

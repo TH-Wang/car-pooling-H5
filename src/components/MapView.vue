@@ -1,8 +1,8 @@
 <template>
   <div class="map">
     <div class="mapView" id="START_END_MAP_VIEW"></div>
-    <div class="marker" id="START_MARKER" :style="startWidth">{{startName}}</div>
-    <div class="marker" id="END_MARKER" :style="endWidth">{{endName}}</div>
+    <!-- <div class="marker" id="START_MARKER" :style="startWidth">{{startName}}</div>
+    <div class="marker" id="END_MARKER" :style="endWidth">{{endName}}</div> -->
   </div>
 </template>
 
@@ -52,8 +52,10 @@ export default {
       // eslint-disable-next-line no-unused-vars
       const mapView = new this.map.AMap.Map('START_END_MAP_VIEW', {
         zoom: 12,
-        mapStyle: 'amap://styles/whitesmoke',
-        dragEnable: false
+        mapStyle: 'amap://styles/whitesmoke'
+        // dragEnable: false,
+        // zoomEnable: false,
+        // touchZoom: false
       })
       this.mapView = mapView
     },
@@ -138,12 +140,9 @@ export default {
       return path
     }
   },
-  watch: {
-    info: async function (newVal) {
-      if (!newVal) return
-      await this.renderMap()
-      this.initDriving()
-    }
+  mounted: async function () {
+    await this.renderMap()
+    this.initDriving()
   }
 }
 </script>

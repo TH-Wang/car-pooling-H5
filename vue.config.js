@@ -7,7 +7,12 @@ module.exports = {
       patterns: [
         path.resolve(__dirname, 'src/assets/scss/vars.scss')
       ]
-    }
+    },
+    'babel-plugin-import': ['import', {
+      libraryName: 'vant',
+      libraryDirectory: 'es',
+      style: true
+    }, 'vant']
   },
   css: {
     sourceMap: true

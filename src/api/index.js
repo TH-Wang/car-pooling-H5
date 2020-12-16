@@ -40,6 +40,7 @@ export const getOrdering = order.getOrdering
 export const queryByOrderId = order.queryByOrderId
 export const confirmOrder = order.confirmOrder
 export const getPublishDetail = order.getPublishDetail
+export const getPassengerPublishDetail = order.getPassengerPublishDetail
 export const driverOrder = order.driverOrder
 export const appointmentPassenger = order.appointmentPassenger
 

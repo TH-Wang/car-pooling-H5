@@ -7,7 +7,10 @@
       fixed
       placeholder
       @click-left="$router.go(-1)"
-    />
+    ><template #right>
+      <span @click="handleShare">分享</span>
+    </template>
+    </van-nav-bar>
 
     <!-- 顶部 -->
     <order-info-header :record="{
@@ -16,18 +19,12 @@
       state: record.orderState
     }" content-type="state" />
 
-    <!-- 如果没有司机确认 -->
-    <div class="content-card" v-if="!hasReversed">
-      <van-empty description="暂无车主预约"/>
-    </div>
+    <!-- 详情卡片 -->
+    <div class="content-card">
 
-    <!-- 如果有司机确认，则展示司机信息 -->
-    <div v-else>
-      <!-- 详情卡片 -->
-      <div class="content-card">
+      <div v-if="hasReversed">
         <!-- 地图 -->
-        <map-view />
-
+        <map-view :info="record.passPointLis" />
         <!-- 详细信息 -->
         <order-info-field icon-type="user" label="车主" :content="record.userName" />
         <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
@@ -38,22 +35,25 @@
         <order-info-phone :phone="record.mobilePhone"/>
       </div>
 
-      <main-button
-        v-if="record.orderState === 1"
-        color="gray" type="hollow" center
-        @click="showRefund = true"
-      >退订座位</main-button>
-
-      <!-- 温馨提示 -->
-      <order-info-tips v-if="record.orderState === 1" :tips="tips" />
-
-      <!-- 退订弹窗 -->
-      <refund-order-layer
-        :visible="showRefund"
-        @close="showRefund = false"
-        @submit="handleRefund"
-      />
+      <!-- 如果没有司机确认 -->
+      <van-empty v-else description="暂无车主预约"/>
     </div>
+
+    <main-button
+      v-if="record.orderState === 1"
+      color="gray" type="hollow" center
+      @click="showRefund = true"
+    >退订座位</main-button>
+
+    <!-- 温馨提示 -->
+    <order-info-tips v-if="record.orderState === 1" :tips="tips" />
+
+    <!-- 退订弹窗 -->
+    <refund-order-layer
+      :visible="showRefund"
+      @close="showRefund = false"
+      @submit="handleRefund"
+    />
   </div>
 </template>
 
@@ -64,8 +64,7 @@ import { Header, Field, Phone, Tips } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
-import { getLineText } from '@/utils/getLineText'
-import getLngLat from '@/utils/getLngLat'
+import { getPointText } from '@/utils/getLineText'
 
 export default {
   components: {
@@ -81,8 +80,7 @@ export default {
     orderId: '',
     record: {},
     stateMark: '',
-    showRefund: false,
-    lnglat: null
+    showRefund: false
   }),
   computed: {
     // 判断是否有车主预约
@@ -97,7 +95,7 @@ export default {
     },
     // 途径点拼接字符串
     passPointList () {
-      return getLineText(this.record.passPointLis)
+      return getPointText(this.record.passPointLis)
     },
     tips () {
       const insertTime = moment(this.insertTime).add(10, 'minutes').format('MM-DD HH:mm')
@@ -126,13 +124,18 @@ export default {
         this.$toast.success('退订成功！')
         this.$router.go(-1)
       }
+    },
+    // 跳转分享页面
+    handleShare () {
+      // const path = this.hasReversed ? 'driver' : 'customer'
+      const path = 'customer'
+      this.$router.push(`/common/tripshare/${path}?id=${this.orderId}`)
     }
   },
   mounted: async function () {
     const { id } = this.$route.query
     this.orderId = id
     await this.reqInfo()
-    this.lnglat = getLngLat(this.record.passPointList)
   }
 }
 </script>

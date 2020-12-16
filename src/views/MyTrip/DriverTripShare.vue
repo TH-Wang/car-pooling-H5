@@ -14,9 +14,9 @@
 
     <!-- 顶部 -->
     <order-info-header :record="{
-      startAddr: record.startAddr,
-      endAddr: record.endAddr,
-      cost: record.cost
+      startAddr: addrName.startAddr,
+      endAddr: addrName.endAddr,
+      cost: cost
     }" content-type="price" />
 
     <!-- 详情卡片 -->
@@ -31,7 +31,7 @@
       <order-info-field icon-type="remark" label="备注" :content="record.remark || '无'" />
 
       <!-- 地图 -->
-      <map-view :info="lnglat" />
+      <map-view :info="record.passPointList" />
     </div>
 
     <div class="tip">可复制粘贴到任意QQ、微信等拼车群</div>
@@ -52,11 +52,11 @@
 import moment from 'moment'
 // import Clipboard from 'clipboard'
 import { getPublishDetail } from '@/api'
+import { isEmpty } from 'lodash'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
-import { getLineText } from '@/utils/getLineText'
-import getLngLat from '@/utils/getLngLat'
+import { getPointText } from '@/utils/getLineText'
 
 export default {
   components: {
@@ -67,10 +67,9 @@ export default {
   },
   data: () => ({
     orderId: null,
-    record: null,
+    record: {},
     // copyContent: '',
-    copyTarget: null,
-    lnglat: null
+    copyTarget: null
   }),
   computed: {
     startTime () {
@@ -78,10 +77,25 @@ export default {
         ? moment(this.record.startTime).format('MM月DD日 HH:mm')
         : ''
     },
+    // 起止点名称
+    addrName () {
+      if (isEmpty(this.record)) return ''
+      const passPointList = this.record.passPointList
+      return {
+        startAddr: passPointList.find(i => i.type === 1).pointName,
+        endAddr: passPointList.find(i => i.type === 3).pointName
+      }
+    },
+    // A费
+    cost () {
+      if (!this.record) return ''
+      return this.record.cost
+    },
     // 途径点拼接字符串
     passPointList () {
-      return getLineText(this.record.passPointList)
+      return getPointText(this.record.passPointList)
     },
+    // 复制内容
     copyContent () {
       if (!this.record) return ''
       const { startAddr, endAddr, startTime, vehicleType, seatNum, cost, userName, remark } = this.record
@@ -107,16 +121,6 @@ export default {
   created: async function () {
     this.orderId = this.$route.query.id
     await this.handleReq()
-    this.lnglat = getLngLat(this.record.passPointList)
-  },
-  mounted () {
-    // this.copyTarget = new Clipboard('COPY_TARGET')
-    // this.copyTarget.on('success', () => {
-    //   this.$toast('复制成功')
-    // })
-  },
-  beforeDestroy () {
-    // this.copyTarget.destroy()
   }
 }
 </script>

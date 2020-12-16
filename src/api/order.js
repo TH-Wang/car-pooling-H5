@@ -9,6 +9,7 @@ export default {
   queryByOrderId,
   confirmOrder,
   getPublishDetail,
+  getPassengerPublishDetail,
   driverOrder,
   appointmentPassenger
 }
@@ -66,10 +67,19 @@ function confirmOrder (params) {
   })
 }
 
-// 根据id获取拼车单详情
+// 根据id获取司机发布的拼车单详情
 function getPublishDetail (id) {
   return axios({
     url: '/order/getPublishDetail',
+    method: 'POST',
+    params: { id }
+  })
+}
+
+// 查询乘客发布的详情
+function getPassengerPublishDetail (id) {
+  return axios({
+    url: '/order/getPassengerPublishDetail',
     method: 'POST',
     params: { id }
   })

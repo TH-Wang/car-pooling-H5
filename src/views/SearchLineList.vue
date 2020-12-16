@@ -107,6 +107,10 @@ export default {
         queryAllPosition: 1,
         orderType: parseInt(dataSource.orderType) // 1-车主发布 2-乘客发布
       }
+      const parseList = ['startAddrLon', 'startAddrLat', 'endAddrLon', 'endAddrLat']
+      parseList.forEach(item => {
+        if (dataSource[item]) data[item] = parseFloat(dataSource[item])
+      })
       // if (this.dataSource.publishType) {
       //   data.publishType = parseInt(this.dataSource.publishType)
       // }

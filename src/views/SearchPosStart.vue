@@ -137,7 +137,7 @@ export default {
         if (status !== 'complete') {
           this.$toast({
             message: '定位失败，请检查是否打开定位信息后重试',
-            duration: 15000
+            duration: 1500
           })
         } else {
           // 通过经纬度获取位置信息
@@ -153,16 +153,17 @@ export default {
     transInfo (location, position) {
       const { lng, lat } = location
       // 将定位信息显示到地图上
-      const { province, city, district, township } = position.addressComponent
+      const { province, city, district } = position.addressComponent
       const address = position.formattedAddress
       const arr = ['streetNumber', 'street', 'township']
       // 获取地点名称的索引
       let matchName
       for (let i = 0; i < arr.length; i++) {
+        const match = address.match(new RegExp(`(?<=${position.addressComponent[arr[i]]})`))
         if (!(arr[i] in position.addressComponent)) continue
-        if (isEmpty(arr[i])) continue
+        if (isEmpty(arr[i]) || !match) continue
         else {
-          matchName = address.match(new RegExp(`(?<=${position.addressComponent[arr[i]]})`))
+          matchName = match
           break
         }
       }
@@ -170,8 +171,8 @@ export default {
       const name = address.slice(matchName.index)
       const data = {
         pname: province,
-        cityname: city,
-        adname: district + township + '',
+        cityname: city || province,
+        adname: district,
         address: '',
         name,
         location: { lng, lat }

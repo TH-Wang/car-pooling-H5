@@ -65,7 +65,7 @@
     <!-- 地图路线 -->
     <div class="page-title" style="margin-top:.20rem">
       <p>地图路线</p>
-      <map-view style="margin-top:.15rem" :info="lnglat" />
+      <map-view style="margin-top:.15rem" :info="record.passPointList" />
     </div>
 
     <!-- 温馨提示 -->
@@ -80,7 +80,6 @@ import { Header, Tips } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import { getLineText } from '@/utils/getLineText'
 import callPhone from '@/utils/callPhone'
-import getLngLat from '@/utils/getLngLat'
 
 export default {
   components: {
@@ -94,8 +93,7 @@ export default {
     tips: [
       '温馨提示',
       '请在到达目的地后，向乘客<span style="color:#FFCD00">收取分摊费用</span>，平台不代收费用。'
-    ],
-    lnglat: null
+    ]
   }),
   computed: {
     stateMark () {
@@ -143,7 +141,6 @@ export default {
   mounted: async function () {
     this.orderId = this.$route.query.id
     await this.handleReq()
-    this.lnglat = getLngLat(this.record.passPointList)
   }
 }
 </script>

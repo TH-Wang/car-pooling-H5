@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
 import { isEmpty } from 'lodash'
@@ -134,6 +135,15 @@ export default {
     // 父组件提交后调用该方法，清空表单
     clearForm () {
       this.$refs.form.clear()
+    },
+    // 重置时间
+    resetTime () {
+      const nowTime = moment()
+      // const minuteNum = nowTime.get('minute') % 5
+      const decNum = 30 - (nowTime.get('minute') % 5)
+      const time = moment().add('minute', decNum).format('YYYY-MM-DD HH:mm')
+      console.log(decNum, time)
+      this.$refs.form.setValueField('startTime', time)
     },
     // 弹出层关闭
     handlePopupClose () {
