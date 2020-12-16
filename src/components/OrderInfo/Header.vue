@@ -25,6 +25,7 @@
     <!-- 时间余座 -->
     <div v-if="showTimeSeat" class="time-seat">
       <time-seat :time="record.startTime" :seat="record.seatNum" :type="record.type" />
+      <div v-if="showShare" class="share-button" @click="$emit('share')">出行详情</div>
     </div>
   </div>
 </template>
@@ -49,6 +50,11 @@ export default {
     },
     // 是否展示时间余座
     showTimeSeat: {
+      type: Boolean,
+      default: false
+    },
+    // 是否展示跳转分享页面的按钮
+    showShare: {
       type: Boolean,
       default: false
     }
@@ -113,8 +119,8 @@ export default {
     // 订单状态
     .state{
       @extend .absolute;
-      width: 1rem;
-      height: 1rem;
+      width: .6rem;
+      height: .6rem;
       z-index: 5;
     }
 
@@ -141,6 +147,18 @@ export default {
   .time-seat{
     padding: .18rem 0 .16rem 0;
     border-bottom: solid 1px $normal-text;
+    @include flex (space-between, center);
+  }
+
+  // 出行详情按钮
+  .share-button {
+    width: .8rem;
+    height: .3rem;
+    line-height: .3rem;
+    text-align: center;
+    @include font (.14rem, $main-color, bold);
+    border: solid 1px $main-color;
+    border-radius: 4px;
   }
 }
 </style>

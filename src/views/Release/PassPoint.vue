@@ -8,7 +8,7 @@
 
     <!-- 已选择的途径点列表 -->
     <div class="tip-title">已选择途径点</div>
-    <div v-for="(item, index) in release.passPointList" :key="item.id" class="index-cell">
+    <div v-for="(item, index) in addedPointList" :key="item.id" class="index-cell">
       <span>{{index+1}} {{item.name}}</span>
       <van-icon name="cross" color="#DADADA" @click="handleRemovePoint(index)" />
     </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapState } from 'vuex'
 import PlaceSearch from '@/components/PlaceSearch'
 import MainButton from '@/components/MainButton'
 
@@ -43,13 +43,25 @@ export default {
     'main-button': MainButton
   },
   data: () => ({
+    type: 'release',
     searchVisible: false
   }),
   computed: {
-    ...mapState(['release'])
+    ...mapState(['release', 'trip']),
+    // 显示的途径点列表
+    addedPointList () {
+      return this[this.type].passPointList
+    },
+    // commit类型
+    commitType () {
+      switch (this.type) {
+        case 'release': return 'updateReleasePassPoint'
+        case 'trip': return 'updateTripPassPoint'
+        default: return 'updateReleasePassPoint'
+      }
+    }
   },
   methods: {
-    ...mapMutations(['updatePassPoint']),
     // 打开搜索面板
     handleOpenSearch () {
       this.$refs.placeSearch.clear()
@@ -57,17 +69,20 @@ export default {
     },
     // 添加途径点
     handleAddPoint (record) {
-      const added = this.release.passPointList.find(i => i.id === record.id)
+      const added = this[this.type].passPointList.find(i => i.id === record.id)
       if (added) {
         this.$toast({ message: '该地点已添加' })
         return
       }
-      this.updatePassPoint({ type: 'add', record })
+      this.$store.commit(this.commitType, { type: 'add', record })
     },
     // 删除途径点
     handleRemovePoint (index) {
-      this.updatePassPoint({ type: 'remove', index })
+      this.$store.commit(this.commitType, { type: 'remove', index })
     }
+  },
+  created () {
+    this.type = this.$route.query.type
   }
 }
 </script>

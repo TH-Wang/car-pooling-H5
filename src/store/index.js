@@ -10,6 +10,7 @@ import release from './release'
 import history from './history'
 import filters from './filters'
 import map from './map'
+import trip from './trip'
 
 Vue.use(Vuex)
 
@@ -30,6 +31,7 @@ export default new Vuex.Store({
     release,
     history,
     filters,
-    map
+    map,
+    trip
   }
 })

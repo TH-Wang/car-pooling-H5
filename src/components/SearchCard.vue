@@ -16,7 +16,7 @@
         <!-- 起始点 -->
         <div class="address-bar dotted-border">
           <input
-            :value="isCommon ? search.startAddr.name : release.startAddr.name"
+            :value="addrValue.startAddr.name"
             @input="handleChange($event, 'startAddr')"
             @click="handleLinkPos($event, 'start')"
             class="address-bar-input"
@@ -34,7 +34,7 @@
         <!-- 目的地 -->
         <div class="address-bar">
           <input
-            :value="isCommon ? search.endAddr.name : release.endAddr.name"
+            :value="addrValue.endAddr.name"
             @input="handleChange($event, 'endAddr')"
             @click="handleLinkPos($event, 'end')"
             class="address-bar-input"
@@ -84,7 +84,7 @@ export default {
     event: 'change'
   },
   props: {
-    // 搜索类型 common: 公用，release: 发布页面
+    // 搜索类型 common: 公用，release: 发布页面，trip: 修改行程
     searchType: {
       type: String,
       default: 'common'
@@ -126,9 +126,13 @@ export default {
     }
   },
   computed: {
-    ...mapState(['search', 'release']),
+    ...mapState(['search', 'release', 'trip']),
     defaultType () {
       return this.type === 'default'
+    },
+    // 输入框中的值
+    addrValue () {
+      return this.isCommon ? this.search : this[this.searchType]
     },
     // 是否是公用类型
     isCommon () {
@@ -163,11 +167,17 @@ export default {
     },
     // 切换起止点位置
     handleSwitchPos () {
-      const commitType = this.isCommon ? 'switchSearchAddr' : 'switchReleaseAddr'
+      let commitType
+      switch (this.searchType) {
+        case 'common': commitType = 'switchSearchAddr'; break
+        case 'release': commitType = 'switchReleaseAddr'; break
+        case 'trip': commitType = 'switchTripAddr'; break
+        default: commitType = 'switchSearchAddr'; break
+      }
       this.$store.commit(commitType)
     },
     validate () {
-      const value = this.isCommon ? this.search : this.release
+      const value = this.isCommon ? this.search : this[this.searchType]
       const { startAddr, endAddr } = value
       if (isEmpty(startAddr) || isEmpty(startAddr.name)) {
         this.$toast({ message: '请先输入您的位置' })

@@ -72,7 +72,7 @@ export default {
     'main-button': MainButton
   },
   data: () => ({
-    // 页面类型 common: 公用，release: 发布页面使用
+    // 页面类型 common: 公用，release: 发布页面使用，trip: 修改行程页面
     type: 'common',
     // 地图加载器
     AMap: null,
@@ -96,7 +96,7 @@ export default {
     searchEmpty: false
   }),
   computed: {
-    ...mapState(['search', 'release', 'history']),
+    ...mapState(['search', 'release', 'trip', 'history']),
     // 判断用户是否什么都没选
     isNothing () {
       return isEmpty(this.position) || isEmpty(this.searchValue) || isEmpty(this.position.name)
@@ -134,33 +134,50 @@ export default {
     // 获取用户当前位置
     handleGetPosition () {
       this.geolocation.getCurrentPosition(async (status, result) => {
-        if (status !== 'complete') this.$toast('定位失败，请稍后重试')
-        else {
+        if (status !== 'complete') {
+          this.$toast({
+            message: '定位失败，请检查是否打开定位信息后重试',
+            duration: 15000
+          })
+        } else {
           // 通过经纬度获取位置信息
           const { lng, lat } = result.position
           const position = await getPosition(this.AMap, [lng, lat])
-
-          // 将定位信息显示到地图上
-          const { province, city, district, street } = position.addressComponent
-          const address = position.formattedAddress
-          const matchName = address.match(new RegExp(`(?<=${street})`))
-          if (matchName) {
-            var name = address.slice(matchName.index)
-            const data = {
-              pname: province,
-              cityname: city,
-              adname: district,
-              address: '',
-              name,
-              location: { lng, lat }
-            }
-            console.log(data)
-            this.handleSelect(null, data)
-          } else {
-            this.$toast('位置信息获取失败，请稍后重试')
-          }
+          console.log(position)
+          const data = this.transInfo(result.position, position)
+          this.handleSelect(null, data)
         }
       })
+    },
+    // 转换位置信息对象
+    transInfo (location, position) {
+      const { lng, lat } = location
+      // 将定位信息显示到地图上
+      const { province, city, district, township } = position.addressComponent
+      const address = position.formattedAddress
+      const arr = ['streetNumber', 'street', 'township']
+      // 获取地点名称的索引
+      let matchName
+      for (let i = 0; i < arr.length; i++) {
+        if (!(arr[i] in position.addressComponent)) continue
+        if (isEmpty(arr[i])) continue
+        else {
+          matchName = address.match(new RegExp(`(?<=${position.addressComponent[arr[i]]})`))
+          break
+        }
+      }
+      // 截取地点名称
+      const name = address.slice(matchName.index)
+      const data = {
+        pname: province,
+        cityname: city,
+        adname: district + township + '',
+        address: '',
+        name,
+        location: { lng, lat }
+      }
+      console.log(data)
+      return data
     },
     // 监听用户输入
     handleSearch: debounce(function (e) {
@@ -247,11 +264,14 @@ export default {
       if (this.isNothing) return
       const position = this.position
       const data = { type: 'startAddr', value: position }
-      if (this.type === 'common') {
-        this.$store.commit('setSearchAddr', data)
-      } else if (this.type === 'release') {
-        this.$store.commit('setReleaseAddr', data)
+      let commitType
+      switch (this.type) {
+        case 'common': commitType = 'setSearchAddr'; break
+        case 'release': commitType = 'setReleaseAddr'; break
+        case 'trip': commitType = 'setTripAddr'; break
+        default: commitType = 'setSearchAddr'; break
       }
+      this.$store.commit(commitType, data)
       this.$router.go(-1)
     },
     // 处理地图拖动事件

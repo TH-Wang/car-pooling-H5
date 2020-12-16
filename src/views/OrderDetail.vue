@@ -29,7 +29,7 @@
       <order-info-field icon-type="remark" label="备注" :content="record.remark" />
 
       <!-- 地图 -->
-      <map-view />
+      <map-view :info="record.passPointList" />
     </div>
 
     <!-- 底部按钮组 -->
@@ -52,7 +52,8 @@ import { getPublishDetail } from '@/api'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
-import { getLineText } from '@/utils/getLineText'
+import { getPointText } from '@/utils/getLineText'
+import getLngLat from '@/utils/getLngLat'
 
 export default {
   components: {
@@ -67,9 +68,10 @@ export default {
       userName: '',
       vehicleType: '',
       seatNum: 0,
-      passPointLis: []
+      passPointList: []
     },
-    headerRecord: {}
+    headerRecord: {},
+    lnglat: null
   }),
   computed: {
     startTime () {
@@ -77,7 +79,7 @@ export default {
     },
     // 途径点拼接字符串
     passPointList () {
-      return getLineText(this.record.passPointList)
+      return getPointText(this.record.passPointList)
     }
   },
   methods: {
@@ -94,13 +96,15 @@ export default {
       this.$router.push({ path: '/common/reserve', query: { id: this.record.pprId } })
     }
   },
-  created () {
+  created: async function () {
     this.orderId = this.$route.query.id
-    this.handleRequest()
+    await this.handleRequest()
+    this.lnglat = getLngLat(this.record.passPointList)
   },
-  activated () {
+  activated: async function () {
     this.orderId = this.$route.query.id
-    this.handleRequest()
+    await this.handleRequest()
+    this.lnglat = getLngLat(this.record.passPointList)
   }
 }
 </script>

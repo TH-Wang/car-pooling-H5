@@ -18,7 +18,7 @@ export default {
       state.startAddr = cloneDeep(state.endAddr)
       state.endAddr = cloneDeep(tmp)
     },
-    updatePassPoint (state, { type, record, index }) {
+    updateReleasePassPoint (state, { type, record, index }) {
       if (type === 'add') {
         state.passPointList.push(record)
       } else if (type === 'remove') {

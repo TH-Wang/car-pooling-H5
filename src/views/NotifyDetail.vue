@@ -12,7 +12,7 @@
     <!-- 详情卡片 -->
     <div class="content-card" style="margin-top: .20rem">
       <!-- 地图 -->
-      <map-view />
+      <map-view :info="lnglat" />
 
       <!-- 预约的车主信息 -->
       <!-- <div v-if="identity === 0"> -->
@@ -62,6 +62,7 @@ import { Field, Phone, Tips } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
+import getLngLat from '@/utils/getLngLat'
 
 export default {
   components: {
@@ -88,7 +89,8 @@ export default {
       ['car', '出发地点', 'startAddr'],
       ['car', '到达地点', 'endAddr'],
       ['remark', '备注', 'remark']
-    ]
+    ],
+    lnglat: null
   }),
   computed: {
     ...mapGetters(['identity']),
@@ -118,6 +120,7 @@ export default {
     const orderId = this.$route.query.orderId
     const res = await queryByOrderId(orderId)
     this.record = res.data.data
+    this.lnglat = getLngLat(this.record.passPointList)
   }
 }
 </script>

@@ -337,6 +337,13 @@ const routes = [
           /* webpackChunkName: "MyCustInfo" */ '@/views/MyTrip/MyCustInfo.vue'
         )
       },
+      { // 车主修改行程
+        path: '/common/trip/edit',
+        name: 'EditTrip',
+        component: () => import(
+          /* webpackChunkName: "EditTrip" */ '@/views/Release/EditTrip.vue'
+        )
+      },
       { // 车主分享行程信息
         path: '/common/tripshare/driver',
         name: 'DriverTripShare',

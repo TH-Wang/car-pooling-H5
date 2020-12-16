@@ -240,7 +240,7 @@ export default {
     },
     // 打开输入路线的对话框
     handleOpenLine () {
-      this.$router.push('/common/passpoint')
+      this.$router.push('/common/passpoint?type=release')
     },
     // 改变途径点
     handleChangeMiddlePoint () {

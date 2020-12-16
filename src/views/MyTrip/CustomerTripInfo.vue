@@ -65,6 +65,7 @@ import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
 import { getLineText } from '@/utils/getLineText'
+import getLngLat from '@/utils/getLngLat'
 
 export default {
   components: {
@@ -80,7 +81,8 @@ export default {
     orderId: '',
     record: {},
     stateMark: '',
-    showRefund: false
+    showRefund: false,
+    lnglat: null
   }),
   computed: {
     // 判断是否有车主预约
@@ -126,10 +128,11 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted: async function () {
     const { id } = this.$route.query
     this.orderId = id
-    this.reqInfo()
+    await this.reqInfo()
+    this.lnglat = getLngLat(this.record.passPointList)
   }
 }
 </script>

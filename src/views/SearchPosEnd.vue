@@ -65,7 +65,7 @@ export default {
     searchEmpty: false
   }),
   computed: {
-    ...mapState(['search', 'release', 'history']),
+    ...mapState(['search', 'release', 'trip', 'history']),
     valueIsEmpty () {
       return isEmpty(this.searchValue)
     }
@@ -121,11 +121,14 @@ export default {
       this.handleAddSearchHistory(record)
       // 将位置信息记录到store中
       const data = { type: 'endAddr', value: record }
-      if (this.type === 'common') {
-        this.$store.commit('setSearchAddr', data)
-      } else if (this.type === 'release') {
-        this.$store.commit('setReleaseAddr', data)
+      let commitType
+      switch (this.type) {
+        case 'common': commitType = 'setSearchAddr'; break
+        case 'release': commitType = 'setReleaseAddr'; break
+        case 'trip': commitType = 'setTripAddr'; break
+        default: commitType = 'setSearchAddr'; break
       }
+      this.$store.commit(commitType, data)
       setTimeout(() => {
         this.$router.go(-1)
       }, 150)

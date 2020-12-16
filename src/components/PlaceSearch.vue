@@ -66,7 +66,7 @@ export default {
     searchEmpty: false
   }),
   computed: {
-    ...mapState(['search', 'release', 'history']),
+    ...mapState(['search', 'release', 'trip', 'history']),
     valueIsEmpty () {
       return isEmpty(this.searchValue)
     }

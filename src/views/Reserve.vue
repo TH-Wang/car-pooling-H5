@@ -90,7 +90,7 @@
     </div>
 
     <!-- 路线地图 -->
-    <map-view />
+    <!-- <map-view /> -->
   </div>
 </template>
 
@@ -100,7 +100,7 @@ import { Checkbox } from 'vant'
 import EventBus from '@/utils/eventBus'
 import { commitOrder } from '@/api'
 import { Form, Input } from '@/components/Form'
-import MapView from '@/components/MapView'
+// import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 
 export default {
@@ -109,8 +109,8 @@ export default {
     'van-checkbox': Checkbox,
     'custom-form': Form,
     'custom-input': Input,
-    'main-button': MainButton,
-    'map-view': MapView
+    'main-button': MainButton
+    // 'map-view': MapView
   },
   data: () => ({
     agree: true,

@@ -32,6 +32,6 @@ export default {
   }
 }
 .narrow{
-  max-width: 2.4rem;
+  max-width: 2.8rem;
 }
 </style>

@@ -31,7 +31,7 @@
       <order-info-field icon-type="remark" label="备注" :content="record.remark || '无'" />
 
       <!-- 地图 -->
-      <map-view />
+      <map-view :info="lnglat" />
     </div>
 
     <div class="tip">可复制粘贴到任意QQ、微信等拼车群</div>
@@ -51,11 +51,12 @@
 <script>
 import moment from 'moment'
 // import Clipboard from 'clipboard'
-import { queryByOrderId } from '@/api'
+import { getPublishDetail } from '@/api'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import { getLineText } from '@/utils/getLineText'
+import getLngLat from '@/utils/getLngLat'
 
 export default {
   components: {
@@ -66,9 +67,10 @@ export default {
   },
   data: () => ({
     orderId: null,
-    record: {},
+    record: null,
     // copyContent: '',
-    copyTarget: null
+    copyTarget: null,
+    lnglat: null
   }),
   computed: {
     startTime () {
@@ -81,21 +83,19 @@ export default {
       return getLineText(this.record.passPointList)
     },
     copyContent () {
-      return '【起止地】重庆 - 忠县\n【时间】12月4日 15:00\n【路线】重庆 - 汽车站 - 忠县\n【车型】奥迪Q7\n【余座】1'
+      if (!this.record) return ''
+      const { startAddr, endAddr, startTime, vehicleType, seatNum, cost, userName, remark } = this.record
+      const formatTime = moment(startTime).format('MM月DD日 HH:mm')
+      return `【起止地】${startAddr} - ${endAddr}\n【时间】${formatTime}\n【路线】${this.passPointList}\n【车型】${vehicleType || ''}\n【余座】${seatNum}\n【A费】${cost}元/人\n【车主】${userName}\n【备注】${remark}`
     }
   },
   methods: {
     async handleReq () {
-      const res = await queryByOrderId()
+      const res = await getPublishDetail(this.orderId)
       this.record = res.data.data
-    },
-    // 复制内容
-    handleCopy () {
-
     },
     copyToClip () {
       const aux = document.createElement('textarea')
-      // aux.setAttribute('value', this.copyContent)
       aux.value = this.copyContent
       document.body.appendChild(aux)
       aux.select()
@@ -104,8 +104,10 @@ export default {
       this.$toast.success('复制成功')
     }
   },
-  created () {
+  created: async function () {
     this.orderId = this.$route.query.id
+    await this.handleReq()
+    this.lnglat = getLngLat(this.record.passPointList)
   },
   mounted () {
     // this.copyTarget = new Clipboard('COPY_TARGET')
