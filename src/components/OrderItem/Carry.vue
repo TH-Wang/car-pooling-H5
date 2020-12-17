@@ -146,13 +146,13 @@ export default {
         display: flex;
         align-items: center;
         color: $main-text;
-        font-size: .16rem;
+        font-size: .15rem;
         font-weight: bold;
         text-align: left;
 
         .arrow{
           width: .18rem;
-          margin: 0 .10rem;
+          margin: 0 .05rem;
         }
       }
 
@@ -184,7 +184,7 @@ export default {
     // 价格
     .price{
       flex-shrink: 0;
-      margin-left: .20rem;
+      margin-left: .08rem;
       @include font (.24rem, $sub-color, bold);
 
       &-customer{

@@ -149,13 +149,13 @@ export default {
         display: flex;
         align-items: center;
         color: $main-text;
-        font-size: .16rem;
+        font-size: .15rem;
         font-weight: bold;
         text-align: left;
 
         .arrow{
           width: .18rem;
-          margin: 0 .10rem;
+          margin: 0 .05rem;
         }
       }
 
@@ -191,7 +191,7 @@ export default {
       color: $sub-color;
       font-weight: bold;
       // font-family: PingFangSC-Light, sans-serif;
-      margin-left: .20rem;
+      margin-left: .08rem;
 
       // 人民币符号
       span{

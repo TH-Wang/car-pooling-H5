@@ -13,8 +13,9 @@
       <div class="trip-detail">
         <time-seat
           :time="record.startTime"
-          :seat="record.seatNum || record.remainSeat"
+          :seat="record.orderNum || record.remainSeat"
           :state="orderState"
+          :seat-text="record.orderNum ? '人数' : '余座'"
         />
       </div>
     </div>

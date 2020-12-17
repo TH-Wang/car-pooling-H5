@@ -137,7 +137,11 @@ export default {
       const data = {
         ...values,
         startAddr: startAddr.name,
+        startLon: startAddr.location.lng,
+        startLat: startAddr.location.lat,
         endAddr: endAddr.name,
+        endLon: endAddr.location.lng,
+        endLat: endAddr.location.lat,
         orderNum: parseInt(values.orderNum),
         pprIdCar: pprId,
         status: 5

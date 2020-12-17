@@ -98,9 +98,9 @@ export default {
     // 复制内容
     copyContent () {
       if (!this.record) return ''
-      const { startAddr, endAddr, startTime, vehicleType, seatNum, cost, userName, remark } = this.record
+      const { startTime, vehicleType, seatNum, cost, userName, remark } = this.record
       const formatTime = moment(startTime).format('MM月DD日 HH:mm')
-      return `【起止地】${startAddr} - ${endAddr}\n【时间】${formatTime}\n【路线】${this.passPointList}\n【车型】${vehicleType || ''}\n【余座】${seatNum}\n【A费】${cost}元/人\n【车主】${userName}\n【备注】${remark}`
+      return `【起止地】${this.addrName.startAddr} - ${this.addrName.endAddr}\n【时间】${formatTime}\n【路线】${this.passPointList}\n【车型】${vehicleType || ''}\n【余座】${seatNum}\n【A费】${cost}元/人\n【车主】${userName}\n【备注】${remark}`
     }
   },
   methods: {

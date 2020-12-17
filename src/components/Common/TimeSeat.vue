@@ -4,7 +4,7 @@
     <div>{{time}}</div>
     <span class="line">|</span>
     <img src="@/assets/icons/order/seat.png" alt="">
-    <div>余座 <span :class="['seatNum', seatClass]">{{seat}}</span></div>
+    <div>{{seatText}} <span :class="['seatNum', seatClass]">{{seat}}</span></div>
   </div>
 </template>
 
@@ -21,6 +21,10 @@ export default {
       1: 'doing',
       2: 'cancel',
       3: 'finish'
+    },
+    seatText: {
+      type: String,
+      default: '余座'
     }
   },
   computed: {

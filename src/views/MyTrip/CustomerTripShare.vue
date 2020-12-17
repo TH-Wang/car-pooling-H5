@@ -29,7 +29,7 @@
       <order-info-field icon-type="remark" label="备注" :content="record.remark || '无'" />
 
       <!-- 地图 -->
-      <map-view />
+      <map-view :info="record.passPointList" />
     </div>
 
     <div class="tip">可复制粘贴到任意QQ、微信等拼车群</div>

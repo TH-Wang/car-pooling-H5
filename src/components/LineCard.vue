@@ -9,9 +9,9 @@
 
     <!-- 常用tag -->
     <img
-      v-if="record.common"
+      v-if="record.isUsd"
       class="common-tag"
-      src="../assets/icons/common-tag.png"
+      src="@/assets/icons/common-tag.png"
       alt=""
     >
   </div>

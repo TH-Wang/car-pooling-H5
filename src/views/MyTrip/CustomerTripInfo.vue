@@ -8,7 +8,7 @@
       placeholder
       @click-left="$router.go(-1)"
     ><template #right>
-      <span @click="handleShare">分享</span>
+      <strong @click="handleShare" style="color:#FFCD00">分享行程</strong>
     </template>
     </van-nav-bar>
 
@@ -50,7 +50,7 @@
 
     <!-- 退订弹窗 -->
     <refund-order-layer
-      :visible="showRefund"
+      v-model="showRefund"
       @close="showRefund = false"
       @submit="handleRefund"
     />
@@ -91,7 +91,7 @@ export default {
     },
     startTime () {
       if (!this.record.startTime) return ''
-      return moment(this.record.startTime).format('MM-DD HH:mm')
+      return moment(this.record.startTime).format('MM月DD日 HH:mm')
     },
     // 途径点拼接字符串
     passPointList () {

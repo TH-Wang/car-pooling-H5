@@ -67,9 +67,6 @@ export default {
     notifyTime (time) {
       return moment(time).format('YYYY-MM-DD HH:mm')
     }
-  },
-  activated () {
-    console.log('Notify activated')
   }
 }
 </script>

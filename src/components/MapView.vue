@@ -11,6 +11,25 @@ import { mapMutations, mapState } from 'vuex'
 import { isEmpty } from 'lodash'
 import mapLoader from '@/utils/mapLoader'
 
+// 途径点标记样式配置
+const markerStyleConfig = {
+  anchor: 'bottom-center',
+  offset: [0, -2]
+}
+
+// 路线样式配置
+const lineStyleConfig = {
+  isOutline: true,
+  outlineColor: '#ffeeee',
+  borderWeight: 2,
+  strokeWeight: 6,
+  strokeOpacity: 0.8,
+  strokeColor: '#0091ff',
+  // lineJoin: 'round',
+  lineCap: 'round',
+  showDir: true
+}
+
 export default {
   props: {
     info: {
@@ -105,22 +124,13 @@ export default {
           position: new AMap.LngLat(item.lon, item.lat),
           content: el,
           map: mapView,
-          anchor: 'bottom-center',
-          offset: [0, -2]
+          ...markerStyleConfig
         }))
       })
       // 路线绘制
       const routeLine = new AMap.Polyline({
         path: path,
-        isOutline: true,
-        outlineColor: '#ffeeee',
-        borderWeight: 2,
-        strokeWeight: 6,
-        strokeOpacity: 0.8,
-        strokeColor: '#0091ff',
-        lineJoin: 'round',
-        lineCap: 'round',
-        showDir: true
+        ...lineStyleConfig
       })
       list.forEach((item) => {
         this.mapView.add(item)
@@ -141,8 +151,18 @@ export default {
     }
   },
   mounted: async function () {
+    if (!this.info || this.info.length === 0) return
+    console.log('mounted触发')
     await this.renderMap()
     this.initDriving()
+  },
+  watch: {
+    info: async function (newVal) {
+      if (!newVal) return
+      console.log('watch触发')
+      await this.renderMap()
+      this.initDriving()
+    }
   }
 }
 </script>

@@ -15,7 +15,11 @@
     </van-nav-bar>
 
     <!-- 顶部基本信息 -->
-    <order-info-header :record="record" content-type="price" />
+    <order-info-header :record="{
+      startAddr: addrName.startAddr,
+      endAddr: addrName.endAddr,
+      cost: record.cost
+    }" content-type="price" />
 
     <!-- 详情卡片 -->
     <div class="content-card">
@@ -48,7 +52,7 @@
 <script>
 import moment from 'moment'
 import { getPublishDetail } from '@/api'
-// import { isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
@@ -64,16 +68,20 @@ export default {
   },
   data: () => ({
     orderId: null,
-    record: {
-      userName: '',
-      vehicleType: '',
-      seatNum: 0,
-      passPointList: []
-    },
+    record: {},
     headerRecord: {},
     lnglat: null
   }),
   computed: {
+    // 起止点名称
+    addrName () {
+      if (isEmpty(this.record)) return ''
+      const passPointList = this.record.passPointList
+      return {
+        startAddr: passPointList.find(i => i.type === 1).pointName,
+        endAddr: passPointList.find(i => i.type === 3).pointName
+      }
+    },
     startTime () {
       return moment(this.record.startTime).format('MM月DD日 HH:mm')
     },

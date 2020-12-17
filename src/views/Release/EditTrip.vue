@@ -35,7 +35,6 @@
         name="publishType"
         label="发布类型"
         placeholder="请选择发布类型"
-        :default-index="1"
         :columns="orderMenu"
       />
       <!-- 详细表单项 -->
@@ -61,12 +60,14 @@
 </template>
 
 <script>
-import { userCarDetail, getPublishDetail } from '@/api'
+import { userCarDetail, getPublishDetail, updatePublish, noSeatNum } from '@/api'
+import { cloneDeep } from 'lodash'
 import { Form, Item, Picker, Textarea } from '@/components/Form'
 import SearchCard from '@/components/SearchCard'
 import MainButton from '@/components/MainButton'
 import { getDriverOpts } from './config'
 import { mapState } from 'vuex'
+import getLineData from '@/utils/transPos'
 
 export default {
   name: 'EditTrip',
@@ -113,7 +114,11 @@ export default {
     // 获取该订单信息
     async getOrderInfo () {
       const res = await getPublishDetail(this.orderId)
-      this.setFormValues(res.data.data)
+      const publishType = res.data.data.publishType
+      this.setFormValues({
+        ...res.data.data,
+        publishType: publishType >= 1 && publishType <= 3 ? 1 : publishType
+      })
     },
     // 获取所有的车辆信息
     async getCarInfo () {
@@ -143,20 +148,62 @@ export default {
           message: '设为无座仅将信息从拼车列表撤下，<strong style="color:#FFCD00">不影响已预订</strong> 的乘客。确定设为无座？',
           allowHtml: true
         })
-        this.$toast.success({ message: '设置成功' })
-        this.$router.go(-1)
+        console.log('点击确认')
+        const res = await noSeatNum(this.orderId)
+        if (res.data.status === 200) {
+          this.$toast.success({ message: '设置成功' })
+          this.$router.go(-1)
+        } else {
+          this.$toast.fail({
+            message: res.data.msg
+          })
+        }
       } catch (error) {}
     },
     // 保存行程
-    handleSave () {
-      this.$dialog.alert({
-        title: '提示',
-        message: '本次行程已有乘客预定记录，行程信息不能修改。如需发布新行程，可点击“设为无座”，然后重新“车主发布”'
-      })
+    async handleSave () {
+      // 如果已有乘客预约则提示并拦截修改
+      if (this.pCount > 0) {
+        this.$dialog.alert({
+          title: '提示',
+          message: '本次行程已有乘客预定记录，行程信息不能修改。如需发布新行程，可点击“设为无座”，然后重新“车主发布”'
+        })
+        return
+      }
+      // 否则提交修改信息
+      this.handleSubmit()
+    },
+    // 提交修改
+    async handleSubmit () {
+      const { err, values } = await this.$refs.form.submit()
+      if (err) return
+      const data = cloneDeep(values)
+      // 用户手机号
+      data.mobilePhone = this.user.info.phone
+      // 获取起止点、途径点信息
+      data.passPointList = getLineData(this.trip)
+      // 订单id
+      data.orderId = parseInt(this.orderId)
+      // console.log(data)
+      // 发起请求
+      const res = await updatePublish(data)
+      if (res.data.status === 200) {
+        this.$toast.success('修改成功')
+        this.$router.go(-1)
+      } else {
+        this.$toast.fail({
+          message: res.data.msg
+        })
+      }
     }
   },
   activated: async function () {
-    this.orderId = this.$route.query.id
+    const { id, pCount } = this.$route.query
+    // 如果是同一个订单信息则不再更新页面数据
+    if (this.orderId === id) return
+
+    this.orderId = id
+    this.pCount = pCount
     await this.getCarInfo()
     this.getOrderInfo()
   }

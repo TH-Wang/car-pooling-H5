@@ -8,7 +8,7 @@
       placeholder
       @click-left="$router.go(-1)"
     ><template #right>
-      <span @click="$router.push(`/common/trip/edit?id=${orderId}`)">修改行程</span>
+      <span @click="handleEdit">修改行程</span>
     </template>
     </van-nav-bar>
 
@@ -136,6 +136,15 @@ export default {
         showCancelButton: true
       })
       callPhone(phone)
+    },
+    // 修改行程
+    handleEdit () {
+      const id = this.orderId
+      const pCount = this.record.myPassengerDetailVoList.length
+      this.$router.push({
+        path: '/common/trip/edit',
+        query: { id, pCount }
+      })
     }
   },
   mounted: async function () {

@@ -16,7 +16,7 @@
     <!-- 订单信息 -->
     <div class="content-card" style="margin-top: .20rem">
       <!-- 地图 -->
-      <map-view :info="lnglat" />
+      <map-view :info="record.passPointLis" />
 
       <!-- 详细信息 -->
       <order-info-field icon-type="user" label="车主" :content="record.userName" />
@@ -50,7 +50,6 @@ import Feedback from '@/components/Feedback'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
-import getLngLat from '@/utils/getLngLat'
 
 export default {
   components: {
@@ -66,8 +65,7 @@ export default {
     orderId: null,
     record: { passPointLis: [] },
     refundTime: '',
-    showRefund: false,
-    lnglat: null
+    showRefund: false
   }),
   computed: {
     passPointLis () {
@@ -113,7 +111,6 @@ export default {
   created: async function () {
     this.orderId = this.$route.query.id
     await this.handleRequest()
-    this.lnglat = getLngLat(this.record.passPointList)
     this.refundTime = moment().add(10, 'minutes').format('MM月DD日 HH:mm')
   },
   mounted () {

@@ -49,6 +49,8 @@ export const insertPublish = publish.insertPublish
 export const inesrtPublishPassenger = publish.inesrtPublishPassenger
 export const queryPublish = publish.queryPublish
 export const queryPublishById = publish.queryPublishById
+export const updatePublish = publish.updatePublish
+export const noSeatNum = publish.noSeatNum
 
 // 消息模块
 export const queryUserMessage = message.queryUserMessage

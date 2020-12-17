@@ -1,6 +1,13 @@
 import axios from './http'
 
-export default { insertPublish, inesrtPublishPassenger, queryPublish, queryPublishById }
+export default {
+  insertPublish,
+  inesrtPublishPassenger,
+  queryPublish,
+  queryPublishById,
+  updatePublish,
+  noSeatNum
+}
 
 // 车主发布订单
 function insertPublish (publish) {
@@ -21,6 +28,20 @@ function queryPublish () {
 function queryPublishById (id) {
   return axios({
     url: '/publish/queryPublish',
+    method: 'POST',
+    params: { id }
+  })
+}
+
+// 车主修改发布的信息（修改行程）
+function updatePublish (data) {
+  return axios.post('/publish/updatePublish', data)
+}
+
+// 设为无座
+function noSeatNum (id) {
+  return axios({
+    url: '/publish/noSeatNum',
     method: 'POST',
     params: { id }
   })
