@@ -183,7 +183,7 @@ export default {
       // 获取起止点、途径点信息
       data.passPointList = getLineData(this.trip)
       // 订单id
-      data.orderId = parseInt(this.orderId)
+      data.id = parseInt(this.orderId)
       // console.log(data)
       // 发起请求
       const res = await updatePublish(data)

@@ -25,7 +25,7 @@ const lineStyleConfig = {
   strokeWeight: 6,
   strokeOpacity: 0.8,
   strokeColor: '#0091ff',
-  // lineJoin: 'round',
+  lineJoin: 'round',
   lineCap: 'round',
   showDir: true
 }
@@ -117,7 +117,7 @@ export default {
         // 标记对象dom元素
         const el = document.createElement('div')
         el.className = 'marker'
-        el.style.width = item.pointName.length * 12 + 15 + 'px'
+        el.style.width = item.pointName.length * 14 + 15 + 'px'
         el.innerHTML = item.pointName
         // 添加的列表中
         list.push(new AMap.Marker({

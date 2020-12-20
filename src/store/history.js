@@ -1,11 +1,15 @@
 // 存储用户操作的历史记录，并与localStorage保持同步
 const storageType = {
   position: 'searchPos',
-  passPoint: 'passList'
+  passPoint: 'passList',
+  driverPublish: 'driPub',
+  customerPublish: 'cusPub'
 }
 
 const localPosition = JSON.parse(localStorage.getItem(storageType.position))
 const localPassPoint = JSON.parse(localStorage.getItem(storageType.passPoint))
+const localDriPub = JSON.parse(localStorage.getItem(storageType.driverPublish))
+const localCusPub = JSON.parse(localStorage.getItem(storageType.customerPublish))
 
 // 存储容量
 const limit = 15
@@ -13,7 +17,9 @@ const limit = 15
 export default {
   state: {
     position: localPosition || [],
-    passPoint: localPassPoint || []
+    passPoint: localPassPoint || [],
+    driverPublish: localDriPub || {},
+    customerPublish: localCusPub || {}
   },
 
   mutations: {
@@ -51,6 +57,16 @@ export default {
       }
       state.passPoint.unshift(data)
       localStorage.setItem(storageType.passPoint, JSON.stringify(state.passPoint))
+    },
+    // 存储车主发布的信息
+    setDriverPublish (state, data) {
+      state.driverPublish = data
+      localStorage.setItem(storageType.driverPublish, JSON.stringify(data))
+    },
+    // 存储乘客发布的信息
+    setCustomerPublish (state, data) {
+      state.customerPublish = data
+      localStorage.setItem(storageType.customerPublish, JSON.stringify(data))
     }
   }
 }

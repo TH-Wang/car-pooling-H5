@@ -31,8 +31,8 @@
 
     <!-- 搜索卡片 -->
     <search-card
-      :buttonColor="buttonColor"
-      :buttonText="buttonText"
+      buttonColor="yellow"
+      buttonText="寻找车主"
       useStore
       @search="handleSearchOrder"
     />
@@ -65,7 +65,7 @@
       class="list-container"
     >
       <!-- <home-order :list="list" @link="handleLinkDetail" @reserve="handleLinkReserve" /> -->
-      <work-order :list="list" :type="query.workType"  />
+      <work-order :list="list" type="carpool"  />
     </van-list>
 
   </div>
@@ -75,7 +75,7 @@
 import { mapGetters, mapState } from 'vuex'
 import { NavBar, Icon, List } from 'vant'
 import { isEmpty, cloneDeep } from 'lodash'
-import { getCar, queryPassengerOrders } from '@/api'
+import { getCar } from '@/api'
 import EventBus from '@/utils/eventBus'
 import { OrderFilter } from '@/components/Filter/index.js'
 import SearchCard from '@/components/SearchCard'
@@ -118,22 +118,25 @@ export default {
     },
     // 搜索路线时传递的参数
     query () {
-      const identity = this.identity
-      return identity === 0
-        ? { workType: 'carpool', orderType: 1, publishType: 2 }
-        : { workType: 'pending', showAll: 0 }
+      // const identity = this.identity
+      // return identity === 0
+      //   ? { workType: 'carpool', orderType: 1, publishType: 2 }
+      //   : { workType: 'pending', showAll: 0 }
+      return { workType: 'carpool', orderType: 1, publishType: 2 }
     }
   },
   methods: {
-    reqApi (data) {
-      return this.identity === 0 ? getCar(data) : queryPassengerOrders(data)
-    },
+    // reqApi (data) {
+    //   return this.identity === 0 ? getCar(data) : queryPassengerOrders(data)
+    // },
+    reqApi: getCar,
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
-      if (this.identity === 1) return { showAll: 0 }
-      // 通过身份判断发布类型，1-车主发布 2-乘客发布
-      const orderType = this.identity === 0 ? 1 : 2
-      return { orderType, publishType: 2 }
+      // if (this.identity === 1) return { showAll: 0 }
+      // // 通过身份判断发布类型，1-车主发布 2-乘客发布
+      // const orderType = this.identity === 0 ? 1 : 2
+      // return { orderType, publishType: 2 }
+      return { orderType: 1, publishType: 2 }
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
@@ -178,9 +181,10 @@ export default {
   },
   created () {
     this.handleListLoad()
-    if (this.identity === 0) {
-      this.handleQuickListLoad()
-    }
+    this.handleQuickListLoad()
+    // if (this.identity === 0) {
+    //   this.handleQuickListLoad()
+    // }
     // 监听首页刷新事件
     EventBus.$on('home-refresh', () => {
       console.log('监听到home-refresh')

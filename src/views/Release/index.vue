@@ -106,9 +106,11 @@ export default {
           this.$toast.fail('发布失败\n请稍后再试')
           return
         }
-        // 6. 通知子组件清空表单
+        // 6. 重置时间未当前时间的半小时后
         this.$refs[type].resetTime()
         // 如果发布成功
+        const commitType = type === 'driver' ? 'setDriverPublish' : 'setCustomerPublish'
+        this.$store.commit(commitType, data)
         this.$toast.success('发布成功')
         this.$router.push(`/common/tripshare/${type}?id=${res.data.data}`)
       } catch (error) {

@@ -115,7 +115,10 @@ export default {
     getRequestDatas () {
       // 车单类型
       const publishType = this.publishType
+      // 当前地区
+      const county = this.position.county.code
       return {
+        county,
         orderType: 1, // 1-车主发布 2-乘客发布
         publishType
       }

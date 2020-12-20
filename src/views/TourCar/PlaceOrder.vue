@@ -115,11 +115,18 @@
         </div>
       </div>
     </van-popup>
+
+    <!-- 支付 -->
+    <!-- <form name="punchout_form" method="post" action="https://openapi.alipay.com/gateway.do?charset=UTF-8&method=alipay.trade.wap.pay&sign=WFqDuBYWUwudDitYN7kBdsup5WaKkWeeAthO0c7kWkTPBLgYvF0khs5B3RUXuLMujBQKankBwEHvlSqQtyp0e5KEatLcohL5qIcJz%2BX8HQALTPfbujKT5tyh1W44PRPhrO5rjBkvKCtVmcimEMI59TB4gOKL4vgrsEt5kklsPlJChANYm6xBb1e%2FO6eBhbtjnLmSa8rkTBi8vzK32ucwcd%2BwAyCpzpdHlTioURQewY0yAWD%2B9ZYy4PjPWMHPjJyapefKzZAn83GmEDM2y%2BV4Rpd1L0t0AYRQ2jEMDy%2FQNfokc%2BwnMdNj3O2eo%2BUl6PcTO92wnX6ofVwGyUSHBmDnMg%3D%3D&notify_url=http%3A%2F%2Fwangtao.utools.club%2Fapi%2Fapp%2Fpay%2FwxRechargeNotify&version=1.0&app_id=2021002115684225&sign_type=RSA2&timestamp=2020-12-20+18%3A23%3A03&alipay_sdk=alipay-sdk-java-dynamicVersionNo&format=JSON">
+      <input type="hidden" name="biz_content" value="{&quot;out_trade_no&quot;:&quot;2020122001392103355&quot;,&quot;product_code&quot;:&quot;QUICK_MSECURITY_PAY&quot;,&quot;subject&quot;:&quot;%E6%B5%8B%E8%AF%95&quot;,&quot;total_amount&quot;:&quot;0.01&quot;}">
+      <input type="submit" value="立即支付" style="display:none" >
+    </form> -->
   </div>
 </template>
 
 <script>
 import { Image, RadioGroup, Radio, Popup } from 'vant'
+// import { isEmpty } from 'lodash'
 import { Form, Field, Timer } from '@/components/Form'
 
 export default {
@@ -161,19 +168,35 @@ export default {
     }
   },
   methods: {
-    handleBuy () {
-      const path = `/common/${this.mode}/feedback/`
-      const suffix = this.payType === 0 ? 'success' : 'fail'
-      this.$router.push(path + suffix)
+    async handleBuy () {
+      // const path = `/common/${this.mode}/feedback/`
+      // const suffix = this.payType === 0 ? 'success' : 'fail'
+      // this.$router.push(path + suffix)
+      // this.$toast.loading({
+      //   message: '支付中',
+      //   duration: 1000000
+      // })
+      // try {
+      //   window.ap.tradePay({
+      //     orderStr: 'alipay_sdk=alipay-sdk-java-dynamicVersionNo&app_id=2021002115684225&biz_content=%7B%22out_trade_no%22%3A%222020122000008980316%22%2C%22product_code%22%3A%22QUICK_MSECURITY_PAY%22%2C%22subject%22%3A%22%25E6%25B5%258B%25E8%25AF%2595%22%2C%22total_amount%22%3A%220.01%22%7D&charset=UTF-8&format=JSON&method=alipay.trade.wap.pay&notify_url=http%3A%2F%2Fwangtao.utools.club%2Fapi%2Fapp%2Fpay%2FwxRechargeNotify&sign=XzZwu6g1%2FJm7%2BVx3PHr6apSF8n1ACndddaNt%2BYXYTq%2FxUVWgNL6guEKhCTusOr5S1lWNY3gAYNY5X%2BgqG7lDteEPqJMBtEVt8cd3c%2FKHumiqkhqUcFxQ0xp97Y6sqYPoBKflaTJs8NvX1I2ZSqqJ6SEVFa7%2BfY%2FeK7Ohe38azoEujD5c%2F93lAVCtWAf4AvHmNLbCespcgCHZog09mvm09XntbPfSX6O7xFxjZ0JVWnECYpTDYbit4K2HgDK6LwzODC86U%2BjCwRv8nCN7Ukgx56U2fLS24hfBRYGwo7rPwsJkjiHA9vomJ0TmBjRm7wfnvqarUCTCPaYCJn6rjvI37g%3D%3D&sign_type=RSA2&timestamp=2020-12-20+19%3A22%3A38&version=1.0'
+      //   }, (res) => {
+      //     this.$dialog.alert({
+      //       message: res.resultCode
+      //     })
+      //     this.$toast.clear()
+      //   })
+      // } catch (error) {
+      //   this.$dialog.alert({ message: error })
+      // }
     }
   },
   created () {
     this.mode = this.$route.query.type
   },
   mounted () {
-    this.$dialog.alert({
-      message: '支付宝支付：跳转购买成功页面，微信支付：跳转购买失败页面'
-    })
+    // this.$dialog.alert({
+    //   message: '支付宝支付：跳转购买成功页面，微信支付：跳转购买失败页面'
+    // })
   }
 }
 </script>

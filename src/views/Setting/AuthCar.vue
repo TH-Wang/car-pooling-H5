@@ -32,7 +32,8 @@
               :options="item"
             />
             <div class="auth-title">请上传车辆行驶证</div>
-            <custom-upload name="carTravelPhoto" description="请上传车辆行驶证" required/>
+            <custom-upload name="carTravelPhotoLeft" description="请上传车辆行驶证左面" required/>
+            <custom-upload name="carTravelPhotoRight" description="请上传车辆行驶证右面" required/>
             <div class="auth-title">车正面照片</div>
             <custom-upload name="carPhoto" description="请上传车正面照片" required/>
           </custom-form>

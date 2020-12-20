@@ -28,6 +28,29 @@
         :key="item.id"
         :options="item"
       />
+      <!-- 是否带物 -->
+      <custom-picker
+        v-if="publishType !== 5 && publishType !== 6"
+        v-model="isTakeGoods"
+        name="isTakeGoods"
+        label="是否带物"
+        placeholder="请选择是否带物"
+        :columns="[{ id: 0, label: '否' }, { id: 1, label: '是' }]"
+      />
+      <custom-field
+        v-if="showTakeGoodsField"
+        name="weight"
+        label="重量"
+        placeholder="请输入重量"
+        :rules="[{required: true}]"
+      />
+      <custom-field
+        v-if="showTakeGoodsField"
+        name="volume"
+        label="体积"
+        placeholder="请输入体积"
+        :rules="[{required: true}]"
+      />
       <!-- 公用的备注表单项 -->
       <custom-textarea
         name="remark"
@@ -94,7 +117,7 @@ import moment from 'moment'
 import { Checkbox } from 'vant'
 import { isEmpty } from 'lodash'
 import { userCarDetail } from '@/api'
-import { Form, Item, Picker, Textarea } from '@/components/Form'
+import { Form, Item, Field, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import ChooseComboLayer from '@/components/Layer/ChooseCombo'
 import { getDriverOpts } from './config'
@@ -104,6 +127,7 @@ export default {
     'van-checkbox': Checkbox,
     'custom-form': Form,
     'custom-item': Item,
+    'custom-field': Field,
     'custom-picker': Picker,
     'custom-textarea': Textarea,
     'main-button': MainButton,
@@ -124,7 +148,11 @@ export default {
     ],
     // 表单列表
     formOptions: {},
+    // 是否带物
+    isTakeGoods: 0,
+    // 是否统一协议
     agreePact: true,
+    // 是否选择套餐
     agreePackage: false,
     // 中间点
     middlePoint: '',
@@ -134,7 +162,7 @@ export default {
     combo: {}
   }),
   computed: {
-    ...mapState(['user', 'release']),
+    ...mapState(['user', 'release', 'history']),
     // 路线拼接
     pointText () {
       if (this.release.passPointList.length === 0) return '点击选择途径点'
@@ -169,6 +197,11 @@ export default {
     // 路线是否为空
     emptyLine () {
       return this.release.passPointList.length === 0 ? 'color:#999' : ''
+    },
+    // 是否显示 [是否带物] 的 [重量] 和 [体积]
+    showTakeGoodsField () {
+      const { publishType, isTakeGoods } = this
+      return publishType !== 5 && publishType !== 6 && isTakeGoods === 1
     },
     // 是否起始点和终止点都显示了
     allInputStartEnd () {
@@ -206,8 +239,10 @@ export default {
         // 发布类型：车主发布
         orderType: 1
       }
-      // 发布类型
-      if (this.publishType === 1) {
+      // 订单类型
+      if (this.isTakeGoods && this.isTakeGoods === 1) {
+        data.publishType = 5
+      } else if (this.publishType === 1) {
         data.publishType = this.judgeType()
       }
       // 数据类型转换
@@ -222,6 +257,8 @@ export default {
       }
       // 如果没有选择套餐
       if (isEmpty(this.combo)) data.setType = 0
+
+      console.log(data)
       // 通知父组件做提交相关操作
       this.$emit('submit', { data, type: 'driver' })
     },
@@ -276,7 +313,13 @@ export default {
     this.getCarInfo()
   },
   mounted () {
-    this.$refs.form.setValueField('line', this.line)
+    // setTimeout(() => {
+    //   const data = this.history.driverPublish
+    //   console.log(data)
+    //   if (!isEmpty(data)) {
+    //     this.$refs.form.setValues(data)
+    //   }
+    // }, 1000)
   },
   watch: {
     agreePackage: function (newVal) {

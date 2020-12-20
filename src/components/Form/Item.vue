@@ -72,6 +72,7 @@ import Timer from './Timer'
 const Area = () => import('./Area')
 
 export default {
+  name: 'custom-item',
   components: {
     'custom-field': Field,
     'custom-textarea': Textarea,

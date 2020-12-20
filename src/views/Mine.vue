@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <!-- 顶部 -->
-    <div class="header">
+    <div class="header" @click="$router.push('/common/setting')">
       <div class="header-info">
         <!-- 头像 -->
         <van-image :src="user.info.headimg" width="40px" height="40px" fit="cover" round/>
@@ -14,7 +14,7 @@
             <van-icon
               class="question"
               name="question-o"
-              @click="$router.push('/common/description?type=credit')"
+              @click.stop="$router.push('/common/description?type=credit')"
             />
           </div>
         </div>
@@ -35,7 +35,7 @@
           :key="index"
           :src="require(`@/assets/icons/navbar/${item.icon}.png`)"
           alt=""
-          @click="$router.push(item.path)"
+          @click.stop="$router.push(item.path)"
         >
       </div>
     </div>

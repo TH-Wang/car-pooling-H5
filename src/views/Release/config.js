@@ -1,7 +1,10 @@
+// 余座选项
+const seatOptions = new Array(6).fill('').map((e, i) => ({ id: i + 1, label: `${i + 1}座` }))
+
 // 共用的车主发布拼车配置生成函数
 const driCarpool = (carConfig) => ([
   {
-    id: '1-2',
+    id: 'startTime',
     type: 'timer',
     name: 'startTime',
     label: '时间',
@@ -9,7 +12,7 @@ const driCarpool = (carConfig) => ([
     clearable: true,
     required: true
   }, {
-    id: '1-3',
+    id: 'vehicleType',
     type: 'picker',
     name: 'vehicleType',
     label: '车型',
@@ -17,42 +20,21 @@ const driCarpool = (carConfig) => ([
     columns: carConfig,
     rules: [{ required: true }]
   }, {
-    id: '1-4',
-    type: 'field',
+    id: 'seatNum',
+    type: 'picker',
     name: 'seatNum',
     label: '余座',
     placeholder: '请输入余座',
-    inputType: 'tel',
-    maxLength: 1,
-    rules: [{ required: true }]
+    columns: seatOptions,
+    required: true
   }, {
-    id: '1-5',
+    id: 'cost',
     type: 'field',
     name: 'cost',
     label: 'A费',
     placeholder: '请设置费用',
     rules: [{ required: true }]
   }
-  // {
-  //   id: '1-6',
-  //   type: 'picker',
-  //   name: 'isTakeGoods',
-  //   label: '是否带物',
-  //   columns: [{ id: 0, label: '否' }, { id: 1, label: '是' }]
-  // // defaultIndex: 0
-  // }, {
-  //   id: '1-7',
-  //   type: 'field',
-  //   name: 'weight',
-  //   label: '重量',
-  //   placeholder: '请输入重量'
-  // }, {
-  //   id: '1-8',
-  //   type: 'field',
-  //   name: 'volume',
-  //   label: '体积',
-  //   placeholder: '请输入体积'
-  // }
 ])
 
 // 车主发布的表单配置项
@@ -61,11 +43,9 @@ export const getDriverOpts = (carConfig = []) => {
   return {
     // 拼车
     1: carpoolList,
-    // 2: carpoolList,
-    // 3: carpoolList,
     // 上下班拼车
     4: [{
-      id: '2-1',
+      id: 'startTime',
       type: 'timer',
       name: 'startTime',
       label: '出发时间',
@@ -73,7 +53,7 @@ export const getDriverOpts = (carConfig = []) => {
       placeholder: '请选择出发时间',
       clearable: true
     }, {
-      id: '2-2',
+      id: 'returnTime',
       type: 'timer',
       name: 'returnTime',
       label: '返程时间',
@@ -81,99 +61,69 @@ export const getDriverOpts = (carConfig = []) => {
       placeholder: '请选择返程时间',
       clearable: true
     },
-    // {
-    //   id: '2-3',
-    //   type: 'field',
-    //   name: 'phone',
-    //   defaultValue: userPhone,
-    //   label: '手机号',
-    //   placeholder: '请输入手机号',
-    //   inputType: 'tel'
-    // },
     {
-      id: '2-4',
+      id: 'vehicleType',
       type: 'picker',
       name: 'vehicleType',
       label: '车型',
       placeholder: '请选择车型',
       columns: carConfig
     }, {
-      id: '2-5',
-      type: 'field',
+      id: 'seatNum',
+      type: 'picker',
       name: 'seatNum',
       label: '余座',
       placeholder: '请输入余座',
-      inputType: 'tel',
-      maxLength: 1
+      columns: seatOptions,
+      required: true
     }, {
-      id: '2-6',
+      id: 'cost',
       type: 'field',
       name: 'cost',
       label: 'A费',
-      placeholder: '请设置费用'
-    }
-    // {
-    //   id: '2-7',
-    //   type: 'field',
-    //   name: 'weight',
-    //   label: '重量',
-    //   placeholder: '请输入重量'
-    // }, {
-    //   id: '2-8',
-    //   type: 'field',
-    //   name: 'volume',
-    //   label: '体积',
-    //   placeholder: '请输入体积'
-    // }
-    ],
+      placeholder: '请设置费用',
+      rules: [{ required: true }]
+    }],
     // 顺路带物
     5: [
-    //   {
-    //   id: '1-1',
-    //   type: 'field',
-    //   name: 'phone',
-    //   defaultValue: userPhone,
-    //   label: '手机号',
-    //   placeholder: '请输入手机号',
-    //   inputType: 'tel'
-    // },
       {
-        id: '3-1',
+        id: 'startTime',
         type: 'timer',
         name: 'startTime',
         label: '时间',
         placeholder: '请选择时间',
         clearable: true
       }, {
-        id: '3-2',
+        id: 'vehicleType',
         type: 'picker',
         name: 'vehicleType',
         label: '车型',
         placeholder: '请选择车型',
         columns: carConfig
       }, {
-        id: '3-3',
+        id: 'weight',
         type: 'field',
         name: 'weight',
         label: '重量',
         placeholder: '请输入重量'
       }, {
-        id: '3-4',
+        id: 'volume',
         type: 'field',
         name: 'volume',
         label: '体积',
         placeholder: '请输入体积'
       }, {
-        id: '3-5',
+        id: 'cost',
         type: 'field',
         name: 'cost',
         label: 'A费',
-        placeholder: '请设置费用'
+        placeholder: '请设置费用',
+        rules: [{ required: true }]
       }
     ],
     // 旅游包车
     6: [{
-      id: '4-1',
+      id: 'startTime',
       type: 'timer',
       name: 'startTime',
       label: '出发时间',
@@ -181,7 +131,7 @@ export const getDriverOpts = (carConfig = []) => {
       placeholder: '请选择出发时间',
       clearable: true
     }, {
-      id: '4-2',
+      id: 'returnTime',
       type: 'timer',
       name: 'returnTime',
       label: '返程时间',
@@ -189,79 +139,68 @@ export const getDriverOpts = (carConfig = []) => {
       placeholder: '请选择返程时间',
       clearable: true
     }, {
-      id: '4-3',
+      id: 'vehicleType',
       type: 'picker',
       name: 'vehicleType',
       label: '车型',
       placeholder: '请选择车型',
       columns: carConfig
     }, {
-      id: '4-4',
-      type: 'field',
+      id: 'seatNum',
+      type: 'picker',
       name: 'seatNum',
       label: '余座',
       placeholder: '请输入余座',
-      inputType: 'tel',
-      maxLength: 1
+      columns: seatOptions,
+      required: true
     }, {
-      id: '4-5',
+      id: 'cost',
       type: 'field',
       name: 'cost',
       label: 'A费',
-      placeholder: '请设置费用'
+      placeholder: '请设置费用',
+      rules: [{ required: true }]
     }]
   }
 }
 
+// 预约人数选项
+const peopleOptions = new Array(6).fill('').map((e, i) => ({ id: i + 1, label: `${i + 1}人` }))
+
 // 共用的乘客拼车配置
 const cusCarpool = [
   {
-    id: '1-2',
+    id: 'passengerStartTime',
     type: 'timer',
     name: 'passengerStartTime',
     label: '时间',
     placeholder: '请选择时间',
     clearable: true
   }, {
-    id: '1-3',
-    type: 'field',
+    id: 'orderNum',
+    type: 'picker',
     name: 'orderNum',
     label: '人数',
-    inputType: 'tel',
-    maxLength: 1,
-    placeholder: '请输入乘坐人数',
-    rules: [{ required: true }]
+    placeholder: '请选择乘坐人数',
+    required: true,
+    columns: peopleOptions
   },
-  // {
-  //   id: '1-4',
-  //   type: 'field',
-  //   name: 'weight',
-  //   label: '重量',
-  //   placeholder: '请输入重量'
-  // }, {
-  //   id: '1-5',
-  //   type: 'field',
-  //   name: 'volume',
-  //   label: '体积',
-  //   placeholder: '请输入体积'
-  // },
   {
-    id: '1-6',
+    id: 'cost',
     type: 'field',
     name: 'cost',
     label: 'A费',
-    placeholder: '请设置费用'
+    placeholder: '请设置费用',
+    rules: [{ required: true }]
   }
 ]
 // 乘客发布的表单配置项
 export const customer = {
   // 拼车
   1: cusCarpool,
-  // 2: cusCarpool,
-  // 3: cusCarpool,
   // 上下班拼车
   4: [{
-    id: '2-1',
+    id: 'passengerStartTime',
     type: 'timer',
     name: 'passengerStartTime',
     label: '出发时间',
@@ -269,7 +208,7 @@ export const customer = {
     placeholder: '请选择出发时间',
     clearable: true
   }, {
-    id: '2-2',
+    id: 'returnTime',
     type: 'timer',
     name: 'returnTime',
     label: '返程时间',
@@ -278,55 +217,54 @@ export const customer = {
     clearable: true
   },
   {
-    id: '2-4',
-    type: 'field',
+    id: 'orderNum',
+    type: 'picker',
     name: 'orderNum',
     label: '人数',
-    inputType: 'tel',
-    maxLength: 1,
-    placeholder: '请输入乘坐人数',
-    rules: [{ required: true }]
+    placeholder: '请选择乘坐人数',
+    required: true,
+    columns: peopleOptions
   }, {
-    id: '2-5',
+    id: 'cost',
     type: 'field',
     name: 'cost',
     label: 'A费',
-    placeholder: '请设置费用'
+    placeholder: '请设置费用',
+    rules: [{ required: true }]
   }],
   // 顺路带物
-  5: [
-    {
-      id: '3-2',
-      type: 'timer',
-      name: 'passengerStartTime',
-      label: '时间',
-      placeholder: '请选择时间',
-      clearable: true
-    }, {
-      id: '3-3',
-      type: 'field',
-      name: 'goodsNum',
-      label: '物品件数',
-      placeholder: '请输入物品件数',
-      inputType: 'tel'
-    }, {
-      id: '3-4',
-      type: 'field',
-      name: 'weight',
-      label: '重量',
-      placeholder: '请输入重量'
-    }, {
-      id: '3-5',
-      type: 'field',
-      name: 'volume',
-      label: '体积',
-      placeholder: '请输入体积'
-    }, {
-      id: '3-6',
-      type: 'field',
-      name: 'cost',
-      label: 'A费',
-      placeholder: '请设置费用'
-    }
-  ]
+  5: [{
+    id: 'passengerStartTime',
+    type: 'timer',
+    name: 'passengerStartTime',
+    label: '时间',
+    placeholder: '请选择时间',
+    clearable: true
+  }, {
+    id: 'goodsNum',
+    type: 'field',
+    name: 'goodsNum',
+    label: '物品件数',
+    placeholder: '请输入物品件数',
+    inputType: 'tel'
+  }, {
+    id: 'weight',
+    type: 'field',
+    name: 'weight',
+    label: '重量',
+    placeholder: '请输入重量'
+  }, {
+    id: 'volume',
+    type: 'field',
+    name: 'volume',
+    label: '体积',
+    placeholder: '请输入体积'
+  }, {
+    id: 'cost',
+    type: 'field',
+    name: 'cost',
+    label: 'A费',
+    placeholder: '请设置费用',
+    rules: [{ required: true }]
+  }]
 }

@@ -65,7 +65,7 @@ export default {
 
   // 号码标签
   .num-tag{
-    width: 0.54rem;
+    width: 0.34rem;
     height: 0.20rem;
     line-height: 0.20rem;
     border-radius: 0.20rem;

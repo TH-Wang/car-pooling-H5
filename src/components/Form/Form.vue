@@ -29,6 +29,7 @@ export default {
     },
     // 设置某个字段的值
     setValueField (key, value) {
+      console.log('设置值', key, value)
       const children = this.fields.find(i => i.name === key)
       if (children) {
         children.setValue(value)
@@ -46,6 +47,7 @@ export default {
     },
     // 获取某个字段的值
     getValueField (key) {
+      this.collectFields()
       const field = this.fields.find(i => i.name === key)
       if (field) return field.getValue()
     },

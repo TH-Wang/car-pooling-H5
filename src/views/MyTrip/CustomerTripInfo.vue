@@ -87,7 +87,7 @@ export default {
     hasReversed () {
       if (!this.record.status) return false
       const status = this.record.status
-      return status !== 0 && status !== 5
+      return status !== 0
     },
     startTime () {
       if (!this.record.startTime) return ''

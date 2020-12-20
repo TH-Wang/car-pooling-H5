@@ -130,7 +130,9 @@ export default {
       return this.val
     },
     setValue (value) {
-      this.val = value
+      this.$nextTick(() => {
+        this.val = value
+      })
     },
     validate () {
       if (this.required && this.val === null) {

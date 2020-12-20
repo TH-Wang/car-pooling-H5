@@ -32,7 +32,8 @@
 
         <!-- 上驾驶证证图片 -->
         <div class="title">请上传驾驶证</div>
-        <custom-upload name="userDrivingCard" description="请上传驾驶证" required />
+        <custom-upload name="userDrivingCardLeft" description="请上传驾驶证左面" required />
+        <custom-upload name="userDrivingCardRight" description="请上传驾驶证右面" required />
       </custom-form>
     </div>
 

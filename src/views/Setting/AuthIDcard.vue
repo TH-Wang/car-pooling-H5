@@ -34,9 +34,15 @@
 
         <!-- 上传身份证图片 -->
         <div class="title">请上传身份证正反面</div>
-        <custom-upload name="identityCardFront" description="请上传身份证正面" required />
-        <custom-upload name="identityCardBack" description="请上传身份证反面" required />
+        <custom-upload name="identityCardFront" description="请上传身份证正面" :required="!hold" />
+        <custom-upload name="identityCardBack" description="请上传身份证反面" :required="!hold" />
+
+        <!-- 手持身份证认证 -->
       </custom-form>
+      <div class="hold-upload">
+        <van-checkbox checked-color="#FFCD00" v-model="hold"/>
+        <span style="margin-left:.05rem" @click="hold = !hold">手持身份证上传</span>
+      </div>
     </div>
 
     <main-button :class="submitButtonClass" @click="handleSubmit">确认</main-button>
@@ -45,6 +51,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { Checkbox } from 'vant'
 import { userIdentityCard, getUserDetail } from '@/api'
 import { Form, Field, Upload } from '@/components/Form'
 import MainButton from '@/components/MainButton'
@@ -53,11 +60,15 @@ import formButtonMixin from '@/mixins/form-button-mixin'
 export default {
   mixins: [formButtonMixin],
   components: {
+    'van-checkbox': Checkbox,
     'custom-form': Form,
     'custom-field': Field,
     'custom-upload': Upload,
     'main-button': MainButton
   },
+  data: () => ({
+    hold: false
+  }),
   computed: {
     ...mapState(['user'])
   },
@@ -90,6 +101,12 @@ export default {
 .title{
   margin: 0 .15rem;
   @include font (.17rem, $main-text, bold);
+}
+
+.hold-upload{
+  @include flex;
+  margin: 0 .15rem;
+  margin-top: .2rem;
 }
 
 .flow{

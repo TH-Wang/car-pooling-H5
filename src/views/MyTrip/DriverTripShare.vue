@@ -38,12 +38,12 @@
 
     <!-- 底部按钮组 -->
     <div class="footer-button-group">
-      <!-- <main-button width="1.2rem" @click="handleCopy">复制到微信</main-button> -->
+      <main-button width="1.2rem" @click="copyToClip('wechat')">复制到微信</main-button>
       <main-button
-        width="3.45rem"
+        width="2.1rem"
         type="gradient"
-        @click="copyToClip"
-      >复制内容</main-button>
+        @click="copyToClip('other')"
+      >复制到其他</main-button>
     </div>
   </div>
 </template>
@@ -94,13 +94,6 @@ export default {
     // 途径点拼接字符串
     passPointList () {
       return getPointText(this.record.passPointList)
-    },
-    // 复制内容
-    copyContent () {
-      if (!this.record) return ''
-      const { startTime, vehicleType, seatNum, cost, userName, remark } = this.record
-      const formatTime = moment(startTime).format('MM月DD日 HH:mm')
-      return `【起止地】${this.addrName.startAddr} - ${this.addrName.endAddr}\n【时间】${formatTime}\n【路线】${this.passPointList}\n【车型】${vehicleType || ''}\n【余座】${seatNum}\n【A费】${cost}元/人\n【车主】${userName}\n【备注】${remark}`
     }
   },
   methods: {
@@ -108,14 +101,32 @@ export default {
       const res = await getPublishDetail(this.orderId)
       this.record = res.data.data
     },
-    copyToClip () {
+    copyToClip (type) {
       const aux = document.createElement('textarea')
-      aux.value = this.copyContent
+      aux.value = this.getCopyContent(type)
       document.body.appendChild(aux)
       aux.select()
       document.execCommand('copy')
       document.body.removeChild(aux)
       this.$toast.success('复制成功')
+    },
+    // 复制内容
+    getCopyContent (type) {
+      const { startTime, passPointList, remark } = this.record
+      // 时间
+      const formatTime = moment(startTime).format('MM月DD日 HH:mm')
+      // 途径
+      const passList = passPointList.filter(i => i.type === 2).join('-')
+      // 预约
+      // const link = '192.168.43.245:8080/#/common/tripshare/driver?id=' + this.orderId
+      const link = 'https://baidu.com'
+      const reserve = type === 'wechat' ? '<a href="' + link + '">查看手机号</a>' : link
+      return '【拼车】车找人\n' +
+        '【路线】' + this.addrName.startAddr + '-' + this.addrName.endAddr + '\n' +
+        '【途径】' + passList + '\n' +
+        '【时间】' + formatTime + '\n' +
+        '【预约】' + reserve + '\n' +
+        '【备注】' + (remark || '无')
     }
   },
   created: async function () {
