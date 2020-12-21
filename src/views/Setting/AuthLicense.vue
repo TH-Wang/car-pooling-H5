@@ -27,13 +27,33 @@
 
         <!-- 上传身份证图片 -->
         <div class="title">请上传身份证正反面</div>
-        <custom-upload name="identityCardFront" description="请上传身份证正面" required />
-        <custom-upload name="identityCardBack" description="请上传身份证反面" required />
+        <custom-upload
+          name="identityCardFront"
+          description="请上传身份证正面"
+          base-image="idcard-front.png"
+          required
+        />
+        <custom-upload
+          name="identityCardBack"
+          description="请上传身份证反面"
+          base-image="idcard-back.png"
+          required
+        />
 
         <!-- 上驾驶证证图片 -->
         <div class="title">请上传驾驶证</div>
-        <custom-upload name="userDrivingCardLeft" description="请上传驾驶证左面" required />
-        <custom-upload name="userDrivingCardRight" description="请上传驾驶证右面" required />
+        <custom-upload
+          name="userDrivingCardLeft"
+          description="请上传驾驶证左面"
+          base-image="driver-front.png"
+          required
+        />
+        <custom-upload
+          name="userDrivingCardRight"
+          description="请上传驾驶证右面"
+          base-image="driver-front.png"
+          required
+        />
       </custom-form>
     </div>
 
@@ -62,7 +82,10 @@ export default {
   methods: {
     async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
-      if (err) return
+      if (err) {
+        this.$toast.fail({ message: '信息不完整' })
+        return
+      }
 
       // 发送认证请求
       const userId = this.user.info.id

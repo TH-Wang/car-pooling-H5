@@ -17,14 +17,14 @@
       <!-- 余座 -->
       <div v-else-if="contentType === 'seat'" class="seat">
         <img src="@/assets/icons/order/seat.png" alt="">
-        余座 <span>3</span>
+        余座 <span>{{seatNum}}</span>
       </div>
     </div>
     <!-- 起止路线 -->
     <start-end :start="record.startAddr" :end="record.endAddr" narrow />
     <!-- 时间余座 -->
     <div v-if="showTimeSeat" class="time-seat">
-      <time-seat :time="record.startTime" :seat="record.seatNum" :type="record.type" />
+      <time-seat :time="record.startTime" :seat="seatNum" :type="record.type" />
       <div v-if="showShare" class="share-button" @click="$emit('share')">出行详情</div>
     </div>
   </div>
@@ -57,6 +57,13 @@ export default {
     showShare: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    seatNum () {
+      const num = this.record.seatNum
+      if (!num) return ''
+      else return num >= 0 ? num : 0
     }
   },
   methods: {

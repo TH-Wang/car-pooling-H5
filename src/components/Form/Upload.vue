@@ -14,6 +14,11 @@
           <van-icon name="plus" size=".20rem" />
           <p>{{description}}</p>
         </div>
+
+        <!-- 底图 -->
+        <van-image v-if="baseImage" class="base-image" :src="getFile(baseImage)"  />
+        <!-- 底图上方按钮 -->
+        <van-image v-if="baseImage" class="base-button" :src="getFile('base-button.png')" />
       </div>
 
       <!-- 单张图片预览 -->
@@ -100,6 +105,11 @@ export default {
     required: {
       type: Boolean,
       default: false
+    },
+    // 底图
+    baseImage: {
+      type: [Boolean, String],
+      default: false
     }
   },
   data: () => ({
@@ -124,6 +134,10 @@ export default {
     // 点击选择图片
     handleChooseImage () {
       this.$refs.file.click()
+    },
+    // 获取静态资源
+    getFile (path) {
+      return require(`@/assets/icons/upload/${path}`)
     },
     // 文件发生变化
     async handleFileChange (e) {
@@ -253,6 +267,7 @@ export default {
     border-radius: .02rem;
     background-color: $light-color;
 
+    // 按钮主体
     .button{
       height: 100%;
       border: dashed 2px $normal-text;
@@ -266,6 +281,25 @@ export default {
       }
 
       p{ margin-top: .05rem }
+    }
+
+    // 底图
+    .base-image{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    // 底图上的按钮
+    .base-button{
+      width: .48rem;
+      height: .48rem;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   }
 

@@ -39,7 +39,6 @@
 
     <!-- 快捷路线 -->
     <quick-line
-      v-if="identity === 0"
       :dataSource="quickList"
       :query="query"
       @retry="handleRetryQuick"

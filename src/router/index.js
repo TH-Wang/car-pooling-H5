@@ -351,6 +351,13 @@ const routes = [
           /* webpackChunkName: "DriverTripShare" */ '@/views/MyTrip/DriverTripShare.vue'
         )
       },
+      { // 车主车单的链接页面
+        path: '/common/triplink/driver',
+        name: 'DriverTripLink',
+        component: () => import(
+          /* webpackChunkName: "DriverTripLink" */ '@/views/MyTrip/DriverTripLink.vue'
+        )
+      },
       { // 乘客分享行程信息
         path: '/common/tripshare/customer',
         name: 'CustomerTripShare',

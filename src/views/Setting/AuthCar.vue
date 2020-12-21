@@ -32,8 +32,18 @@
               :options="item"
             />
             <div class="auth-title">请上传车辆行驶证</div>
-            <custom-upload name="carTravelPhotoLeft" description="请上传车辆行驶证左面" required/>
-            <custom-upload name="carTravelPhotoRight" description="请上传车辆行驶证右面" required/>
+            <custom-upload
+              name="carTravelPhotoLeft"
+              description="请上传车辆行驶证左面"
+              base-image="car-front.png"
+              required
+            />
+            <custom-upload
+              name="carTravelPhotoRight"
+              description="请上传车辆行驶证右面"
+              base-image="car-front.png"
+              required
+            />
             <div class="auth-title">车正面照片</div>
             <custom-upload name="carPhoto" description="请上传车正面照片" required/>
           </custom-form>
@@ -137,7 +147,7 @@ export default {
       // 向用户反馈提交失败的车辆信息
       if (failArr.length > 0) {
         this.$dialog.alert({
-          message: `第${failArr.join('，')}辆车提交失败，请检查是否为信息缺漏，或稍后再试`
+          message: `第${failArr.join('，')}辆车提交失败，请检查信息是否填写完整，或稍后再试`
         })
       }
       // 更新用户信息

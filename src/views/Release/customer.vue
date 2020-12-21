@@ -160,14 +160,15 @@ export default {
         orderType: 2
       }
       // 订单类型
-      if (this.isTakeGoods && this.isTakeGoods === 1) {
-        data.publishType = 5
-      } else if (this.publishType === 1) {
-        data.publishType = this.judgeType()
-      }
+      // if (this.isTakeGoods && this.isTakeGoods === 1) {
+      //   data.publishType = 5
+      // } else if (this.publishType === 1) {
+      //   data.publishType = this.judgeType()
+      // }
+      data.publishType = this.judgeType()
       console.log(data)
       // 通知父组件做提交相关操作
-      // this.$emit('submit', { data, type: 'customer' })
+      this.$emit('submit', { data, type: 'customer' })
     },
     // 父组件提交后调用该方法，清空表单
     clearForm () {

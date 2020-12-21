@@ -26,12 +26,12 @@
     <div style="height: .1rem" />
 
     <!-- 快捷路线 -->
-    <!-- <quick-line
+    <quick-line
       :dataSource="quickList"
       tagColor="green"
+      :query="query"
       @retry="handleRetryQuick"
-      @link-more="$router.push('/common/quick/list')"
-    /> -->
+    />
 
     <!-- 公告栏 -->
     <!-- <notice-bar @reserve="handleClickReserve" /> -->
@@ -79,7 +79,7 @@ import { queryPassengerOrders } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
-// import QuickLine from '@/components/QuickLine'
+import QuickLine from '@/components/QuickLine'
 import WorkOrder from '@/components/WorkOrder'
 // import PendingOrder from '@/components/OrderItem/Pending'
 // import DriverReserveButton from '@/components/DriverReserveButton'
@@ -96,7 +96,7 @@ export default {
     'order-filter': OrderFilter,
     'nav-bar-search': NavBarSearch,
     'search-card': SearchCard,
-    // 'quick-line': QuickLine,
+    'quick-line': QuickLine,
     'work-order': WorkOrder,
     // 'pending-order': PendingOrder,
     // 'driver-reserve-button': DriverReserveButton,
@@ -104,8 +104,8 @@ export default {
   },
   data: () => ({
     menuVisibleId: null,
-    menu: [{ type: 'cancel', text: '取消预约' }]
-    // needQuick: true
+    menu: [{ type: 'cancel', text: '取消预约' }],
+    needQuick: true
   }),
   computed: {
     ...mapState(['position', 'search']),
@@ -129,7 +129,8 @@ export default {
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
-      return { startPage: 1, pageSize: 10 }
+      const addrName = this.position.county.name
+      return { startPage: 1, pageSize: 10, addrName }
     },
     // 按起止地点找车
     handleSearchOrder () {

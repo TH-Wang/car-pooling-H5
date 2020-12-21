@@ -116,16 +116,15 @@ export default {
       // 时间
       const formatTime = moment(startTime).format('MM月DD日 HH:mm')
       // 途径
-      const passList = passPointList.filter(i => i.type === 2).join('-')
+      const passList = passPointList.filter(i => i.type === 2).map(i => i.pointName).join('-')
       // 预约
-      // const link = '192.168.43.245:8080/#/common/tripshare/driver?id=' + this.orderId
-      const link = 'https://baidu.com'
-      const reserve = type === 'wechat' ? '<a href="' + link + '">查看手机号</a>' : link
+      const link = 'http://39.104.202.76/car/car/index.html#/common/triplink/driver?id=' + this.orderId
+      // const reserve = type === 'wechat' ? '<a href="' + link + '">查看手机号</a>' : link
       return '【拼车】车找人\n' +
         '【路线】' + this.addrName.startAddr + '-' + this.addrName.endAddr + '\n' +
         '【途径】' + passList + '\n' +
         '【时间】' + formatTime + '\n' +
-        '【预约】' + reserve + '\n' +
+        '【预约】' + link + '\n' +
         '【备注】' + (remark || '无')
     }
   },

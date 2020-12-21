@@ -34,15 +34,32 @@
 
         <!-- 上传身份证图片 -->
         <div class="title">请上传身份证正反面</div>
-        <custom-upload name="identityCardFront" description="请上传身份证正面" :required="!hold" />
-        <custom-upload name="identityCardBack" description="请上传身份证反面" :required="!hold" />
+        <custom-upload
+          name="identityCardFront"
+          description="请上传身份证正面"
+          :required="!hold"
+          base-image="idcard-front.png"
+        />
+        <custom-upload
+          name="identityCardBack"
+          description="请上传身份证反面"
+          :required="!hold"
+          base-image="idcard-back.png"
+        />
 
         <!-- 手持身份证认证 -->
+        <div class="title">手持身份证认证</div>
+        <custom-upload
+          name="identityCardBack"
+          description="请上传手持身份证照片"
+          :required="!hold"
+          base-image="idcard-front.png"
+        />
       </custom-form>
-      <div class="hold-upload">
+      <!-- <div class="hold-upload">
         <van-checkbox checked-color="#FFCD00" v-model="hold"/>
         <span style="margin-left:.05rem" @click="hold = !hold">手持身份证上传</span>
-      </div>
+      </div> -->
     </div>
 
     <main-button :class="submitButtonClass" @click="handleSubmit">确认</main-button>
@@ -51,7 +68,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Checkbox } from 'vant'
+// import { Checkbox } from 'vant'
 import { userIdentityCard, getUserDetail } from '@/api'
 import { Form, Field, Upload } from '@/components/Form'
 import MainButton from '@/components/MainButton'
@@ -60,7 +77,7 @@ import formButtonMixin from '@/mixins/form-button-mixin'
 export default {
   mixins: [formButtonMixin],
   components: {
-    'van-checkbox': Checkbox,
+    // 'van-checkbox': Checkbox,
     'custom-form': Form,
     'custom-field': Field,
     'custom-upload': Upload,
@@ -75,7 +92,10 @@ export default {
   methods: {
     async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
-      if (err) return
+      if (err) {
+        this.$toast.fail({ message: '信息不完整' })
+        return
+      }
 
       // 发送认证请求
       const userId = this.user.info.id

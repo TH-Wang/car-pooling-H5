@@ -8,7 +8,7 @@
       placeholder
       @click-left="$router.go(-1)"
     ><template #right>
-      <span @click="handleEdit">修改行程</span>
+      <span v-if="record.orderState !== 3" @click="handleEdit">修改行程</span>
     </template>
     </van-nav-bar>
 

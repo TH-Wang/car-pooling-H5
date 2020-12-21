@@ -240,11 +240,12 @@ export default {
         orderType: 1
       }
       // 订单类型
-      if (this.isTakeGoods && this.isTakeGoods === 1) {
-        data.publishType = 5
-      } else if (this.publishType === 1) {
-        data.publishType = this.judgeType()
-      }
+      // if (this.isTakeGoods && this.isTakeGoods === 1) {
+      //   data.publishType = 5
+      // } else if (this.publishType === 1) {
+      //   data.publishType = this.judgeType()
+      // }
+      data.publishType = this.judgeType()
       // 数据类型转换
       if (data.cost) data.cost = parseInt(data.cost)
       if (data.seatNum) data.seatNum = parseInt(data.seatNum)
@@ -313,11 +314,16 @@ export default {
     this.getCarInfo()
   },
   mounted () {
+    // 设置值到表单
     // setTimeout(() => {
     //   const data = this.history.driverPublish
     //   console.log(data)
     //   if (!isEmpty(data)) {
-    //     this.$refs.form.setValues(data)
+    //     const formData = cloneDeep(data)
+    //     formData.publishType = data.publishType >= 1 && data.publishType <= 3
+    //       ? 1
+    //       : data.publishType
+    //     this.$refs.form.setValues(formData)
     //   }
     // }, 1000)
   },
