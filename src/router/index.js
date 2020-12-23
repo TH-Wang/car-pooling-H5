@@ -365,6 +365,13 @@ const routes = [
           /* webpackChunkName: "CustomerTripShare" */ '@/views/MyTrip/CustomerTripShare.vue'
         )
       },
+      { // 乘客车单的链接页面
+        path: '/common/triplink/customer',
+        name: 'CustomerTripLink',
+        component: () => import(
+          /* webpackChunkName: "CustomerTripLink" */ '@/views/MyTrip/CustomerTripLink.vue'
+        )
+      },
       { // 我的订单
         path: '/common/my/order',
         name: 'MyOrder',
@@ -515,6 +522,14 @@ router.afterEach((to, from) => {
   if (to.meta.tabbar) {
     const idx = tabbarConfig.findIndex(i => i.path === to.path)
     store.commit('changeTabbar', idx)
+  }
+
+  // 如果跳转登录界面，则获取从哪个页面跳转
+  if (to.path === '/common/login') {
+    console.log(`从 ${from.path} 页面，跳转到登录页`)
+    from.path === '/'
+      ? store.commit('clearHistoryRoute')
+      : store.commit('setHistoryRoute', from.path)
   }
 
   console.warn(`跳转页面：[${to.path}]  路由名称：${to.name}`)

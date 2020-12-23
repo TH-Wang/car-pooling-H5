@@ -134,13 +134,14 @@ export default {
       // if (this.identity === 1) return { showAll: 0 }
       // // 通过身份判断发布类型，1-车主发布 2-乘客发布
       // const orderType = this.identity === 0 ? 1 : 2
-      // return { orderType, publishType: 2 }
-      return { orderType: 1, publishType: 2 }
+      // 获取当前区域code
+      // const { code } = this.position.county
+      return { orderType: 1, publishType: '1,2,3' }
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
       const addrName = this.position.county.name
-      return { startPage: 1, pageSize: 10, publishType: 2, addrName }
+      return { startPage: 1, pageSize: 10, publishType: '1,2,3', addrName }
     },
     // 按起止地点找车
     handleSearchOrder () {
@@ -185,9 +186,11 @@ export default {
     //   this.handleQuickListLoad()
     // }
     // 监听首页刷新事件
-    EventBus.$on('home-refresh', () => {
+    EventBus.$on('home-refresh', async () => {
       console.log('监听到home-refresh')
-      this.handlePullRefresh()
+      this.$toast.loading({ message: '正在刷新', duration: 10000 })
+      await this.handlePullRefresh()
+      this.$toast.clear()
     })
   }
 }

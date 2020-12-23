@@ -62,6 +62,7 @@ import { cloneDeep } from 'lodash'
 import SearchCard from '@/components/SearchCard'
 import CustomerFormBody from './customer'
 import DriverFormBody from './driver'
+import confirmLogin from '@/utils/confirmLogin'
 
 export default {
   name: 'Release',
@@ -237,6 +238,20 @@ export default {
         // fullName: `${pname}${cityname}${name}`
       }
     }
+  },
+  activated () {
+    // 验证是否登录
+    confirmLogin('尊敬的用户，登录后才能发布拼车信息，请您登录！')
+    // if (!this.user.token) {
+    //   this.$dialog.alert({
+    //     message: '尊敬的用户，登录后才能发布拼车信息，请您登录！',
+    //     confirmButtonText: '立即登录',
+    //     cancelButtonText: '稍后再登',
+    //     showCancelButton: true
+    //   }).catch(() => {
+    //     this.$router.go(-1)
+    //   })
+    // }
   }
 }
 </script>

@@ -112,7 +112,9 @@ export default {
         Object.assign(data, this.getRequestQuickDatas())
       }
       // 发送请求
-      const res = await getCommonRoute(data)
+      const res = this.reqQuickApi
+        ? await this.reqQuickApi(data)
+        : await getCommonRoute(data)
       this.quickList = res.data.data.list
     },
     // 点击重试（订单列表）

@@ -75,7 +75,7 @@
 // import moment from 'moment'
 import { mapGetters, mapState } from 'vuex'
 import { List } from 'vant'
-import { queryPassengerOrders } from '@/api'
+import { queryPassengerOrders, getPassengerCommonRoute } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
@@ -127,6 +127,8 @@ export default {
     getRequestDatas () {
       return { showAll: 0 }
     },
+    // 自定义快捷路线请求函数
+    reqQuickApi: getPassengerCommonRoute,
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
       const addrName = this.position.county.name

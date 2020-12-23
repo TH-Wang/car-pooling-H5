@@ -19,6 +19,12 @@
         <img src="@/assets/icons/order/seat.png" alt="">
         余座 <span>{{seatNum}}</span>
       </div>
+      <!-- 余座 -->
+      <div v-else-if="contentType === 'people'" class="seat">
+        人数 <span>{{seatNum}}</span>
+      </div>
+
+      <span v-else></span>
     </div>
     <!-- 起止路线 -->
     <start-end :start="record.startAddr" :end="record.endAddr" narrow />
@@ -62,8 +68,7 @@ export default {
   computed: {
     seatNum () {
       const num = this.record.seatNum
-      if (!num) return ''
-      else return num >= 0 ? num : 0
+      return num >= 0 ? num : 0
     }
   },
   methods: {

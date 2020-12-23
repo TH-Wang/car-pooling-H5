@@ -8,7 +8,10 @@
       placeholder
       :border="false"
       @click-left="$router.replace('/home')"
-    />
+      @click-right="$router.replace('/home')"
+    >
+      <template #right><van-icon name="wap-home" /></template>
+    </van-nav-bar>
 
     <!-- 反馈图标 -->
     <feedback type="success" title="预定成功" tip="请注意出发时间，不要错过啦" />

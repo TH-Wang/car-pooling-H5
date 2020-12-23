@@ -53,7 +53,7 @@
           name="identityCardBack"
           description="请上传手持身份证照片"
           :required="!hold"
-          base-image="idcard-front.png"
+          base-image="idcard-hold.png"
         />
       </custom-form>
       <!-- <div class="hold-upload">

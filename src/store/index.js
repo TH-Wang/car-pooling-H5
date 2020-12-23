@@ -11,6 +11,7 @@ import history from './history'
 import filters from './filters'
 import map from './map'
 import trip from './trip'
+import route from './route'
 
 Vue.use(Vuex)
 
@@ -32,6 +33,7 @@ export default new Vuex.Store({
     history,
     filters,
     map,
-    trip
+    trip,
+    route
   }
 })

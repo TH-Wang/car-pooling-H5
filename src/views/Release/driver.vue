@@ -116,7 +116,7 @@ import { mapState } from 'vuex'
 import moment from 'moment'
 import { Checkbox } from 'vant'
 import { isEmpty } from 'lodash'
-import { userCarDetail } from '@/api'
+import { userCarDetail, latestPublishByUser } from '@/api'
 import { Form, Item, Field, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import ChooseComboLayer from '@/components/Layer/ChooseCombo'
@@ -216,6 +216,13 @@ export default {
     }
   },
   methods: {
+    // 请求最近一次发布的信息，并将数据设置到表单内
+    async setLastData () {
+      const res = await latestPublishByUser()
+      const data = res.data.data
+      this.$store.commit('setReleaseAddrInfo', data.passPointList)
+      this.$refs.form.setValues(data)
+    },
     // 获取所有的车辆信息
     async getCarInfo () {
       if (this.user.carList.length === 0) {
@@ -248,9 +255,8 @@ export default {
       data.publishType = this.judgeType()
       // 数据类型转换
       if (data.cost) data.cost = parseInt(data.cost)
-      if (data.seatNum) data.seatNum = parseInt(data.seatNum)
-      if (data.weight) data.seatNum = parseInt(data.weight)
-      if (data.volume) data.seatNum = parseInt(data.volume)
+      // if (data.weight) data.weight = parseInt(data.weight)
+      // if (data.volume) data.volume = parseInt(data.volume)
 
       // 如果需要传途径点
       if (this.needLine) {
@@ -296,6 +302,7 @@ export default {
     },
     // 判断拼车单类型
     judgeType () {
+      if (this.publishType > 3) return this.publishType
       if (!this.allInputStartEnd) return 1
       const { startAddr, endAddr } = this.release
       if (startAddr.pname !== endAddr.pname) return 3

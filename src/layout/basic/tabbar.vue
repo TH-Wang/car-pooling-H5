@@ -21,14 +21,26 @@
 
 <script>
 import { Icon } from 'vant'
+import { throttle } from 'lodash'
 import tabbarConfig from '@/configs/tabbar'
+import EventBus from '@/utils/eventBus'
+
+const iconFile = name => require(`@/assets/icons/index/${name}.png`)
+const iconConfig = {
+  refresh: iconFile('refresh'),
+  home: iconFile('home-active')
+}
+
+// 距离顶部多少时，首页显示刷新图标
+const limit = 300
 
 export default {
   components: {
     'van-icon': Icon
   },
   data: () => ({
-    tabbarConfig
+    tabbarConfig,
+    scrollTop: 0
   }),
   computed: {
     tabbarId () {
@@ -37,11 +49,38 @@ export default {
   },
   methods: {
     handleChangeTabbar (e, idx) {
+      // 如果是点击刷新，触发首页刷新
+      if (this.tabbarId === 0 && idx === 0 && this.scrollTop > limit) {
+        window.scrollTo(0, 0)
+        EventBus.$emit('home-refresh')
+      }
       this.$store.commit('changeTabbar', idx)
-    }
+    },
+    // 监听页面滚动事件
+    handleWatchScroll: throttle(function (e) {
+      // 如果不是首页，则直接返回
+      if (this.tabbarId !== 0) return
+      // 判断是否距离顶部200px，处理对应的图标
+      const scrollTop = e ? e.srcElement.scrollingElement.scrollTop : document.body.scrollTop
+      const iconName = scrollTop > limit ? 'refresh' : 'home'
+      const newConfig = Object.assign(
+        tabbarConfig[0],
+        { activeIcon: iconConfig[iconName] }
+      )
+      this.tabbarConfig.splice(0, 1, newConfig)
+      this.scrollTop = scrollTop
+    }, 300)
   },
-  beforeRouteUpdate: function (to, from, next) {
-    console.log(to)
+  created () {
+    window.addEventListener('scroll', this.handleWatchScroll, false)
+  },
+  beforeDestroy () {
+    window.removeEventListener('scroll', this.handleWatchScroll, false)
+  },
+  watch: {
+    tabbarId: function (newVal) {
+      if (newVal === 0) this.handleWatchScroll()
+    }
   }
 }
 </script>

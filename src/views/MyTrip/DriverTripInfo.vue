@@ -8,7 +8,7 @@
       placeholder
       @click-left="$router.go(-1)"
     ><template #right>
-      <span v-if="record.orderState !== 3" @click="handleEdit">修改行程</span>
+      <span @click="handleEdit">修改行程</span>
     </template>
     </van-nav-bar>
 
@@ -141,9 +141,10 @@ export default {
     handleEdit () {
       const id = this.orderId
       const pCount = this.record.myPassengerDetailVoList.length
+      const state = this.record.orderState
       this.$router.push({
         path: '/common/trip/edit',
-        query: { id, pCount }
+        query: { id, pCount, state }
       })
     }
   },

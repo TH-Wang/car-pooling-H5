@@ -22,21 +22,30 @@
     <!-- 详情卡片 -->
     <div class="content-card">
 
-      <div v-if="hasReversed">
+      <!-- <div> -->
         <!-- 地图 -->
         <map-view :info="record.passPointLis" />
-        <!-- 详细信息 -->
-        <order-info-field icon-type="user" label="车主" :content="record.userName" />
-        <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
-        <order-info-field icon-type="time" label="出发时间" :content="startTime" />
-        <order-info-field icon-type="address" label="途径点" :content="passPointList" />
+
+        <!-- 详细信息：预约其他车主的订单信息 -->
+        <div v-if="record.isPublish === 0">
+          <order-info-field icon-type="user" label="车主" :content="record.userName" />
+          <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
+          <order-info-field icon-type="time" label="出发时间" :content="startTime" />
+          <order-info-field icon-type="address" label="途径点" :content="passPointList" />
+        </div>
+        <div v-else>
+          <order-info-field icon-type="time" label="出发时间" :content="startTime" />
+          <order-info-field icon-type="user" label="预约状态" :content="statusText" />
+          <order-info-field icon-type="seat" label="人数" :content="record.orderNum" />
+          <order-info-field icon-type="remark" label="备注" :content="record.remark || '无'" />
+        </div>
 
         <!-- 联系电话 -->
-        <order-info-phone :phone="record.mobilePhone"/>
-      </div>
+        <order-info-phone v-if="record.isPublish === 0" :phone="record.mobilePhone"/>
+      <!-- </div> -->
 
       <!-- 如果没有司机确认 -->
-      <van-empty v-else description="暂无车主预约"/>
+      <!-- <van-empty  v-if="record.isPublish === 0 && !hasReversed" description="暂无车主预约"/> -->
     </div>
 
     <main-button
@@ -89,6 +98,20 @@ export default {
       const status = this.record.status
       return status !== 0
     },
+    // 预约状态信息
+    statusText () {
+      switch (this.record.status) {
+        case 0: return '暂无车主预约'
+        case 1: return '预约成功'
+        case 2: return '已确认'
+        case 3: return '车主已取消'
+        case 4: return '已取消'
+        case 5: return '等待车主确认'
+        case 6: return '等待您的确认'
+        default: return ''
+      }
+    },
+    // 出发时间
     startTime () {
       if (!this.record.startTime) return ''
       return moment(this.record.startTime).format('MM月DD日 HH:mm')
@@ -98,12 +121,12 @@ export default {
       return getPointText(this.record.passPointLis)
     },
     tips () {
-      const insertTime = moment(this.insertTime).add(10, 'minutes').format('MM-DD HH:mm')
+      const insertTime = moment(this.record.insertTime).add(10, 'minutes').format('MM月DD日 HH:mm')
       return [
         '温馨提示',
         `1.如您行程改变，请尽可能提前退订，
           <span style="color:#FFCD00">${insertTime}</span>前可
-          <span style="color:#FFCD00" id="NO_LIABILITY">无责退订</span>。`,
+          <span style="color:#FFCD00" id="NO_LIABILITY" onclick="handleLinkDesc()">无责退订</span>。`,
         '2.请在上车后，将分摊费用直接支付车主。'
       ]
     }
@@ -127,9 +150,17 @@ export default {
     },
     // 跳转分享页面
     handleShare () {
-      // const path = this.hasReversed ? 'driver' : 'customer'
-      const path = 'customer'
+      const path = this.record.isPublish === 0 ? 'driver' : 'customer'
       this.$router.push(`/common/tripshare/${path}?id=${this.orderId}`)
+    },
+    // 跳转到无责退订页面
+    handleLinkDesc () {
+      this.$router.push('/common/description?type=liability')
+    }
+  },
+  created () {
+    if (!window.handleLinkDesc) {
+      window.handleLinkDesc = this.handleLinkDesc
     }
   },
   mounted: async function () {

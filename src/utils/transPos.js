@@ -39,7 +39,7 @@ function filterPointParams (data) {
     lat: location.lat
   }
   // 如果是直辖市
-  if (city.indexOf(pname) !== -1) {
+  if (city.indexOf(pname) !== -1 && !data.sort) {
     return {
       ...result,
       pname: cityname,

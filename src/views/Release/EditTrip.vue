@@ -53,8 +53,16 @@
 
     <!-- 操作按钮 -->
     <div class="button-group">
-      <main-button width="1.2rem" @click="handleSetNull">设为无座</main-button>
-      <main-button width="2.1rem" @click="handleSave">保存行程</main-button>
+      <main-button
+        width="1.2rem"
+        @click="handleSetNull"
+        :color="submitButton.color"
+      >设为无座</main-button>
+      <main-button
+        width="2.1rem"
+        @click="handleSave"
+        :color="submitButton.color"
+      >{{submitButton.text}}</main-button>
     </div>
   </div>
 </template>
@@ -81,6 +89,8 @@ export default {
   },
   data: () => ({
     orderId: null,
+    pCount: 0,
+    state: null,
     publishType: 1,
     formOptions: {},
     // 所有的发布类型
@@ -108,6 +118,15 @@ export default {
     // 路线是否为空
     emptyLine () {
       return this.trip.passPointList.length === 0 ? 'color:#999' : ''
+    },
+    // 保存行程按钮状态
+    submitButton () {
+      switch (parseInt(this.state)) {
+        case 1: return { text: '保存行程', color: 'yellow' }
+        case 2: return { text: '行程已撤下', color: 'gray' }
+        case 3: return { text: '行程已完成', color: 'gray' }
+        default: return { text: '保存行程', color: 'yellow' }
+      }
     }
   },
   methods: {
@@ -142,6 +161,8 @@ export default {
     },
     // 设为无座
     async handleSetNull () {
+      // 如果该订单不是进行中则不进行操作
+      if (parseInt(this.state) !== 1) return
       try {
         await this.$dialog.confirm({
           title: '提示',
@@ -162,6 +183,8 @@ export default {
     },
     // 保存行程
     async handleSave () {
+      // 如果该订单不是进行中则不进行操作
+      if (parseInt(this.state) !== 1) return
       // 如果已有乘客预约则提示并拦截修改
       if (this.pCount > 0) {
         this.$dialog.alert({
@@ -184,7 +207,9 @@ export default {
       data.passPointList = getLineData(this.trip)
       // 订单id
       data.id = parseInt(this.orderId)
-      // console.log(data)
+      // 订单类型
+      data.publishType = this.judgeType()
+      console.log(data)
       // 发起请求
       const res = await updatePublish(data)
       if (res.data.status === 200) {
@@ -195,15 +220,31 @@ export default {
           message: res.data.msg
         })
       }
+    },
+    // 判断拼车单类型
+    judgeType () {
+      if (this.publishType > 3) return this.publishType
+      if (!this.allInputStartEnd) return 1
+      const { startAddr, endAddr } = this.trip
+      if (startAddr.pname !== endAddr.pname) return 3
+      if (this.getCityName(startAddr.cityname) === this.getCityName(endAddr.cityname)) {
+        return startAddr.adname === endAddr.adname ? 1 : 2
+      }
+      return 1
+    },
+    getCityName (data) {
+      return ['重庆市', '北京市', '上海市', '天津市'].indexOf(data.pname) === -1
+        ? data.cityname
+        : data.pname
     }
   },
   activated: async function () {
-    const { id, pCount } = this.$route.query
+    const { id, pCount, state } = this.$route.query
+    this.pCount = pCount
+    this.state = state
     // 如果是同一个订单信息则不再更新页面数据
     if (this.orderId === id) return
-
     this.orderId = id
-    this.pCount = pCount
     await this.getCarInfo()
     this.getOrderInfo()
   }

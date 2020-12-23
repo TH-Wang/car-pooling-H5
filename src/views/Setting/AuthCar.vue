@@ -41,7 +41,7 @@
             <custom-upload
               name="carTravelPhotoRight"
               description="请上传车辆行驶证右面"
-              base-image="car-front.png"
+              base-image="car-back.png"
               required
             />
             <div class="auth-title">车正面照片</div>

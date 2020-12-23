@@ -29,7 +29,6 @@ export default {
     },
     // 设置某个字段的值
     setValueField (key, value) {
-      console.log('设置值', key, value)
       const children = this.fields.find(i => i.name === key)
       if (children) {
         children.setValue(value)

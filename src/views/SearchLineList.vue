@@ -102,6 +102,8 @@ export default {
       // 订单信息
       const dataSource = cloneDeep(this.dataSource)
       if (dataSource.workType) delete dataSource.workType
+      if (dataSource.startAddrAll) delete dataSource.startAddr
+      if (dataSource.endAddrAll) delete dataSource.endAddr
       const data = {
         ...dataSource,
         queryAllPosition: 1,

@@ -152,14 +152,14 @@ export default {
   },
   mounted: async function () {
     if (!this.info || this.info.length === 0) return
-    console.log('mounted触发')
+    console.log('mounted触发地图路线加载')
     await this.renderMap()
     this.initDriving()
   },
   watch: {
     info: async function (newVal) {
       if (!newVal) return
-      console.log('watch触发')
+      console.log('watch触发地图路线加载')
       await this.renderMap()
       this.initDriving()
     }

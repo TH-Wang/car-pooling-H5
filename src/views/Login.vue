@@ -98,7 +98,10 @@ export default {
         const { token, phone } = data
         this.$toast({ message: '登录成功！', type: 'success' })
         this.$store.commit('setStorage', { token, phone, info: data })
-        this.$router.push('/home')
+        // 根据历史路由，判断需要返回页面，还是跳转首页
+        this.$store.state.route.history
+          ? this.$router.go(-1)
+          : this.$router.push('/home')
       } else {
         this.$toast({ message: msg, type: 'fail' })
       }

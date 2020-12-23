@@ -51,7 +51,7 @@
         <custom-upload
           name="userDrivingCardRight"
           description="请上传驾驶证右面"
-          base-image="driver-front.png"
+          base-image="driver-back.png"
           required
         />
       </custom-form>

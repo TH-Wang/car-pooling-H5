@@ -24,6 +24,26 @@ export default {
       } else if (type === 'remove') {
         state.passPointList.splice(index, 1)
       }
+    },
+    setReleaseAddrInfo (state, list) {
+      // 分发到对应的位置信息
+      const passPointList = []
+      list.forEach(item => {
+        // 转换key
+        const addr = cloneDeep(item)
+        addr.name = item.pointName
+        addr.location = { lng: item.lon, lat: item.lat }
+        delete addr.pointName
+        delete addr.lon
+        delete addr.lat
+        switch (item.type) {
+          case 1: state.startAddr = addr; break
+          case 2: passPointList.push(addr); break
+          case 3: state.endAddr = addr; break
+        }
+      })
+      // 设置途径点信息
+      state.passPointList = passPointList
     }
   }
 }

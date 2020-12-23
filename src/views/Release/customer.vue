@@ -87,6 +87,7 @@ import moment from 'moment'
 import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
 import { isEmpty } from 'lodash'
+import { latestPublishByUser } from '@/api'
 import { Form, Item, Field, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 // import ChooseComboLayer from '@/components/Layer/ChooseCombo'
@@ -143,6 +144,13 @@ export default {
     }
   },
   methods: {
+    // 请求最近一次发布的信息，并将数据设置到表单内
+    async setLastData () {
+      const res = await latestPublishByUser()
+      const data = res.data.data
+      this.$store.commit('setReleaseAddrInfo', data.passPointList)
+      this.$refs.form.setValues(data)
+    },
     // 发送提交请求
     async handleSubmit () {
       // 表单校验并获取值
@@ -195,6 +203,7 @@ export default {
     // },
     // 判断拼车单类型
     judgeType () {
+      if (this.publishType > 3) return this.publishType
       if (!this.allInputStartEnd) return 1
       const { startAddr, endAddr } = this.release
       if (startAddr.pname !== endAddr.pname) return 3
@@ -210,11 +219,13 @@ export default {
     }
   },
   mounted () {
-    const data = this.history.customerPublish
-    if (!isEmpty(data)) {
-      console.log(data)
-      this.$refs.form.setValues(data)
-    }
+    // 请求上次发布信息，并显示
+    this.setLastData()
+    // const data = this.history.customerPublish
+    // if (!isEmpty(data)) {
+    //   console.log(data)
+    //   this.$refs.form.setValues(data)
+    // }
   },
   watch: {
     agreePackage: function (newVal) {

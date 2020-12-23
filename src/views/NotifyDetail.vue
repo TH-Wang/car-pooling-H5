@@ -76,11 +76,6 @@ export default {
     record: {
       passPointLis: []
     },
-    tips: [
-      '温馨提示',
-      '1.如您行程改变，请尽可能提前退订，<span style="color:#FFCD00">07月09日 08:00</span style="color:#FFCD00">前可<span style="color:#FFCD00">无责退订</span>。',
-      '2.请在上车后，将分摊费用直接支付车主。'
-    ],
     showRefund: false,
     custInfoConfig: [
       ['user', '乘客', 'userName'],
@@ -99,6 +94,16 @@ export default {
     },
     passPointLis () {
       return this.record.passPointLis.map(i => i.pointName).join('-')
+    },
+    tips () {
+      // const insertTime = moment(this.record.insertTime).add(10, 'minutes').format('MM月DD日 HH:mm')
+      return [
+        '温馨提示',
+        `1.如您行程改变，请尽可能提前退订，
+            <span style="color:#FFCD00">07月09日 08:00</span>前可
+            <span style="color:#FFCD00" onclick="handleLinkDesc()">无责退订</span>。`,
+        '2.请在上车后，将分摊费用直接支付车主。'
+      ]
     }
   },
   methods: {
@@ -112,12 +117,21 @@ export default {
         this.$toast.success('退订成功！')
         this.$router.go(-1)
       }
+    },
+    // 跳转到无责退订页面
+    handleLinkDesc () {
+      this.$router.push('/common/description?type=liability')
     }
   },
   created: async function () {
     const orderId = this.$route.query.orderId
     const res = await queryByOrderId(orderId)
     this.record = res.data.data
+
+    // 跳转无责退订页面
+    if (!window.handleLinkDesc) {
+      window.handleLinkDesc = this.handleLinkDesc
+    }
   }
 }
 </script>

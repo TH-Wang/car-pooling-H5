@@ -4,6 +4,7 @@ export default {
   getCar,
   queryPassengerOrders,
   getCommonRoute,
+  getPassengerCommonRoute,
   commitOrder,
   getOrdering,
   queryByOrderId,
@@ -11,7 +12,8 @@ export default {
   getPublishDetail,
   getPassengerPublishDetail,
   driverOrder,
-  appointmentPassenger
+  appointmentPassenger,
+  latestPublishByUser
 }
 
 // 按条件找车
@@ -24,10 +26,19 @@ function queryPassengerOrders (data) {
   return axios.post('/order/queryPassengerOrders', data)
 }
 
-// 获取常用路线
+// 获取乘客常用路线
 function getCommonRoute (data) {
   return axios({
     url: '/order/getCommonRoute',
+    method: 'POST',
+    data
+  })
+}
+
+// 车主找人快捷路线
+function getPassengerCommonRoute (data) {
+  return axios({
+    url: '/order/getPassengerCommonRoute',
     method: 'POST',
     data
   })
@@ -94,11 +105,16 @@ function driverOrder (params) {
   })
 }
 
-// 车主取消预约
+// 车主预约乘客
 function appointmentPassenger (orderId) {
   return axios({
     url: '/order/appointmentPassenger',
     method: 'POST',
     params: { orderId }
   })
+}
+
+// 查询乘客最近一次发布的信息
+function latestPublishByUser () {
+  return axios.post('/order/latestPublishByUser')
 }

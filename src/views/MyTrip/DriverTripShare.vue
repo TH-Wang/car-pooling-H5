@@ -24,7 +24,7 @@
 
       <!-- 详细信息 -->
       <order-info-field icon-type="user" label="车主" :content="record.userName" />
-      <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
+      <order-info-field icon-type="car" label="车型" :content="record.vehicleTypeName" />
       <order-info-field icon-type="seat" label="余座" :content="record.seatNum" text-color="yellow" />
       <order-info-field icon-type="time" label="出发时间" :content="startTime" />
       <order-info-field icon-type="address" label="途径点" :content="passPointList" />
@@ -122,7 +122,7 @@ export default {
       // const reserve = type === 'wechat' ? '<a href="' + link + '">查看手机号</a>' : link
       return '【拼车】车找人\n' +
         '【路线】' + this.addrName.startAddr + '-' + this.addrName.endAddr + '\n' +
-        '【途径】' + passList + '\n' +
+        '【途径】' + (passList || '无') + '\n' +
         '【时间】' + formatTime + '\n' +
         '【预约】' + link + '\n' +
         '【备注】' + (remark || '无')

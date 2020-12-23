@@ -35,6 +35,7 @@ export const queryPositionByCountyName = position.queryPositionByCountyName
 export const getCar = order.getCar
 export const queryPassengerOrders = order.queryPassengerOrders
 export const getCommonRoute = order.getCommonRoute
+export const getPassengerCommonRoute = order.getPassengerCommonRoute
 export const commitOrder = order.commitOrder
 export const getOrdering = order.getOrdering
 export const queryByOrderId = order.queryByOrderId
@@ -43,6 +44,7 @@ export const getPublishDetail = order.getPublishDetail
 export const getPassengerPublishDetail = order.getPassengerPublishDetail
 export const driverOrder = order.driverOrder
 export const appointmentPassenger = order.appointmentPassenger
+export const latestPublishByUser = order.latestPublishByUser
 
 // 发布订单模块
 export const insertPublish = publish.insertPublish

@@ -36,21 +36,25 @@ export default {
     }
   },
   data: () => ({
-    filterType: ['area', 'time', 'cost', 'seat'],
+    filterType: ['flag', 'time', 'cost', 'seat'],
     values: {
-      area: 0,
+      flag: 0,
       time: 0,
       cost: 0,
       seat: 0
     },
     title: {
-      area: '地区',
+      flag: '全城',
       time: '时间',
       cost: '车价',
       seat: '余座'
     },
     options: {
-      area: [],
+      flag: [
+        { text: '全城', value: 0 },
+        { text: '距离最近', value: 1 },
+        { text: '相似度最高', value: 2 }
+      ],
       time: [],
       cost: [
         { text: '默认', value: 0 },
@@ -85,9 +89,9 @@ export default {
     handleChange (value, type) {
       this.values[type] = value
       this.$nextTick(() => {
-        const { area, time, cost, seat } = this.values
+        const { flag, time, cost, seat } = this.values
         const filterData = {}
-        if (area !== 0) filterData.county = area
+        if (flag !== 0) filterData.flag = flag
         if (cost !== 0) filterData.carPriceSort = cost
         if (seat !== 0) filterData.remainingSeat = this.options.seat.find(i => i.value === seat).seat
         if (time !== 0) filterData.startTime = this.options.time.find(i => i.value === time).date
@@ -96,24 +100,24 @@ export default {
     }
   },
   created: async function () {
-    if (
-      !this.unGeoLocation &&
-      this.filters.currentCityCode !== this.position.city.code
-    ) {
-      await this.updateAreaOptions(this.position.city.code)
-    }
+    // if (
+    //   !this.unGeoLocation &&
+    //   this.filters.currentCityCode !== this.position.city.code
+    // ) {
+    //   await this.updateAreaOptions(this.position.city.code)
+    // }
+    // this.options.area = this.filters.areaOptions
     if (moment() !== this.filters.currentDate) {
       this.updateDateOptions()
     }
-    this.options.area = this.filters.areaOptions
     this.options.time = this.filters.timeOptions
-  },
-  watch: {
-    'position.city': async function (newVal) {
-      await this.updateAreaOptions(newVal.code)
-      this.options.area = this.filters.areaOptions
-    }
   }
+  // watch: {
+  //   'position.city': async function (newVal) {
+  //     await this.updateAreaOptions(newVal.code)
+  //     this.options.area = this.filters.areaOptions
+  //   }
+  // }
 }
 </script>
 
