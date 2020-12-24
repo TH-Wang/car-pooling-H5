@@ -150,7 +150,7 @@ export default {
       this.$router.push({ path: '/common/order/detail', query: { id } })
     },
     handleClickSearch () {
-      console.log('click search')
+      this.$router.push('/common/city?guide=search')
     },
     handleClickReserve () {
       console.log('[点击预约]')

@@ -18,6 +18,7 @@
           type="text"
           :value="value"
           placeholder="请输入城市名称查询"
+          ref="input"
           @input="handleChange"
           @focus="$emit('focus', true)"
           @blur="$emit('focus', false)"
@@ -85,6 +86,10 @@ export default {
     // 搜索事件
     handleChange (e) {
       this.$emit('change', e.target.value)
+    },
+    // 让搜索框获取焦点
+    inputFocus () {
+      this.$refs.input.focus()
     }
   }
 }

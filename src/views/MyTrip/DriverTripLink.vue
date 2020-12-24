@@ -23,7 +23,7 @@
       />
 
       <!-- 备注 -->
-      <div class="remark cell">
+      <div class="remark cell" style="padding-top:.05rem">
         <span>备注</span>{{record.remark || '无'}}
       </div>
 

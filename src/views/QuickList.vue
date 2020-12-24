@@ -97,7 +97,8 @@ export default {
       const addrName = this.activeHotCity === null
         ? this.position.city.name
         : this.addrName
-      const publishType = parseInt(this.query.publishType)
+      const p = this.query.publishType
+      const publishType = /,/.test(p) ? p : parseInt(this.query.publishType)
       const data = { publishType }
       if (!isEmpty(addrName)) data.addrName = addrName
       return data

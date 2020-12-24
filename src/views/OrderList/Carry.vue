@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     handleClickSearch () {
-      console.log('click search')
+      this.$router.push('/common/city?guide=search')
     },
     // 取消预约
     handleOrderCancel (e) {

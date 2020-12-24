@@ -204,6 +204,16 @@ export default {
       this.$store.commit('clearToken')
       this.$router.push('/common/login')
     }
+  },
+  mounted () {
+    if (this.$route.query.guide === 'authDriver') {
+      const tag = str => `<span style="color:#ffcd00">${str}</span>`
+      this.$dialog.alert({
+        title: '车主认证',
+        message: `完成 ${tag('身份认证')}、${tag('驾驶证认证')} 和 ${tag('车辆认证')}，即可成为车主，享受拼车之家为您带来的便利！`,
+        allowHtml: true
+      })
+    }
   }
 }
 </script>

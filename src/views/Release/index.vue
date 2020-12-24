@@ -17,12 +17,21 @@
       <!-- 车主发布 -->
       <van-tab title="车主发布">
 
-        <!-- 搜索卡片 -->
-        <div class="search-card-wrap">
-          <search-card search-type="release" ref="driver_search_card" :hasButton="false"/>
+        <div v-if="identity === 1">
+          <!-- 搜索卡片 -->
+          <div class="search-card-wrap">
+            <search-card search-type="release" ref="driver_search_card" :hasButton="false"/>
+          </div>
+
+          <driver-form-body ref="driver" @submit="handleSubmit" />
         </div>
 
-        <driver-form-body ref="driver" @submit="handleSubmit" />
+        <van-empty v-else class="empty-wrap" description="您还没有认证为车主">
+          <div
+            class="tobe-driver-button"
+            @click="$router.push('/common/setting?guide=authDriver')"
+          >成为车主</div>
+        </van-empty>
 
       </van-tab>
 
@@ -40,14 +49,14 @@
     </van-tabs>
 
     <!-- 联系号码 -->
-    <div class="confirm-phone">
+    <div class="confirm-phone" v-show="showPhoneTip">
       请确认你的联系手机号
       <span class="phone">{{user.info.phone}}</span>
       <span class="link" @click="$router.push('/common/phone/modify')">修改手机号</span>
     </div>
 
     <!-- 温馨提示 -->
-    <div class="tip">
+    <div class="tip" v-show="showPhoneTip">
       <p>温馨提示</p>
       <p>请务必保证信息的真实，如被拼友投诉，将被平台限制发信息哦</p>
     </div>
@@ -55,7 +64,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { Tabs, Tab } from 'vant'
 import { insertPublish, inesrtPublishPassenger } from '@/api'
 import { cloneDeep } from 'lodash'
@@ -77,7 +86,14 @@ export default {
     tabId: 0
   }),
   computed: {
-    ...mapState(['user', 'position', 'release'])
+    ...mapState(['user', 'position', 'release', 'tabsId']),
+    ...mapGetters(['identity']),
+    showPhoneTip () {
+      // 如果是乘客发布，则正常展示
+      if (this.tabsId.release === 1) return true
+      // 如果是车主发布，则判断是否已认证车主
+      else return this.identity === 1
+    }
   },
   methods: {
     // 提交
@@ -242,20 +258,22 @@ export default {
   activated () {
     // 验证是否登录
     confirmLogin('尊敬的用户，登录后才能发布拼车信息，请您登录！')
-    // if (!this.user.token) {
-    //   this.$dialog.alert({
-    //     message: '尊敬的用户，登录后才能发布拼车信息，请您登录！',
-    //     confirmButtonText: '立即登录',
-    //     cancelButtonText: '稍后再登',
-    //     showCancelButton: true
-    //   }).catch(() => {
-    //     this.$router.go(-1)
-    //   })
-    // }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/scss/release.scss';
+
+.empty-wrap{
+  border-top: solid 1px $normal-text;
+}
+// 成为车主的按钮
+.tobe-driver-button{
+  padding: .08rem .2rem;
+  border-radius: .04rem;
+  background-color: $main-color;
+  box-shadow: 0px 6px 10px -2px rgba(255, 174, 32, 0.5);
+  @include font (.16rem, #FFFFFF);
+}
 </style>

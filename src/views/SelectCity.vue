@@ -3,6 +3,7 @@
     <!-- 搜索框 / 导航栏 -->
     <nav-bar-search
       mode="dark"
+      ref="search"
       v-model="searchValue"
       @change="handleSearch"
       @focus="handleFocus"
@@ -135,6 +136,7 @@ export default {
     // 全局存储城市区县数据
     ...mapState(['position']),
     ...mapGetters(['location', 'unGeoLocation']),
+    // 顶部显示当前位置的信息
     locationText () {
       const textType = {
         doing: '正在定位中...',
@@ -363,16 +365,24 @@ export default {
       this.resetCounty()
     }
   },
-  created: async function () {
-    // 如果没有城市信息就定位
-    if (this.unGeoLocation) {
-      this.getCurrentPosition()
-    } else this.status = 'success'
-
+  mounted: async function () {
     // 如果没有城市列表就发起请求
     if (this.position.cityList.length === 0) {
       this.queryCityList()
     }
+
+    // 如果需要直接搜索，则弹出键盘
+    if (this.$route.query.guide === 'search') {
+      this.$refs.search.inputFocus()
+      this.status = this.unGeoLocation ? 'fail' : 'success'
+      return
+    }
+
+    // 如果没有城市信息就定位
+    if (this.unGeoLocation) {
+      this.status = 'doing'
+      this.getCurrentPosition()
+    } else this.status = 'success'
   },
   beforeRouteLeave (to, from, next) {
     if (this.unGeoLocation) {

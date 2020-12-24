@@ -148,7 +148,7 @@ export default {
       this.$router.push({ path: '/common/searchline/list', query })
     },
     handleClickSearch () {
-      console.log('click search')
+      this.$router.push('/common/city?guide=search')
     },
     // 进入详情页面
     handleLinkDetail (e, id) {

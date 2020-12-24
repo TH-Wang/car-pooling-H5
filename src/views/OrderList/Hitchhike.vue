@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     handleClickSearch () {
-      console.log('click search')
+      this.$router.push('/common/city?guide=search')
     },
     handleClickReserve ({ id }) {
       console.log('[点击预约]')

@@ -57,6 +57,7 @@ import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import { getPointText } from '@/utils/getLineText'
+import { shareip } from '@/configs/sharePort'
 
 export default {
   components: {
@@ -118,7 +119,7 @@ export default {
       // 途径
       const passList = passPointList.filter(i => i.type === 2).map(i => i.pointName).join('-')
       // 预约
-      const link = 'http://39.104.202.76/car/car/index.html#/common/triplink/driver?id=' + this.orderId
+      const link = shareip + '/common/triplink/driver?id=' + this.orderId
       // const reserve = type === 'wechat' ? '<a href="' + link + '">查看手机号</a>' : link
       return '【拼车】车找人\n' +
         '【路线】' + this.addrName.startAddr + '-' + this.addrName.endAddr + '\n' +

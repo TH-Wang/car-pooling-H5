@@ -38,7 +38,12 @@
 
     <!-- 底部按钮组 -->
     <div class="footer-button-group">
-      <main-button width="1.58rem" color="gray" type="hollow">转发分享</main-button>
+      <main-button
+        width="1.58rem"
+        color="gray"
+        type="hollow"
+        @click="copyToClip"
+      >转发分享</main-button>
       <main-button
         width="1.58rem"
         color="yellow"
@@ -58,6 +63,7 @@ import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import { getPointText } from '@/utils/getLineText'
 import getLngLat from '@/utils/getLngLat'
+import { shareip } from '@/configs/sharePort'
 
 export default {
   components: {
@@ -102,6 +108,36 @@ export default {
     },
     handleLinkReserve () {
       this.$router.push({ path: '/common/reserve', query: { id: this.record.pprId } })
+    },
+    // 复制到剪贴板
+    copyToClip (type) {
+      const aux = document.createElement('textarea')
+      aux.value = this.getCopyContent(type)
+      document.body.appendChild(aux)
+      aux.select()
+      document.execCommand('copy')
+      document.body.removeChild(aux)
+      this.$dialog.alert({
+        title: '复制成功',
+        message: '快到QQ、微信等群里分享该信息吧~'
+      })
+    },
+    // 复制内容
+    getCopyContent (type) {
+      const { startTime, passPointList, remark } = this.record
+      // 时间
+      const formatTime = moment(startTime).format('MM月DD日 HH:mm')
+      // 途径
+      const passList = passPointList.filter(i => i.type === 2).map(i => i.pointName).join('-')
+      // 预约
+      const link = shareip + '/common/triplink/driver?id=' + this.orderId
+      // const reserve = type === 'wechat' ? '<a href="' + link + '">查看手机号</a>' : link
+      return '【拼车】车找人\n' +
+        '【路线】' + this.addrName.startAddr + '-' + this.addrName.endAddr + '\n' +
+        '【途径】' + (passList || '无') + '\n' +
+        '【时间】' + formatTime + '\n' +
+        '【预约】' + link + '\n' +
+        '【备注】' + (remark || '无')
     }
   },
   created: async function () {
