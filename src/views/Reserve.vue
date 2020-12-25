@@ -40,7 +40,6 @@
       <!-- 上车点 -->
       <custom-input
         name="startAddr"
-        clearable
         readonly
         placeholder="请输入上车点"
         @click="handleSearch($event, 'start')"
@@ -54,7 +53,6 @@
       <!-- 到达地点 -->
       <custom-input
         name="endAddr"
-        clearable
         readonly
         placeholder="请输入到达地点"
         @click="handleSearch($event, 'end')"

@@ -28,7 +28,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { cloneDeep } from 'lodash'
+// import { cloneDeep } from 'lodash'
 import LineCard from './LineCard'
 
 export default {
@@ -66,22 +66,29 @@ export default {
   methods: {
     // 搜索快捷路线的拼车单
     handleClick (e, record) {
-      const params = cloneDeep(this.query)
-      if ('publishType' in params) delete params.publishType
-      const { pname, cityname, startAddr, startAddrAll, endAddr, endAddrAll, startLon, startLat, endLon, endLat } = record
+      // const params = cloneDeep(this.query)
+      // if ('publishType' in params) delete params.publishType
+      // const { pname, cityname, startAddr, startAddrAll, endAddr, endAddrAll, startLon, startLat, endLon, endLat } = record
+      const { startAddrAll, endAddrAll, id } = record
       const query = {
-        pname,
-        cityname,
-        startAddr,
         startAddrAll,
-        endAddr,
         endAddrAll,
-        startAddrLon: startLon,
-        startAddrLat: startLat,
-        endAddrLon: endLon,
-        endAddrLat: endLat,
-        ...params
+        id,
+        mode: 'fast'
       }
+      // const query = {
+      //   pname,
+      //   cityname,
+      //   startAddr,
+      //   startAddrAll,
+      //   endAddr,
+      //   endAddrAll,
+      //   startAddrLon: startLon,
+      //   startAddrLat: startLat,
+      //   endAddrLon: endLon,
+      //   endAddrLat: endLat,
+      //   ...params
+      // }
       this.$router.push({ path: '/common/searchline/list', query })
     },
     // 点击查看更多

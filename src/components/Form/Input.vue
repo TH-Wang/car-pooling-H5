@@ -183,6 +183,11 @@ export default {
       background-color: transparent;
       border: none;
       font-size: .16rem;
+      color: $main-text;
+
+      &::placeholder{
+        color: $tip-text;
+      }
     }
 
     // 触发 "必填" 校验规则的错误提示

@@ -32,7 +32,7 @@
       finished-text="没有更多了"
       :error.sync="error"
       error-text="加载失败，请点击重试"
-      @load="handleListLoad"
+      @load="handleLoad"
       class="list-container"
     ><work-order :list="list" :type="dataSource.workType" />
       <!-- <carpool-order
@@ -57,7 +57,7 @@
 import { mapState } from 'vuex'
 import { List } from 'vant'
 import { cloneDeep } from 'lodash'
-import { getCar, queryPassengerOrders } from '@/api'
+import { getCar, queryPassengerOrders, getFastLineCar } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import WorkOrder from '@/components/WorkOrder'
 // import CarpoolOrder from '@/components/OrderItem/Carpool'
@@ -76,7 +76,8 @@ export default {
   },
   data: () => ({
     dataSource: {},
-    positionInfo: null
+    positionInfo: null,
+    notReqOnMounted: true
   }),
   computed: {
     ...mapState(['position', 'search']),
@@ -90,6 +91,15 @@ export default {
     }
   },
   methods: {
+    // 普通模式下，监听列表加载
+    handleLoad () {
+      if (!this.dataSource.mode) this.handleListLoad()
+    },
+    // 搜索快捷路线
+    async handleQueryFastLine () {
+      const res = await getFastLineCar(this.dataSource.id)
+      this.list = res.data.data
+    },
     reqApi (data) {
       const driverReq = ['pending', 'hitCus', 'carryCus']
       // 如果是乘客查询车主信息
@@ -106,7 +116,7 @@ export default {
       if (dataSource.endAddrAll) delete dataSource.endAddr
       const data = {
         ...dataSource,
-        queryAllPosition: 1,
+        // queryAllPosition: 1,
         orderType: parseInt(dataSource.orderType) // 1-车主发布 2-乘客发布
       }
       const parseList = ['startAddrLon', 'startAddrLat', 'endAddrLon', 'endAddrLat']
@@ -130,6 +140,9 @@ export default {
   },
   created () {
     this.dataSource = this.$route.query
+    if (!this.dataSource.mode) {
+      this.handleListLoad()
+    } else this.handleQueryFastLine()
   }
 }
 </script>

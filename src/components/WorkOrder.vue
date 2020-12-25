@@ -5,12 +5,12 @@
       v-for="(item, index) in list"
       :key="index"
       :record="item"
-      @click="handleLinkDetail($event, item.pprId)"
+      @click="handleLinkDetail($event, item.publish.id)"
       @like="handleCommitLike($event, item.pprId)"
     ><template #button>
         <mini-button
           color="yellow"
-          @click="handleLinkDetail($event, item.pprId)"
+          @click="handleLinkDetail($event, item.publish.id)"
         >立即预订</mini-button>
       </template>
     </carpool-order>

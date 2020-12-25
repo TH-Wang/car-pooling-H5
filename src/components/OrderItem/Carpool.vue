@@ -11,14 +11,14 @@
       <!-- 主要信息 -->
       <div class="header-main">
         <div class="line-text">
-          <div class="start">{{record.startAddr}}</div>
+          <div class="start">{{record.publish.startAddr}}</div>
           <img class="arrow" src="@/assets/icons/line-arrow.png" alt="">
-          <div class="end">{{record.endAddr}}</div>
+          <div class="end">{{record.publish.endAddr}}</div>
         </div>
         <div class="car-info">
           <div class="car-info-item">
             <img src="@/assets/icons/order/car.png" alt="">
-            <span>{{record.vehicleType}}</span>
+            <span>{{record.carDetail.carModel}}</span>
           </div>
           <div class="car-info-item">
             <img src="@/assets/icons/order/location.png" alt="">
@@ -31,7 +31,7 @@
         </div>
       </div>
       <!-- 价格 -->
-      <div class="price"><span>￥</span>{{record.cost}}</div>
+      <div class="price"><span>￥</span>{{record.publish.cost}}</div>
     </div>
 
     <!-- 详细内容 -->
@@ -40,17 +40,17 @@
         <span>途径点</span>{{passPointList}}
       </div>
       <div class="content-item">
-        <span>备注</span>{{record.remark || '无'}}
+        <span>备注</span>{{record.publish.remark || '无'}}
       </div>
     </div>
 
     <!-- 用户信息及操作按钮 -->
     <div class="user">
       <!-- 用户信息及点赞 -->
-      <social-bar :record="record" @like="(type) => {$emit('like', type)}"/>
+      <social-bar :record="record.suser" @like="(type) => {$emit('like', type)}"/>
       <!-- 拼单操作 -->
       <div class="book-order">
-        <div class="seat"><span>余座</span><span class="num-yellow">{{record.remainingSeat}}</span></div>
+        <div class="seat"><span>余座</span><span class="num-yellow">{{record.publish.seatNum}}</span></div>
         <slot name="button"></slot>
       </div>
     </div>
@@ -79,15 +79,16 @@ export default {
     },
     // 时间分钟
     hourMinute () {
-      return this.record.startTime.slice(-5)
+      return this.record.publish.startTime.slice(-5)
     },
     // 从发布到现在的时间
     fromNow () {
-      return moment(this.record.startTime).fromNow()
+      return moment(this.record.publish.startTime).fromNow()
     },
     // 距离
     distance () {
-      return this.record.distance ? this.record.distance.toFixed(2) : ''
+      const distance = this.record.startAddrDistance
+      return distance > 1000000 ? (distance / 1000000).toFixed(2) : distance + 'm'
     }
   },
   methods: {

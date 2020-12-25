@@ -4,7 +4,7 @@
     <div class="avatar">
       <van-image :src="record.headimg" width="100%" height="100%" fit="cover" round />
     </div>
-    <div class="name ellipsis">{{record.userName}}</div>
+    <div class="name ellipsis">{{record.userName || record.username}}</div>
     <!-- 点赞 -->
     <div class="social" v-if="showLike">
       <img v-if="record.isDo === 1" src="@/assets/icons/order/like-active.png" @click.stop="$emit('like', 0)">

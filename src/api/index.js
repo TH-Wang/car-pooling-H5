@@ -36,6 +36,7 @@ export const getCar = order.getCar
 export const queryPassengerOrders = order.queryPassengerOrders
 export const getCommonRoute = order.getCommonRoute
 export const getPassengerCommonRoute = order.getPassengerCommonRoute
+export const getFastLineCar = order.getFastLineCar
 export const commitOrder = order.commitOrder
 export const getOrdering = order.getOrdering
 export const queryByOrderId = order.queryByOrderId

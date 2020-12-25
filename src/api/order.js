@@ -5,6 +5,7 @@ export default {
   queryPassengerOrders,
   getCommonRoute,
   getPassengerCommonRoute,
+  getFastLineCar,
   commitOrder,
   getOrdering,
   queryByOrderId,
@@ -18,7 +19,7 @@ export default {
 
 // 按条件找车
 function getCar (carVo) {
-  return axios.post('/order/getCar', carVo)
+  return axios.post('/order/getNewCar', carVo)
 }
 
 // 车主找人
@@ -41,6 +42,15 @@ function getPassengerCommonRoute (data) {
     url: '/order/getPassengerCommonRoute',
     method: 'POST',
     data
+  })
+}
+
+// 通过快捷路线搜索拼车列表
+function getFastLineCar (id) {
+  return axios({
+    url: '/order/getFastLineCar',
+    method: 'POST',
+    params: { id }
   })
 }
 

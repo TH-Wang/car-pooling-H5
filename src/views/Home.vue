@@ -147,7 +147,7 @@ export default {
     handleSearchOrder () {
       const { startAddr, endAddr } = this.search
       const params = cloneDeep(this.query)
-      delete params.publishType
+      // delete params.publishType
       const query = {
         ...params,
         startAddr: startAddr.name,
