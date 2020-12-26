@@ -36,7 +36,9 @@ export const getCar = order.getCar
 export const queryPassengerOrders = order.queryPassengerOrders
 export const getCommonRoute = order.getCommonRoute
 export const getPassengerCommonRoute = order.getPassengerCommonRoute
+export const getNewPassengerCommonRoute = order.getNewPassengerCommonRoute
 export const getFastLineCar = order.getFastLineCar
+export const getFastLinePassengerCar = order.getFastLinePassengerCar
 export const commitOrder = order.commitOrder
 export const getOrdering = order.getOrdering
 export const queryByOrderId = order.queryByOrderId
@@ -45,7 +47,6 @@ export const getPublishDetail = order.getPublishDetail
 export const getPassengerPublishDetail = order.getPassengerPublishDetail
 export const driverOrder = order.driverOrder
 export const appointmentPassenger = order.appointmentPassenger
-export const latestPublishByUser = order.latestPublishByUser
 
 // 发布订单模块
 export const insertPublish = publish.insertPublish
@@ -54,6 +55,8 @@ export const queryPublish = publish.queryPublish
 export const queryPublishById = publish.queryPublishById
 export const updatePublish = publish.updatePublish
 export const noSeatNum = publish.noSeatNum
+export const latestDriverPublish = publish.latestDriverPublish
+export const latestPublishByUser = publish.latestPublishByUser
 
 // 消息模块
 export const queryUserMessage = message.queryUserMessage

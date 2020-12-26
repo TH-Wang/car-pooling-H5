@@ -170,12 +170,22 @@ export default {
       data.telPhone = this.user.info.phone
       // 获取起止点信息
       const { startAddr, endAddr } = this.release
-      data.startAddr = startAddr.name
-      data.startLon = startAddr.location.lng
-      data.startLat = startAddr.location.lat
-      data.endAddr = endAddr.name
-      data.endLon = endAddr.location.lng
-      data.endLat = endAddr.location.lat
+      const startParams = this.filterPointParams(startAddr)
+      const endParams = this.filterPointParams(endAddr)
+      Object.assign(data, {
+        startAddr: startParams.pointName,
+        startLon: startParams.lon,
+        startLat: startParams.lat,
+        pname: startParams.pname,
+        cityname: startParams.cityname,
+        township: startParams.township,
+        endAddr: endParams.pointName,
+        endLon: endParams.lon,
+        endLat: endParams.lat,
+        endpname: endParams.pname,
+        endcityname: endParams.cityname,
+        endtownship: endParams.township
+      })
       // 删除多余的中间路线字段
       delete data.middlePoint
       return inesrtPublishPassenger(data)
@@ -187,12 +197,15 @@ export default {
 
       // 获取起止点、途径点信息
       data.passPointList = this.getLineData(data)
+      if (data.publishType === 5) {
+        data.passPointList = data.passPointList.filter(i => i.type !== 2)
+      }
       // 删除多余的中间路线字段
       delete data.middlePoint
 
       // 订单状态（进行中）
       data.orderState = 1
-
+      console.log(data)
       // 发起请求
       return insertPublish(data)
     },
@@ -206,6 +219,7 @@ export default {
       // 出发点
       result.push({
         ..._this_.filterPointParams(startAddr),
+        orderType: 1,
         sort: ++sort,
         type: 1
       })
@@ -228,7 +242,7 @@ export default {
     },
     // 通过地点信息筛选参数
     filterPointParams (data) {
-      const { pname, cityname, adname, name, location } = data
+      const { pname, cityname, adname, township, name, location } = data
 
       // 直辖市
       const city = ['重庆市', '北京市', '上海市', '天津市']
@@ -238,11 +252,12 @@ export default {
         lat: location.lat
       }
       // 如果是直辖市
-      if (city.indexOf(pname) !== -1) {
+      if (city.indexOf(pname) !== -1 && !data.sort) {
         return {
           ...result,
           pname: cityname,
-          cityname: adname
+          cityname: adname,
+          township
           // fullName: `${cityname}${adname}${name}`
         }
       }
@@ -250,7 +265,8 @@ export default {
       return {
         ...result,
         pname,
-        cityname
+        cityname,
+        township
         // fullName: `${pname}${cityname}${name}`
       }
     }

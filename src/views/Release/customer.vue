@@ -18,7 +18,7 @@
         :options="item"
       />
       <!-- 是否带物 -->
-      <custom-picker
+      <!-- <custom-picker
         v-if="publishType !== 5 && publishType !== 6"
         v-model="isTakeGoods"
         name="isTakeGoods"
@@ -39,7 +39,7 @@
         label="体积"
         placeholder="请输入体积"
         :rules="[{require: true}]"
-      />
+      /> -->
       <!-- 公用的备注表单项 -->
       <custom-textarea
         name="remark"
@@ -88,7 +88,8 @@ import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
 import { isEmpty } from 'lodash'
 import { latestPublishByUser } from '@/api'
-import { Form, Item, Field, Picker, Textarea } from '@/components/Form'
+// import { Form, Item, Field, Picker, Textarea } from '@/components/Form'
+import { Form, Item, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 // import ChooseComboLayer from '@/components/Layer/ChooseCombo'
 import { customer as customerConfig } from './config.js'
@@ -98,7 +99,7 @@ export default {
     'van-checkbox': Checkbox,
     'custom-form': Form,
     'custom-item': Item,
-    'custom-field': Field,
+    // 'custom-field': Field,
     'custom-picker': Picker,
     'custom-textarea': Textarea,
     'main-button': MainButton
@@ -148,7 +149,9 @@ export default {
     async setLastData () {
       const res = await latestPublishByUser()
       const data = res.data.data
-      this.$store.commit('setReleaseAddrInfo', data.passPointList)
+      const publishType = parseInt(data.publishType)
+      data.publishType = publishType >= 1 && publishType <= 3 ? 1 : publishType
+      // this.$store.commit('setReleaseAddrInfo', data.passPointList)
       this.$refs.form.setValues(data)
     },
     // 发送提交请求
@@ -174,6 +177,8 @@ export default {
       //   data.publishType = this.judgeType()
       // }
       data.publishType = this.judgeType()
+      // 顺路带物
+      if (data.publishType === 5) data.isTakeGoods = 1
       console.log(data)
       // 通知父组件做提交相关操作
       this.$emit('submit', { data, type: 'customer' })

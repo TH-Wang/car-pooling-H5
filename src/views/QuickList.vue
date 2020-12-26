@@ -33,8 +33,10 @@
     </div>
 
     <!-- 如果列表数据为空 -->
-    <div v-if="list.length === 0" @click="handleRetry">
-      <van-empty description="暂无快捷路线，可点击重试" />
+    <div
+      v-if="list.length === 0"
+      @click="handleRetry"
+    ><van-empty description="暂无快捷路线，可点击重试" />
     </div>
     <!-- 快捷路线 -->
     <van-list
@@ -52,6 +54,7 @@
         v-for="item in list"
         :key="item.id"
         :record="item"
+        :tagColor="query.workType === 'pending' ? 'green' : 'yellow'"
         common
         @click="handleSearch($event, item)"
       />
@@ -63,7 +66,7 @@
 import { mapGetters, mapState } from 'vuex'
 import { List } from 'vant'
 import { cloneDeep, isEmpty } from 'lodash'
-import { getCommonRoute, queryPositionForCounty } from '@/api'
+import { getCommonRoute, getNewPassengerCommonRoute, queryPositionForCounty } from '@/api'
 import LineCard from '@/components/LineCard'
 import ListMixin from '@/mixins/list-mixin'
 
@@ -91,15 +94,20 @@ export default {
     }
   },
   methods: {
-    reqApi: getCommonRoute,
+    reqApi (data) {
+      if (this.query.workType === 'pending') {
+        return getNewPassengerCommonRoute(data)
+      } else return getCommonRoute(data)
+    },
     // 主要的请求参数
     getRequestDatas () {
       const addrName = this.activeHotCity === null
         ? this.position.city.name
         : this.addrName
-      const p = this.query.publishType
-      const publishType = /,/.test(p) ? p : parseInt(this.query.publishType)
-      const data = { publishType }
+      // const p = this.query.publishType
+      // const publishType = /,/.test(p) ? p : parseInt(this.query.publishType)
+      const { publishType, orderType } = this.query
+      const data = { publishType, orderType: parseInt(orderType) }
       if (!isEmpty(addrName)) data.addrName = addrName
       return data
     },
@@ -115,9 +123,11 @@ export default {
     handleSearch (e, record) {
       const params = cloneDeep(this.query)
       if ('publishType' in params) delete params.publishType
-      const { startAddr, endAddr } = record
+      const { id, startAddr, endAddr } = record
       console.log(params)
       const query = {
+        id,
+        mode: 'fast',
         startAddr,
         endAddr,
         ...params

@@ -32,7 +32,7 @@
       finished-text="没有更多了"
       :error.sync="error"
       error-text="加载失败，请点击重试"
-      @load="handleLoad"
+      @load="handleListLoad"
       class="list-container"
     ><work-order :list="list" :type="dataSource.workType" />
       <!-- <carpool-order
@@ -57,7 +57,7 @@
 import { mapState } from 'vuex'
 import { List } from 'vant'
 import { cloneDeep } from 'lodash'
-import { getCar, queryPassengerOrders, getFastLineCar } from '@/api'
+import { getCar, queryPassengerOrders, getFastLineCar, getFastLinePassengerCar } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import WorkOrder from '@/components/WorkOrder'
 // import CarpoolOrder from '@/components/OrderItem/Carpool'
@@ -76,8 +76,8 @@ export default {
   },
   data: () => ({
     dataSource: {},
-    positionInfo: null,
-    notReqOnMounted: true
+    positionInfo: null
+    // notReqOnMounted: true
   }),
   computed: {
     ...mapState(['position', 'search']),
@@ -92,23 +92,34 @@ export default {
   },
   methods: {
     // 普通模式下，监听列表加载
-    handleLoad () {
-      if (!this.dataSource.mode) this.handleListLoad()
-    },
+    // handleLoad () {
+    //   if (!this.dataSource.mode) this.handleListLoad()
+    // },
     // 搜索快捷路线
-    async handleQueryFastLine () {
-      const res = await getFastLineCar(this.dataSource.id)
-      this.list = res.data.data
-    },
+    // async handleQueryFastLine () {
+    //   const res = await getFastLineCar(this.dataSource.id)
+    //   this.list = res.data.data
+    // },
     reqApi (data) {
       const driverReq = ['pending', 'hitCus', 'carryCus']
       // 如果是乘客查询车主信息
       if (driverReq.indexOf(this.dataSource.workType) === -1) {
-        return getCar(data)
-      } else return queryPassengerOrders(data)
+        return this.dataSource.mode === 'fast'
+          ? getFastLineCar(data)
+          : getCar(data)
+      } else {
+        return this.dataSource.mode === 'fast'
+          ? getFastLinePassengerCar(data)
+          : queryPassengerOrders(data)
+      }
     },
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
+      if (this.dataSource.mode === 'fast') {
+        const id = parseInt(this.dataSource.id)
+        return { id }
+      }
+
       // 订单信息
       const dataSource = cloneDeep(this.dataSource)
       if (dataSource.workType) delete dataSource.workType
@@ -140,9 +151,9 @@ export default {
   },
   created () {
     this.dataSource = this.$route.query
-    if (!this.dataSource.mode) {
-      this.handleListLoad()
-    } else this.handleQueryFastLine()
+    // if (!this.dataSource.mode) {
+    //   this.handleListLoad()
+    // } else this.handleQueryFastLine()
   }
 }
 </script>

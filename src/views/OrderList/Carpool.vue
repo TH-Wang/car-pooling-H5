@@ -116,9 +116,9 @@ export default {
       // 车单类型
       const publishType = this.publishType
       // 当前地区
-      const county = this.position.county.code
+      const cityname = this.position.county.name
       return {
-        county,
+        cityname,
         orderType: 1, // 1-车主发布 2-乘客发布
         publishType
       }
@@ -129,7 +129,7 @@ export default {
       // const { city, county } = this.position
       // const addrName = publishType === 3 ? city.name : county.name
       const addrName = this.position.county.name
-      return { startPage: 1, pageSize: 10, publishType, addrName }
+      return { startPage: 1, orderType: 1, pageSize: 10, publishType, addrName }
     },
     // 按起止地点找车
     handleSearchOrder () {

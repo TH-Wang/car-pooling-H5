@@ -5,20 +5,20 @@
     <div class="header">
       <!-- 时间 -->
       <div class="time">
-        <div class="time-num">{{record.startTime.slice(-5)}}</div>
+        <div class="time-num">{{startTime.slice(-5)}}</div>
         <div class="time-text">{{fromNow}}</div>
       </div>
       <!-- 主要信息 -->
       <div class="header-main">
         <div class="line-text">
-          <div class="start">{{record.startAddr}}</div>
+          <div class="start">{{addrName.startAddr}}</div>
           <img class="arrow" src="@/assets/icons/line-arrow.png" alt="">
-          <div class="end">{{record.endAddr}}</div>
+          <div class="end">{{addrName.endAddr}}</div>
         </div>
         <div class="car-info">
-          <div class="car-info-item">
+          <div class="car-info-item" v-if="record.carDetail">
             <img src="@/assets/icons/order/car.png" alt="">
-            <span>{{record.vehicleType}}</span>
+            <span>{{record.carDetail.carModel}}</span>
           </div>
           <div class="car-info-item">
             <img src="@/assets/icons/order/location.png" alt="">
@@ -31,18 +31,18 @@
         </div>
       </div>
       <!-- 价格 -->
-      <div :class="`price-${type}`"><span>￥</span>{{record.cost}}</div>
+      <div :class="`price-${type}`"><span>￥</span>{{info.cost}}</div>
     </div>
 
     <!-- 详细内容 -->
     <div class="content">
       <div class="content-item">
-        <span>重量</span>{{record.weight}}kg以内</div>
+        <span>重量</span>{{info.weight}}</div>
       <div class="content-item">
-        <span>体积</span>{{record.volume}}t以内
+        <span>体积</span>{{info.volume}}
       </div>
       <div class="content-item">
-        <span>备注</span>{{record.remark || '无'}}
+        <span>备注</span>{{info.remark || '无'}}
       </div>
     </div>
 
@@ -51,7 +51,7 @@
       <!-- 用户信息及点赞 -->
       <social-bar
         :show-like="type === 'customer'"
-        :record="record"
+        :record="{...record.suser, ...record.publish}"
         @like="(type)=>{$emit('like', type)}"
       />
       <!-- 拼单操作 -->
@@ -82,13 +82,38 @@ export default {
     }
   },
   computed: {
+    // 起止点信息
+    addrName () {
+      if (this.record.publish) {
+        const { startAddr, endAddr } = this.record.publish
+        return { startAddr, endAddr }
+      } else {
+        const { startAddr, endAddr } = this.record.passengerOrder
+        return { startAddr, endAddr }
+      }
+    },
+    // 出发时间
+    startTime () {
+      let startTime
+      if (this.record.publish) {
+        startTime = this.record.publish.startTime
+      } else startTime = this.record.passengerOrder.passengerStartTime
+      return startTime
+    },
     // 从发布到现在的时间
     fromNow () {
-      return moment(this.record.startTime).fromNow()
+      return moment(this.startTime).fromNow()
     },
     // 距离
     distance () {
-      return this.record.distance ? this.record.distance.toFixed(2) : ''
+      if (this.record.publish) return this.record.publish.distance
+      return this.record.distance
+    },
+    // 信息
+    info () {
+      const info = this.record.publish ? this.record.publish : this.record.passengerOrder
+      const { cost, weight, volume, remark } = info
+      return { cost, weight, volume, remark }
     }
   },
   methods: {

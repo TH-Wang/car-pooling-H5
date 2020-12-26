@@ -33,12 +33,19 @@
     />
 
     <!-- 热门路线 -->
-    <quick-line style="padding-bottom: .20rem" title="热门路线" tagColor="green" />
+    <quick-line
+      style="padding-bottom: .20rem"
+      title="热门路线"
+      :dataSource="quickList"
+      :query="query"
+      @retry="handleRetryQuick"
+    />
   </div>
 </template>
 
 <script>
 import { NoticeBar } from 'vant'
+import { getCommonRoute } from '@/api'
 import Feedback from '@/components/Feedback'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
@@ -55,14 +62,39 @@ export default {
       startAddr: null,
       endAddr: null
     },
-    show: true
+    show: true,
+    quickList: [],
+    query: { workType: 'carpool', orderType: 1, publishType: '1,2,3' }
   }),
+  methods: {
+    async handleReqQuick () {
+      const addrName = this.position.county.name
+      const data = {
+        startPage: 1,
+        orderType: 1,
+        pageSize: 10,
+        publishType: '1,2,3',
+        addrName
+      }
+      const res = await getCommonRoute(data)
+      this.quickList = res.data.data
+    },
+    async handleRetryQuick () {
+      this.$toast.loading({
+        message: '加载中',
+        duration: 10000
+      })
+      await this.handleReqQuick()
+      this.$toast.clear()
+    }
+  },
   mounted () {
     const { msg, startAddr, endAddr } = this.$route.params
     this.addr = { startAddr, endAddr }
     this.$dialog.alert({
       message: '对不起！' + msg
     })
+    this.handleReqQuick()
   }
 }
 </script>

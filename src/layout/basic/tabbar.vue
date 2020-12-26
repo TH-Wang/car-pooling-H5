@@ -24,6 +24,7 @@ import { Icon } from 'vant'
 import { throttle } from 'lodash'
 import tabbarConfig from '@/configs/tabbar'
 import EventBus from '@/utils/eventBus'
+import { mapState } from 'vuex'
 
 const iconFile = name => require(`@/assets/icons/index/${name}.png`)
 const iconConfig = {
@@ -43,6 +44,7 @@ export default {
     scrollTop: 0
   }),
   computed: {
+    ...mapState(['user']),
     tabbarId () {
       return this.$store.state.tabbar.tabbarId
     }

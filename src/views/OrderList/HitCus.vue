@@ -83,7 +83,9 @@ export default {
     reqApi: queryPassengerOrders,
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
+      const cityname = this.position.county.name
       return {
+        cityname,
         // orderType: 2, // 1-车主发布 2-乘客发布
         publishType: 4
       }

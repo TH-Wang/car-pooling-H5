@@ -43,6 +43,29 @@
         :key="item.id"
         :options="item"
       />
+      <!-- 是否带物 -->
+      <custom-picker
+        v-if="publishType !== 5 && publishType !== 6"
+        v-model="isTakeGoods"
+        name="isTakeGoods"
+        label="是否带物"
+        placeholder="请选择是否带物"
+        :columns="[{ id: 0, label: '否' }, { id: 1, label: '是' }]"
+      />
+      <custom-field
+        v-if="showTakeGoodsField"
+        name="weight"
+        label="重量"
+        placeholder="请输入重量"
+        :rules="[{required: true}]"
+      />
+      <custom-field
+        v-if="showTakeGoodsField"
+        name="volume"
+        label="体积"
+        placeholder="请输入体积"
+        :rules="[{required: true}]"
+      />
       <!-- 公用的备注表单项 -->
       <custom-textarea
         name="remark"
@@ -69,8 +92,8 @@
 
 <script>
 import { userCarDetail, getPublishDetail, updatePublish, noSeatNum } from '@/api'
-import { cloneDeep } from 'lodash'
-import { Form, Item, Picker, Textarea } from '@/components/Form'
+import { cloneDeep, isEmpty } from 'lodash'
+import { Form, Item, Field, Picker, Textarea } from '@/components/Form'
 import SearchCard from '@/components/SearchCard'
 import MainButton from '@/components/MainButton'
 import { getDriverOpts } from './config'
@@ -83,6 +106,7 @@ export default {
     'search-card': SearchCard,
     'custom-form': Form,
     'custom-item': Item,
+    'custom-field': Field,
     'custom-picker': Picker,
     'custom-textarea': Textarea,
     'main-button': MainButton
@@ -99,7 +123,9 @@ export default {
       { id: 4, label: '上下班拼车' },
       { id: 5, label: '顺路带物' },
       { id: 6, label: '旅游包车' }
-    ]
+    ],
+    // 是否带物
+    isTakeGoods: 0
   }),
   computed: {
     ...mapState(['user', 'trip']),
@@ -127,15 +153,27 @@ export default {
         case 3: return { text: '行程已完成', color: 'gray' }
         default: return { text: '保存行程', color: 'yellow' }
       }
+    },
+    // 是否显示 [是否带物] 的 [重量] 和 [体积]
+    showTakeGoodsField () {
+      const { publishType, isTakeGoods } = this
+      return publishType !== 5 && publishType !== 6 && isTakeGoods === 1
+    },
+    // 是否起始点和终止点都显示了
+    allInputStartEnd () {
+      const { startAddr, endAddr } = this.trip
+      return !isEmpty(startAddr.name) && !isEmpty(endAddr.name)
     }
   },
   methods: {
     // 获取该订单信息
     async getOrderInfo () {
       const res = await getPublishDetail(this.orderId)
-      const publishType = res.data.data.publishType
+      const data = res.data.data
+      const publishType = data.publishType
       this.setFormValues({
-        ...res.data.data,
+        ...data,
+        vehicleType: parseInt(data.vehicleType),
         publishType: publishType >= 1 && publishType <= 3 ? 1 : publishType
       })
     },
@@ -146,7 +184,7 @@ export default {
         this.$store.commit('setCarInfo', res.data.data)
       }
       // 赋值到表单配置上
-      this.formOptions = getDriverOpts(this.carList)
+      this.formOptions = getDriverOpts(this.user.carList)
     },
     // 打开输入路线的对话框
     handleOpenLine () {
@@ -158,6 +196,10 @@ export default {
       this.$store.commit('setTripAddrInfo', data.passPointList)
       // 设置表单信息
       this.$refs.form.setValues(data)
+      setTimeout(() => {
+        this.$refs.form.setValueField('weight', data.weight)
+        this.$refs.form.setValueField('volume', data.volume)
+      }, 300)
     },
     // 设为无座
     async handleSetNull () {
@@ -209,6 +251,8 @@ export default {
       data.id = parseInt(this.orderId)
       // 订单类型
       data.publishType = this.judgeType()
+      // 顺路带物
+      if (data.publishType === 5) data.isTakeGoods = 1
       console.log(data)
       // 发起请求
       const res = await updatePublish(data)
@@ -226,6 +270,10 @@ export default {
       if (this.publishType > 3) return this.publishType
       if (!this.allInputStartEnd) return 1
       const { startAddr, endAddr } = this.trip
+      // 如果是后端返回的数据
+      if (typeof startAddr.sort !== 'undefined') startAddr.adname = startAddr.cityname
+      if (typeof endAddr.sort !== 'undefined') endAddr.adname = endAddr.cityname
+      // 判断是否跨省
       if (startAddr.pname !== endAddr.pname) return 3
       if (this.getCityName(startAddr.cityname) === this.getCityName(endAddr.cityname)) {
         return startAddr.adname === endAddr.adname ? 1 : 2

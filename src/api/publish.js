@@ -6,7 +6,9 @@ export default {
   queryPublish,
   queryPublishById,
   updatePublish,
-  noSeatNum
+  noSeatNum,
+  latestDriverPublish,
+  latestPublishByUser
 }
 
 // 车主发布订单
@@ -45,4 +47,14 @@ function noSeatNum (id) {
     method: 'POST',
     params: { id }
   })
+}
+
+// 车主最近一次发布的订单信息
+function latestDriverPublish () {
+  return axios.post('/publish/latestDriverPublish')
+}
+
+// 查询乘客最近一次发布的信息
+function latestPublishByUser () {
+  return axios.post('/order/latestPublishByUser')
 }

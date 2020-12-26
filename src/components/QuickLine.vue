@@ -69,11 +69,13 @@ export default {
       // const params = cloneDeep(this.query)
       // if ('publishType' in params) delete params.publishType
       // const { pname, cityname, startAddr, startAddrAll, endAddr, endAddrAll, startLon, startLat, endLon, endLat } = record
-      const { startAddrAll, endAddrAll, id } = record
+      const { id, startAddrAll, endAddrAll } = record
+      const { workType } = this.query
       const query = {
+        id,
         startAddrAll,
         endAddrAll,
-        id,
+        workType,
         mode: 'fast'
       }
       // const query = {

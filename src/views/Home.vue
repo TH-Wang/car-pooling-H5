@@ -141,7 +141,7 @@ export default {
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
       const addrName = this.position.county.name
-      return { startPage: 1, pageSize: 10, publishType: '1,2,3', addrName }
+      return { startPage: 1, orderType: 1, pageSize: 10, publishType: '1,2,3', addrName }
     },
     // 按起止地点找车
     handleSearchOrder () {

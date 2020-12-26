@@ -1,5 +1,16 @@
 <template>
-  <div class="page-container">
+  <!-- 如果未登录 -->
+  <div v-if="!user.token">
+    <van-nav-bar title="个人中心" />
+    <!-- 未登录则显示登录按钮 -->
+    <van-empty
+      :image="require('@/assets/images/empty-login.png')"
+      description="登录后即可查看您的预约和行程等信息">
+      <div class="login-button">登录/注册</div>
+    </van-empty>
+  </div>
+  <!-- 登录后展示内容 -->
+  <div v-else class="page-container">
     <!-- 顶部 -->
     <div class="header" @click="$router.push('/common/setting')">
       <div class="header-info">
@@ -103,7 +114,7 @@
         v-for="(item, index) in menuList"
         :key="index"
         v-show="item.show"
-        @click="$router.push(item.path)"
+        @click="handleLink(item.path)"
       >
         <img :src="item.icon" alt="">
         <span>{{item.title}}</span>
@@ -272,6 +283,12 @@ export default {
       console.log('[点击预约]')
       this.menuVisibleId = this.menuVisibleId === e.id ? null : e.id
     },
+    // 跳转列表详情页
+    handleLink (path) {
+      if (!this.user.token) {
+        this.$router.push('/common/login')
+      } else this.$router.push(path)
+    },
     // 确认订单
     async handleOrderConfirm (status, orderId) {
       // const userId = this.user.info.id
@@ -335,6 +352,23 @@ export default {
   overflow-x: hidden;
 }
 
+// 登录按钮
+.login-guide{
+  padding: .2rem .15rem;
+}
+.login-button{
+  width: 1.2rem;
+  height: .4rem;
+  line-height: .4rem;
+  border-radius: .4rem;
+  margin: 0 auto;
+  @include font(.16rem, #FFFFFF);
+  text-align: center;
+  background: linear-gradient(135deg, #FFCD00 0%, #FFAE20 100%);
+  box-shadow: 0px 6px 10px -4px rgba(255, 174, 32, 0.5);
+}
+
+// 顶部信息
 .header{
   padding: 15px;
   padding-top: 20px;
@@ -428,6 +462,7 @@ export default {
   }
 }
 
+// 我的预约
 .reserve{
   padding: 0 .15rem;
   box-sizing: border-box;

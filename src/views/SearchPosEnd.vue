@@ -48,6 +48,7 @@ import { mapState } from 'vuex'
 import { debounce, isEmpty, cloneDeep } from 'lodash'
 import AMapLoader from '@/utils/mapLoader'
 import { initPlaceSearch } from '@/utils/mapPlugin'
+import { getPosition } from '@/utils/districtSearch'
 
 export default {
   data: () => ({
@@ -116,7 +117,13 @@ export default {
       }
     },
     // 选择搜索地点
-    handleSelect (e, record) {
+    async handleSelect (e, record) {
+      const { lng, lat } = record.location
+      // 通过经纬度获取城镇街道信息
+      const detail = await getPosition(this.AMap, [lng, lat])
+      const { township, street } = detail.addressComponent
+      const town = isEmpty(township) ? street : township
+      record.township = town
       // 添加到历史搜索记录
       this.handleAddSearchHistory(record)
       // 将位置信息记录到store中

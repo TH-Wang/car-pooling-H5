@@ -75,7 +75,7 @@
 // import moment from 'moment'
 import { mapGetters, mapState } from 'vuex'
 import { List } from 'vant'
-import { queryPassengerOrders, getPassengerCommonRoute } from '@/api'
+import { queryPassengerOrders, getNewPassengerCommonRoute } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
@@ -125,14 +125,15 @@ export default {
     // 自定义请求函数
     reqApi: queryPassengerOrders,
     getRequestDatas () {
-      return { showAll: 0 }
+      const cityname = this.position.county.name
+      return { publishType: '1,2,3', cityname }
     },
     // 自定义快捷路线请求函数
-    reqQuickApi: getPassengerCommonRoute,
+    reqQuickApi: getNewPassengerCommonRoute,
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
       const addrName = this.position.county.name
-      return { startPage: 1, pageSize: 10, addrName }
+      return { startPage: 1, orderType: 2, publishType: '1,2,3', pageSize: 10, addrName }
     },
     // 按起止地点找车
     handleSearchOrder () {

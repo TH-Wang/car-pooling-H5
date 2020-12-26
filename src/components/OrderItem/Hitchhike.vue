@@ -7,21 +7,25 @@
       <div class="header-main">
         <!-- 时间段 -->
         <div class="time-num">
-          <span>{{getHourMinute(record.startTime)}}</span>
-          <span v-if="record.returnTime"> - {{getHourMinute(record.returnTime)}}</span>
-          / {{record.returnTime ? '出发·返程' : '出发时间'}}
+          <span>{{getHourMinute(startTime)}}</span>
+          <span v-if="returnTime">
+            - {{getHourMinute(returnTime)}}
+          </span>
+            / {{returnTime ? '出发·返程' : '出发时间'}}
         </div>
         <!-- 价格 -->
-        <div :class="`price-${color}`"><span>￥</span>{{record.cost}}</div>
+        <div :class="`price-${color}`">
+          <span>￥</span>{{cost}}
+        </div>
       </div>
       <div class="car-info">
         <div v-if="showCar" class="car-info-item">
           <img src="@/assets/icons/order/car.png" alt="">
-          <span>{{record.vehicleType}}</span>
+          <span>{{record.carDetail ? record.carDetail.carModel : ''}}</span>
         </div>
         <div class="car-info-item">
           <img src="@/assets/icons/order/location.png" alt="">
-          <span>{{distance}}km</span>
+          <span>{{record.distance || record.publish.distance}}km</span>
         </div>
         <div class="car-info-item">
           <img src="@/assets/icons/order/line.png" alt="">
@@ -35,11 +39,11 @@
       <!-- 路线信息 -->
       <div class="line-info">
         <span class="start">起</span>
-        <span>{{record.startAddr}}</span>
+        <span>{{addrName.startAddr}}</span>
       </div>
       <div class="line-info gap">
         <span class="end">终</span>
-        <span>{{record.endAddr}}</span>
+        <span>{{addrName.endAddr}}</span>
       </div>
       <!-- 途径点 -->
       <div class="detail" v-if="showLineDetail">
@@ -47,7 +51,7 @@
       </div>
       <!-- 备注 -->
       <div class="detail">
-        <span>备注</span> | {{record.remark || '无'}}
+        <span>备注</span> | {{remark}}
       </div>
     </div>
 
@@ -56,13 +60,14 @@
       <!-- 用户信息及点赞 -->
       <social-bar
         :show-like="color === 'yellow'"
-        :record="record"
+        :record="userInfo"
         @like="(type)=>{$emit('like', type)}"
       />
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat">
-          人数<span :class="`num-${color}`">{{record.orderNum || record.remainingSeat}}</span>
+          {{showCar ? '余座' : '人数'}}
+          <span :class="`num-${color}`">{{seatNum}}</span>
         </div>
         <slot name="button"></slot>
       </div>
@@ -103,9 +108,45 @@ export default {
     passPointList () {
       return getPointText(this.record.passPointList)
     },
-    // 距离
-    distance () {
-      return this.record.distance ? this.record.distance.toFixed(2) : ''
+    // 起止点名称
+    addrName () {
+      if (this.record.publish) {
+        const { startAddr, endAddr } = this.record.publish
+        return { startAddr, endAddr }
+      } else {
+        const { startAddr, endAddr } = this.record.passengerOrder
+        return { startAddr, endAddr }
+      }
+    },
+    // 费用
+    cost () {
+      if (this.record.publish) return this.record.publish.cost
+      else return this.record.passengerOrder.cost
+    },
+    // 备注
+    remark () {
+      if (this.record.publish) return this.record.publish.remark || '无'
+      else return this.record.passengerOrder.remark || '无'
+    },
+    // 出发时间
+    startTime () {
+      if (this.record.publish) return this.record.publish.startTime
+      else return this.record.passengerOrder.passengerStartTime
+    },
+    // 返程时间
+    returnTime () {
+      if (this.record.publish) return this.record.publish.returnTime
+      else return this.record.passengerOrder.returnTime
+    },
+    // 余座/人数
+    seatNum () {
+      if (this.record.publish) return this.record.publish.num || this.record.publish.remainingSeat
+      else return this.record.passengerOrder.orderNum
+    },
+    // 用户信息
+    userInfo () {
+      if (this.record.publish) return { ...this.record.suser, ...this.record.publish }
+      else return {}
     }
   },
   methods: {
@@ -170,12 +211,12 @@ export default {
 
     .car-info{
       margin-top: 0.05rem;
-      @include flex (space-between, baseline);
+      @include flex (flex-start, baseline);
 
       &-item{
         display: flex;
         align-items: center;
-        margin-right: .15rem;
+        margin-right: .3rem;
 
         img{
           width: .12rem;

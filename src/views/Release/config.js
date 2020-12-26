@@ -38,7 +38,9 @@ const driCarpool = (carConfig) => ([
 ])
 
 // 车主发布的表单配置项
-export const getDriverOpts = (carConfig = []) => {
+export const getDriverOpts = (config = []) => {
+  const carConfig = config.map(i => ({ id: i.id, label: i.carModel }))
+  console.log(config)
   const carpoolList = driCarpool(carConfig)
   return {
     // 拼车

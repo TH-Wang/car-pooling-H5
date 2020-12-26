@@ -47,10 +47,13 @@
     <!-- 用户信息及操作按钮 -->
     <div class="user">
       <!-- 用户信息及点赞 -->
-      <social-bar :record="record.suser" @like="(type) => {$emit('like', type)}"/>
+      <social-bar
+        :record="{...record.suser, ...record.publish}"
+        @like="(type) => {$emit('like', type)}"
+      />
       <!-- 拼单操作 -->
       <div class="book-order">
-        <div class="seat"><span>余座</span><span class="num-yellow">{{record.publish.seatNum}}</span></div>
+        <div class="seat"><span>余座</span><span class="num-yellow">{{record.publish.num}}</span></div>
         <slot name="button"></slot>
       </div>
     </div>
@@ -87,8 +90,9 @@ export default {
     },
     // 距离
     distance () {
-      const distance = this.record.startAddrDistance
-      return distance > 1000000 ? (distance / 1000000).toFixed(2) : distance + 'm'
+      // const distance = this.record.startAddrDistance
+      // return distance > 1000000 ? (distance / 1000000).toFixed(2) : distance + 'm'
+      return this.record.publish.distance
     }
   },
   methods: {

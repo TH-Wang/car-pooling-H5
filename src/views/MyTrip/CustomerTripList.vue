@@ -20,7 +20,7 @@
           :key="item.id"
           :record="item"
           :show-remove="manage"
-          @click="handleLinkDetail($event, item.orderId)"
+          @click="handleLinkDetail($event, item)"
           @remove="handleRemove(item.orderId)"
         />
       </van-list>
@@ -52,8 +52,12 @@ export default {
     // 请求api函数
     reqApi: selectMyJourney,
     // 查看行程详情
-    handleLinkDetail (e, id) {
-      this.$router.push({ path: '/common/tripinfo/customer', query: { id } })
+    handleLinkDetail (e, record) {
+      const { orderId, pprId } = record
+      this.$router.push({
+        path: '/common/tripinfo/customer',
+        query: { id: orderId, pprId }
+      })
     },
     // 删除行程
     async handleRemove (id) {

@@ -6,7 +6,7 @@
       :key="index"
       :record="item"
       @click="handleLinkDetail($event, item.publish.id)"
-      @like="handleCommitLike($event, item.pprId)"
+      @like="handleCommitLike($event, item.publish.id)"
     ><template #button>
         <mini-button
           color="yellow"
@@ -37,14 +37,14 @@
       :record="item"
       color="yellow"
       showCar showLineDetail
-      @click="handleLinkDetail($event, item.pprId)"
+      @click="handleLinkDetail($event, item.publish.id)"
       @like="handleCommitLike($event, item.pprId)"
     >
       <!-- 预约按钮 -->
       <template #button>
         <mini-button
           color="yellow"
-          @click="handleLinkDetail($event, item.pprId)"
+          @click="handleLinkDetail($event, item.publish.id)"
         >立即预订</mini-button>
       </template>
     </hitchhike-order>
@@ -71,13 +71,13 @@
       :key="index"
       :record="item"
       type="customer"
-      @click="handleLinkDetail($event, item.pprId)"
+      @click="handleLinkDetail($event, item.publish.id)"
       @like="handleCommitLike($event, item.pprId)"
     ><template #button>
       <mini-button
         color="yellow"
         :orderId="item.id"
-        @click="handleLinkDetail($event, item.pprId)"
+        @click="handleLinkDetail($event, item.publish.id)"
       >立即预订</mini-button>
       </template>
     </carry-order>
@@ -143,35 +143,35 @@ export default {
       }
     },
     // 更新订单的点赞状态
-    handleRefreshLike (isLike, pprId) {
-      const driverType = ['pending', 'hitCus', 'carryCus']
-      // 判断要获取的id类型
-      const idKey = driverType.indexOf(this.type) === -1 ? 'pprId' : 'orderId'
+    handleRefreshLike (isLike, id) {
+      // const driverType = ['pending', 'hitCus', 'carryCus']
+      // // 判断要获取的id类型
+      // const idKey = driverType.indexOf(this.type) === -1 ? 'pprId' : 'orderId'
       // 寻找该订单在列表中的索引
-      const elIdx = this.list.findIndex(i => i[idKey] === pprId)
+      const elIdx = this.list.findIndex(i => i.publish.id === id)
       // 获取该订单对象
       const el = this.list[elIdx]
       // 深拷贝数据
       const newRecord = cloneDeep(el)
       // 更新操作状态
-      newRecord.isDo = isLike
+      newRecord.publish.isDo = isLike
 
       // 对数量进行判断并操作
       if (isLike === 0) {
         // 取消点赞
-        if (el.isDo === 1 && newRecord.isLike >= 1) newRecord.isLike--
+        if (el.publish.isDo === 1 && newRecord.publish.isLike >= 1) newRecord.publish.isLike--
         // 取消踩
-        else if (el.isDo === 2 && newRecord.isNotLike >= 1) newRecord.isNotLike--
+        else if (el.publish.isDo === 2 && newRecord.publish.isNotLike >= 1) newRecord.publish.isNotLike--
       } else if (isLike === 1) {
         // 点赞
-        newRecord.isLike++
+        newRecord.publish.isLike++
         // 如果已踩则取消踩
-        if (el.isDo === 2) newRecord.isNotLike--
+        if (el.publish.isDo === 2) newRecord.publish.isNotLike--
       } else if (isLike === 2) {
         // 踩
-        newRecord.isNotLike++
+        newRecord.publish.isNotLike++
         // 如果已赞则取消赞
-        if (el.isDo === 1) newRecord.isLike--
+        if (el.publish.isDo === 1) newRecord.publish.isLike--
       }
 
       // 将新数据更新到列表中

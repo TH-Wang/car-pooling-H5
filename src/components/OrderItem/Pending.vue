@@ -5,7 +5,7 @@
     <div class="header">
       <!-- 主要信息 -->
       <div class="header-main">
-        <div class="time-num">{{time}}</div>
+        <div class="time-num">{{startTime.slice(-5)}}</div>
         <div class="time-text">/ {{fromNow}}</div>
         <div class="car-info-item">
           <img src="@/assets/icons/order/location.png" alt="">
@@ -17,7 +17,7 @@
         </div>
       </div>
       <!-- 价格 -->
-      <div class="price"><span>￥</span>{{record.cost}}</div>
+      <div class="price"><span>￥</span>{{info.cost}}</div>
     </div>
 
     <!-- 详细信息 -->
@@ -25,11 +25,11 @@
       <!-- 路线信息 -->
       <div class="line-info">
         <span class="start">起</span>
-        <span>{{startAddr || record.startAddr}}</span>
+        <span>{{addrName.startAddr}}</span>
       </div>
       <div class="line-info gap">
         <span class="end">终</span>
-        <span>{{endAddr || record.endAddr}}</span>
+        <span>{{addrName.endAddr}}</span>
       </div>
       <!-- 途径点 -->
       <div v-if="hasWay" class="detail">
@@ -37,18 +37,20 @@
       </div>
       <!-- 备注 -->
       <div class="detail">
-        <span>备注</span> | {{record.remark || '无'}}
+        <span>备注</span> | {{info.remark || '无'}}
       </div>
     </div>
 
     <!-- 用户信息及操作按钮 -->
     <div class="user">
       <!-- 用户信息及点赞 -->
-      <social-bar :show-like="false" :record="record" />
+      <social-bar :show-like="false" :record="record.suser || record" />
       <!-- 拼单操作 -->
       <div class="book-order">
         <div class="seat"><span>人数</span>
-        <span :class="`num-${color}`">{{record.remainingSeat || record.orderNum}}</span></div>
+        <span :class="`num-${color}`">
+          {{info.remainingSeat || info.orderNum}}
+        </span></div>
         <slot name="button"></slot>
       </div>
     </div>
@@ -81,29 +83,45 @@ export default {
     }
   },
   computed: {
-    // 起止点
-    startAddr () {
-      const ppl = this.record.passPointList
-      const startPoint = ppl ? ppl.find(i => i.type === 1) : null
-      return startPoint ? startPoint.pointName : ''
+    // 地址名称
+    addrName () {
+      if (this.record.passPointList) {
+        const startAddr = this.record.passPointList.find(i => i.type === 1)
+        const endAddr = this.record.passPointList.find(i => i.type === 3)
+        return { startAddr, endAddr }
+      } else {
+        if (this.record.publish) {
+          const { startAddr, endAddr } = this.record.publish
+          return { startAddr, endAddr }
+        } else if (this.record.passengerOrder) {
+          const { startAddr, endAddr } = this.record.passengerOrder
+          return { startAddr, endAddr }
+        } else {
+          const { startAddr, endAddr } = this.record
+          return { startAddr, endAddr }
+        }
+      }
     },
-    // 目的地
-    endAddr () {
-      const ppl = this.record.passPointList
-      const endPoint = ppl ? ppl.find(i => i.type === 3) : null
-      return endPoint ? endPoint.pointName : ''
-    },
-    // 时间（小时分钟）
-    time () {
-      return moment(this.record.startTime || this.record.passengerStartTime).format('HH:mm')
+    // 出发时间
+    startTime () {
+      if (this.record.publish) return this.record.publish.startTime
+      else if (this.record.passengerOrder) return this.record.passengerOrder.passengerStartTime
+      else return this.record.startTime || this.record.passengerStartTime
     },
     // 距离现在多久
     fromNow () {
-      return moment(this.record.startTime).fromNow()
+      return moment(this.startTime).fromNow()
     },
     // 途径点拼接字符串
     passPointList () {
       return getPointText(this.record.passPointList)
+    },
+    info () {
+      let info = null
+      if (this.record.publish) info = this.record.publish
+      else if (this.record.passengerOrder) info = this.record.passengerOrder
+      else info = this.record
+      return info
     },
     // 距离
     distance () {

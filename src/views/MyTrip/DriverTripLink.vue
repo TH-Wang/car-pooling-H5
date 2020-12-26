@@ -45,7 +45,7 @@
 
     <!-- 预约按钮 -->
     <main-button :class="submitButtonClass" width="3.45rem" @click="handleReserve">
-      {{this.record.remainingSeat > 0 ? '预约' : '更多车主'}}
+      {{record.remainingSeat > 0 || record.publishType === 5 ? '预约' : '更多车主'}}
     </main-button>
   </div>
 </template>
@@ -95,7 +95,7 @@ export default {
     // 点击预约
     handleReserve () {
       // 如果可以预约就跳转预约页面
-      if (this.record.remainingSeat > 0) {
+      if (this.record.remainingSeat > 0 || this.record.publishType === 5) {
         // 判断是否登录...
 
         // 跳转到预约页面

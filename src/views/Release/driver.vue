@@ -116,7 +116,7 @@ import { mapState } from 'vuex'
 import moment from 'moment'
 import { Checkbox } from 'vant'
 import { isEmpty } from 'lodash'
-import { userCarDetail, latestPublishByUser } from '@/api'
+import { userCarDetail, latestDriverPublish } from '@/api'
 import { Form, Item, Field, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import ChooseComboLayer from '@/components/Layer/ChooseCombo'
@@ -218,10 +218,18 @@ export default {
   methods: {
     // 请求最近一次发布的信息，并将数据设置到表单内
     async setLastData () {
-      const res = await latestPublishByUser()
+      const res = await latestDriverPublish()
       const data = res.data.data
+      console.log(data)
+      const publishType = parseInt(data.publishType)
+      data.publishType = publishType >= 1 && publishType <= 3 ? 1 : publishType
       this.$store.commit('setReleaseAddrInfo', data.passPointList)
       this.$refs.form.setValues(data)
+      setTimeout(() => {
+        this.$refs.form.setValueField('weight', data.weight)
+        this.$refs.form.setValueField('volume', data.volume)
+        this.$refs.form.setValueField('cost', data.cost)
+      }, 200)
     },
     // 获取所有的车辆信息
     async getCarInfo () {
@@ -230,7 +238,7 @@ export default {
         this.$store.commit('setCarInfo', res.data.data)
       }
       // 赋值到表单配置上
-      this.formOptions = getDriverOpts(this.carList)
+      this.formOptions = getDriverOpts(this.user.carList)
     },
     // 提交
     async handleSubmit () {
@@ -253,6 +261,8 @@ export default {
       //   data.publishType = this.judgeType()
       // }
       data.publishType = this.judgeType()
+      // 顺路带物
+      if (data.publishType === 5) data.isTakeGoods = 1
       // 数据类型转换
       if (data.cost) data.cost = parseInt(data.cost)
       // if (data.weight) data.weight = parseInt(data.weight)
@@ -321,6 +331,7 @@ export default {
     this.getCarInfo()
   },
   mounted () {
+    this.setLastData()
     // 设置值到表单
     // setTimeout(() => {
     //   const data = this.history.driverPublish

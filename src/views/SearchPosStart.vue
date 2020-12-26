@@ -216,12 +216,19 @@ export default {
       }
     },
     // 选择搜索地点
-    handleSelect (e, record) {
+    async handleSelect (e, record) {
       const { lng, lat } = record.location
+      // 通过经纬度获取城镇街道信息
+      const detail = await getPosition(this.AMap, [lng, lat])
+      const { township, street } = detail.addressComponent
+      const town = isEmpty(township) ? street : township
+      record.township = town
+      // 在地图上设置标记点
       this.map.setCenter([lng, lat], true, 1000)
       this.setMarker([lng, lat])
       this.searchValue = record.name
       this.position = record
+      // 添加到历史搜索记录
       this.handleAddSearchHistory(record)
       setTimeout(() => {
         this.searchShow = false

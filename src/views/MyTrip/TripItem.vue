@@ -13,7 +13,7 @@
       <div class="trip-detail">
         <time-seat
           :time="record.startTime"
-          :seat="record.orderNum || record.remainSeat"
+          :seat="seatNum"
           :state="orderState"
           :seat-text="record.orderNum ? '人数' : '余座'"
         />
@@ -71,6 +71,10 @@ export default {
       return this.record.endAddr
         ? this.record.endAddr
         : this.record.passPointList.find(i => i.type === 3).pointName
+    },
+    seatNum () {
+      const num = this.record.orderNum || this.record.remainSeat
+      return num > 0 ? num : 0
     }
   }
 }
