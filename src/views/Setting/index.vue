@@ -206,6 +206,10 @@ export default {
     }
   },
   mounted () {
+    if (!this.user.token) {
+      this.$router.go(-1)
+      return
+    }
     if (this.$route.query.guide === 'authDriver') {
       const tag = str => `<span style="color:#ffcd00">${str}</span>`
       this.$dialog.alert({

@@ -5,7 +5,7 @@
 
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry" class="empty-container">
-      <van-empty description="空空如也~" />
+      <van-empty :description="emptyDesc" />
     </div>
 
     <!-- 主体容器 -->
@@ -56,6 +56,14 @@ export default {
     'van-pull-refresh': PullRefresh,
     'van-list': List
   },
+  data: () => ({
+    notReqOnMounted: true
+  }),
+  computed: {
+    emptyDesc () {
+      return this.$store.state.user.token ? '空空如也~' : '登录后即可查看'
+    }
+  },
   methods: {
     // 自定义请求api，详见 list-mixin
     reqApi: queryUserMessage,
@@ -67,6 +75,10 @@ export default {
     notifyTime (time) {
       return moment(time).format('YYYY-MM-DD HH:mm')
     }
+  },
+  mounted () {
+    if (!this.$store.state.user.token) return
+    this.handleListLoad()
   }
 }
 </script>

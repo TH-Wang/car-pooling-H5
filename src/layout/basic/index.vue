@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="main">
-      <keep-alive :include="['Home','Group','Release','Mine','SelectCity']">
+      <keep-alive :include="['Home','Group','Release','SelectCity']">
         <router-view />
       </keep-alive>
     </div>

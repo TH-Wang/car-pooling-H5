@@ -6,7 +6,9 @@
     <van-empty
       :image="require('@/assets/images/empty-login.png')"
       description="登录后即可查看您的预约和行程等信息">
-      <div class="login-button">登录/注册</div>
+      <div
+        class="login-button"
+        @click="$router.push('/common/login')">登录/注册</div>
     </van-empty>
   </div>
   <!-- 登录后展示内容 -->
@@ -136,6 +138,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+// import store from '@/store'
 import { Image, Swipe, SwipeItem } from 'vant'
 import { isEmpty } from 'lodash'
 import {
@@ -243,15 +246,17 @@ export default {
           item.seatNum = item.orderNum
           return item
         })
+        this.reqAccount()
       }
     },
     // 刷新预约订单信息
-    handleRetry () {
+    async handleRetry () {
       this.$toast.loading({
         message: '加载中...',
-        duration: 1000
+        duration: 10000
       })
-      this.reqList()
+      await this.reqList()
+      this.$toast.clear()
     },
     // 请求账户信息
     async reqAccount () {
@@ -343,9 +348,19 @@ export default {
     }
   },
   mounted: async function () {
-    await this.reqList()
-    await this.reqAccount()
+    if (!this.user.token) return
+    console.log('已登录')
+    setTimeout(async () => {
+      await this.reqList()
+    }, 200)
+    // await this.reqAccount()
   }
+  // beforeRouteEnter (to, from, next) {
+  //   if (from.path === '/common/login' && store.state.user.token) {
+  //     window.location.reload()
+  //   }
+  //   next()
+  // }
 }
 </script>
 
