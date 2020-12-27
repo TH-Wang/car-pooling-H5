@@ -134,7 +134,7 @@ export default {
   }),
   computed: {
     // 全局存储城市区县数据
-    ...mapState(['position']),
+    ...mapState(['position', 'user']),
     ...mapGetters(['location', 'unGeoLocation']),
     // 顶部显示当前位置的信息
     locationText () {
@@ -354,7 +354,9 @@ export default {
     // 选择区县
     async handleSelectCounty (e, county) {
       this.setCounty(county)
-      await savePosition(county.code)
+      if (this.user.token) {
+        await savePosition(county.code)
+      }
       setTimeout(() => {
         this.$router.go(-1)
         EventBus.$emit('home-refresh')

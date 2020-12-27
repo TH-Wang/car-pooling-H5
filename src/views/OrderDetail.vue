@@ -27,7 +27,7 @@
       <!-- 详细信息 -->
       <order-info-field icon-type="user" label="车主" :content="record.userName" />
       <order-info-field icon-type="car" label="车型" :content="record.vehicleTypeName" />
-      <order-info-field icon-type="seat" label="余座" :content="record.remainingSeat || record.seatNum" text-color="yellow" />
+      <order-info-field icon-type="seat" label="余座" :content="seatNum" text-color="yellow" />
       <order-info-field icon-type="time" label="出发时间" :content="startTime" />
       <order-info-field icon-type="address" label="途径点" :content="passPointList" />
       <order-info-field icon-type="remark" label="备注" :content="record.remark" />
@@ -64,6 +64,7 @@ import MainButton from '@/components/MainButton'
 import { getPointText } from '@/utils/getLineText'
 import getLngLat from '@/utils/getLngLat'
 import { shareip } from '@/configs/sharePort'
+import confirmLogin from '@/utils/confirmLogin'
 
 export default {
   components: {
@@ -94,6 +95,10 @@ export default {
     // 途径点拼接字符串
     passPointList () {
       return getPointText(this.record.passPointList)
+    },
+    // 余座
+    seatNum () {
+      return this.record.num || this.record.remainingSeat || ''
     }
   },
   methods: {
@@ -106,7 +111,10 @@ export default {
       this.$router.replace('/home')
       location.reload()
     },
-    handleLinkReserve () {
+    async handleLinkReserve () {
+      const isLogin = await confirmLogin('尊敬的用户，您还未登录，完成登录后即可预约')
+      console.log(isLogin)
+      if (!isLogin) return
       this.$router.push({ path: '/common/reserve', query: { id: this.record.pprId } })
     },
     // 复制到剪贴板

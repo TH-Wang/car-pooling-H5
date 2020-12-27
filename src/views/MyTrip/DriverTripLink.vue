@@ -57,6 +57,7 @@ import { Header } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import formButtonMixin from '@/mixins/form-button-mixin'
+import confirmLogin from '@/utils/confirmLogin'
 
 export default {
   mixins: [formButtonMixin],
@@ -93,11 +94,13 @@ export default {
       this.record = res.data.data
     },
     // 点击预约
-    handleReserve () {
+    async handleReserve () {
       // 如果可以预约就跳转预约页面
       if (this.record.remainingSeat > 0 || this.record.publishType === 5) {
         // 判断是否登录...
-
+        const isLogin = await confirmLogin('尊敬的用户，您还未登录，登录后即可预约')
+        console.log(isLogin)
+        if (!isLogin) return
         // 跳转到预约页面
         const id = this.orderId
         this.$router.push({ path: '/common/reserve', query: { id } })

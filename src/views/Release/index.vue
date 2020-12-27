@@ -178,13 +178,13 @@ export default {
         startLat: startParams.lat,
         pname: startParams.pname,
         cityname: startParams.cityname,
-        township: startParams.township,
+        township: startParams.township || '',
         endAddr: endParams.pointName,
         endLon: endParams.lon,
         endLat: endParams.lat,
         endpname: endParams.pname,
         endcityname: endParams.cityname,
-        endtownship: endParams.township
+        endtownship: endParams.township || ''
       })
       // 删除多余的中间路线字段
       delete data.middlePoint
@@ -257,7 +257,7 @@ export default {
           ...result,
           pname: cityname,
           cityname: adname,
-          township
+          township: township || ''
           // fullName: `${cityname}${adname}${name}`
         }
       }
@@ -266,7 +266,7 @@ export default {
         ...result,
         pname,
         cityname,
-        township
+        township: township || ''
         // fullName: `${pname}${cityname}${name}`
       }
     }

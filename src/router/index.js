@@ -507,14 +507,14 @@ const router = new VueRouter({
 })
 
 // 全局前置钩子
-router.beforeEach((to, from, next) => {
-  // 如果去往首页并且未登录
-  if (to.path !== '/common/login' && !localStorage.getItem('token')) {
-    next({ path: '/common/login' })
-    return
-  }
-  next()
-})
+// router.beforeEach((to, from, next) => {
+//   // 如果去往首页并且未登录
+//   if (to.path !== '/common/login' && !localStorage.getItem('token')) {
+//     next({ path: '/common/login' })
+//     return
+//   }
+//   next()
+// })
 
 // 全局后置钩子
 router.afterEach((to, from) => {

@@ -58,6 +58,7 @@ import { Header } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import formButtonMixin from '@/mixins/form-button-mixin'
+import confirmLogin from '@/utils/confirmLogin'
 
 export default {
   mixins: [formButtonMixin],
@@ -95,6 +96,8 @@ export default {
     },
     // 点击预约
     async handleReserve () {
+      const isLogin = await confirmLogin('尊敬的用户，登录后即可预约，是否立即登录')
+      if (!isLogin) return
       const res = await appointmentPassenger(this.orderId)
       const { status, msg } = res.data
       if (status === 200 || msg === '成功') {

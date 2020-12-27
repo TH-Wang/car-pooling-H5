@@ -1,21 +1,26 @@
 <template>
   <div class="tabbar">
-    <router-link
+    <div
       v-for="(item, index) in tabbarConfig"
       :key="index"
-      :to="item.path"
     >
       <!-- 中间按钮 -->
-      <div v-if="item.middle" class="tabbar-item" @click="handleChangeTabbar($event, index)">
+      <div
+        v-if="item.middle"
+        class="tabbar-item"
+        @click="handleChangeTabbar($event, {path: item.path, index})">
         <div class="middle"><van-icon name="plus"/></div>
       </div>
 
       <!-- 普通tabbar -->
-      <div v-else class="tabbar-item" @click="handleChangeTabbar($event, index)">
+      <div
+        v-else
+        class="tabbar-item"
+        @click="handleChangeTabbar($event, {path: item.path, index})">
         <img :src="tabbarId === index ? item.activeIcon : item.icon" alt="">
         <span :class="`title${tabbarId === index ? '-active' : ''}`">{{item.title}}</span>
       </div>
-    </router-link>
+    </div>
   </div>
 </template>
 
@@ -25,6 +30,7 @@ import { throttle } from 'lodash'
 import tabbarConfig from '@/configs/tabbar'
 import EventBus from '@/utils/eventBus'
 import { mapState } from 'vuex'
+// import confirmLogin from '@/utils/confirmLogin'
 
 const iconFile = name => require(`@/assets/icons/index/${name}.png`)
 const iconConfig = {
@@ -50,13 +56,26 @@ export default {
     }
   },
   methods: {
-    handleChangeTabbar (e, idx) {
+    async handleChangeTabbar (e, { index, path }) {
       // 如果是点击刷新，触发首页刷新
-      if (this.tabbarId === 0 && idx === 0 && this.scrollTop > limit) {
+      if (this.tabbarId === 0 && index === 0 && this.scrollTop > limit) {
         window.scrollTo(0, 0)
         EventBus.$emit('home-refresh')
       }
-      this.$store.commit('changeTabbar', idx)
+      // 如果点击的是发布，并且没有登录
+      console.log(index)
+      if (index === 2 && !this.user.token) {
+        this.$dialog.confirm({
+          message: '尊敬的用户，您还未登录，登录后即可发布拼车信息',
+          confirmButtonText: '立即登录',
+          cancelButtonText: '稍后再等'
+        }).then(() => {
+          this.$router.push('/common/login')
+        })
+        return
+      }
+      this.$store.commit('changeTabbar', { index, path })
+      this.$router.push({ path })
     },
     // 监听页面滚动事件
     handleWatchScroll: throttle(function (e) {

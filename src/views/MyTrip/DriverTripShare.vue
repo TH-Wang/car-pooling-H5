@@ -25,7 +25,7 @@
       <!-- 详细信息 -->
       <order-info-field icon-type="user" label="车主" :content="record.userName" />
       <order-info-field icon-type="car" label="车型" :content="record.vehicleTypeName" />
-      <order-info-field icon-type="seat" label="余座" :content="record.seatNum" text-color="yellow" />
+      <order-info-field icon-type="seat" label="余座" :content="record.remainingSeat" text-color="yellow" />
       <order-info-field icon-type="time" label="出发时间" :content="startTime" />
       <order-info-field icon-type="address" label="途径点" :content="passPointList" />
       <order-info-field icon-type="remark" label="备注" :content="record.remark || '无'" />

@@ -2,8 +2,8 @@
   <div class="page">
 
     <div class="header">
-      <!-- <van-icon @click="handleBack" name="cross" size=".18rem" color="#BFBFBF" /> -->
       <div class="title">拼车之家登录/注册</div>
+      <van-icon @click="handleBack" name="cross" size=".22rem" color="#8C8C8C" />
     </div>
 
     <div class="main">
@@ -107,7 +107,9 @@ export default {
       }
     },
     handleBack () {
-      this.$router.go(-1)
+      if (this.$store.state.route.history) {
+        this.$router.go(-1)
+      } else this.$router.push('/home')
     }
   },
   mounted () {
@@ -120,10 +122,7 @@ export default {
     if (store.state.user.token) {
       console.log('跳转到首页')
       next('/home')
-    } else {
-      console.log('继续留在login页')
-      next(true)
-    }
+    } else next()
   }
 }
 </script>
@@ -136,9 +135,12 @@ export default {
   .header{
     width: 100%;
     margin: 0 auto;
+    padding: 0 .30rem;
+    box-sizing: border-box;
+    @include flex (space-between);
 
     .title{
-      margin: 0 .30rem;
+      // margin: 0 .30rem;
       transform: translateY(.3rem);
       @include font (.24rem, $main-text, bold);
     }

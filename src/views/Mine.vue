@@ -226,6 +226,7 @@ export default {
           startPage: 1,
           pageSize: 5
         })
+        if (res.data.status !== 200) return
         this.list = res.data.data.list.map(item => {
           item.seatNum = item.orderNum
           return item
@@ -236,6 +237,7 @@ export default {
           startPage: 1,
           pageSize: 5
         })
+        if (res.data.status !== 200) return
         this.list = res.data.data.list.map(item => {
           item.startTime = item.passengerStartTime
           item.seatNum = item.orderNum
