@@ -73,7 +73,7 @@ export default {
         : this.record.passPointList.find(i => i.type === 3).pointName
     },
     seatNum () {
-      const num = this.record.orderNum || this.record.remainSeat
+      const num = this.record.num || this.record.orderNum
       return num > 0 ? num : 0
     }
   }
