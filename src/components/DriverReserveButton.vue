@@ -50,7 +50,7 @@ export default {
     },
     // 提示车主尽快联系乘客，并展示手机号码
     async handleTipPhone (phone) {
-      const phoneHtml = '<strong style="color:#FFCD00">' + this.record.mobilePhone + '</strong>'
+      const phoneHtml = '<strong style="color:#FFCD00">' + this.record.passengerOrder.telPhone + '</strong>'
       await this.$dialog.confirm({
         title: '预约成功',
         message: '请及时联系沟通让乘客尽快确认，乘客电话' + phoneHtml,

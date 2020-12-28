@@ -12,7 +12,6 @@ export default {
 
   mutations: {
     setStorage (state, { token, phone, info }) {
-      console.log({ token, phone, info })
       state.token = token
       state.loginPhone = phone
       state.info = info

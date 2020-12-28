@@ -36,7 +36,7 @@
       <order-info-field icon-type="remark" label="备注" :content="record.remark || '无'" />
 
       <!-- 联系电话 -->
-      <order-info-phone tipType="customer" :phone="record.mobilePhone"/>
+      <order-info-phone tipType="customer" :phone="record.phone"/>
     </div>
   </div>
 </template>

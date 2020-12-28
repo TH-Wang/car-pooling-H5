@@ -219,6 +219,13 @@ export default {
       })
     }
   }
+  // beforeRouteEnter (to, from, next) {
+  //   if (from.path === '/common/login') {
+  //     next('/mine')
+  //     return
+  //   }
+  //   next()
+  // }
 }
 </script>
 

@@ -149,6 +149,7 @@ export default {
     async setLastData () {
       const res = await latestPublishByUser()
       const data = res.data.data
+      if (!data) return
       const publishType = parseInt(data.publishType)
       data.publishType = publishType >= 1 && publishType <= 3 ? 1 : publishType
       // this.$store.commit('setReleaseAddrInfo', data.passPointList)

@@ -123,6 +123,13 @@ export default {
       console.log('跳转到首页')
       next('/home')
     } else next()
+  },
+  beforeRouteLeave (to, from, next) {
+    if (to.path === '/common/setting') {
+      next('/mine')
+      return
+    }
+    next()
   }
 }
 </script>

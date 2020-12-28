@@ -19,7 +19,7 @@
         endAddr: record.pendAddr,
         state: record.orderState,
         startTime: startTime,
-        seatNum: record.remainSeat}"
+        seatNum: record.num}"
       showShare
       content-type="state"
       show-time-seat

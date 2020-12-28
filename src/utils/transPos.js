@@ -29,12 +29,14 @@ export default function (data) {
 
 // 通过地点信息筛选参数
 function filterPointParams (data) {
-  const { pname, cityname, adname, name, location } = data
+  const { pname, cityname, adname, township, name, location } = data
 
   // 直辖市
   const city = ['重庆市', '北京市', '上海市', '天津市']
   const result = {
+    orderType: 1,
     pointName: name,
+    township,
     lon: location.lng,
     lat: location.lat
   }

@@ -1,138 +1,140 @@
 <template>
-  <!-- 如果未登录 -->
-  <div v-if="!user.token">
-    <van-nav-bar title="个人中心" />
-    <!-- 未登录则显示登录按钮 -->
-    <van-empty
-      :image="require('@/assets/images/empty-login.png')"
-      description="登录后即可查看您的预约和行程等信息">
-      <div
-        class="login-button"
-        @click="$router.push('/common/login')">登录/注册</div>
-    </van-empty>
-  </div>
-  <!-- 登录后展示内容 -->
-  <div v-else class="page-container">
-    <!-- 顶部 -->
-    <div class="header" @click="$router.push('/common/setting')">
-      <div class="header-info">
-        <!-- 头像 -->
-        <van-image :src="user.info.headimg" width="40px" height="40px" fit="cover" round/>
-        <div class="header-info-detail">
-          <!-- 用户名 -->
-          <div class="header-info-phone">{{user.info.username}}</div>
-          <div class="header-info-text">
-            我的信用分
-            <span style="margin-right: 5px">{{account.info.faithfulValue}}</span>
-            <van-icon
-              class="question"
-              name="question-o"
-              @click.stop="$router.push('/common/description?type=credit')"
-            />
+  <div class="page-container">
+    <!-- 如果未登录 -->
+    <div v-show="!user.token">
+      <van-nav-bar title="个人中心" />
+      <!-- 未登录则显示登录按钮 -->
+      <van-empty
+        :image="require('@/assets/images/empty-login.png')"
+        description="登录后即可查看您的预约和行程等信息">
+        <div
+          class="login-button"
+          @click="$router.push('/common/login')">登录/注册</div>
+      </van-empty>
+    </div>
+    <!-- 登录后展示内容 -->
+    <div v-show="user.token">
+      <!-- 顶部 -->
+      <div class="header" @click="$router.push('/common/setting')">
+        <div class="header-info">
+          <!-- 头像 -->
+          <van-image :src="user.info.headimg" width="40px" height="40px" fit="cover" round/>
+          <div class="header-info-detail">
+            <!-- 用户名 -->
+            <div class="header-info-phone">{{user.info.username}}</div>
+            <div class="header-info-text">
+              我的信用分
+              <span style="margin-right: 5px">{{account.info.faithfulValue}}</span>
+              <van-icon
+                class="question"
+                name="question-o"
+                @click.stop="$router.push('/common/description?type=credit')"
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <!-- 身份认证标签 -->
-      <div class="header-tag">
-        <div v-if="getConfirm('idnumstatus')" class="header-tag-item-green">身份证认证</div>
-        <div v-else class="header-tag-item-gray">未身份认证</div>
-        <div v-if="getConfirm('car')" class="header-tag-item-blue">车主认证</div>
-        <div v-if="getConfirm('group')" class="header-tag-item-yellow">群主认证</div>
-        <div v-if="getConfirm('etc')" class="header-tag-item-red">站长认证</div>
-        <div v-if="getConfirm('viceAdministrator')" class="header-tag-item-red">副站长认证</div>
-      </div>
-      <!-- 右上角按钮 -->
-      <div class="header-icon">
-        <img
-          v-for="(item, index) in headerIcons"
-          :key="index"
-          :src="require(`@/assets/icons/navbar/${item.icon}.png`)"
-          alt=""
-          @click.stop="$router.push(item.path)"
-        >
-      </div>
-    </div>
-
-    <!-- 钱包卡片 -->
-    <overage-card
-      title="钱包余额（元）"
-      :number="account.info.totalPrice"
-      :hasButton="account.info.totalPrice < 0"
-      @click="$router.push('/common/my/wallet')"
-      @click-button="handlePay"
-    />
-
-    <!-- 我的预约 -->
-    <div class="reserve">
-      <span class="title">我的预约</span>
-      <span class="tip">请在十分钟内确认</span>
-      <span class="link" @click="$router.push('/common/my/appoint')">查看更多</span>
-    </div>
-
-    <!-- 预约为空 -->
-    <div v-if="list.length === 0" @click="handleRetry">
-      <van-empty :description="identity === 0 ? '暂无预约，点击刷新' : '暂无乘客预约，点击刷新'" />
-    </div>
-    <!-- 预约订单轮播 -->
-    <van-swipe indicator-color="#FFCD00" @change="handleSwipeChange">
-      <!-- 每一项 -->
-      <van-swipe-item
-        v-for="(item, index) in list"
-        :key="index"
-      ><pending-order
-          :record="item"
-          type="driver"
-          :color="buttonColor"
-        ><template #button>
-          <confirm-button
-            :color="buttonColor"
-            :status="item.status"
-            :identity="identity === 0 ? 'customer' : 'driver'"
-            @confirm="handleOrderConfirm($event, item.orderId)"
-            @cancel="handleOrderCancel($event, item.orderId)"
-            @report="handleOrderReport($event, item.orderId)"
-          /></template>
-        </pending-order>
-      </van-swipe-item>
-      <!-- 指示器 -->
-      <template #indicator>
-        <div class="custom-indicator">
-          <div
-            v-for="(item, index) in list"
-            :key="index"
-            :class="swipeCurrent===index?'custom-indicator-item-active':'custom-indicator-item'"
-          />
+        <!-- 身份认证标签 -->
+        <div class="header-tag">
+          <div v-if="getConfirm('idnumstatus')" class="header-tag-item-green">身份证认证</div>
+          <div v-else class="header-tag-item-gray">未身份认证</div>
+          <div v-if="getConfirm('car')" class="header-tag-item-blue">车主认证</div>
+          <div v-if="getConfirm('group')" class="header-tag-item-yellow">群主认证</div>
+          <div v-if="getConfirm('etc')" class="header-tag-item-red">站长认证</div>
+          <div v-if="getConfirm('viceAdministrator')" class="header-tag-item-red">副站长认证</div>
         </div>
-      </template>
-    </van-swipe>
-
-    <!-- 占位符 -->
-    <div style="height:.10rem;background-color:#FAFAFA"></div>
-
-    <!-- 菜单列表 -->
-    <div class="menu">
-      <div
-        class="menu-item"
-        v-for="(item, index) in menuList"
-        :key="index"
-        v-show="item.show"
-        @click="handleLink(item.path)"
-      >
-        <img :src="item.icon" alt="">
-        <span>{{item.title}}</span>
-        <van-icon name="arrow" color="#E8E8E8" size=".12rem"/>
+        <!-- 右上角按钮 -->
+        <div class="header-icon">
+          <img
+            v-for="(item, index) in headerIcons"
+            :key="index"
+            :src="require(`@/assets/icons/navbar/${item.icon}.png`)"
+            alt=""
+            @click.stop="handleLink(item.path)"
+          >
+        </div>
       </div>
+
+      <!-- 钱包卡片 -->
+      <overage-card
+        title="钱包余额（元）"
+        :number="account.info.totalPrice"
+        :hasButton="account.info.totalPrice < 0"
+        @click="$router.push('/common/my/wallet')"
+        @click-button="handlePay"
+      />
+
+      <!-- 我的预约 -->
+      <div class="reserve">
+        <span class="title">我的预约</span>
+        <span class="tip">请在十分钟内确认</span>
+        <span class="link" @click="$router.push('/common/my/appoint')">查看更多</span>
+      </div>
+
+      <!-- 预约为空 -->
+      <div v-if="list.length === 0" @click="handleRetry">
+        <van-empty :description="identity === 0 ? '暂无预约，点击刷新' : '暂无乘客预约，点击刷新'" />
+      </div>
+      <!-- 预约订单轮播 -->
+      <van-swipe indicator-color="#FFCD00" @change="handleSwipeChange">
+        <!-- 每一项 -->
+        <van-swipe-item
+          v-for="(item, index) in list"
+          :key="index"
+        ><pending-order
+            :record="item"
+            type="driver"
+            :color="buttonColor"
+          ><template #button>
+            <confirm-button
+              :color="buttonColor"
+              :status="item.status"
+              :identity="identity === 0 ? 'customer' : 'driver'"
+              @confirm="handleOrderConfirm($event, item.orderId)"
+              @cancel="handleOrderCancel($event, item.orderId)"
+              @report="handleOrderReport($event, item.orderId)"
+            /></template>
+          </pending-order>
+        </van-swipe-item>
+        <!-- 指示器 -->
+        <template #indicator>
+          <div class="custom-indicator">
+            <div
+              v-for="(item, index) in list"
+              :key="index"
+              :class="swipeCurrent===index?'custom-indicator-item-active':'custom-indicator-item'"
+            />
+          </div>
+        </template>
+      </van-swipe>
+
+      <!-- 占位符 -->
+      <div style="height:.10rem;background-color:#FAFAFA"></div>
+
+      <!-- 菜单列表 -->
+      <div class="menu">
+        <div
+          class="menu-item"
+          v-for="(item, index) in menuList"
+          :key="index"
+          v-show="item.show"
+          @click="handleLink(item.path)"
+        >
+          <img :src="item.icon" alt="">
+          <span>{{item.title}}</span>
+          <van-icon name="arrow" color="#E8E8E8" size=".12rem"/>
+        </div>
+      </div>
+
+      <!-- 固定按钮 -->
+      <affix
+        icon="master"
+        content="申请站长"
+        @click="$router.push('/common/settle/site/tips')"
+      />
+
+      <!-- 退订弹窗 -->
+      <refund-order-layer v-if="user.token" v-model="showRefund" @submit="handleRefund" />
     </div>
-
-    <!-- 固定按钮 -->
-    <affix
-      icon="master"
-      content="申请站长"
-      @click="$router.push('/common/settle/site/tips')"
-    />
-
-    <!-- 退订弹窗 -->
-    <refund-order-layer v-model="showRefund" @submit="handleRefund" />
   </div>
 </template>
 
@@ -219,6 +221,9 @@ export default {
     buttonColor () {
       return this.identity === 0 ? 'yellow' : 'green'
     }
+    // token () {
+    //   return localStorage.getItem('token')
+    // }
   },
   methods: {
     // 请求我的预约
@@ -347,13 +352,14 @@ export default {
       this.swipeCurrent = index
     }
   },
+  activated: async function () {
+    if (!this.user.token) return
+    await this.reqList()
+    // await this.reqAccount()
+  },
   mounted: async function () {
     if (!this.user.token) return
-    console.log('已登录')
-    setTimeout(async () => {
-      await this.reqList()
-    }, 200)
-    // await this.reqAccount()
+    await this.reqList()
   }
   // beforeRouteEnter (to, from, next) {
   //   if (from.path === '/common/login' && store.state.user.token) {

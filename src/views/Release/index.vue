@@ -219,7 +219,6 @@ export default {
       // 出发点
       result.push({
         ..._this_.filterPointParams(startAddr),
-        orderType: 1,
         sort: ++sort,
         type: 1
       })
@@ -248,6 +247,7 @@ export default {
       const city = ['重庆市', '北京市', '上海市', '天津市']
       const result = {
         pointName: name,
+        orderType: 1,
         lon: location.lng,
         lat: location.lat
       }
