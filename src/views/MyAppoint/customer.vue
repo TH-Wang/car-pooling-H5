@@ -1,7 +1,7 @@
 <template>
-  <div :style="show && isCustom ? 'padding-top: 40px;' : ''">
+  <div :style="show ? 'padding-top: 40px;' : ''">
     <!-- 公告栏 -->
-    <notice-bar v-model="show" v-if="isCustom" position="top" limit="90px" />
+    <notice-bar v-model="show" position="top" limit="90px" />
 
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
@@ -25,6 +25,7 @@
           :record="item"
           type="driver"
           color="yellow"
+          showCall
         >
           <!-- 预约按钮 -->
           <template #button>

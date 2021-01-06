@@ -84,6 +84,7 @@
             :record="item"
             type="driver"
             :color="buttonColor"
+            showCall
           ><template #button>
             <confirm-button
               :color="buttonColor"

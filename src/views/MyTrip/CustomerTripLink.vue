@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { getPassengerPublishDetail, appointmentPassenger } from '@/api'
 import { isEmpty } from 'lodash'
 import { Header } from '@/components/OrderInfo/index'
@@ -93,6 +94,14 @@ export default {
     async handleReq () {
       const res = await getPassengerPublishDetail(this.orderId)
       this.record = res.data.data
+      this.setPageTitle()
+    },
+    // 设置页面title
+    setPageTitle () {
+      const { startTime, remark } = this.record
+      const { startAddr, endAddr } = this.addrName
+      const time = moment(startTime).format('MM-DD HH:mm')
+      document.title = `${startAddr}至${endAddr}，${time}出发${remark ? ('，' + remark) : ''}`
     },
     // 点击预约
     async handleReserve () {
@@ -140,6 +149,10 @@ export default {
   created () {
     this.orderId = this.$route.query.id
     this.handleReq()
+  },
+  beforeRouterLeave (to, from, next) {
+    document.title = '拼车之家'
+    next()
   }
 }
 </script>

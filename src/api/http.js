@@ -39,8 +39,9 @@ axios.interceptors.response.use(function (res) {
       confirmButtonText: '立即登录',
       cancelButtonText: '稍后再登'
     }).then(() => {
-      store.commit('clearToken')
       router.push('/common/login')
+    }).finally(() => {
+      store.commit('clearToken')
     })
   }
   return res

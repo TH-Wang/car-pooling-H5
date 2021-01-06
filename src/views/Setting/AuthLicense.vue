@@ -17,13 +17,13 @@
 
         <!-- 姓名和身份证号 -->
         <custom-field name="userName" label="姓名" placeholder="请输入您的真实姓名" />
-        <custom-field
+        <!-- <custom-field
           name="carModel"
           label="车型"
           placeholder="请输入您爱车的型号"
           clearable
           :rules="[{required: true}]"
-        />
+        /> -->
 
         <!-- 上传身份证图片 -->
         <div class="title">请上传身份证正反面</div>

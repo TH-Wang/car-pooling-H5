@@ -115,7 +115,8 @@ export default {
       const isLogin = await confirmLogin('尊敬的用户，您还未登录，完成登录后即可预约')
       console.log(isLogin)
       if (!isLogin) return
-      this.$router.push({ path: '/common/reserve', query: { id: this.record.pprId } })
+      const { pprId, num } = this.record
+      this.$router.push({ path: '/common/reserve', query: { id: pprId, seat: num } })
     },
     // 复制到剪贴板
     copyToClip (type) {

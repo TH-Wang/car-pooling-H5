@@ -2,14 +2,15 @@
   <div :style="show && isDriver ? 'padding-top: 40px;' : ''">
     <van-notice-bar
       v-if="isDriver"
-      v-model="show"
+      mode="closeable"
       left-icon="volume-o"
       class="notice-bar"
+      @close="show = false"
     >
       您已成功预约 {{peopleCount}} 人
-      <template #right-icon>
+      <!-- <template #right-icon>
         <van-icon name="cross" class="close" @click="show = false"/>
-      </template>
+      </template> -->
     </van-notice-bar>
 
     <!-- 如果列表数据为空 -->
@@ -34,6 +35,7 @@
           :record="item"
           type="custom"
           color="green"
+          showCall
         >
           <!-- 预约按钮 -->
           <template #button>

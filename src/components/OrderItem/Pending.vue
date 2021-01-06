@@ -22,22 +22,28 @@
 
     <!-- 详细信息 -->
     <div class="content">
-      <!-- 路线信息 -->
-      <div class="line-info">
-        <span class="start">起</span>
-        <span>{{addrName.startAddr}}</span>
+      <div :style="{width: contentWidth}">
+        <!-- 路线信息 -->
+        <div class="line-info">
+          <span class="start">起</span>
+          <span>{{addrName.startAddr}}</span>
+        </div>
+        <div class="line-info gap">
+          <span class="end">终</span>
+          <span>{{addrName.endAddr}}</span>
+        </div>
+        <!-- 途径点 -->
+        <div v-if="hasWay" class="detail">
+          <span>途径点</span> | {{passPointLis}}
+        </div>
+        <!-- 备注 -->
+        <div class="detail">
+          <span>备注</span> | {{info.remark || '无'}}
+        </div>
       </div>
-      <div class="line-info gap">
-        <span class="end">终</span>
-        <span>{{addrName.endAddr}}</span>
-      </div>
-      <!-- 途径点 -->
-      <div v-if="hasWay" class="detail">
-        <span>途径点</span> | {{passPointLis}}
-      </div>
-      <!-- 备注 -->
-      <div class="detail">
-        <span>备注</span> | {{info.remark || '无'}}
+      <!-- 拨打电话按钮 -->
+      <div class="call-button" v-if="showCallButton" @click="handleCallPhone">
+        <van-icon name="phone" color="#fff" size=".20rem" />
       </div>
     </div>
 
@@ -61,6 +67,7 @@
 import moment from 'moment'
 import SocialBar from './SocialBar'
 import { getPointText } from '@/utils/getLineText'
+import callPhone from '@/utils/callPhone'
 
 export default {
   components: {
@@ -80,6 +87,10 @@ export default {
     color: {
       type: String,
       default: 'green'
+    },
+    showCall: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -126,6 +137,20 @@ export default {
     // 距离
     distance () {
       return this.record.distance ? this.record.distance.toFixed(2) : ''
+    },
+    // 是否显示拨号按钮
+    showCallButton () {
+      const phone = this.record.mobilePhone
+      return this.showCall && (phone === 1 || phone === 2)
+    },
+    // 信息容器宽度
+    contentWidth () {
+      return this.showCallButton ? 'calc(100% - .5rem)' : '100%'
+    }
+  },
+  methods: {
+    handleCallPhone () {
+      callPhone(this.record.mobilePhone)
     }
   }
 }
@@ -198,6 +223,7 @@ export default {
     padding: .10rem 0;
     border-top: dashed 1px $normal-text;
     border-bottom: dashed 1px $normal-text;
+    position: relative;
 
     // 路线信息
     .line-info{
@@ -252,6 +278,19 @@ export default {
         color: $main-text;
         font-weight: bold;
       }
+    }
+
+    // 拨号按钮
+    .call-button{
+      width: .4rem;
+      height: .4rem;
+      border-radius: 50%;
+      @include flex (center, center);
+      background-color: $main-color;
+      box-shadow: 0px 4px 10px -2px rgba(255, 174, 32, 0.5);
+      position: absolute;
+      bottom: .08rem;
+      right: 0;
     }
   }
 }

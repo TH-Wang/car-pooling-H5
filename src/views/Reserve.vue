@@ -28,13 +28,13 @@
       </custom-input>
 
       <!-- 预定人数 -->
-      <custom-input
+      <custom-select
         name="orderNum"
-        type="tel"
-        max-length="1"
         clearable
-        placeholder="请输入预定人数"
-        :rules="[{required: true}]"
+        :title="`请选择预定人数，余座：${seatNum}位`"
+        placeholder="请选择预定人数"
+        :columns="columns"
+        required
       />
 
       <!-- 上车点 -->
@@ -97,7 +97,7 @@ import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
 import EventBus from '@/utils/eventBus'
 import { commitOrder } from '@/api'
-import { Form, Input } from '@/components/Form'
+import { Form, Input, Select } from '@/components/Form'
 // import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 
@@ -107,12 +107,15 @@ export default {
     'van-checkbox': Checkbox,
     'custom-form': Form,
     'custom-input': Input,
+    'custom-select': Select,
     'main-button': MainButton
     // 'map-view': MapView
   },
   data: () => ({
     agree: true,
-    pprId: null
+    pprId: null,
+    columns: [],
+    seatNum: ''
   }),
   computed: {
     ...mapState(['user', 'search']),
@@ -144,7 +147,6 @@ export default {
         pprIdCar: pprId,
         status: 5
       }
-
       // 发送请求
       const res = await commitOrder(data)
       if (res.data.msg === '成功') {
@@ -165,6 +167,15 @@ export default {
     handleSearch (e, type) {
       this.$router.push(`/common/search/pos/${type}?type=common`)
     }
+  },
+  created () {
+    const seatNum = this.$route.query.seat
+    const columns = []
+    for (let i = 0; i < seatNum; i++) {
+      columns.push({ value: i + 1, name: `${i + 1}人` })
+    }
+    this.seatNum = seatNum
+    this.columns = columns
   },
   mounted () {
     // 获取拼车单pprId

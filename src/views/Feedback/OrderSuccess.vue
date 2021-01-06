@@ -53,6 +53,7 @@ import Feedback from '@/components/Feedback'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
+import callPhone from '@/utils/callPhone'
 
 export default {
   components: {
@@ -111,14 +112,18 @@ export default {
       this.handleListLoad(true)
     }
   },
-  created: async function () {
+  created () {
     this.orderId = this.$route.query.id
-    await this.handleRequest()
-    this.refundTime = moment().add(10, 'minutes').format('MM月DD日 HH:mm')
   },
-  mounted () {
-    this.$dialog.alert({
-      message: '恭喜您，预约成功！您可前往个人中心页面进行确认'
+  mounted: async function () {
+    await this.handleRequest()
+    this.refundTime = moment(this.record.startTime).add(10, 'minutes').format('MM月DD日 HH:mm')
+    this.$dialog.confirm({
+      message: '恭喜您，预约成功！您可前往个人中心页面进行确认',
+      confirmButtonText: '联系车主',
+      cancelButtonText: '确认'
+    }).then(() => {
+      callPhone(this.record.mobilePhone)
     })
   }
 }
