@@ -3,6 +3,10 @@
     <!-- 顶部搜索框 -->
     <div class="header">
       <van-icon name="arrow-left" @click="$router.go(-1)" />
+      <div class="city-select" @click="() => {showSelector = true}">
+        <span>{{curCity}}</span>
+        <van-icon name="play" size=".13rem" class="select-arrow" />
+      </div>
       <input
         type="text"
         ref="input"
@@ -40,17 +44,33 @@
         </div>
       </div>
     </div>
+
+    <!-- 城市选择器 -->
+    <van-popup v-model="showSelector" position="bottom" round>
+      <van-picker
+        show-toolbar
+        :columns="cityList"
+        @confirm="handleCurCityChange"
+        @cancel="showSelector = false"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import { Popup, Picker } from 'vant'
 import { debounce, isEmpty, cloneDeep } from 'lodash'
 import AMapLoader from '@/utils/mapLoader'
 import { initPlaceSearch } from '@/utils/mapPlugin'
 import { getPosition } from '@/utils/districtSearch'
+import pList from '@/utils/pnameList'
 
 export default {
+  components: {
+    'van-popup': Popup,
+    'van-picker': Picker
+  },
   data: () => ({
     // 页面类型 common: 公用，release: 发布页面使用
     type: 'common',
@@ -63,7 +83,12 @@ export default {
     // 搜索结果列表
     searchList: [],
     // 未搜索到结果
-    searchEmpty: false
+    searchEmpty: false,
+    position: {},
+    // 当前城市
+    curCity: '',
+    cityList: pList,
+    showSelector: false
   }),
   computed: {
     ...mapState(['search', 'release', 'trip', 'history']),
@@ -72,22 +97,31 @@ export default {
     }
   },
   methods: {
+    // 搜索城市发生改变
+    handleCurCityChange (city) {
+      this.curCity = city ? city.replace(/(市|省|自治区)/, '') : '重庆'
+      this.showSelector = false
+      this.initSearch()
+    },
     // 初始化地点搜索模块
     async initMap () {
       try {
         // 地图加载器
         const AMap = await AMapLoader()
-        // 初始化搜索模块
-        const placeSearch = await initPlaceSearch(AMap)
-        // 监听搜索成功事件
-        AMap.Event.addListener(placeSearch, 'complete', this.handleRender)
         // 保存到当前组件状态
         this.AMap = AMap
-        this.placeSearch = placeSearch
       } catch (error) {
         console.log(error)
         this.$toast({ message: '请检查网络或稍后再试', duration: 1200 })
       }
+    },
+    async initSearch () {
+      const AMap = this.AMap
+      // 初始化搜索模块
+      const placeSearch = await initPlaceSearch(AMap, this.curCity)
+      // 监听搜索成功事件
+      AMap.Event.addListener(placeSearch, 'complete', this.handleRender)
+      this.placeSearch = placeSearch
     },
     // 监听用户输入
     handleSearch: debounce(function (e) {
@@ -156,13 +190,14 @@ export default {
     // 获取历史搜索记录
     this.searchList = this.history.position
   },
-  mounted () {
+  mounted: async function () {
     // 从store中获取出发点信息
     const key = this.type === 'common' ? 'search' : this.type
     this.position = this[key].endAddr
     this.searchValue = this[key].endAddr.name
     this.$refs.input.focus()
-    this.initMap()
+    await this.initMap()
+    this.handleCurCityChange(this.$store.state.position.city.name)
   }
 }
 </script>

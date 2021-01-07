@@ -3,6 +3,10 @@
     <!-- 顶部搜索框 -->
     <div class="header">
       <van-icon name="arrow-left" @click="$router.go(-1)" />
+      <div class="city-select" @click="() => {showSelector = true}">
+        <span>{{curCity}}</span>
+        <van-icon name="play" size=".13rem" class="select-arrow" />
+      </div>
       <input
         type="text"
         ref="input"
@@ -12,6 +16,12 @@
         @focus="handleInputFocus"
         @blur="handleInputBlur"
       />
+      <van-icon
+        name="clear"
+        color="#D5D5D5"
+        style="margin-left: 5px"
+        v-show="searchValue"
+        @click="searchValue = ''; position = {}; $refs.input.focus()" />
     </div>
 
     <!-- 搜索结果列表 -->
@@ -25,7 +35,7 @@
       <div class="search-item"
         v-for="item in searchList"
         :key="item.id"
-        @click="handleSelect($event, item)">
+        @click="handleSelect($event, item, 'history')">
         <div class="search-item-main">
           <van-icon :name="item.isHistory ? 'clock' : 'location'"
             size=".15rem" color="#555555"/>
@@ -47,29 +57,48 @@
     <!-- 底部结果显示卡片 -->
     <div class="result">
       <div class="result-title">出发地点</div>
-      <div class="result-name" v-show="position.name">{{position.name}}</div>
-      <div class="result-placeholder" v-show="!position.name">可在上方搜索位置</div>
-      <div class="result-address">{{addressDetail(position)}}</div>
+      <!-- 当前城市 + 地点 -->
+      <div class="result-name">
+        <span @click="showSelector = true">{{curCity}}</span> {{position.name}}
+      </div>
+      <!-- 详细地址 -->
+      <div class="result-address">
+        {{`${position.adname || ''}${position.address || ''}`}}
+      </div>
       <main-button :color="buttonColor" @click="handleConfirm">确认</main-button>
       <!-- 定位按钮 -->
       <div class="get-cur-button" @click="handleGetPosition">
         <van-icon name="aim" size=".20rem" />
       </div>
     </div>
+
+    <!-- 城市选择器 -->
+    <van-popup v-model="showSelector" position="bottom" round>
+      <van-picker
+        show-toolbar
+        :columns="cityList"
+        @confirm="handleCurCityChange"
+        @cancel="() => {showSelector = false}"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import { Popup, Picker } from 'vant'
 import { debounce, isEmpty, cloneDeep } from 'lodash'
 import { AMapLoaderAndUI } from '@/utils/mapLoader'
 import { initPlaceSearch, initGeolocation } from '@/utils/mapPlugin'
 import { getPosition } from '@/utils/districtSearch'
 import MainButton from '@/components/MainButton'
+import pList from '@/utils/pnameList'
 
 export default {
   components: {
-    'main-button': MainButton
+    'main-button': MainButton,
+    'van-popup': Popup,
+    'van-picker': Picker
   },
   data: () => ({
     // 页面类型 common: 公用，release: 发布页面使用，trip: 修改行程页面
@@ -93,19 +122,31 @@ export default {
     // 显示搜索结果列表
     searchShow: false,
     // 未搜索到结果
-    searchEmpty: false
+    searchEmpty: false,
+    // 当前城市
+    showSelector: false,
+    curCity: null,
+    cityList: pList
   }),
   computed: {
     ...mapState(['search', 'release', 'trip', 'history']),
     // 判断用户是否什么都没选
     isNothing () {
-      return isEmpty(this.position) || isEmpty(this.searchValue) || isEmpty(this.position.name)
+      return isEmpty(this.position) ||
+             isEmpty(this.searchValue) ||
+             isEmpty(this.position.name)
     },
     buttonColor () {
       return this.isNothing ? 'gray' : 'yellow'
     }
   },
   methods: {
+    // 搜索城市发生改变
+    handleCurCityChange (city) {
+      this.curCity = city ? city.replace(/(市|省|自治区)/, '') : '重庆'
+      this.showSelector = false
+      this.initSearch()
+    },
     // 初始化地图视图及功能模块
     async initMap () {
       try {
@@ -113,10 +154,6 @@ export default {
         const AMap = await AMapLoaderAndUI(['misc/PositionPicker'])
         // 初始化地图视图
         const map = new AMap.Map('SEARCH_MAP', { zoom: 16 })
-        // 初始化搜索模块
-        const placeSearch = await initPlaceSearch(AMap)
-        // 监听搜索成功事件
-        AMap.Event.addListener(placeSearch, 'complete', this.handleRender)
         // 初始化定位模块
         const geolocation = await initGeolocation(AMap)
         // 为地图视图添加定位控制器
@@ -124,12 +161,19 @@ export default {
         // 保存到当前组件状态
         this.AMap = AMap
         this.map = map
-        this.placeSearch = placeSearch
         this.geolocation = geolocation
       } catch (error) {
         console.log(error)
         this.$toast({ message: '位置加载失败，请检查网络或稍后再试', duration: 1200 })
       }
+    },
+    async initSearch () {
+      const AMap = this.AMap
+      // 初始化搜索模块
+      const placeSearch = await initPlaceSearch(AMap, this.curCity)
+      this.placeSearch = placeSearch
+      // 监听搜索成功事件
+      AMap.Event.addListener(placeSearch, 'complete', this.handleRender)
     },
     // 获取用户当前位置
     handleGetPosition () {
@@ -143,7 +187,7 @@ export default {
           // 通过经纬度获取位置信息
           const { lng, lat } = result.position
           const position = await getPosition(this.AMap, [lng, lat])
-          console.log(position)
+          // console.log(position)
           const data = this.transInfo(result.position, position)
           this.handleSelect(null, data)
         }
@@ -177,7 +221,7 @@ export default {
         name,
         location: { lng, lat }
       }
-      console.log(data)
+      // console.log(data)
       return data
     },
     // 监听用户输入
@@ -216,7 +260,7 @@ export default {
       }
     },
     // 选择搜索地点
-    async handleSelect (e, record) {
+    async handleSelect (e, record, type) {
       const { lng, lat } = record.location
       // 通过经纬度获取城镇街道信息
       const detail = await getPosition(this.AMap, [lng, lat])
@@ -230,6 +274,8 @@ export default {
       this.position = record
       // 添加到历史搜索记录
       this.handleAddSearchHistory(record)
+      // 设置当前城市为该地点的城市
+      if (type === 'history') this.handleCurCityChange(record.pname)
       setTimeout(() => {
         this.searchShow = false
       }, 150)
@@ -297,6 +343,7 @@ export default {
   },
   mounted: async function () {
     await this.initMap()
+    await this.handleCurCityChange(this.$store.state.position.city.name)
     // 从store中获取出发点信息
     const key = this.type === 'common' ? 'search' : this.type
     this.position = this[key].startAddr
@@ -324,7 +371,7 @@ export default {
 .header{
   width: calc(100% - .3rem);
   height: .5rem;
-  padding-left: .15rem;
+  padding: 0 .10rem;
   box-sizing: border-box;
   border-radius: .06rem;
   background-color: #ffffff;
@@ -335,8 +382,26 @@ export default {
   left: .15rem;
   z-index: 10;
 
+  .city-select{
+    height: .15rem;
+    margin: 0 .08rem;
+    padding-right: .06rem;
+    border-right: solid 1px $tip-text;
+    flex-shrink: 0;
+    @include flex ($align: center);
+
+    span{
+      margin-right: .02rem;
+    }
+
+    .select-arrow{
+      transform: rotateZ(90deg);
+      border-right: solid 1px $light-color;
+    }
+  }
+
   input{
-    margin-left: .10rem;
+    // margin-left: .10rem;
     box-sizing: border-box;
     flex: 1;
     border: none;

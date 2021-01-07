@@ -71,8 +71,8 @@ export default {
         }).then(() => {
           this.$router.push('/common/login')
         })
-        return
       }
+      if (this.tabbarId === index) return
       this.$store.commit('changeTabbar', { index, path })
       this.$router.push({ path })
     },

@@ -15,8 +15,26 @@
   left: .15rem;
   z-index: 10;
 
+  .city-select{
+    height: .15rem;
+    margin: 0 .08rem;
+    padding-right: .06rem;
+    border-right: solid 1px $tip-text;
+    flex-shrink: 0;
+    @include flex ($align: center);
+
+    span{
+      margin-right: .02rem;
+    }
+
+    .select-arrow{
+      transform: rotateZ(90deg);
+      border-right: solid 1px $light-color;
+    }
+  }
+
   input{
-    margin: 0 .05rem 0 .10rem;
+    margin-right: .05rem;
     box-sizing: border-box;
     flex: 1;
     border: none;

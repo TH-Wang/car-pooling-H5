@@ -1,11 +1,11 @@
 
 // 初始化搜索模块
-export async function initPlaceSearch (AMap) {
+export async function initPlaceSearch (AMap, city) {
   return new Promise((resolve, reject) => {
     AMap.plugin('AMap.PlaceSearch', function () {
       var placeSearch = new AMap.PlaceSearch({
       // city 指定搜索所在城市，支持传入格式有：城市名、citycode和adcode
-        city: '全国',
+        city: city || '全国',
         pageSize: 15,
         extensions: 'all'
       })

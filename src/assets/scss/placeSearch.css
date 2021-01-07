@@ -16,8 +16,29 @@
   z-index: 10;
 }
 
+.header .city-select {
+  height: .15rem;
+  margin: 0 .08rem;
+  padding-right: .06rem;
+  border-right: solid 1px #BFBFBF;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.header .city-select span {
+  margin-right: .02rem;
+}
+
+.header .city-select .select-arrow {
+  transform: rotateZ(90deg);
+  border-right: solid 1px #FAFAFA;
+}
+
 .header input {
-  margin: 0 .05rem 0 .10rem;
+  margin-right: .05rem;
   box-sizing: border-box;
   flex: 1;
   border: none;

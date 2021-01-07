@@ -132,9 +132,13 @@
         content="申请站长"
         @click="$router.push('/common/settle/site/tips')"
       />
+      <template v-if="user.token">
+        <!-- 退订弹窗 -->
+        <refund-order-layer v-model="showRefund" @submit="handleRefund" />
 
-      <!-- 退订弹窗 -->
-      <refund-order-layer v-if="user.token" v-model="showRefund" @submit="handleRefund" />
+        <!-- 车主取消预约弹窗 -->
+        <cancel-reserve-layer v-model="showCancel" @submit="handleDriverCancel" />
+      </template>
     </div>
   </div>
 </template>
@@ -153,10 +157,10 @@ import {
 import OverageCard from '@/components/OverageCard'
 import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
-// import MiniButton from '@/components/MiniButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import Affix from '@/components/Affix'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
+import CancelReserve from '@/components/Layer/CancelReserve'
 
 export default {
   name: 'Mine',
@@ -168,9 +172,9 @@ export default {
     'overage-card': OverageCard,
     'pending-order': PendingOrder,
     'confirm-button': ConfirmButton,
-    // 'mini-button': MiniButton,
     affix: Affix,
-    'refund-order-layer': RefundOrderLayer
+    'refund-order-layer': RefundOrderLayer,
+    'cancel-reserve-layer': CancelReserve
   },
   data: () => ({
     headerIcons: [
@@ -214,6 +218,7 @@ export default {
     },
     // 需要退订的订单id
     cancelOrderId: null,
+    showCancel: false,
     showRefund: false
   }),
   computed: {
@@ -222,9 +227,6 @@ export default {
     buttonColor () {
       return this.identity === 0 ? 'yellow' : 'green'
     }
-    // token () {
-    //   return localStorage.getItem('token')
-    // }
   },
   methods: {
     // 请求我的预约
@@ -313,23 +315,26 @@ export default {
       }
       this.reqList()
     },
-    // 司机取消预约
+    // 取消预约
     async handleOrderCancel (status, orderId) {
-      if (this.identity === 0) {
-        this.cancelOrderId = orderId
-        this.showRefund = true
-        return
-      }
-      // 发送请求
-      this.handleReqCancel({ orderId, status })
+      this.cancelOrderId = orderId
+      this.identity === 0
+        ? this.showRefund = true
+        : this.showCancel = true
+    },
+    // 车主取消
+    async handleDriverCancel ({ id, text }) {
+      const orderId = this.cancelOrderId
+      const data = { status: 3, orderId, reason: id }
+      await this.handleReqCancel(data)
+      this.showCancel = false
     },
     // 乘客退订
     async handleRefund (reason) {
-      // 判断是乘客取消还是司机取消
-      const status = this.identity === 0 ? 4 : 3
       const orderId = this.cancelOrderId
-      const data = { status, orderId, ...reason }
-      this.handleReqCancel(data)
+      const data = { status: 4, orderId, ...reason }
+      await this.handleReqCancel(data)
+      this.showRefund = false
     },
     // 发送退订或预约的请求
     async handleReqCancel (data) {

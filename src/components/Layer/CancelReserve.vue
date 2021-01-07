@@ -1,11 +1,12 @@
 <template>
   <div>
     <van-popup
-      v-model="visible"
+      v-model="show"
       position="bottom"
       round
       closeable
       safe-area-inset-bottom
+      @close="$emit('change', false)"
     >
       <div class="content">
         <!-- 标题、描述 -->
@@ -43,24 +44,35 @@ export default {
     'van-radio': Radio,
     'main-button': MainButton
   },
+  model: {
+    prop: 'visible',
+    event: 'change'
+  },
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    }
+  },
   data: () => ({
-    visible: false,
+    show: false,
     radio: 0,
     options: [
-      { id: 0, text: '乘客已找到车辆' },
-      { id: 1, text: '乘客线路不能到达' },
-      { id: 2, text: '乘客更改了行程' }
+      { id: 1, text: '乘客行程有变' },
+      { id: 2, text: '联系不上乘客' },
+      { id: 3, text: '乘客取消行程' },
+      { id: 4, text: '我取消行程' }
     ]
   }),
   methods: {
     // 弹出
-    show () {
-      this.visible = true
-    },
+    // show () {
+    //   this.visible = true
+    // },
     // 收回
-    hidden () {
-      this.visible = false
-    },
+    // hide () {
+    //   this.visible = false
+    // },
     // 改变事件
     handleChange (e, idx) {
       this.radio = idx
@@ -72,6 +84,11 @@ export default {
         id: _this_.radio,
         text: _this_.options.find(i => i.id === _this_.radio).text
       })
+    }
+  },
+  watch: {
+    visible: function (newVal) {
+      this.show = newVal
     }
   }
 }

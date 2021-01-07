@@ -70,7 +70,7 @@ export default {
     }
   }),
   computed: {
-    ...mapState(['filters', 'position']),
+    ...mapState(['filters', 'position', 'search']),
     ...mapGetters(['unGeoLocation']),
     remainingSeat () {
       return this.options.seat.find(i => i.value === this.values.seat).seat
@@ -97,6 +97,16 @@ export default {
         if (time !== 0) filterData.startTime = this.options.time.find(i => i.value === time).date
         this.$emit('change', filterData)
       })
+    },
+    // 更新flag
+    updateFlag () {
+      // 确定falg
+      const { startAddr, endAddr } = this.search
+      if (startAddr.name && endAddr.name) {
+        this.values.flag = 2
+      } else if (this.position.county.name) {
+        this.values.flag = 1
+      } else this.values.flag = 0
     }
   },
   created: async function () {
@@ -111,13 +121,19 @@ export default {
       this.updateDateOptions()
     }
     this.options.time = this.filters.timeOptions
+    this.updateFlag()
+  },
+  watch: {
+    'search.startAddr.name': function () {
+      this.updateFlag()
+    },
+    'search.endAddr.name': function () {
+      this.updateFlag()
+    },
+    'position.county.name': function () {
+      this.updateFlag()
+    }
   }
-  // watch: {
-  //   'position.city': async function (newVal) {
-  //     await this.updateAreaOptions(newVal.code)
-  //     this.options.area = this.filters.areaOptions
-  //   }
-  // }
 }
 </script>
 
