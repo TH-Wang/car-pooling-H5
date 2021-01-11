@@ -84,7 +84,7 @@
             :record="item"
             type="driver"
             :color="buttonColor"
-            showCall
+            :showCall="identity === 1"
           ><template #button>
             <confirm-button
               :color="buttonColor"
@@ -275,10 +275,10 @@ export default {
       this.$store.commit('setUserInfo', res.data.data)
 
       // 身份判断
-      // const { group, etc, viceAdministrator } = res.data.data
-      // this.menuList.group.show = group === 'YES'
-      // this.menuList.etc.show = etc === 'YES'
-      // this.menuList.viceAdministrator.show = viceAdministrator === 'YES'
+      const { group, etc, viceAdministrator } = res.data.data
+      this.menuList.group.show = group === 'YES'
+      this.menuList.etc.show = etc === 'YES'
+      this.menuList.viceAdministrator.show = viceAdministrator === 'YES'
     },
     // 身份判断
     getConfirm (type) {
@@ -325,7 +325,7 @@ export default {
     // 车主取消
     async handleDriverCancel ({ id, text }) {
       const orderId = this.cancelOrderId
-      const data = { status: 3, orderId, reason: id }
+      const data = { status: 3, orderId, unsubscribeResonId: id }
       await this.handleReqCancel(data)
       this.showCancel = false
     },

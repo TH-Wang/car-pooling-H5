@@ -112,7 +112,7 @@
   right: 0;
   width: calc(100% - .85rem);
   z-index: 100;
-  // max-height: 1.96rem;
+  max-height: 1.96rem;
   overflow-y: scroll;
   background-color: #ffffff;
   box-shadow: 0px 0px 10px 0px rgba(38, 38, 38, 0.06);
@@ -120,9 +120,9 @@
   transform-origin: top;
   transition: all .3s;
 
-  &::-webkit-scrollbar{
-    display: none;
-  }
+  // &::-webkit-scrollbar{
+  //   display: none;
+  // }
 
   &-item{
     width: 100%;

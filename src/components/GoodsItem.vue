@@ -1,7 +1,7 @@
 <template>
   <div :class="`container container-${size}`" @click="$emit('click')">
     <!-- 商品图片 -->
-    <van-image fill="cover" width="1.15rem" height=".90rem" />
+    <van-image :src="record.img" fill="cover" width="1.15rem" height=".90rem" />
 
     <!-- 商品信息 -->
     <div class="info">

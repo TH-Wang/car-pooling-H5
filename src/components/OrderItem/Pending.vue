@@ -140,8 +140,8 @@ export default {
     },
     // 是否显示拨号按钮
     showCallButton () {
-      const phone = this.record.mobilePhone
-      return this.showCall && (phone === 1 || phone === 2)
+      const status = this.record.status
+      return this.showCall && (status === 1 || status === 2)
     },
     // 信息容器宽度
     contentWidth () {
@@ -150,7 +150,7 @@ export default {
   },
   methods: {
     handleCallPhone () {
-      callPhone(this.record.mobilePhone)
+      callPhone(this.record.telPhone)
     }
   }
 }
@@ -286,8 +286,10 @@ export default {
       height: .4rem;
       border-radius: 50%;
       @include flex (center, center);
-      background-color: $main-color;
-      box-shadow: 0px 4px 10px -2px rgba(255, 174, 32, 0.5);
+      // background-color: $main-color;
+      // box-shadow: 0px 4px 10px -2px rgba(255, 174, 32, 0.5);
+      background: linear-gradient(135deg, #36E5AD 0%, #0AD593 100%);
+      box-shadow: 0px 6px 10px -4px #05DD98;
       position: absolute;
       bottom: .08rem;
       right: 0;

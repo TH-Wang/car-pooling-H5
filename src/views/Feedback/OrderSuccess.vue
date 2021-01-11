@@ -117,7 +117,7 @@ export default {
   },
   mounted: async function () {
     await this.handleRequest()
-    this.refundTime = moment(this.record.startTime).add(10, 'minutes').format('MM月DD日 HH:mm')
+    this.refundTime = moment().add(10, 'minutes').format('MM月DD日 HH:mm')
     this.$dialog.confirm({
       message: '恭喜您，预约成功！您可前往个人中心页面进行确认',
       confirmButtonText: '联系车主',

@@ -2,6 +2,10 @@ import axios from './http'
 
 export default { selectUnsubscribeReason }
 
-function selectUnsubscribeReason () {
-  return axios.post('/unsubscribeReson/getCommonRoute')
+function selectUnsubscribeReason (type) {
+  return axios({
+    url: '/unsubscribeReson/getCommonRoute',
+    method: 'POST',
+    params: { type }
+  })
 }

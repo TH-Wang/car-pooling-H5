@@ -5,8 +5,11 @@ import './global.min.css'
 import router from './router'
 import store from './store'
 import 'moment/locale/zh-cn'
+import { spell } from 'cnchar'
 
 Vue.config.productionTip = false
+
+window.spell = spell
 
 // 全局弹出框
 Dialog.setDefaultOptions({

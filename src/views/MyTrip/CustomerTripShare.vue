@@ -43,16 +43,27 @@
         @click="copyToClip('other')"
       >复制到其他</main-button>
     </div>
+
+    <template v-if="showQuick">
+      <!-- 快捷路线 -->
+      <quick-line
+        :dataSource="quickList"
+        :query="query"
+        @retry="handleRetryQuick"
+      />
+      <div style="height:.3rem"></div>
+    </template>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 import { isEmpty } from 'lodash'
-import { getPassengerPublishDetail } from '@/api'
+import { getPassengerPublishDetail, getCommonRoute } from '@/api'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
+import QuickLine from '@/components/QuickLine'
 import { shareip } from '@/configs/sharePort'
 
 export default {
@@ -60,10 +71,14 @@ export default {
     'order-info-header': Header,
     'order-info-field': Field,
     'map-view': MapView,
-    'main-button': MainButton
+    'main-button': MainButton,
+    'quick-line': QuickLine
   },
   data: () => ({
-    record: {}
+    showQuick: false,
+    record: {},
+    query: {},
+    quickList: []
   }),
   computed: {
     startTime () {
@@ -87,9 +102,38 @@ export default {
     }
   },
   methods: {
+    // 查询发布信息
     async handleReq () {
       const res = await getPassengerPublishDetail(this.orderId)
       this.record = res.data.data
+      const { publishType } = res.data.data
+      this.query = { publishType, workType: 'carpool', orderType: 1 }
+    },
+    // 查询相似快捷路线
+    async handleReqQuick () {
+      const { publishType } = this.record
+      const start = this.record.passPointList.find(i => i.type === 1)
+      let addrName = null
+      switch (publishType) {
+        case 1: addrName = start.township; break
+        case 2: addrName = start.cityname; break
+        case 3: addrName = start.township; break
+        default: addrName = start.cityname
+      }
+      const res = await getCommonRoute({
+        startPage: 1,
+        pageSize: 2,
+        orderType: 1,
+        publishType,
+        addrName
+      })
+      this.quickList = res.data.data.list
+    },
+    // 刷新快捷路线
+    async handleRetryQuick () {
+      this.$toast.loading({ message: '加载中', duration: 10000 })
+      await this.handleReqQuick()
+      this.$toast.hide()
     },
     copyToClip (type) {
       const aux = document.createElement('textarea')
@@ -118,6 +162,10 @@ export default {
   created: async function () {
     this.orderId = this.$route.query.id
     await this.handleReq()
+    if (this.$route.query.quick === '1') {
+      this.showQuick = true
+      await this.handleReqQuick()
+    }
   }
 }
 </script>

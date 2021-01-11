@@ -1,6 +1,7 @@
 const path = require('path')
 
 module.exports = {
+  publicPath: '/h5/',
   pluginOptions: {
     'style-resources-loader': {
       preProcessor: 'scss',

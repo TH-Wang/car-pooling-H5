@@ -17,30 +17,33 @@
         height=".83rem"
         fit="cover"
         style="margin: 0 .87rem"
-        src="https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=310520958,16932643&fm=26&gp=0.jpg"
+        :src="record.img"
       />
       <div class="header-top">
-        <div class="header-title">小面包车</div>
+        <div class="header-title">{{record.carName}}</div>
       </div>
       <div class="header-info">
         <div class="header-info-detail">
-          <span>载重：600kg</span>
+          <span>载重：{{record.load}}kg</span>
           <span>|</span>
-          <span>长宽高：1.7*1.2*1m</span>
+          <span>长宽高：{{record.widthHeight}}m</span>
           <span>|</span>
-          <span>容积：2.5m³</span>
+          <span>容积：{{record.volume}}m³</span>
         </div>
-        <div class="header-info-time">可服务时间段：周二至周日 08:00 - 22:00</div>
+        <div class="header-info-time">
+          可服务时间段：{{week[record.startWeek]}} - {{week[record.endWeek]}}
+        </div>
       </div>
     </div>
 
     <div class="main-title">图文详情</div>
+    <p class="detail">{{record.details}}</p>
     <van-image
       width="3.45rem"
       height="2rem"
-      src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2146069455,2934722014&fm=26&gp=0.jpg"
+      :src="record.detailsImg"
     ></van-image>
-
+<!--
     <div class="main-title">费用说明</div>
     <p class="detail">1. 一人一位一费，1.2cm以下小孩半价，不能乱吃拉面了吗联盟里面了麻辣小面
 2. 那蓝蓝路发生呢了哪里哪里 买啦买到啦
@@ -51,17 +54,20 @@
     <p class="detail">1. 蠢哭了；身份；阿瑟费吗；阿妈了马拉松拿出来说那拉氏奶粉门口吃辣椒水里打瞌睡
 2. 那蓝蓝路发生呢了哪里哪里 买啦买到啦
 3. 你擦了那份南斯拉夫教练是德弗里斯你离那里是德弗里斯难吃死了
-4. 麻辣；什么；啊什么的；阿里斯顿家；立即</p>
+4. 麻辣；什么；啊什么的；阿里斯顿家；立即</p> -->
 
   <main-button
     center
     style="margin: .20rem auto .30rem auto;"
-    @click="$router.push({path: '/common/tourcar/placeorder', query: {type: 'car'}})"
-  >立即购买</main-button>
+    @click="$router.push({
+      path: '/common/tourcar/placeorder',
+      query: {type: 'car', id: record.id}
+  })">立即购买</main-button>
   </div>
 </template>
 
 <script>
+import { getBusDetailById } from '@/api'
 import { Image } from 'vant'
 import MainButton from '@/components/MainButton'
 
@@ -69,6 +75,29 @@ export default {
   components: {
     'van-image': Image,
     'main-button': MainButton
+  },
+  data: () => ({
+    id: null,
+    record: {},
+    week: {
+      0: '周日',
+      1: '周一',
+      2: '周二',
+      3: '周三',
+      4: '周四',
+      5: '周五',
+      6: '周六'
+    }
+  }),
+  methods: {
+    async handleReq () {
+      const res = await getBusDetailById(this.id)
+      this.record = res.data.data
+    }
+  },
+  created () {
+    this.id = this.$route.query.id
+    this.handleReq()
   }
 }
 </script>
@@ -118,6 +147,7 @@ export default {
   .detail{
     @include font (.14rem, $tip-text);
     line-height: .20rem;
+    margin-bottom: .10rem;
   }
 }
 </style>

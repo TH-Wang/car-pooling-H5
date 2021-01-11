@@ -1,6 +1,7 @@
 import axios from './http'
 
 export default {
+  queryProvinceList,
   queryPositionForCity,
   queryPositionForCounty,
   savePosition,
@@ -8,7 +9,12 @@ export default {
   queryPositionByCountyName
 }
 
-// 查询所有城市列表
+// 查询省列表
+function queryProvinceList () {
+  return axios.post('/position/queryFirstCounty')
+}
+
+// 查询城市列表
 function queryPositionForCity () {
   return axios.post('/position/queryPositionForCity')
 }

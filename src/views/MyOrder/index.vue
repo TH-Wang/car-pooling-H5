@@ -23,30 +23,12 @@
     >
       <!-- 旅游路线 -->
       <van-tab class="van-tab-wrapper" title="旅游路线">
-        <van-empty description="暂无订单信息" v-if="tour.list.length === 0" />
-        <goods-item
-          v-for="item in tour.list"
-          :key="item.id"
-          :record="item"
-          :button-text="getButtonStyle('text', item.state)"
-          :button-type="getButtonStyle('type', item.state)"
-          @click="handleLinkDetail('tour', item.id, item.state)"
-        />
+<tour-list />
       </van-tab>
 
       <!-- 包车信息 -->
       <van-tab class="van-tab-wrapper" title="包车信息">
-        <van-empty description="暂无订单信息" v-if="car.list.length === 0" />
-        <goods-item
-          v-for="item in car.list"
-          :key="item.id"
-          :record="item"
-          :button-text="getButtonStyle('text', item.state)"
-          :button-type="getButtonStyle('type', item.state)"
-          show-tip
-          price-suffix="起"
-          @click="handleLinkDetail('car', item.id, item.state)"
-        />
+        <car-list />
       </van-tab>
     </van-tabs>
   </div>
@@ -54,13 +36,15 @@
 
 <script>
 import { Tabs, Tab } from 'vant'
-import GoodsItem from '@/components/GoodsItem'
+import TourList from './TourList'
+import CarList from './CarList'
 
 export default {
   components: {
     'van-tabs': Tabs,
     'van-tab': Tab,
-    'goods-item': GoodsItem
+    TourList,
+    CarList
   },
   data: () => ({
     tabId: 0,

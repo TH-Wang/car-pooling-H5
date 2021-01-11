@@ -12,30 +12,31 @@
 
     <!-- 顶部信息 -->
     <div class="header">
-      <van-image width="1.15rem" height=".90rem" />
+      <van-image :src="record.img" width="1.15rem" height=".90rem" />
       <div class="header-info">
-        <div class="header-title">故宫博物馆感受文化之旅</div>
+        <div class="header-title">{{isTour ? record.title : record.carName}}</div>
         <!-- 旅游信息 -->
         <div v-if="isTour" class="header-detail">
           <p>出行时间：</p>
-          <p>2020-07-23 至 2020-07-30</p>
+          <p>{{record.start}} 至 {{record.end}}</p>
         </div>
         <!-- 包车信息 -->
         <div v-else class="header-detail">
-          <p>载重：600kg</p>
-          <p>长宽高：1.7*1.2*1m</p>
-          <p>容积：2.5m³</p>
+          <p>载重：{{record.load}}kg</p>
+          <p>长宽高：{{record.widthHeight}}m</p>
+          <p>容积：{{record.volume}}m³</p>
         </div>
       </div>
     </div>
 
-    <custom-form>
+    <custom-form ref="form">
       <div class="main-title">{{isTour ? '预定人信息' : '包车人信息'}}</div>
       <custom-field
-        name="name"
+        name="userName"
         label="联系人"
-        v-model="form.name"
+        v-model="form.userName"
         placeholder="请输入订单联系人姓名"
+        :rules="[{required: true}]"
       />
       <custom-field
         name="phone"
@@ -48,20 +49,31 @@
       />
       <custom-field
         v-if="isTour"
-        name="people"
+        name="userNum"
         label="出行人数"
-        v-model="form.people"
+        v-model="form.userNum"
         placeholder="请输入此次出行人数"
         type="tel"
-        :rules="[{required: true}, {pattern: /^\d$/, message: '请输入人数'}]"
+        :rules="[{required: true}, {pattern: /^\d+$/, message: '请输入数字'}]"
       />
-      <custom-timer
-        v-else
-        name="time"
-        label="使用时间"
-        placeholder="请选择使用时间"
-        :default-time="new Date()"
-      />
+      <template v-else>
+        <custom-picker
+          name="startTime"
+          v-model="form.startTime"
+          :columns="week"
+          :defaultIndex="1"
+          label="开始使用"
+          placeholder="请选择开始使用时间"
+        />
+        <custom-picker
+          name="endTime"
+          v-model="form.endTime"
+          :columns="week"
+          :defaultIndex="5"
+          label="结束使用"
+          placeholder="请选择结束使用时间"
+        />
+      </template>
     </custom-form>
 
     <!-- 支付方式列表 -->
@@ -69,13 +81,13 @@
     <van-radio-group class="radio-container" v-model="payType">
       <div
         class="radio-item"
-        v-for="(opt, idx) in payOptions"
+        v-for="opt in payOptions"
         :key="opt.id"
-        @click="payType = idx"
+        @click="payType = opt.id"
       >
         <img :src="opt.icon" alt="" />
         <span class="radio-item-label">{{opt.text}}钱包</span>
-        <van-radio :name="idx" checked-color="#0AD593" icon-size=".20rem" />
+        <van-radio :name="opt.id" checked-color="#0AD593" icon-size=".20rem" />
       </div>
     </van-radio-group>
 
@@ -102,16 +114,18 @@
       <div class="detail">
         <div class="detail-title">明细</div>
         <div class="detail-item">
-          <span class="label">联系人</span><span>{{form.name}}</span>
+          <span class="label">联系人</span><span>{{form.userName}}</span>
         </div>
         <div class="detail-item">
           <span class="label">联系人电话</span><span>{{form.phone}}</span>
         </div>
         <div class="detail-item">
-          <span class="label">出行人数</span><span>{{form.people}}</span>
+          <span class="label">出行人数</span><span>{{form.userNum}}</span>
         </div>
         <div class="detail-item">
-          <span class="label">支付方式</span><span>{{payOptions[payType].text}}</span>
+          <span class="label">支付方式</span><span>
+            {{payOptions.find(i => i.id === payType).text}}
+          </span>
         </div>
       </div>
     </van-popup>
@@ -125,9 +139,10 @@
 </template>
 
 <script>
+import { getTourDetailById, getBusDetailById, createTourCarOrder } from '@/api'
 import { Image, RadioGroup, Radio, Popup } from 'vant'
 // import { isEmpty } from 'lodash'
-import { Form, Field, Timer } from '@/components/Form'
+import { Form, Field, Picker } from '@/components/Form'
 
 export default {
   components: {
@@ -137,21 +152,27 @@ export default {
     'van-popup': Popup,
     'custom-form': Form,
     'custom-field': Field,
-    'custom-timer': Timer
+    'custom-picker': Picker
   },
   data: () => ({
     // 当前页面类型: ['tour', 'car']
     mode: '',
-    form: {
-      name: '',
-      phone: '',
-      peopel: ''
-    },
-    payType: 0,
+    form: {},
+    week: [
+      { id: 0, label: '周日' },
+      { id: 1, label: '周一' },
+      { id: 2, label: '周二' },
+      { id: 3, label: '周三' },
+      { id: 4, label: '周四' },
+      { id: 5, label: '周五' },
+      { id: 6, label: '周六' }
+    ],
+    record: {},
+    payType: 1,
     // 支付方式
     payOptions: [
-      { id: 0, icon: require('@/assets/icons/pay/alipay.png'), text: '支付宝' },
-      { id: 1, icon: require('@/assets/icons/pay/wechat.png'), text: '微信' }
+      { id: 1, icon: require('@/assets/icons/pay/alipay.png'), text: '支付宝' },
+      { id: 2, icon: require('@/assets/icons/pay/wechat.png'), text: '微信' }
     ],
     // 展示明细
     showDetail: false
@@ -168,30 +189,48 @@ export default {
     }
   },
   methods: {
+    // 请求数据
+    async handleReq () {
+      const res = this.isTour
+        ? await getTourDetailById(this.id)
+        : await getBusDetailById(this.id)
+      this.record = res.data.data
+    },
+    // 处理支付
     async handleBuy () {
-      // const path = `/common/${this.mode}/feedback/`
-      // const suffix = this.payType === 0 ? 'success' : 'fail'
-      // this.$router.push(path + suffix)
-      // this.$toast.loading({
-      //   message: '支付中',
-      //   duration: 1000000
-      // })
-      // try {
-      //   window.ap.tradePay({
-      //     orderStr: 'alipay_sdk=alipay-sdk-java-dynamicVersionNo&app_id=2021002115684225&biz_content=%7B%22out_trade_no%22%3A%222020122000008980316%22%2C%22product_code%22%3A%22QUICK_MSECURITY_PAY%22%2C%22subject%22%3A%22%25E6%25B5%258B%25E8%25AF%2595%22%2C%22total_amount%22%3A%220.01%22%7D&charset=UTF-8&format=JSON&method=alipay.trade.wap.pay&notify_url=http%3A%2F%2Fwangtao.utools.club%2Fapi%2Fapp%2Fpay%2FwxRechargeNotify&sign=XzZwu6g1%2FJm7%2BVx3PHr6apSF8n1ACndddaNt%2BYXYTq%2FxUVWgNL6guEKhCTusOr5S1lWNY3gAYNY5X%2BgqG7lDteEPqJMBtEVt8cd3c%2FKHumiqkhqUcFxQ0xp97Y6sqYPoBKflaTJs8NvX1I2ZSqqJ6SEVFa7%2BfY%2FeK7Ohe38azoEujD5c%2F93lAVCtWAf4AvHmNLbCespcgCHZog09mvm09XntbPfSX6O7xFxjZ0JVWnECYpTDYbit4K2HgDK6LwzODC86U%2BjCwRv8nCN7Ukgx56U2fLS24hfBRYGwo7rPwsJkjiHA9vomJ0TmBjRm7wfnvqarUCTCPaYCJn6rjvI37g%3D%3D&sign_type=RSA2&timestamp=2020-12-20+19%3A22%3A38&version=1.0'
-      //   }, (res) => {
-      //     this.$dialog.alert({
-      //       message: res.resultCode
-      //     })
-      //     this.$toast.clear()
-      //   })
-      // } catch (error) {
-      //   this.$dialog.alert({ message: error })
-      // }
+      const err = this.$refs.form.validate()
+      if (err.length) return
+      const payType = this.payType
+      const type = this.isTour ? 1 : 2
+      const typeId = this.record.id
+      const data = { ...this.form, type, payType, typeId }
+      const res = await createTourCarOrder(data)
+      if (res.data.status === 200) {
+        payType === 1 ? this.aliPay(res) : this.wexinPay(res)
+      } else {
+        this.$toast.fail({ message: res.data.msg })
+      }
+    },
+    // 支付宝支付
+    aliPay (res) {
+      const form = res.data.data.data
+      const div = document.createElement('div')
+      div.innerHTML = form
+      document.body.appendChild(div)
+      document.forms[0].submit()
+    },
+    // 微信支付
+    wexinPay (res) {
+      this.$toast.loading({ message: '微信支付' })
+      const url = res.data.data.data.mwebUrl
+      window.location.replace(url)
     }
   },
   created () {
-    this.mode = this.$route.query.type
+    const { type, id } = this.$route.query
+    this.mode = type
+    this.id = id
+    this.handleReq()
   },
   mounted () {
     // this.$dialog.alert({
@@ -225,7 +264,7 @@ export default {
 }
 
 .radio-container{
-  margin-bottom: .3rem;
+  margin-bottom: .9rem;
 
   // 选项
   .radio-item{

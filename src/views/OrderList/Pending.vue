@@ -109,7 +109,7 @@ export default {
   }),
   computed: {
     ...mapState(['position', 'search']),
-    ...mapGetters(['location', 'identity']),
+    ...mapGetters(['location', 'countyName', 'identity']),
     // 搜索路线时传递的参数
     query () {
       // const identity = this.identity
@@ -125,14 +125,14 @@ export default {
     // 自定义请求函数
     reqApi: queryPassengerOrders,
     getRequestDatas () {
-      const cityname = this.position.county.name
+      const cityname = this.countyName
       return { publishType: '1,2,3', cityname }
     },
     // 自定义快捷路线请求函数
     reqQuickApi: getNewPassengerCommonRoute,
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
-      const addrName = this.position.county.name
+      const addrName = this.countyName
       return { startPage: 1, orderType: 2, publishType: '1,2,3', pageSize: 10, addrName }
     },
     // 按起止地点找车

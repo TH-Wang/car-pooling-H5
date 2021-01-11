@@ -10,7 +10,7 @@
       @click-left="handleSelectCity"
     >
       <template #left>
-        {{getPosition()}}<van-icon name="arrow" color="#262626" size=".15px" />
+        {{location}}<van-icon name="arrow" color="#262626" size=".15px" />
       </template>
     </van-nav-bar>
 
@@ -73,8 +73,8 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { NavBar, Icon, List } from 'vant'
-import { isEmpty, cloneDeep } from 'lodash'
-import { getCar } from '@/api'
+import { cloneDeep } from 'lodash'
+import { getCar, getLatestSearch } from '@/api'
 import EventBus from '@/utils/eventBus'
 import { OrderFilter } from '@/components/Filter/index.js'
 import SearchCard from '@/components/SearchCard'
@@ -140,8 +140,31 @@ export default {
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
-      const addrName = this.position.county.name
+      const addrName = this.position.selected.county.name
       return { startPage: 1, orderType: 1, pageSize: 10, publishType: '1,2,3', addrName }
+    },
+    // 请求用户上次搜索起止点
+    async reqLatestSearch () {
+      if (this.user.token) {
+        const res = await getLatestSearch()
+        const info = res.data.data
+        // 设置起点
+        this.$store.commit('setSearchAddr', {
+          type: 'startAddr',
+          value: {
+            name: info.startAddr,
+            location: { lng: info.startAddrLon, lat: info.startAddrLat }
+          }
+        })
+        // 设置终点
+        this.$store.commit('setSearchAddr', {
+          type: 'endAddr',
+          value: {
+            name: info.endAddr,
+            location: { lng: info.endAddrLon, lat: info.endAddrLat }
+          }
+        })
+      }
     },
     // 按起止地点找车
     handleSearchOrder () {
@@ -159,14 +182,6 @@ export default {
       }
       this.$router.push({ path: '/common/searchline/list', query })
     },
-    // 显示当前定位城市
-    getPosition () {
-      if (isEmpty(this.position.city) && isEmpty(this.position.county)) {
-        return '请选择城市'
-      } else {
-        return this.location
-      }
-    },
     // 点击选择城市
     handleSelectCity () {
       this.$router.push('/common/city')
@@ -182,6 +197,7 @@ export default {
   created () {
     this.handleListLoad()
     this.handleQuickListLoad()
+    this.reqLatestSearch()
     // if (this.identity === 0) {
     //   this.handleQuickListLoad()
     // }

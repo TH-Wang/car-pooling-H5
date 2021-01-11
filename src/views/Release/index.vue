@@ -129,7 +129,13 @@ export default {
         const commitType = type === 'driver' ? 'setDriverPublish' : 'setCustomerPublish'
         this.$store.commit(commitType, data)
         this.$toast.success('发布成功')
-        this.$router.push(`/common/tripshare/${type}?id=${res.data.data}`)
+        // 跳转分享订单信息页面
+        let pathInfo = {}
+        const id = res.data.data
+        type === 'driver'
+          ? pathInfo = { path: '/common/tripshare/driver', query: { id } }
+          : pathInfo = { path: '/common/tripshare/customer', query: { id, quick: 1 } }
+        this.$router.push(pathInfo)
       } catch (error) {
         console.log(error)
       }

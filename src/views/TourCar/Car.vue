@@ -17,7 +17,7 @@
           priceSuffix="起"
           showTip
           style="margin-top: 0"
-          @click="$router.push('/common/car/detail')"
+          @click="$router.push('/common/car/detail?id=' + item.id)"
         />
       </template>
     </scroll-nav-bar>
@@ -27,6 +27,7 @@
 <script>
 // import Vue from 'vue'
 // import VueScrollTo from 'vue-scrollto'
+import { getBusTypeList, getBusList } from '@/api'
 import ScrollNavBar from '@/components/ScrollNavBar'
 import { OrderFilter } from '@/components/Filter/index.js'
 import GoodsItem from '@/components/GoodsItem'
@@ -44,17 +45,50 @@ export default {
     'goods-item': GoodsItem
   },
   data: () => ({
+    typeList: [],
+    tourList: [],
     list: [],
     filters: filtersTourcar
   }),
-  mounted () {
-    const titles = ['全部', '大巴车', '中巴车', '商务MPV', 'SUV小汽车', '摩托', '小面包', '中面包', '小货车', '中货车', '大货车']
-    const data = titles.map((item, index) => {
-      const name = index === 0 ? '小面包车' : item
-      return { title: item, list: new Array(6).fill({ title: name, price: 30 }) }
-    })
-    this.list = data
+  methods: {
+    // 处理请求
+    async handleReq () {
+      // 请求所有分类
+      const resType = await getBusTypeList()
+      this.typeList = resType.data.data
+      // 请求所有列表
+      const res = await getBusList()
+      this.tourList = res.data.data
+      this.handleList()
+    },
+    // 组装列表
+    handleList () {
+      const obj = {}
+      this.typeList.forEach(item => {
+        obj[item.id] = { title: item.typeName, list: [] }
+      })
+      this.tourList.forEach(item => {
+        obj[item.carTypeId].list.push(item)
+      })
+      const result = []
+      for (const key in obj) {
+        result.push(obj[key])
+      }
+      console.log(result)
+      this.list = result
+    }
+  },
+  created: async function () {
+    this.handleReq()
   }
+  // mounted () {
+  //   const titles = ['全部', '大巴车', '中巴车', '商务MPV', 'SUV小汽车', '摩托', '小面包', '中面包', '小货车', '中货车', '大货车']
+  //   const data = titles.map((item, index) => {
+  //     const name = index === 0 ? '小面包车' : item
+  //     return { title: item, list: new Array(6).fill({ title: name, price: 30 }) }
+  //   })
+  //   this.list = data
+  // }
 }
 </script>
 

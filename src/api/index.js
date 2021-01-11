@@ -12,6 +12,10 @@ import complaint from './complaint'
 import station from './station'
 import unsubscribe from './unsubscribe'
 import like from './like'
+import search from './search'
+import tour from './tour'
+import bus from './bus'
+import pay from './pay'
 
 // 用户、登录模块
 export const sendCode = user.sendCode
@@ -25,6 +29,7 @@ export const updatePhoneToTwo = user.updatePhoneToTwo
 export const selectAccountInfo = account.selectAccountInfo
 
 // 城市信息模块
+export const queryProvinceList = position.queryProvinceList
 export const queryPositionForCity = position.queryPositionForCity
 export const queryPositionForCounty = position.queryPositionForCounty
 export const savePosition = position.savePosition
@@ -88,9 +93,30 @@ export const userComplaintDetail = complaint.userComplaintDetail
 
 // 站长模块
 export const postApplication = station.postApplication
+export const getApplications = station.getApplications
+export const getManager = station.getManager
+export const updateManagerPublish = station.updateManagerPublish
 
 // 退订板块
 export const selectUnsubscribeReason = unsubscribe.selectUnsubscribeReason
 
 // 点赞模块
 export const commitLike = like.commitLike
+
+// 上次搜索内容
+export const getLatestSearch = search.getLatestSearch
+
+// 旅游模块
+export const getTourTypeList = tour.getTourTypeList
+export const getTourList = tour.getTourList
+export const getTourDetailById = tour.getTourDetailById
+
+// 包车模块
+export const getBusTypeList = bus.getBusTypeList
+export const getBusList = bus.getBusList
+export const getBusDetailById = bus.getBusDetailById
+
+// 生成旅游包车订单
+export const createTourCarOrder = pay.createTourCarOrder
+export const getTourCarOrderList = pay.getTourCarOrderList
+export const getTourCarOrderDetail = pay.getTourCarOrderDetail

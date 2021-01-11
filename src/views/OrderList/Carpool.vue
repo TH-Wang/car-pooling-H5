@@ -103,7 +103,7 @@ export default {
   }),
   computed: {
     ...mapState(['position', 'search']),
-    ...mapGetters(['location', 'identity']),
+    ...mapGetters(['location', 'countyName', 'identity']),
     // 搜索路线时传递的参数
     query () {
       const publishType = this.publishType
@@ -116,7 +116,7 @@ export default {
       // 车单类型
       const publishType = this.publishType
       // 当前地区
-      const cityname = this.position.county.name
+      const cityname = this.countyName
       return {
         cityname,
         orderType: 1, // 1-车主发布 2-乘客发布
@@ -128,7 +128,7 @@ export default {
       const publishType = this.publishType
       // const { city, county } = this.position
       // const addrName = publishType === 3 ? city.name : county.name
-      const addrName = this.position.county.name
+      const addrName = this.countyName
       return { startPage: 1, orderType: 1, pageSize: 10, publishType, addrName }
     },
     // 按起止地点找车

@@ -1,5 +1,6 @@
 import { isEqual } from 'lodash'
 
+const prov = JSON.parse(localStorage.getItem('prov'))
 const city = JSON.parse(localStorage.getItem('city'))
 const county = JSON.parse(localStorage.getItem('county'))
 
@@ -8,44 +9,50 @@ const defaultData = { name: '', shortName: '' }
 export default {
   state: {
     // 当前正在选择城市，还是正在选择区县
-    current: 'city',
-    // 选择的城市
-    city: city || defaultData,
-    // 选择的区县
-    county: county || defaultData,
-    // 所有城市列表
-    cityList: [],
-    // 当前选择城市中所有区县的列表
-    countyList: [],
-    // 城市首字母列表
-    wordsList: [],
+    current: 'prov',
+    defaultData: defaultData,
+    // 已选择的省市区信息
+    selected: {
+      // 省
+      prov: prov || defaultData,
+      // 市
+      city: city || defaultData,
+      // 区县
+      county: county || defaultData
+    },
+    // 列表
+    list: {
+      // 省的字母索引列表
+      word: [],
+      // 省列表
+      prov: [],
+      // 市列表
+      city: [],
+      // 区县列表
+      county: []
+    },
     // 当前定位的详细信息
     detail: {}
   },
 
   mutations: {
+    // 设置当前选择的类别
     setCurPosition (state, type) {
       state.current = type
     },
-    setCity (state, city) {
-      state.city = city
-      localStorage.setItem('city', JSON.stringify(city))
+    // 设置数据列表
+    setPositionList (state, { type, list }) {
+      state.list[type] = list
     },
-    setCounty (state, county) {
-      state.county = county
-      localStorage.setItem('county', JSON.stringify(county))
+    // 设置当前选择项
+    setPositionSelect (state, { type, value }) {
+      state.selected[type] = value
+      localStorage.setItem(type, JSON.stringify(value))
     },
-    setCityList (state, list) {
-      state.cityList = list
-    },
-    setCountyList (state, list) {
-      state.countyList = list
-    },
-    setWordsList (state, list) {
-      state.wordsList = list
-    },
-    setPositionDetail (state, data) {
-      state.detail = data
+    // 重置选择项
+    resetPositionSelect (state, type) {
+      state.selected[type] = defaultData
+      localStorage.setItem(type, JSON.stringify(defaultData))
     }
   },
 
@@ -56,15 +63,22 @@ export default {
   },
 
   getters: {
+    // 当前定位字符串
     location (state, context) {
       if (context.unGeoLocation) return '请选择城市'
-      return isEqual(state.county, defaultData)
-        ? state.city.shortName
-        : state.city.shortName + ' · ' + state.county.name
+      const { city, county } = state.selected
+      return isEqual(county, defaultData)
+        ? city.shortName
+        : city.shortName + ' · ' + county.name
+    },
+    // 当前定位区县名称
+    countyName (state) {
+      return state.selected.county.name
     },
     // 判断是否已定位或选择城市
     unGeoLocation (state) {
-      return isEqual(state.city, defaultData) || isEqual(state.county, defaultData)
+      const { city, county } = state.selected
+      return isEqual(city, defaultData) || isEqual(county, defaultData)
     }
   }
 }

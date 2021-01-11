@@ -85,7 +85,7 @@ export default {
   methods: {
     // 请求原因列表
     async reqReasonList () {
-      const res = await selectUnsubscribeReason()
+      const res = await selectUnsubscribeReason(1)
       this.reasonList = res.data.data
       this.reasonId = res.data.data[0].id
     },

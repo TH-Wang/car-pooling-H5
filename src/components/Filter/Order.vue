@@ -104,7 +104,7 @@ export default {
       const { startAddr, endAddr } = this.search
       if (startAddr.name && endAddr.name) {
         this.values.flag = 2
-      } else if (this.position.county.name) {
+      } else if (this.position.selected.county.name) {
         this.values.flag = 1
       } else this.values.flag = 0
     }

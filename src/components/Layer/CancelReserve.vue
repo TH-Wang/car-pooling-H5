@@ -21,7 +21,7 @@
             :key="opt.id"
             @click="handleChange($event, opt.id)"
           >
-            <span class="radio-item-label">{{opt.text}}</span>
+            <span class="radio-item-label">{{opt.reson}}</span>
             <van-radio :name="opt.id" checked-color="#0AD593" icon-size=".20rem" />
           </div>
         </van-radio-group>
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { selectUnsubscribeReason } from '@/api'
 import { Popup, RadioGroup, Radio } from 'vant'
 import MainButton from '@/components/MainButton'
 
@@ -57,22 +58,15 @@ export default {
   data: () => ({
     show: false,
     radio: 0,
-    options: [
-      { id: 1, text: '乘客行程有变' },
-      { id: 2, text: '联系不上乘客' },
-      { id: 3, text: '乘客取消行程' },
-      { id: 4, text: '我取消行程' }
-    ]
+    options: []
   }),
   methods: {
-    // 弹出
-    // show () {
-    //   this.visible = true
-    // },
-    // 收回
-    // hide () {
-    //   this.visible = false
-    // },
+    // 查询退订原因
+    async reqReasonList () {
+      const res = await selectUnsubscribeReason(2)
+      this.options = res.data.data
+      this.radio = res.data.data[0].id
+    },
     // 改变事件
     handleChange (e, idx) {
       this.radio = idx
@@ -82,9 +76,12 @@ export default {
       const _this_ = this
       this.$emit('submit', {
         id: _this_.radio,
-        text: _this_.options.find(i => i.id === _this_.radio).text
+        reson: _this_.options.find(i => i.id === _this_.radio).reson
       })
     }
+  },
+  created () {
+    this.reqReasonList()
   },
   watch: {
     visible: function (newVal) {
