@@ -3,7 +3,9 @@
     <!-- 搜索框导航栏 -->
     <nav-bar-search :mode="navbarMode" button @click-search="handleClickSearch">
       <template #right>
-        <span @click="$router.push('/common/city')">{{location}}</span>
+        <span class="nav-position-text"
+          @click="$router.push('/common/city')"
+        >{{location}}</span>
       </template>
     </nav-bar-search>
 
@@ -34,7 +36,7 @@
 
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
-      <van-empty description="暂无订单，请点击重试" />
+      <van-empty description="暂无推荐，请点击重试" />
     </div>
     <!-- 拼单列表 -->
     <van-list
@@ -132,19 +134,13 @@ export default {
       return { startPage: 1, orderType: 1, pageSize: 10, publishType, addrName }
     },
     // 按起止地点找车
-    handleSearchOrder () {
-      const { startAddr, endAddr } = this.search
+    handleSearchOrder ({ startAddrAll, endAddrAll }) {
       const params = cloneDeep(this.query)
-      // delete params.publishType
       const query = {
         ...params,
         publishType: '1,2,3',
-        startAddr: startAddr.name,
-        startAddrLon: startAddr.location.lng,
-        startAddrLat: startAddr.location.lat,
-        endAddr: endAddr.name,
-        endAddrLon: endAddr.location.lng,
-        endAddrLat: endAddr.location.lat
+        startAddrAll,
+        endAddrAll
       }
       this.$router.push({ path: '/common/searchline/list', query })
     },

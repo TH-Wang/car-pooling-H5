@@ -133,7 +133,7 @@ export default {
     async handleRetryQuick () {
       this.$toast.loading({ message: '加载中', duration: 10000 })
       await this.handleReqQuick()
-      this.$toast.hide()
+      this.$toast.clear()
     },
     copyToClip (type) {
       const aux = document.createElement('textarea')

@@ -10,7 +10,8 @@
       @click-left="handleSelectCity"
     >
       <template #left>
-        {{location}}<van-icon name="arrow" color="#262626" size=".15px" />
+        <span class="nav-position-text">{{location}}</span>
+        <van-icon name="arrow" color="#262626" size=".15px" />
       </template>
     </van-nav-bar>
 
@@ -50,7 +51,7 @@
 
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
-      <van-empty description="暂无订单，请点击重试" />
+      <van-empty description="暂无推荐，请点击重试" />
     </div>
     <!-- 拼单列表 -->
     <van-list
@@ -167,18 +168,12 @@ export default {
       }
     },
     // 按起止地点找车
-    handleSearchOrder () {
-      const { startAddr, endAddr } = this.search
+    handleSearchOrder ({ startAddrAll, endAddrAll }) {
       const params = cloneDeep(this.query)
-      // delete params.publishType
       const query = {
         ...params,
-        startAddr: startAddr.name,
-        startAddrLon: startAddr.location.lng,
-        startAddrLat: startAddr.location.lat,
-        endAddr: endAddr.name,
-        endAddrLon: endAddr.location.lng,
-        endAddrLat: endAddr.location.lat
+        startAddrAll,
+        endAddrAll
       }
       this.$router.push({ path: '/common/searchline/list', query })
     },

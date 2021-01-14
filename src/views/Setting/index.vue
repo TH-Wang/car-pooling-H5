@@ -14,7 +14,7 @@
     <div class="avatar-container">
       <div class="avatar">
         <van-image
-          @click="previewAvatar" :src="user.info.headimg"
+          @click="preview = true" :src="user.info.headimg"
           width=".60rem" height=".60rem" round fit="cover"
         />
         <div class="avatar-title">头像</div>
@@ -30,6 +30,13 @@
         />
       </div>
     </div>
+
+    <!-- 头像预览弹层 -->
+    <van-overlay :show="preview">
+      <div class="avatar-preview" @click="preview = false">
+        <van-image class="avatar-image" :src="user.info.headimg" fit="cover" />
+      </div>
+    </van-overlay>
 
     <!-- 修改昵称 -->
     <div class="cell" @click="handleOpenDialog">
@@ -120,15 +127,17 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Image, ImagePreview } from 'vant'
+import { Image, ImagePreview, Overlay } from 'vant'
 import { getUserDetail, updateUserInfo, uploadFile } from '@/api'
 
 export default {
   components: {
-    'van-image': Image
+    'van-image': Image,
+    'van-overlay': Overlay
   },
   data: () => ({
     show: false,
+    preview: false,
     username: ''
   }),
   computed: {
@@ -142,6 +151,9 @@ export default {
         images: [avatar],
         showIndex: false
       })
+    },
+    handlePreview () {
+      console.log('点击')
     },
     // 点击修改头像
     async handleFileChange (e) {
@@ -248,6 +260,18 @@ export default {
 
   .avatar-right{
     @include font (.12rem, $tip-text);
+  }
+}
+
+.avatar-preview{
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  @include flex (center, center);
+
+  .avatar-image{
+    width: 100vw;
+    height: 100vw;
+    overflow: hidden;
   }
 }
 

@@ -3,7 +3,9 @@
     <!-- 搜索框导航栏 -->
     <nav-bar-search :mode="navbarMode" button @click-search="handleClickSearch">
       <template #right>
-        <span @click="$router.push('/common/city')">{{location}}</span>
+        <span class="nav-position-text"
+          @click="$router.push('/common/city')"
+        >{{location}}</span>
       </template>
     </nav-bar-search>
 

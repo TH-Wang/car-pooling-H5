@@ -10,9 +10,9 @@
     >
       <template #title>
         <div class="line-text">
-          <div class="start ellipsis">{{startAddrName}}</div>
+          <div class="start ellipsis">{{addrName.start}}</div>
           <img class="arrow" src="@/assets/icons/line-arrow.png" alt="">
-          <div class="end ellipsis">{{endAddrName}}</div>
+          <div class="end ellipsis">{{addrName.end}}</div>
         </div>
       </template>
     </van-nav-bar>
@@ -81,25 +81,12 @@ export default {
   }),
   computed: {
     ...mapState(['position', 'search']),
-    startAddrName () {
-      if (this.dataSource.startAddrAll) return this.dataSource.startAddrAll
-      else return this.dataSource.startAddr
-    },
-    endAddrName () {
-      if (this.dataSource.endAddrAll) return this.dataSource.endAddrAll
-      else return this.dataSource.endAddr
+    addrName () {
+      const { startAddrAll, endAddrAll } = this.dataSource
+      return { start: startAddrAll, end: endAddrAll }
     }
   },
   methods: {
-    // 普通模式下，监听列表加载
-    // handleLoad () {
-    //   if (!this.dataSource.mode) this.handleListLoad()
-    // },
-    // 搜索快捷路线
-    // async handleQueryFastLine () {
-    //   const res = await getFastLineCar(this.dataSource.id)
-    //   this.list = res.data.data
-    // },
     reqApi (data) {
       const driverReq = ['pending', 'hitCus', 'carryCus']
       // 如果是乘客查询车主信息
@@ -115,30 +102,48 @@ export default {
     },
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
+      // 快捷路线的查询
       if (this.dataSource.mode === 'fast') {
         const id = parseInt(this.dataSource.id)
         return { id }
       }
 
-      // 订单信息
+      // 搜索路线的查询
       const dataSource = cloneDeep(this.dataSource)
+      // 整理数据
       if (dataSource.workType) delete dataSource.workType
-      if (dataSource.startAddrAll) delete dataSource.startAddr
-      if (dataSource.endAddrAll) delete dataSource.endAddr
+      if (dataSource.orderType) parseInt(dataSource.orderType)
+      // 获取起止点详细信息
+      const addrInfo = this.getAddrInfo()
+      // 封装参数
       const data = {
         ...dataSource,
-        // queryAllPosition: 1,
-        orderType: parseInt(dataSource.orderType) // 1-车主发布 2-乘客发布
+        ...addrInfo
       }
-      const parseList = ['startAddrLon', 'startAddrLat', 'endAddrLon', 'endAddrLat']
-      parseList.forEach(item => {
-        if (dataSource[item]) data[item] = parseFloat(dataSource[item])
-      })
-      // if (this.dataSource.publishType) {
-      //   data.publishType = parseInt(this.dataSource.publishType)
-      // }
-      // 返回主要参数
+      console.log(data)
+
       return data
+    },
+    getAddrInfo () {
+      const { startAddr, endAddr } = this.search
+      return {
+        // 出发点
+        startAddr: startAddr.name,
+        startPname: startAddr.pname,
+        startCityname: startAddr.cityname,
+        startAdname: startAddr.adname,
+        startTownship: startAddr.township,
+        startAddrLon: startAddr.location.lng,
+        startAddrLat: startAddr.location.lat,
+        // 目的地
+        endAddr: endAddr.name,
+        endPname: endAddr.pname,
+        endCityname: endAddr.cityname,
+        endAdname: endAddr.adname,
+        endTownship: endAddr.township,
+        endAddrLon: endAddr.location.lng,
+        endAddrLat: endAddr.location.lat
+      }
     },
     // 进入详情页面
     handleLinkDetail (record) {

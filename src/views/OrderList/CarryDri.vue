@@ -10,7 +10,7 @@
 
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
-      <van-empty description="暂无订单，请点击重试" />
+      <van-empty description="暂无推荐，请点击重试" />
     </div>
     <!-- 拼单列表 -->
     <van-list
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { List } from 'vant'
 import SearchCard from '@/components/SearchCard'
 import { OrderFilter } from '@/components/Filter/index.js'
@@ -63,12 +63,13 @@ export default {
     // 'mini-button': MiniButton
   },
   computed: {
-    ...mapState(['position', 'search'])
+    ...mapState(['position', 'search']),
+    ...mapGetters(['countyName'])
   },
   methods: {
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
-      const cityname = this.position.county.name
+      const cityname = this.countyName
       return {
         cityname,
         orderType: 1, // 1-车主发布 2-乘客发布
@@ -80,15 +81,14 @@ export default {
       this.$router.push({ path: '/common/order/detail', query: { id } })
     },
     // 按起止地点找车
-    handleSearchOrder () {
-      const { startAddr, endAddr } = this.search
+    handleSearchOrder ({ startAddrAll, endAddrAll }) {
       const query = {
         workType: 'carryDri',
         publishType: 5,
         // 1车主发布，2乘客发布
         orderType: 1,
-        startAddr: startAddr.name,
-        endAddr: endAddr.name
+        startAddrAll,
+        endAddrAll
       }
       this.$router.push({ path: '/common/searchline/list', query })
     }

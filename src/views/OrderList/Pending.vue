@@ -3,7 +3,9 @@
     <!-- 搜索框导航栏 -->
     <nav-bar-search :mode="navbarMode" button @click-search="handleClickSearch">
       <template #right>
-        <span @click="$router.push('/common/city')">{{location}}</span>
+        <span class="nav-position-text"
+          @click="$router.push('/common/city')"
+        >{{location}}</span>
       </template>
     </nav-bar-search>
 
@@ -41,7 +43,7 @@
 
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
-      <van-empty description="暂无订单，请点击重试" />
+      <van-empty description="暂无推荐，请点击重试" />
     </div>
     <!-- 拼单列表 -->
     <van-list
@@ -75,14 +77,13 @@
 // import moment from 'moment'
 import { mapGetters, mapState } from 'vuex'
 import { List } from 'vant'
+import { cloneDeep } from 'lodash'
 import { queryPassengerOrders, getNewPassengerCommonRoute } from '@/api'
 import { OrderFilter } from '@/components/Filter/index.js'
 import NavBarSearch from '@/components/NavBarSearch'
 import SearchCard from '@/components/SearchCard'
 import QuickLine from '@/components/QuickLine'
 import WorkOrder from '@/components/WorkOrder'
-// import PendingOrder from '@/components/OrderItem/Pending'
-// import DriverReserveButton from '@/components/DriverReserveButton'
 import CancelReserveLayer from '@/components/Layer/CancelReserve'
 import NavbarMixin from '@/mixins/navbar-mixin'
 import ListMixin from '@/mixins/list-mixin'
@@ -98,8 +99,6 @@ export default {
     'search-card': SearchCard,
     'quick-line': QuickLine,
     'work-order': WorkOrder,
-    // 'pending-order': PendingOrder,
-    // 'driver-reserve-button': DriverReserveButton,
     'cancel-reserve-layer': CancelReserveLayer
   },
   data: () => ({
@@ -112,11 +111,8 @@ export default {
     ...mapGetters(['location', 'countyName', 'identity']),
     // 搜索路线时传递的参数
     query () {
-      // const identity = this.identity
       return {
         workType: 'pending',
-        // 1车主发布，2乘客发布
-        // orderType: identity === 0 ? 1 : 2,
         showAll: 0
       }
     }
@@ -136,13 +132,12 @@ export default {
       return { startPage: 1, orderType: 2, publishType: '1,2,3', pageSize: 10, addrName }
     },
     // 按起止地点找车
-    handleSearchOrder () {
-      const _this_ = this
-      const { startAddr, endAddr } = this.search
+    handleSearchOrder ({ startAddrAll, endAddrAll }) {
+      const params = cloneDeep(this.query)
       const query = {
-        ..._this_.query,
-        startAddr: startAddr.name,
-        endAddr: endAddr.name
+        ...params,
+        startAddrAll,
+        endAddrAll
       }
       this.$router.push({ path: '/common/searchline/list', query })
     },

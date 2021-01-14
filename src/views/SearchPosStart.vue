@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { Popup, Picker } from 'vant'
 import { debounce, isEmpty, cloneDeep } from 'lodash'
 import { AMapLoaderAndUI } from '@/utils/mapLoader'
@@ -130,6 +130,7 @@ export default {
   }),
   computed: {
     ...mapState(['search', 'release', 'trip', 'history']),
+    ...mapGetters(['cityName']),
     // 判断用户是否什么都没选
     isNothing () {
       return isEmpty(this.position) ||
@@ -343,7 +344,7 @@ export default {
   },
   mounted: async function () {
     await this.initMap()
-    await this.handleCurCityChange(this.$store.state.position.city.name)
+    await this.handleCurCityChange(this.cityName)
     // 从store中获取出发点信息
     const key = this.type === 'common' ? 'search' : this.type
     this.position = this[key].startAddr

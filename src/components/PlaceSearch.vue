@@ -195,7 +195,7 @@ export default {
     this.searchValue = this[key].endAddr.name
     this.$refs.input.focus()
     await this.initMap()
-    this.handleCurCityChange(this.$store.state.position.city.name)
+    this.handleCurCityChange(this.$store.state.position.selected.city.name)
   }
 }
 </script>

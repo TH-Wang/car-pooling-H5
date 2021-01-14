@@ -220,15 +220,17 @@ export default {
     async setLastData () {
       const res = await latestDriverPublish()
       const data = res.data.data
-      console.log(data)
+      if (!data) return
       const publishType = parseInt(data.publishType)
       data.publishType = publishType >= 1 && publishType <= 3 ? 1 : publishType
       this.$store.commit('setReleaseAddrInfo', data.passPointList)
       this.$refs.form.setValues(data)
       setTimeout(() => {
-        this.$refs.form.setValueField('weight', data.weight)
-        this.$refs.form.setValueField('volume', data.volume)
-        this.$refs.form.setValueField('cost', data.cost)
+        this.$refs.form.setValues({
+          weight: data.weight,
+          volume: data.volume,
+          cost: data.cost
+        })
       }, 200)
     },
     // 获取所有的车辆信息

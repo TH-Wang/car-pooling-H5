@@ -15,6 +15,7 @@
       <div class="address-box">
         <!-- 起始点 -->
         <div class="address-bar dotted-border">
+          <span class="address-bar-prefix">{{line.startAddrAll}}</span>
           <input
             :value="addrValue.startAddr.name"
             @input="handleChange($event, 'startAddr')"
@@ -33,6 +34,7 @@
         </div>
         <!-- 目的地 -->
         <div class="address-bar">
+          <span class="address-bar-prefix">{{line.endAddrAll}}</span>
           <input
             :value="addrValue.endAddr.name"
             @input="handleChange($event, 'endAddr')"
@@ -84,10 +86,10 @@ export default {
     event: 'change'
   },
   props: {
-    // 搜索类型 common: 公用，release: 发布页面，trip: 修改行程
+    // 搜索类型 search: 搜索，release: 发布页面，trip: 修改行程
     searchType: {
       type: String,
-      default: 'common'
+      default: 'search'
     },
     // ['default', 'icon-right']
     type: {
@@ -132,11 +134,36 @@ export default {
     },
     // 输入框中的值
     addrValue () {
-      return this.isCommon ? this.search : this[this.searchType]
+      return this[this.searchType]
     },
-    // 是否是公用类型
-    isCommon () {
-      return this.searchType === 'common'
+    finishedSearch () {
+      const { startAddr, endAddr } = this.addrValue
+      return !isEmpty(startAddr.name) && !isEmpty(endAddr.name)
+    },
+    // 路线名称
+    line () {
+      const text = { startAddrAll: '', endAddrAll: '' }
+      if (this.finishedSearch) {
+        const { startAddr, endAddr } = this.addrValue
+        if (startAddr.pname !== endAddr.pname) {
+          // 跨省路线
+          text.startAddrAll = startAddr.pname + '' + startAddr.adname
+          text.endAddrAll = endAddr.pname + '' + endAddr.adname
+        } else if (startAddr.cityname !== endAddr.cityname) {
+          // 城际路线
+          text.startAddrAll = startAddr.adname
+          text.endAddrAll = endAddr.adname
+        } else if (startAddr.adname !== endAddr.adname) {
+          // 城际路线
+          text.startAddrAll = startAddr.adname
+          text.endAddrAll = endAddr.adname
+        } else {
+          // 短途路线
+          text.startAddrAll = startAddr.township
+          text.endAddrAll = endAddr.township
+        }
+      }
+      return text
     }
   },
   data: () => ({
@@ -163,7 +190,7 @@ export default {
     },
     // 点击搜索按钮
     handleSearch () {
-      if (this.validate()) { this.$emit('search') }
+      if (this.validate()) { this.$emit('search', this.line) }
     },
     // 切换起止点位置
     handleSwitchPos () {
@@ -177,7 +204,7 @@ export default {
       this.$store.commit(commitType)
     },
     validate () {
-      const value = this.isCommon ? this.search : this[this.searchType]
+      const value = this[this.searchType]
       const { startAddr, endAddr } = value
       if (isEmpty(startAddr) || isEmpty(startAddr.name)) {
         this.$toast({ message: '请先输入您的位置' })
@@ -241,6 +268,11 @@ export default {
         font-size: 0.14rem;
         color: $main-text;
         font-weight: bold;
+
+        &-prefix{
+          flex-shrink: 0;
+          margin-right: .15rem;
+        }
 
         &-input{
           display: block;

@@ -32,6 +32,16 @@ body {
 .van-nav-bar__placeholder{
   height: 46px;
 }
+// 导航栏标题
+.van-nav-bar__title{
+  max-width: 75%;
+}
+// 导航栏显示定位的文本
+.nav-position-text{
+  display: inline-block;
+  max-width: 1.2rem;
+  @extend .ellipsis;
+}
 
 // 索引列表
 .van-index-anchor--sticky{
@@ -63,10 +73,6 @@ body {
 .van-dropdown-menu{
   border-bottom: solid 1px rgba($color: $normal-text, $alpha: 0.5);
   background-color: #ffffff;
-  // position: sticky;
-  // top: 46px;
-  // left: 0;
-  // z-index: 100;
 
   &__bar{
     box-shadow: none !important;
@@ -76,32 +82,7 @@ body {
   &__item{
     flex: none !important;
   }
-
-  // &__item{
-  //   position: relative;
-
-  //   &:after{
-  //     content: '';
-  //     display: block;
-  //     width: 28rem;
-  //     height: 2px;
-  //     background-color: $main-text;
-  //     position: absolute;
-  //     bottom: 0;
-  //     left: 50%;
-  //     transform: translateX(-50%);
-  //   }
-  // }
 }
-
-// iconfont
-// .icon {
-//   width: 1em;
-//   height: 1em;
-//   vertical-align: -0.15em;
-//   fill: currentColor;
-//   overflow: hidden;
-// }
 
 // 单行省略号
 .ellipsis{

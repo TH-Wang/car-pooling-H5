@@ -29,6 +29,15 @@ body {
   height: 46px;
 }
 
+.van-nav-bar__title {
+  max-width: 75%;
+}
+
+.nav-position-text {
+  display: inline-block;
+  max-width: 1.2rem;
+}
+
 .van-index-anchor--sticky {
   top: 50px !important;
 }
@@ -67,7 +76,7 @@ body {
   flex: none !important;
 }
 
-.ellipsis {
+.ellipsis, .nav-position-text {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

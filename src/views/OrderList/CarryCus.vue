@@ -15,7 +15,7 @@
 
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
-      <van-empty description="暂无订单，请点击重试" />
+      <van-empty description="暂无推荐，请点击重试" />
     </div>
     <!-- 拼单列表 -->
     <van-list
@@ -59,8 +59,6 @@ import { queryPassengerOrders } from '@/api'
 import SearchCard from '@/components/SearchCard'
 import { OrderFilter } from '@/components/Filter/index.js'
 import WorkOrder from '@/components/WorkOrder'
-// import MiniButton from '@/components/MiniButton'
-// import CarryOrder from '@/components/OrderItem/Carry'
 import ListMixin from '@/mixins/list-mixin'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 
@@ -71,8 +69,6 @@ export default {
     'order-filter': OrderFilter,
     'search-card': SearchCard,
     'work-order': WorkOrder
-    // 'carry-order': CarryOrder,
-    // 'mini-button': MiniButton
   },
   data: () => ({
     menuVisibleId: null,
@@ -89,7 +85,6 @@ export default {
       const cityname = this.position.county.name
       return {
         cityname,
-        // orderType: 2, // 1-车主发布 2-乘客发布
         publishType: 5 // 顺路带物
       }
     },
@@ -102,15 +97,12 @@ export default {
       console.log('取消预约')
     },
     // 按起止地点找车
-    handleSearchOrder () {
-      const { startAddr, endAddr } = this.search
+    handleSearchOrder ({ startAddrAll, endAddrAll }) {
       const query = {
         workType: 'carryCus',
         publishType: 5,
-        // 1车主发布，2乘客发布
-        // orderType: 2,
-        startAddr: startAddr.name,
-        endAddr: endAddr.name
+        startAddrAll,
+        endAddrAll
       }
       this.$router.push({ path: '/common/searchline/list', query })
     }
