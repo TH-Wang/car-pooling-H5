@@ -4,6 +4,7 @@ node_modules
 dist.*
 server.js
 task.md
+*.zip
 
 # local env files
 .env.local

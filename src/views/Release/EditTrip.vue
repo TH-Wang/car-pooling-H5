@@ -226,7 +226,13 @@ export default {
     // 保存行程
     async handleSave () {
       // 如果该订单不是进行中则不进行操作
-      if (parseInt(this.state) !== 1) return
+      if (parseInt(this.state) !== 1) {
+        this.$dialog.alert({
+          title: '提示',
+          message: '抱歉，该次行程信息已无法修改'
+        })
+        return
+      }
       // 如果已有乘客预约则提示并拦截修改
       if (this.pCount > 0) {
         this.$dialog.alert({

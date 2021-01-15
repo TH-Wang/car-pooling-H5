@@ -118,10 +118,6 @@ export default {
     },
     // 搜索路线时传递的参数
     query () {
-      // const identity = this.identity
-      // return identity === 0
-      //   ? { workType: 'carpool', orderType: 1, publishType: 2 }
-      //   : { workType: 'pending', showAll: 0 }
       return { workType: 'carpool', orderType: 1, publishType: '1,2,3' }
     }
   },

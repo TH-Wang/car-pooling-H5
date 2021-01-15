@@ -72,6 +72,7 @@ import SearchCard from '@/components/SearchCard'
 import CustomerFormBody from './customer'
 import DriverFormBody from './driver'
 import confirmLogin from '@/utils/confirmLogin'
+import getLineData from '@/utils/transPos'
 
 export default {
   name: 'Release',
@@ -206,7 +207,7 @@ export default {
       data.mobilePhone = this.user.info.phone
 
       // 获取起止点、途径点信息
-      data.passPointList = this.getLineData(data)
+      data.passPointList = getLineData(this.release)
       if (data.publishType === 5) {
         data.passPointList = data.passPointList.filter(i => i.type !== 2)
       }
@@ -218,79 +219,7 @@ export default {
       console.log(data)
       // 发起请求
       return insertPublish(data)
-    },
-    // 获取起点、终点和途径点
-    getLineData (data) {
-      // 出发点、目的地、途径点
-      const _this_ = this
-      const result = []
-      const { startAddr, passPointList, endAddr } = this.release
-      let sort = 0
-      // 出发点
-      result.push({
-        ..._this_.filterPointParams(startAddr),
-        sort: ++sort,
-        type: 1
-      })
-      // 途径点
-      for (let i = 0; i < passPointList.length; i++) {
-        result.push({
-          ..._this_.filterPointParams(passPointList[i]),
-          sort: ++sort,
-          type: 2
-        })
-      }
-      // 目的地
-      result.push({
-        ..._this_.filterPointParams(endAddr),
-        sort: ++sort,
-        type: 3
-      })
-      console.log(result)
-      return result
-    },
-    // 搜集地点信息
-    filterPointParams (data) {
-      const { pname, cityname, adname, township, name, location } = data
-      return {
-        pname,
-        cityname,
-        adname,
-        township,
-        pointName: name,
-        lon: location.lng,
-        lat: location.lat
-      }
     }
-    // 通过地点信息筛选参数
-    // filterPointParams (data) {
-    //   const { pname, cityname, adname, township, name, location } = data
-
-    //   // 直辖市
-    //   const city = ['重庆市', '北京市', '上海市', '天津市']
-    //   const result = {
-    //     pointName: name,
-    //     orderType: 1,
-    //     lon: location.lng,
-    //     lat: location.lat
-    //   }
-    //   // 如果是直辖市
-    //   if (city.indexOf(pname) !== -1 && !data.sort) {
-    //     return {
-    //       ...result,
-    //       pname: cityname,
-    //       cityname: adname,
-    //       township: township || ''
-    //     }
-    //   }
-    //   // 普通城市
-    //   return {
-    //     ...result,
-    //     pname,
-    //     cityname,
-    //     township: township || ''
-    //   }
-    // }
   },
   activated () {
     // 验证是否登录
