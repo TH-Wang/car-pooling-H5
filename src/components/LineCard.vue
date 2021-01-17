@@ -33,6 +33,23 @@ export default {
   computed: {
     countTag () {
       return this.record.num > 999 ? '999+' : this.record.num
+    },
+    addrName () {
+      const {
+        publishType,
+        pname,
+        adname,
+        township,
+        endpname,
+        endadname,
+        endtownship
+      } = this.record
+      switch (publishType) {
+        case 1: return { start: `${pname}${adname}`, end: `${endpname}${endadname}` }
+        case 2: return { start: adname, end: endadname }
+        case 3: return { start: township, end: endtownship }
+        default: return { start: '', end: '' }
+      }
     }
   }
 }

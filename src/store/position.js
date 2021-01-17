@@ -69,7 +69,7 @@ export default {
       const { city, county } = state.selected
       return isEqual(county, defaultData)
         ? city.shortName
-        : city.shortName + '·' + county.name
+        : city.shortName + '·' + county.shortName
     },
     // 当前定位市的名称
     cityName (state) {

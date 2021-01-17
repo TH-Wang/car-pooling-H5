@@ -86,7 +86,7 @@ export default {
     ...mapState(['position']),
     ...mapGetters(['location']),
     hotCities () {
-      return this.position.countyList.slice(0, 9)
+      return this.position.list.county.slice(0, 9)
     },
     addrName () {
       const selectCity = this.hotCities.find(i => i.code === this.activeHotCity)
@@ -102,7 +102,7 @@ export default {
     // 主要的请求参数
     getRequestDatas () {
       const addrName = this.activeHotCity === null
-        ? this.position.city.name
+        ? this.position.selected.city.name
         : this.addrName
       // const p = this.query.publishType
       // const publishType = /,/.test(p) ? p : parseInt(this.query.publishType)
@@ -113,9 +113,9 @@ export default {
     },
     // 获取城市列表
     async handleRequestCity () {
-      if (this.position.countyList.length === 0) {
-        const res = await queryPositionForCounty(this.position.city.code)
-        this.$store.commit('setCountyList', res.data.data)
+      if (this.position.list.county.length === 0) {
+        const res = await queryPositionForCounty(this.position.selected.city.code)
+        this.$store.commit('setPositionList', { type: 'county', list: res.data.data })
         // this.activeHotCity = res.data.data[0].code
       }
     },
@@ -123,13 +123,13 @@ export default {
     handleSearch (e, record) {
       const params = cloneDeep(this.query)
       if ('publishType' in params) delete params.publishType
-      const { id, startAddr, endAddr } = record
+      const { id, startAddrAll, endAddrAll } = record
       console.log(params)
       const query = {
         id,
         mode: 'fast',
-        startAddr,
-        endAddr,
+        startAddrAll,
+        endAddrAll,
         ...params
       }
       this.$router.push({ path: '/common/searchline/list', query })
@@ -149,7 +149,6 @@ export default {
   },
   created () {
     this.query = this.$route.query
-    console.log(this.query)
     // this.handleListLoad()
     this.handleRequestCity()
   }

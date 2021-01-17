@@ -16,6 +16,7 @@ import search from './search'
 import tour from './tour'
 import bus from './bus'
 import pay from './pay'
+import service from './service'
 
 // 用户、登录模块
 export const sendCode = user.sendCode
@@ -120,3 +121,6 @@ export const getBusDetailById = bus.getBusDetailById
 export const createTourCarOrder = pay.createTourCarOrder
 export const getTourCarOrderList = pay.getTourCarOrderList
 export const getTourCarOrderDetail = pay.getTourCarOrderDetail
+
+// 客服模块
+export const getServiceInfo = service.getServiceInfo

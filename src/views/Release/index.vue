@@ -161,7 +161,7 @@ export default {
         setTimeout(() => {
           this.$dialog.confirm({
             title: '提示',
-            message: '2018年11月16日起，为车主每拼到1人收取3元的信息服务费，行程结束后计费，请知悉。',
+            message: '拼车之家信息发布，仅向车主收取信息服务费，信息服务费收费标准用见《用户协议》，行程结束后计费，请知悉。',
             confirmButtonText: '确认发布',
             cancelButtonText: '取消'
           }).then(() => {

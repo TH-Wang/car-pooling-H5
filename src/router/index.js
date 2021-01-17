@@ -306,11 +306,11 @@ const routes = [
         name: 'MyAppoint',
         component: () => import(/* webpackChunkName: "MyAppoint" */ '@/views/MyAppoint/index.vue')
       },
-      { // 乘客预约
-        path: '/common/appoint',
-        name: 'Appoint',
-        component: () => import(/* webpackChunkName: "Appoint" */ '@/views/Appoint.vue')
-      },
+      // { // 乘客预约
+      //   path: '/common/appoint',
+      //   name: 'Appoint',
+      //   component: () => import(/* webpackChunkName: "Appoint" */ '@/views/Appoint.vue')
+      // },
       { // 我的行程
         path: '/common/my/wallet',
         name: 'MyWallet',
@@ -487,6 +487,20 @@ const routes = [
         name: 'Description',
         component: () => import(
           /* webpackChunkName: "Description" */ '@/views/Description.vue'
+        )
+      },
+      { // 用户协议
+        path: '/common/user/agreement',
+        name: 'UserAgreement',
+        component: () => import(
+          /* webpackChunkName: "Test" */ '@/views/UserAgreement/index.vue'
+        )
+      },
+      { // 联系客服
+        path: '/common/service',
+        name: 'Service',
+        component: () => import(
+          /* webpackChunkName: "Test" */ '@/views/Service'
         )
       },
       { // 测试页面

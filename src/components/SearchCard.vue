@@ -229,6 +229,7 @@ export default {
   box-sizing: border-box;
   border-radius: 0.05rem;
   background-color: #fff;
+  overflow: hidden;
 
   // 上方搜索容器
   .search-box{

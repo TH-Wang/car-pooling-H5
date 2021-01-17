@@ -8,10 +8,14 @@
       placeholder
       :border="false"
       @click-left="handleSelectCity"
+      @click-right="$router.push('/common/service')"
     >
       <template #left>
         <span class="nav-position-text">{{location}}</span>
         <van-icon name="arrow" color="#262626" size=".15px" />
+      </template>
+      <template #right>
+        <van-icon name="service" />
       </template>
     </van-nav-bar>
 
@@ -149,6 +153,10 @@ export default {
         this.$store.commit('setSearchAddr', {
           type: 'startAddr',
           value: {
+            pname: info.startpname,
+            cityname: info.startcityname,
+            adname: info.startadname,
+            township: info.starttownship,
             name: info.startAddr,
             location: { lng: info.startAddrLon, lat: info.startAddrLat }
           }
@@ -157,6 +165,10 @@ export default {
         this.$store.commit('setSearchAddr', {
           type: 'endAddr',
           value: {
+            pname: info.endpname,
+            cityname: info.endcityname,
+            adname: info.endadname,
+            township: info.endtownship,
             name: info.endAddr,
             location: { lng: info.endAddrLon, lat: info.endAddrLat }
           }

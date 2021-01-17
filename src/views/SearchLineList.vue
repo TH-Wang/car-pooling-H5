@@ -131,7 +131,7 @@ export default {
         startAddr: startAddr.name,
         startPname: startAddr.pname,
         startCityname: startAddr.cityname,
-        startAdname: startAddr.adname,
+        startadname: startAddr.adname,
         startTownship: startAddr.township,
         startAddrLon: startAddr.location.lng,
         startAddrLat: startAddr.location.lat,
@@ -139,7 +139,7 @@ export default {
         endAddr: endAddr.name,
         endPname: endAddr.pname,
         endCityname: endAddr.cityname,
-        endAdname: endAddr.adname,
+        endadname: endAddr.adname,
         endTownship: endAddr.township,
         endAddrLon: endAddr.location.lng,
         endAddrLat: endAddr.location.lat

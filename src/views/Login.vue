@@ -52,7 +52,10 @@
 
     </div>
 
-    <div class="footer tip">登录即同意《用户协议》</div>
+    <div class="footer tip">
+      登录即同意
+      <span @click="$router.push('/common/user/agreement')">《用户协议》</span>
+    </div>
   </div>
 </template>
 
@@ -163,6 +166,10 @@ export default {
 
   .footer{
     @include font (.12rem, $tip-text);
+
+    span{
+      color: $main-color;
+    }
   }
 }
 

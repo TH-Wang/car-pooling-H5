@@ -16,6 +16,7 @@ const safeUrl = [
 
 // 全局配置（线上）
 axios.defaults.baseURL = 'http://39.102.65.132:8089'
+// axios.defaults.baseURL = 'http://www.pinchezhijia.com'
 // 域名
 // axios.defaults.baseURL = 'http://www.pinchezhijia.com/api'
 // 内网

@@ -31,7 +31,7 @@
           <div class="card" @click="handleLink($event, item.orderId)">
             <div class="card-header">
               <img src="@/assets/icons/notify.png" alt="">
-              <span>拼车通知</span>
+              <span>{{getTitle(item.type)}}</span>
             </div>
             <div class="card-content">{{item.message}}</div>
             <div class="card-link">查看订单详情</div>
@@ -57,7 +57,11 @@ export default {
     'van-list': List
   },
   data: () => ({
-    notReqOnMounted: true
+    notReqOnMounted: true,
+    messageType: {
+      1: '订单通知',
+      2: '拼车通知'
+    }
   }),
   computed: {
     emptyDesc () {
@@ -74,6 +78,10 @@ export default {
     // 转换时间函数
     notifyTime (time) {
       return moment(time).format('YYYY-MM-DD HH:mm')
+    },
+    // 消息类型
+    getTitle (type) {
+      return this.messageType[type]
     }
   },
   mounted () {

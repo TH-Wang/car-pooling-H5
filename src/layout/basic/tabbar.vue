@@ -61,6 +61,7 @@ export default {
       if (this.tabbarId === 0 && index === 0 && this.scrollTop > limit) {
         window.scrollTo(0, 0)
         EventBus.$emit('home-refresh')
+        return
       }
       // 如果点击的是发布，并且没有登录
       if (index === 2 && !this.user.token) {
@@ -71,6 +72,7 @@ export default {
         }).then(() => {
           this.$router.push('/common/login')
         })
+        return
       }
       if (this.tabbarId === index) return
       this.$store.commit('changeTabbar', { index, path })

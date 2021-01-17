@@ -31,15 +31,24 @@ function getLineData (data) {
 // 搜集地点信息
 function filterPointParams (data) {
   const { pname, cityname, adname, township, name, location } = data
+  const newCityName = getCityName(pname, cityname, adname)
   return {
+    orderType: 1,
     pname,
-    cityname,
+    cityname: newCityName,
     adname,
     township,
     pointName: name,
     lon: location.lng,
     lat: location.lat
   }
+}
+
+// 判断是否是直辖市，然后修改信息
+function getCityName (pname, cityname, adname) {
+  if (['重庆市', '北京市', '上海市', '天津市'].indexOf(pname) !== -1) {
+    return adname
+  } return cityname
 }
 
 // 获取起点、终点和途径点

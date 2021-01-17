@@ -126,6 +126,12 @@
         </div>
       </div>
 
+      <!-- 用户协议 -->
+      <div
+        class="user-agreement"
+        @click="$router.push('/common/user/agreement')"
+        >用户协议</div>
+
       <!-- 固定按钮 -->
       <affix
         icon="master"
@@ -180,7 +186,7 @@ export default {
     headerIcons: [
       { icon: 'upload', path: '/common/my/share' },
       { icon: 'setting', path: '/common/setting' },
-      { icon: 'service', path: '' }
+      { icon: 'service', path: '/common/service' }
     ],
     list: [],
     swipeCurrent: 0,
@@ -231,12 +237,10 @@ export default {
   methods: {
     // 请求我的预约
     async reqList () {
+      const data = { statusFlag: 1, startPage: 1, pageSize: 5 }
       if (this.identity === 0) {
         // 我是乘客，查询我的预约订单
-        const res = await getOrdering({
-          startPage: 1,
-          pageSize: 5
-        })
+        const res = await getOrdering(data)
         if (res.data.status !== 200) return
         this.list = res.data.data.list.map(item => {
           item.seatNum = item.orderNum
@@ -244,10 +248,7 @@ export default {
         })
       } else {
         // 我是司机，查询乘客预约我的订单
-        const res = await driverOrder({
-          startPage: 1,
-          pageSize: 5
-        })
+        const res = await driverOrder(data)
         if (res.data.status !== 200) return
         this.list = res.data.data.list.map(item => {
           item.startTime = item.passengerStartTime
@@ -538,7 +539,7 @@ export default {
 
 // 菜单列表
 .menu{
-  margin-bottom: 1rem;
+  margin-bottom: .3rem;
   padding: 0 .15rem;
   box-sizing: border-box;
 
@@ -559,5 +560,13 @@ export default {
       @include font (.14rem, $main-text);
     }
   }
+}
+
+.user-agreement{
+  text-align: center;
+  color: $main-color;
+  font-size: .15rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 </style>
