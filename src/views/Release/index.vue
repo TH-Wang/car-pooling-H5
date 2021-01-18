@@ -72,7 +72,7 @@ import SearchCard from '@/components/SearchCard'
 import CustomerFormBody from './customer'
 import DriverFormBody from './driver'
 import confirmLogin from '@/utils/confirmLogin'
-import getLineData from '@/utils/transPos'
+import getLineData, { filterPointParams } from '@/utils/transPos'
 
 export default {
   name: 'Release',
@@ -177,8 +177,8 @@ export default {
       data.telPhone = this.user.info.phone
       // 获取起止点信息
       const { startAddr, endAddr } = this.release
-      const startParams = this.filterPointParams(startAddr)
-      const endParams = this.filterPointParams(endAddr)
+      const startParams = filterPointParams(startAddr)
+      const endParams = filterPointParams(endAddr)
       Object.assign(data, {
         // 起点信息
         startAddr: startParams.pointName,

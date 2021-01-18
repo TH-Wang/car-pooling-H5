@@ -95,8 +95,8 @@
 <script>
 import { mapState } from 'vuex'
 import { Checkbox } from 'vant'
+import { commitOrder, getPublishDetail } from '@/api'
 import EventBus from '@/utils/eventBus'
-import { commitOrder } from '@/api'
 import { Form, Input, Select } from '@/components/Form'
 // import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
@@ -115,7 +115,9 @@ export default {
     agree: true,
     pprId: null,
     columns: [],
-    seatNum: ''
+    seatNum: '',
+    defaultAddr: { start: true, end: true },
+    addrInfo: null
   }),
   computed: {
     ...mapState(['user', 'search']),
@@ -127,6 +129,28 @@ export default {
     }
   },
   methods: {
+    // 获取订单信息
+    async handleRequest () {
+      const res = await getPublishDetail(this.pprId)
+      const addr = res.data.data.passPointList
+      const start = addr.find(i => i.type === 1)
+      const end = addr.find(i => i.type === 3)
+      const info = {
+        startAddr: {
+          name: start.pointName,
+          location: { lng: start.lon, lat: start.lat }
+        },
+        endAddr: {
+          name: end.pointName,
+          location: { lng: end.lon, lat: end.lat }
+        }
+      }
+      this.addrInfo = info
+      this.$refs.form.setValues({
+        startAddr: info.startAddr.name,
+        endAddr: info.endAddr.name
+      })
+    },
     // 提交预约信息
     async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
@@ -134,15 +158,10 @@ export default {
 
       // 提交的数据
       const pprId = parseInt(this.pprId)
-      const { startAddr, endAddr } = this.search
+      const addr = this.getAddrParams()
       const data = {
         ...values,
-        startAddr: startAddr.name,
-        startLon: startAddr.location.lng,
-        startLat: startAddr.location.lat,
-        endAddr: endAddr.name,
-        endLon: endAddr.location.lng,
-        endLat: endAddr.location.lat,
+        ...addr,
         orderNum: parseInt(values.orderNum),
         pprIdCar: pprId,
         status: 5
@@ -163,38 +182,54 @@ export default {
         })
       }
     },
+    // 获取起止点位置参数
+    getAddrParams () {
+      const { start, end } = this.defaultAddr
+      const startAddr = start ? this.addrInfo.startAddr : this.search.startAddr
+      const endAddr = end ? this.addrInfo.endAddr : this.search.endAddr
+      return {
+        startAddr: startAddr.name,
+        startLon: startAddr.location.lng,
+        startLat: startAddr.location.lat,
+        endAddr: endAddr.name,
+        endLon: endAddr.location.lng,
+        endLat: endAddr.location.lat
+      }
+    },
     // 跳转到搜索位置页面
     handleSearch (e, type) {
       this.$router.push(`/common/search/pos/${type}?type=common`)
     }
   },
   created () {
-    const seatNum = this.$route.query.seat
+    const { id, seat } = this.$route.query
     const columns = []
-    for (let i = 0; i < seatNum; i++) {
+    for (let i = 0; i < seat; i++) {
       columns.push({ value: i + 1, name: `${i + 1}人` })
     }
-    this.seatNum = seatNum
+    this.seatNum = seat
     this.columns = columns
+    this.pprId = id
   },
   mounted () {
-    // 获取拼车单pprId
-    this.pprId = this.$route.query.id
     // 设置位置信息
-    const { startAddr, endAddr } = this.search
+    // const { startAddr, endAddr } = this.search
     // 设置用户登录的手机号
     const phone = this.user.info.phone
     this.$refs.form.setValues({
-      startAddr: startAddr.name,
-      endAddr: endAddr.name,
+      // startAddr: startAddr.name,
+      // endAddr: endAddr.name,
       telPhone: phone
     })
+    this.handleRequest()
   },
   watch: {
     startAddrName: function (newVal) {
+      if (this.defaultAddr.start) this.defaultAddr.start = false
       this.$refs.form.setValueField('startAddr', newVal)
     },
     endAddrName: function (newVal) {
+      if (this.defaultAddr.end) this.defaultAddr.end = false
       this.$refs.form.setValueField('endAddr', newVal)
     }
   }

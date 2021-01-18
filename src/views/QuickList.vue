@@ -102,7 +102,7 @@ export default {
     // 主要的请求参数
     getRequestDatas () {
       const addrName = this.activeHotCity === null
-        ? this.position.selected.city.name
+        ? this.position.selected.county.name
         : this.addrName
       // const p = this.query.publishType
       // const publishType = /,/.test(p) ? p : parseInt(this.query.publishType)

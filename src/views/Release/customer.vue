@@ -180,7 +180,6 @@ export default {
       data.publishType = this.judgeType()
       // 顺路带物
       if (data.publishType === 5) data.isTakeGoods = 1
-      console.log(data)
       // 通知父组件做提交相关操作
       this.$emit('submit', { data, type: 'customer' })
     },
@@ -194,7 +193,6 @@ export default {
       // const minuteNum = nowTime.get('minute') % 5
       const decNum = 30 - (nowTime.get('minute') % 5)
       const time = moment().add('minute', decNum).format('YYYY-MM-DD HH:mm')
-      console.log(decNum, time)
       this.$refs.form.setValueField('startTime', time)
     },
     // 弹出层关闭

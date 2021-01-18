@@ -12,7 +12,7 @@
         <van-icon name="arrow" />
       </template>
       <template #right>
-        <van-icon name="service" size=".18rem" />
+        <van-icon @click="$router.push('/common/service')" name="service" size=".18rem" />
       </template>
     </nav-bar-search>
 

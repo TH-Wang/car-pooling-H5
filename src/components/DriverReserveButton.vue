@@ -9,6 +9,7 @@
 import { appointmentPassenger } from '@/api'
 import MiniButton from '@/components/MiniButton'
 import callPhone from '@/utils/callPhone'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -23,9 +24,21 @@ export default {
   data: () => ({
     hasReserve: false
   }),
+  computed: {
+    ...mapState(['user'])
+  },
   methods: {
     // 司机预约
-    async handleReserve () {
+    async handleReserve (us) {
+      // 判断是否为自己发布的订单
+      if (this.record.suser.id === this.user.info.id) {
+        this.$toast({
+          message: '该订单由您本人发布，无法预约',
+          position: 'bottom'
+        })
+        return
+      }
+      // 处理请求
       this.$toast.loading({ message: '正在预约', duration: 10000 })
       const orderId = this.record.passengerOrder.orderId
       try {

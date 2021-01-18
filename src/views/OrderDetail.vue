@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import moment from 'moment'
 import { getPublishDetail } from '@/api'
 import { isEmpty } from 'lodash'
@@ -80,6 +81,7 @@ export default {
     lnglat: null
   }),
   computed: {
+    ...mapState(['user']),
     // 起止点名称
     addrName () {
       if (isEmpty(this.record)) return ''
@@ -112,9 +114,14 @@ export default {
       location.reload()
     },
     async handleLinkReserve () {
+      // 验证是否登录
       const isLogin = await confirmLogin('尊敬的用户，您还未登录，完成登录后即可预约')
-      console.log(isLogin)
       if (!isLogin) return
+      // 验证是否是自己发布的订单
+      if (this.record.userId === this.user.info.id) {
+        this.$toast('该订单是您发布的，无法预约！')
+        return
+      }
       const { pprId, num } = this.record
       this.$router.push({ path: '/common/reserve', query: { id: pprId, seat: num } })
     },

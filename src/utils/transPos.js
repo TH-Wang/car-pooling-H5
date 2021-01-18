@@ -29,7 +29,7 @@ function getLineData (data) {
   return result
 }
 // 搜集地点信息
-function filterPointParams (data) {
+export function filterPointParams (data) {
   const { pname, cityname, adname, township, name, location } = data
   const newCityName = getCityName(pname, cityname, adname)
   return {

@@ -41,7 +41,11 @@
         </div>
 
         <!-- 联系电话 -->
-        <order-info-phone v-if="record.isPublish === 0" :phone="record.mobilePhone"/>
+        <order-info-phone
+          v-if="record.isPublish === 0"
+          :phone="getPhone(record.mobilePhone)"
+          @click="handleCall"
+        />
       <!-- </div> -->
 
       <!-- 如果没有司机确认 -->
@@ -74,6 +78,7 @@ import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
 import { getPointText } from '@/utils/getLineText'
+import callPhone from '@/utils/callPhone'
 
 export default {
   components: {
@@ -176,6 +181,17 @@ export default {
     // 跳转到无责退订页面
     handleLinkDesc () {
       this.$router.push('/common/description?type=liability')
+    },
+    // 判断电话号码显示文本
+    getPhone (phone) {
+      return this.record.orderState === 0
+        ? phone
+        : phone.slice(0, 3) + '****' + phone.slice(7)
+    },
+    // 拨打电话
+    handleCall () {
+      if (this.record.orderState !== 0) return
+      callPhone(this.record.mobilePhone)
     }
   },
   created () {

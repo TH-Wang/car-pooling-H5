@@ -1,8 +1,8 @@
 <template>
   <div class="card" @click="$emit('click')">
-    <div class="start">{{record.startAddrAll}}</div>
+    <div class="start"><span>{{record.startAddrAll}}</span></div>
     <img class="arrow" src="../assets/icons/line-arrow.png" alt="">
-    <div class="end">{{record.endAddrAll}}</div>
+    <div class="end"><span>{{record.endAddrAll}}</span></div>
 
     <!-- 拼单数量 -->
     <div :class="`num-tag-${tagColor}`">{{countTag}}</div>
@@ -58,19 +58,24 @@ export default {
 <style lang="scss" scoped>
 .card{
   margin: 0.25rem 0 0 0.15rem;
-  padding: 15px 10px;
-  width: 1.45rem;
+  padding: .15rem 0rem;
+  width: 1.65rem;
+  box-sizing: border-box;
   border-radius: 5px;
   font-size: 0.14rem;
   color: $main-text;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   background-color: $linecard-color;
   position: relative;
 
+  .start, .end{
+    width: .7rem;
+    text-align: center;
+    // @include flex(center, center);
+  }
+
   &:active{
-    // opacity: 0.8;
     background-color: #eee;
   }
 
@@ -78,6 +83,7 @@ export default {
   .arrow{
     width: 0.15rem;
     height: 0.15rem;
+    margin: 0 .02rem;
   }
 
   // 号码标签

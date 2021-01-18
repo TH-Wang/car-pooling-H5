@@ -26,7 +26,7 @@
     <div class="card">
       <div class="title">顺风车客服电话</div>
       <div class="content">
-        <span class="tel">{{info.phone}}</span>
+        <span class="tel" @click="handleCall">{{info.phone}}</span>
         <span class="tip">（点击号码，直接拨打）</span>
       </div>
     </div>
@@ -35,6 +35,7 @@
 
 <script>
 import { getServiceInfo } from '@/api'
+import callPhone from '@/utils/callPhone'
 
 export default {
   data: () => ({
@@ -44,6 +45,9 @@ export default {
     async getInfo () {
       const res = await getServiceInfo()
       this.info = res.data.data[0]
+    },
+    handleCall () {
+      callPhone(this.record.phone)
     }
   },
   created () {

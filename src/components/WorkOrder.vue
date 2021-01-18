@@ -10,7 +10,7 @@
     ><template #button>
         <mini-button
           color="yellow"
-          @click="handleLinkDetail($event, item.publish.id)"
+          @click="handleLinkReserve(item)"
         >立即预订</mini-button>
       </template>
     </carpool-order>
@@ -44,7 +44,7 @@
       <template #button>
         <mini-button
           color="yellow"
-          @click="handleLinkDetail($event, item.publish.id)"
+          @click="handleLinkReserve(item)"
         >立即预订</mini-button>
       </template>
     </hitchhike-order>
@@ -77,7 +77,7 @@
       <mini-button
         color="yellow"
         :orderId="item.id"
-        @click="handleLinkDetail($event, item.publish.id)"
+        @click="handleLinkReserve(item)"
       >立即预订</mini-button>
       </template>
     </carry-order>
@@ -107,6 +107,7 @@ import Hitchhike from '@/components/OrderItem/Hitchhike'
 import MiniButton from '@/components/MiniButton'
 import DriverReserveButton from '@/components/DriverReserveButton'
 import Carry from '@/components/OrderItem/Carry'
+import confirmLogin from '@/utils/confirmLogin'
 
 export default {
   components: {
@@ -130,8 +131,22 @@ export default {
     }
   },
   methods: {
+    // 跳转到详情页面
     handleLinkDetail (e, id) {
       this.$router.push({ path: '/common/order/detail', query: { id } })
+    },
+    // 跳转到预约页面
+    async handleLinkReserve (record) {
+      // 验证是否登录
+      const isLogin = await confirmLogin('尊敬的用户，您还未登录，完成登录后即可预约')
+      if (!isLogin) return
+      // 验证是否是自己发布的订单
+      if (record.suser.id === this.$store.state.user.info.id) {
+        this.$toast('该订单是您发布的，无法预约！')
+        return
+      }
+      const { id, num } = record.publish
+      this.$router.push({ path: '/common/reserve', query: { id, seat: num } })
     },
     // 点赞
     async handleCommitLike (isLike, pprId) {
