@@ -99,7 +99,7 @@ export default {
         this.$store.commit('setUserInfo', res.data.data)
         await this.$dialog.alert({
           title: '提交成功',
-          message: '请等待后台管理员的审核，审核通过后，便成为认证车主'
+          message: '我们需要对您的信息进行审核，请您耐心等待'
         })
         this.$router.go(-1)
       } else {

@@ -107,7 +107,10 @@ export default {
         // 更新用户信息
         const res = await getUserDetail()
         this.$store.commit('setUserInfo', res.data.data)
-        this.$toast.success('验证成功')
+        await this.$dialog.alert({
+          title: '提交成功',
+          message: '我们需要对您的信息进行审核，请您耐心等待'
+        })
         this.$router.go(-1)
       } else {
         this.$toast.fail('验证失败\n请稍后重试')

@@ -149,6 +149,7 @@ export default {
       if (this.user.token) {
         const res = await getLatestSearch()
         const info = res.data.data
+        if (!info) return
         // 设置起点
         this.$store.commit('setSearchAddr', {
           type: 'startAddr',

@@ -115,7 +115,8 @@ export default {
       const res = this.reqQuickApi
         ? await this.reqQuickApi(data)
         : await getCommonRoute(data)
-      this.quickList = res.data.data.list
+      // this.quickList = res.data.data.list
+      this.quickList = res.data.data
     },
     // 点击重试（订单列表）
     async handleRetry () {

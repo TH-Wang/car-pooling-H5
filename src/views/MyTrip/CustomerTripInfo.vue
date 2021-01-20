@@ -42,7 +42,7 @@
 
         <!-- 联系电话 -->
         <order-info-phone
-          v-if="record.isPublish === 0"
+          v-if="record.mobilePhone"
           :phone="getPhone(record.mobilePhone)"
           @click="handleCall"
         />

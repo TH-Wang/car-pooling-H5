@@ -275,7 +275,11 @@ export default {
         data.middlePoint = this.middlePoint
       }
       // 如果没有选择套餐
-      if (isEmpty(this.combo)) data.setType = 0
+      if (isEmpty(this.combo)) {
+        data.setType = 0
+      } else {
+        Object.assign(data, this.combo)
+      }
 
       console.log(data)
       // 通知父组件做提交相关操作

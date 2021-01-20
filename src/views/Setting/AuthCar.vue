@@ -115,6 +115,7 @@ export default {
     // 提交车辆信息
     async handleSubmit () {
       const failArr = []
+      const successArr = []
       const userId = this.user.info.id
       // 循环提交
       const init = this.user.carList.length
@@ -136,20 +137,23 @@ export default {
           const res = await userCarVerification(data)
           if (res.data.status === 200) {
             this.$toast.success(`第${nowCar}辆车提交成功`)
+            successArr.push(nowCar)
           } else {
             failArr.push(nowCar)
-            this.$toast.fail(`第${nowCar}辆车提交失败`)
           }
         }
       }
       // 更新车辆信息
       this.updateAuthedCars()
       // 向用户反馈提交失败的车辆信息
-      if (failArr.length > 0) {
-        this.$dialog.alert({
-          message: `第${failArr.join('，')}辆车提交失败，请检查信息是否填写完整，或稍后再试`
-        })
+      let msg = ''
+      if (successArr.length > 0) {
+        msg += `第<span style="color:#FFCD00">${successArr.join('，')}辆车</span>提交成功，需要等待后台管理员的审核`
       }
+      if (failArr.length > 0) {
+        msg += `<br/>第<span style="color:#ee0a24">${failArr.join('，')}辆车</span>提交失败，请检查信息是否填写完整，或稍后再试`
+      }
+      this.$dialog.alert({ message: msg })
       // 更新用户信息
       const res = await getUserDetail()
       this.$store.commit('setUserInfo', res.data.data)

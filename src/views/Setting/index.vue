@@ -76,36 +76,36 @@
     </div>
 
     <!-- 身份证认证 -->
-    <div class="cell" @click="handleLinkAuth($event, 'idnumstatus', '/common/auth/idcard')">
+    <div class="cell" @click="handleLinkAuth($event, 'identity', '/common/auth/idcard')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/idcard.png" alt="">身份证认证
       </div>
       <div class="cell-right">
-        <span v-if="!Authed('idnumstatus')" class="cell-text">立即认证</span>
-        <span v-else class="cell-text-main">已认证</span>
+        <span v-if="!Authed('identity')" class="cell-text">立即认证</span>
+        <span v-else class="cell-text-main">{{user.identityInfo | auth}}</span>
         <van-icon name="arrow"/>
       </div>
     </div>
 
     <!-- 驾驶证认证 -->
-    <div class="cell" @click="handleLinkAuth($event, 'driverlicensestatus', '/common/auth/license')">
+    <div class="cell" @click="handleLinkAuth($event, 'driving', '/common/auth/license')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/card.png" alt="">驾驶证认证
       </div>
       <div class="cell-right">
-        <span v-if="!Authed('driverlicensestatus')" class="cell-text">驾驶证认证</span>
-        <span v-else class="cell-text-main">已认证</span>
+        <span v-if="!Authed('driving')" class="cell-text">驾驶证认证</span>
+        <template v-else v-html="user.drivingInfo | auth"></template>
         <van-icon name="arrow"/>
       </div>
     </div>
 
     <!-- 车辆认证 -->
-    <div class="cell" @click="handleLinkAuth($event, 'carstatus', '/common/auth/car', true)">
+    <div class="cell" @click="handleLinkAuth($event, 'car', '/common/auth/car', true)">
       <div class="cell-left">
         <img src="@/assets/icons/setting/car.png" alt="">车辆认证
       </div>
       <div class="cell-right">
-        <span v-if="!Authed('carstatus')" class="cell-text">车辆认证</span>
+        <span v-if="!Authed('car')" class="cell-text">车辆认证</span>
         <span v-else class="cell-text-main">已认证</span>
         <van-icon name="arrow"/>
       </div>
@@ -126,7 +126,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import { Image, ImagePreview, Overlay } from 'vant'
 import { getUserDetail, updateUserInfo, uploadFile } from '@/api'
 
@@ -143,7 +143,20 @@ export default {
   computed: {
     ...mapState(['user'])
   },
+  filters: {
+    auth (value) {
+      const state = value.state
+      if (!state) return ''
+      const innerHtml = {
+        0: '<span class="cell-text">审核中</span>',
+        1: '<span class="cell-text-main">已认证</span>',
+        2: '<span class="cell-text-error">认证失败</span>'
+      }
+      return innerHtml[state]
+    }
+  },
   methods: {
+    ...mapActions(['queryAuthInfo']),
     // 预览头像
     previewAvatar () {
       const avatar = this.user.info.headimg
@@ -209,13 +222,27 @@ export default {
     },
     // 判断是否已认证
     Authed (type) {
-      return this.user.info[type] === 'YES'
+      switch (type) {
+        case 'identity':
+          return this.user.identityInfo
+            ? this.user.identityInfo.state === 2
+            : false
+        case 'driving':
+          return this.user.drivingInfo
+            ? this.user.drivingInfo.state === 2
+            : false
+        case 'car': return this.user.carList.some(i => i.state && i.state === 2)
+      }
     },
     // 退出登录
     handleLogout () {
       this.$store.commit('clearToken')
       this.$router.push('/common/login')
     }
+  },
+  created () {
+    // 查询身份证、驾驶证的认证信息
+    this.queryAuthInfo()
   },
   mounted () {
     if (!this.user.token) {
@@ -231,13 +258,6 @@ export default {
       })
     }
   }
-  // beforeRouteEnter (to, from, next) {
-  //   if (from.path === '/common/login') {
-  //     next('/mine')
-  //     return
-  //   }
-  //   next()
-  // }
 }
 </script>
 
@@ -279,6 +299,11 @@ export default {
   margin-right: .05rem;
   display: inline-block;
   vertical-align: text-bottom;
+
+  &-error{
+    @extend .cell-text;
+    color: $error-text;
+  }
 
   &-main{
     @extend .cell-text;

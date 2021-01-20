@@ -10,7 +10,7 @@ export default [
     name: 'carNumber',
     label: '车牌号',
     placeholder: '请输入您爱车的车牌号',
-    maxLength: '7',
+    maxLength: '10',
     rules: [{ required: true }]
   }, {
     type: 'field',

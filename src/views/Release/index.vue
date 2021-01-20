@@ -73,6 +73,7 @@ import CustomerFormBody from './customer'
 import DriverFormBody from './driver'
 import confirmLogin from '@/utils/confirmLogin'
 import getLineData, { filterPointParams } from '@/utils/transPos'
+import { aliPay, wexinPay } from '@/utils/pay'
 
 export default {
   name: 'Release',
@@ -113,7 +114,12 @@ export default {
         const res = type === 'driver'
           ? await this.driverRequest(cloneDeep(data))
           : await this.customerRequest(cloneDeep(data))
-        // 5. 处理反馈
+        // 5. 如果需要支付
+        if (type === 'driver' && data.setType > 0) {
+          this.handlePay(res, data.payType)
+          return
+        }
+        // 6. 处理反馈
         if (res.data.status === -4) {
           // 如果token失效
           this.$dialog.alert({ message: '请重新登录' })
@@ -124,7 +130,7 @@ export default {
           this.$toast.fail('发布失败\n请稍后再试')
           return
         }
-        // 6. 重置时间未当前时间的半小时后
+        // 7. 重置时间未当前时间的半小时后
         this.$refs[type].resetTime()
         // 如果发布成功
         const commitType = type === 'driver' ? 'setDriverPublish' : 'setCustomerPublish'
@@ -219,6 +225,10 @@ export default {
       console.log(data)
       // 发起请求
       return insertPublish(data)
+    },
+    // 处理支付
+    handlePay (res, type) {
+      type === 1 ? aliPay(res) : wexinPay(res)
     }
   },
   activated () {

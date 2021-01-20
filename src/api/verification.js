@@ -4,6 +4,8 @@ export default {
   userIdentityCard,
   userDrivingCard,
   userCarVerification,
+  userIdentity,
+  userDriving,
   userCarDetail
 }
 
@@ -20,6 +22,16 @@ function userDrivingCard (data) {
 // 车辆认证
 function userCarVerification (data) {
   return axios.post('/verification/userCarVerification', data)
+}
+
+// 获取用户身份证认证信息
+function userIdentity () {
+  return axios.post('/verification/userIdentity')
+}
+
+// 获取用户驾驶证认证信息
+function userDriving () {
+  return axios.post('/verification/userDriving')
 }
 
 // 获取用户认证的车辆信息

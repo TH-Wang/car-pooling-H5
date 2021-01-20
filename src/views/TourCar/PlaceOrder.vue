@@ -222,7 +222,7 @@ export default {
     // 微信支付
     wexinPay (res) {
       this.$toast.loading({ message: '微信支付' })
-      const url = res.data.data.data.mwebUrl
+      const url = res.data.data.data
       window.location.replace(url)
     }
   },

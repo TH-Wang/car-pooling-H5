@@ -13,12 +13,12 @@
         <div class="description">选择天天拼车套餐，免去天天发布信息</div>
 
         <!-- 套餐列表 -->
-        <van-radio-group class="radio-container" v-model="comboType">
+        <van-radio-group class="radio-container" v-model="setType">
           <div
             class="radio-item"
             v-for="opt in options"
             :key="opt.id"
-            @click="comboType = opt.id"
+            @click="setType = opt.id"
           >
             <span class="radio-item-label">{{opt.text}}</span>
             <van-radio :name="opt.id" checked-color="#0AD593" icon-size=".20rem" />
@@ -63,7 +63,7 @@ export default {
     // 弹出层的显示
     visible: false,
     // 选择的套餐类型
-    comboType: 0,
+    setType: 0,
     // 套餐选项
     options: [
       { id: 1, text: '周免发布' },
@@ -92,7 +92,7 @@ export default {
     handleSubmit () {
       const _this_ = this
       this.$emit('submit', {
-        comboType: _this_.comboType,
+        setType: _this_.setType,
         payType: _this_.payType
       })
       this.visible = false

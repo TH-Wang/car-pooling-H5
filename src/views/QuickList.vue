@@ -39,7 +39,7 @@
     ><van-empty description="暂无快捷路线，可点击重试" />
     </div>
     <!-- 快捷路线 -->
-    <van-list
+    <!-- <van-list
       v-else
       v-model="loading"
       :finished="finished"
@@ -48,7 +48,7 @@
       error-text="加载失败，请点击重试"
       @load="handleListLoad"
       class="list-container"
-    >
+    > -->
       <line-card
         class="list-item"
         v-for="item in list"
@@ -58,27 +58,28 @@
         common
         @click="handleSearch($event, item)"
       />
-    </van-list>
+    <!-- </van-list> -->
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { List } from 'vant'
+// import { List } from 'vant'
 import { cloneDeep, isEmpty } from 'lodash'
 import { getCommonRoute, getNewPassengerCommonRoute, queryPositionForCounty } from '@/api'
 import LineCard from '@/components/LineCard'
-import ListMixin from '@/mixins/list-mixin'
+// import ListMixin from '@/mixins/list-mixin'
 
 export default {
-  mixins: [ListMixin],
+  // mixins: [ListMixin],
   components: {
-    'van-list': List,
+    // 'van-list': List,
     'line-card': LineCard
   },
   data: () => ({
     query: {},
     list: [],
+    pageSize: 100,
     activeHotCity: null
     // pageSize: 20
   }),
@@ -94,6 +95,11 @@ export default {
     }
   },
   methods: {
+    async handleRequest () {
+      const data = this.getRequestDatas()
+      const res = await this.reqApi(data)
+      this.list = res.data.data
+    },
     reqApi (data) {
       if (this.query.workType === 'pending') {
         return getNewPassengerCommonRoute(data)
@@ -107,7 +113,12 @@ export default {
       // const p = this.query.publishType
       // const publishType = /,/.test(p) ? p : parseInt(this.query.publishType)
       const { publishType, orderType } = this.query
-      const data = { publishType, orderType: parseInt(orderType) }
+      const data = {
+        publishType,
+        orderType: parseInt(orderType),
+        startPage: 1,
+        pageSize: 100
+      }
       if (!isEmpty(addrName)) data.addrName = addrName
       return data
     },
@@ -149,7 +160,7 @@ export default {
   },
   created () {
     this.query = this.$route.query
-    // this.handleListLoad()
+    this.handleRequest()
     this.handleRequestCity()
   }
 }
