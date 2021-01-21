@@ -12,6 +12,6 @@ export function aliPay (res) {
 // 微信支付
 export function wexinPay (res) {
   Toast.loading({ message: '微信支付' })
-  const url = res.data.data.data
-  window.location.href(url)
+  const url = res.data.data.data.mwebUrl
+  window.location.href = url
 }

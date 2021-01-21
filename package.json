@@ -10,8 +10,10 @@
   "dependencies": {
     "@amap/amap-jsapi-loader": "^0.0.7",
     "axios": "^0.21.0",
+    "blueimp-md5": "^2.18.0",
     "cnchar": "^2.2.7",
     "core-js": "^3.6.5",
+    "js-sha1": "^0.6.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "vant": "^2.10.8",

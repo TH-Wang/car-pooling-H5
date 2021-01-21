@@ -67,7 +67,10 @@
           icon-size=".15rem"
           checked-color="#FFCD00"
           shape="square"
-        >我已阅读并同意发布拼车信息<span class="link">《合乘协议》</span></van-checkbox>
+        >
+          我已阅读并同意发布拼车信息
+          <span class="link" @click="$router.push('/common/user/agreement')">《用户协议》</span>
+        </van-checkbox>
       </div>
       <div class="submit-checkbox">
         <van-checkbox
@@ -236,8 +239,10 @@ export default {
     // 获取所有的车辆信息
     async getCarInfo () {
       if (this.user.carList.length === 0) {
+        this.$toast.loading({ message: '加载中', duration: 10000 })
         const res = await userCarDetail()
         this.$store.commit('setCarInfo', res.data.data)
+        this.$toast.clear()
       }
       // 赋值到表单配置上
       this.formOptions = getDriverOpts(this.user.carList)

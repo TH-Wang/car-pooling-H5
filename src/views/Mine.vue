@@ -126,12 +126,6 @@
         </div>
       </div>
 
-      <!-- 用户协议 -->
-      <div
-        class="user-agreement"
-        @click="$router.push('/common/user/agreement')"
-        >用户协议</div>
-
       <!-- 固定按钮 -->
       <affix
         icon="master"

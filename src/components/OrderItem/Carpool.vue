@@ -18,7 +18,7 @@
         <div class="car-info">
           <div class="car-info-item">
             <img src="@/assets/icons/order/car.png" alt="">
-            <span>{{record.carDetail.carModel}}</span>
+            <span>{{record.carDetail ? record.carDetail.carModel : ''}}</span>
           </div>
           <div class="car-info-item">
             <img src="@/assets/icons/order/location.png" alt="">

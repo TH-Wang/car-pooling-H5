@@ -2025,6 +2025,11 @@ bluebird@^3.1.1, bluebird@^3.5.5:
   resolved "https://registry.npm.taobao.org/bluebird/download/bluebird-3.7.2.tgz?cache=0&sync_timestamp=1586263933818&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fbluebird%2Fdownload%2Fbluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha1-nyKcFb4nJFT/qXOs4NvueaGww28=
 
+blueimp-md5@^2.18.0:
+  version "2.18.0"
+  resolved "https://registry.npm.taobao.org/blueimp-md5/download/blueimp-md5-2.18.0.tgz#1152be1335f0c6b3911ed9e36db54f3e6ac52935"
+  integrity sha1-EVK+EzXwxrORHtnjbbVPPmrFKTU=
+
 bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.4.0:
   version "4.11.9"
   resolved "https://registry.npm.taobao.org/bn.js/download/bn.js-4.11.9.tgz#26d556829458f9d1e81fc48952493d0ba3507828"
@@ -5339,6 +5344,11 @@ js-queue@2.0.0:
   integrity sha1-NiITz4YPRo8BJfxslqvBdCUx+Ug=
   dependencies:
     easy-stack "^1.0.0"
+
+js-sha1@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npm.taobao.org/js-sha1/download/js-sha1-0.6.0.tgz#adbee10f0e8e18aa07cdea807cf08e9183dbc7f9"
+  integrity sha1-rb7hDw6OGKoHzeqAfPCOkYPbx/k=
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"

@@ -121,6 +121,16 @@
       </div>
     </div>
 
+    <!-- 用户协议 -->
+    <div class="cell" @click="$router.push('/common/user/agreement')">
+      <div class="cell-left">
+        <img src="@/assets/icons/setting/suggest.png" alt="">用户协议
+      </div>
+      <div class="cell-right">
+        <van-icon name="arrow"/>
+      </div>
+    </div>
+
     <div class="logout" @click="handleLogout">退出登录</div>
   </div>
 </template>

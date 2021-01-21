@@ -143,6 +143,7 @@ import { getTourDetailById, getBusDetailById, createTourCarOrder } from '@/api'
 import { Image, RadioGroup, Radio, Popup } from 'vant'
 // import { isEmpty } from 'lodash'
 import { Form, Field, Picker } from '@/components/Form'
+import { aliPay, wexinPay } from '@/utils/pay'
 
 export default {
   components: {
@@ -206,25 +207,25 @@ export default {
       const data = { ...this.form, type, payType, typeId }
       const res = await createTourCarOrder(data)
       if (res.data.status === 200) {
-        payType === 1 ? this.aliPay(res) : this.wexinPay(res)
+        payType === 1 ? aliPay(res) : wexinPay(res)
       } else {
         this.$toast.fail({ message: res.data.msg })
       }
-    },
-    // 支付宝支付
-    aliPay (res) {
-      const form = res.data.data.data
-      const div = document.createElement('div')
-      div.innerHTML = form
-      document.body.appendChild(div)
-      document.forms[0].submit()
-    },
-    // 微信支付
-    wexinPay (res) {
-      this.$toast.loading({ message: '微信支付' })
-      const url = res.data.data.data
-      window.location.replace(url)
     }
+    // // 支付宝支付
+    // aliPay (res) {
+    //   const form = res.data.data.data
+    //   const div = document.createElement('div')
+    //   div.innerHTML = form
+    //   document.body.appendChild(div)
+    //   document.forms[0].submit()
+    // },
+    // // 微信支付
+    // wexinPay (res) {
+    //   this.$toast.loading({ message: '微信支付' })
+    //   const url = res.data.data.data
+    //   window.location.replace(url)
+    // }
   },
   created () {
     const { type, id } = this.$route.query

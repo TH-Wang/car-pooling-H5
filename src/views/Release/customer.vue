@@ -56,7 +56,10 @@
           icon-size=".15rem"
           checked-color="#FFCD00"
           shape="square"
-        >我已阅读并同意发布拼车信息<span class="link">《合乘协议》</span></van-checkbox>
+        >
+          我已阅读并同意发布拼车信息
+          <span class="link" @click="$router.push('/common/user/agreement')">《用户协议》</span>
+        </van-checkbox>
       </div>
       <!-- <div class="submit-checkbox">
         <van-checkbox
