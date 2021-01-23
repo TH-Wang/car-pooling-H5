@@ -3,9 +3,9 @@
     <!-- 钱包余额 -->
     <overage-card
       title="我的积分"
-      :number="user.info.credit"
+      :number="account"
       style="margin-bottom: 0"
-      :hasButton="user.info.credit < 0"
+      :hasButton="account < 0"
     />
 
     <!-- 账单列表 -->
@@ -28,16 +28,16 @@
       <div class="bill">
         <div
           class="bill-item"
-          v-for="(item, index) in billList"
+          v-for="(item, index) in list"
           :key="index"
           @click="$router.push(item.path)"
         >
           <div class="bill-main">
-            <img :src="getBillIcon(item.type)" alt="">
-            <span>{{getBillText(item.type)}}</span>
-            <div class="price">{{item.price}}</div>
+            <img :src="getBillIcon(item.recordStatus)" alt="">
+            <span>{{item.recordBody}}</span>
+            <div class="price">{{getPrice(item.recordPrice, item.recordStatus)}}</div>
           </div>
-          <div class="bill-tip">{{item.time}}</div>
+          <div class="bill-tip">{{item.createDate | time}}</div>
         </div>
       </div>
     </van-list>
@@ -45,11 +45,11 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { selectAccountRecord } from '@/api'
 import { List } from 'vant'
 import OverageCard from '@/components/OverageCard'
 import ListMixin from '@/mixins/list-mixin'
-import { mapState } from 'vuex'
 
 export default {
   mixins: [ListMixin],
@@ -57,21 +57,19 @@ export default {
     'van-list': List,
     'overage-card': OverageCard
   },
-  computed: {
-    ...mapState(['user'])
-  },
   data: () => ({
-    billList: [
-      { type: 0, price: '+10.00', time: '2020-07-23 10:55' },
-      { type: 1, price: '-10.00', time: '2020-07-23 10:55' }
-    ]
+    account: 0
   }),
+  filters: {
+    time: (date) => date ? '' : moment(date).format('YYYY-MM-DD HH:mm')
+  },
   methods: {
     reqApi: selectAccountRecord,
     getRequestDatas () {
       return { recordType: 2 }
     },
     resDataHandler (res) {
+      this.account = res.data.data.account
       const { list, total } = res.data.data.list
       return { list, total }
     },
@@ -88,6 +86,10 @@ export default {
         case 0: return '系统奖励'
         case 1: return '消费'
       }
+    },
+    getPrice (price, type) {
+      if (!price || !type) return ''
+      return type === 0 ? '-' + price : '+' + price
     }
   }
 }

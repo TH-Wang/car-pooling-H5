@@ -18,52 +18,55 @@
       title-active-color="#262626"
       background="#ffffff"
       line-width="52px"
-      line-height="2px"
-    >
-      <van-tab class="van-tab-wrapper" title="管理">
-        <!-- 群列表 -->
-        <group-item
-          v-for="item in list"
-          :key="item.id"
-          :record="item"
-        />
-      </van-tab>
-      <van-tab class="van-tab-wrapper" title="分享">
-        <!-- 群列表 -->
-        <group-item
-          v-for="item in shareList"
-          :key="item.id"
-          :record="item"
-        >
-          <template #right>
-            <mini-button @click="handleShare">分享</mini-button>
-          </template>
-        </group-item>
-      </van-tab>
-      <van-tab class="van-tab-wrapper" title="申请奖励">
-        <!-- 群列表 -->
-        <group-item
-          v-for="item in list"
-          :key="item.id"
-          :record="item"
-        >
-          <template #right>
-            <mini-button @click="handleApply">申请</mini-button>
-          </template>
-        </group-item>
-      </van-tab>
+      line-height="2px">
+      <van-tab
+        v-for="(title, value) in tabs"
+        :key="value"
+        class="van-tab-wrapper"
+        :title="title"
+      />
     </van-tabs>
+
+    <!-- 如果列表数据为空 -->
+    <div v-if="list.length === 0" @click="handleRetry">
+      <van-empty description="暂无数据，请点击重试" />
+    </div>
+    <!-- 群列表 -->
+    <van-list
+      v-else
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      :error.sync="error"
+      error-text="加载失败，请点击重试"
+      @load="handleListLoad"
+      class="list-container"
+    >
+      <group-item
+        v-for="item in list"
+        :key="item.id"
+        :record="item">
+        <template v-if="active > 0" #right>
+          <mini-button v-if="active === 1" @click="handleShare">分享</mini-button>
+          <mini-button v-else @click="handleApply">申请</mini-button>
+        </template>
+      </group-item>
+    </van-list>
   </div>
 </template>
 
 <script>
-import { Tabs, Tab } from 'vant'
+import { Tabs, Tab, List } from 'vant'
 import { cloneDeep } from 'lodash'
+import { queryGroupByUser } from '@/api'
 import GroupItem from '@/components/GroupItem'
 import MiniButton from '@/components/MiniButton'
+import ListMixin from '@/mixins/list-mixin'
 
 export default {
+  mixins: [ListMixin],
   components: {
+    'van-list': List,
     'van-tabs': Tabs,
     'van-tab': Tab,
     'group-item': GroupItem,
@@ -71,11 +74,8 @@ export default {
   },
   data: () => ({
     active: 0,
-    list: [
-      { id: 0, type: 0, name: '直通车6群', people: 334 },
-      { id: 1, type: 1, name: '直通车6群', people: 334 },
-      { id: 2, type: 1, name: '直通车6群', people: 334 }
-    ]
+    tabs: { 0: '管理', 1: '分享', 2: '申请奖励' },
+    list: []
   }),
   computed: {
     shareList () {
@@ -86,6 +86,12 @@ export default {
     }
   },
   methods: {
+    reqApi: queryGroupByUser,
+    resDataHandler (res) {
+      this.account = res.data.data.account
+      const data = res.data.data
+      return { list: data, total: data.length }
+    },
     handleShare () {
       console.log('[分享群]')
     },

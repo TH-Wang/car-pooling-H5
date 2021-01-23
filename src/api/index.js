@@ -73,6 +73,7 @@ export const queryUserMessage = message.queryUserMessage
 export const selectGroup = group.selectGroup
 export const selectGroupById = group.selectGroupById
 export const addGroup = group.addGroup
+export const queryGroupByUser = group.queryGroupByUser
 export const queryMineGroup = group.queryMineGroup
 export const queryMineGroupEarnings = group.queryMineGroupEarnings
 

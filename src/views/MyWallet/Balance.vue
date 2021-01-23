@@ -3,9 +3,9 @@
     <!-- 钱包余额 -->
     <overage-card
       title="钱包余额（元）"
-      :number="user.info.totalPrice"
+      :number="account"
       style="margin-bottom: 0"
-      :hasButton="user.info.totalPrice < 0"
+      :hasButton="account < 0"
     />
 
     <!-- 菜单列表 -->
@@ -22,13 +22,12 @@
       </div>
     </div>
 
-    <!-- 账单列表 -->
     <div class="page-title">我的账单</div>
     <!-- 如果列表数据为空 -->
     <div v-if="list.length === 0" @click="handleRetry">
       <van-empty description="暂无数据，请点击重试" />
     </div>
-    <!-- 拼单列表 -->
+    <!-- 账单列表 -->
     <van-list
       v-else
       v-model="loading"
@@ -47,11 +46,11 @@
           @click="$router.push(item.path)"
         >
           <div class="bill-main">
-            <img :src="getBillIcon(item.type)" alt="">
-            <span>{{getBillText(item.type)}}</span>
-            <div class="price">{{item.price}}</div>
+            <img :src="getBillIcon(item.recordStatus)" alt="">
+            <span>{{item.recordBody}}</span>
+            <div class="price">{{getPrice(item.recordPrice, item.recordStatus)}}</div>
           </div>
-          <div class="bill-tip">{{item.time}}</div>
+          <div class="bill-tip">{{item.createDate | time}}</div>
         </div>
       </div>
     </van-list>
@@ -59,11 +58,11 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { selectAccountRecord } from '@/api'
 import { List } from 'vant'
 import OverageCard from '@/components/OverageCard'
 import ListMixin from '@/mixins/list-mixin'
-import { mapState } from 'vuex'
 
 export default {
   mixins: [ListMixin],
@@ -72,13 +71,14 @@ export default {
     'overage-card': OverageCard
   },
   data: () => ({
+    account: 0,
     menuList: [
       { icon: require('@/assets/icons/wallet/top-up.png'), title: '充值', path: '' },
       { icon: require('@/assets/icons/wallet/with-draw.png'), title: '提现', path: '' }
     ]
   }),
-  computed: {
-    ...mapState(['user'])
+  filters: {
+    time: (date) => date ? '' : moment(date).format('YYYY-MM-DD HH:mm')
   },
   methods: {
     reqApi: selectAccountRecord,
@@ -86,6 +86,7 @@ export default {
       return { recordType: 1 }
     },
     resDataHandler (res) {
+      this.account = res.data.data.account
       const { list, total } = res.data.data.list
       return { list, total }
     },
@@ -102,6 +103,10 @@ export default {
         case 0: return '充值'
         case 1: return '提现'
       }
+    },
+    getPrice (price, type) {
+      if (!price || !type) return ''
+      return type === 0 ? '-' + price : '+' + price
     }
   }
 }
