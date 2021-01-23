@@ -1,6 +1,12 @@
 import axios from './http'
 
-export default { selectGroup, selectGroupById, addGroup }
+export default {
+  selectGroup,
+  selectGroupById,
+  addGroup,
+  queryMineGroup,
+  queryMineGroupEarnings
+}
 
 // 查询拼车群列表
 function selectGroup (data) {
@@ -27,4 +33,14 @@ function selectGroupById (id) {
 // 入驻群
 function addGroup (data) {
   return axios.post('/group/add', data)
+}
+
+// 查询用户个人上传的群
+function queryMineGroup (id) {
+  return axios.post('/web/group/groupByUser?adminId=' + id)
+}
+
+// 查询用户个人上传的群
+function queryMineGroupEarnings (id) {
+  return axios.post('/web/group/groupEarnings?adminId=' + id)
 }

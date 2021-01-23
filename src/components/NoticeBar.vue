@@ -17,6 +17,7 @@
 
 <script>
 import { NoticeBar, Icon } from 'vant'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -42,12 +43,24 @@ export default {
     }
   },
   computed: {
+    ...mapState(['user']),
     positionStyle () {
       return `${this.position}: ${this.limit}`
     }
   },
   methods: {
     handleRelease () {
+      // 判断是否登录
+      if (!this.user.token) {
+        this.$dialog.confirm({
+          message: '尊敬的用户，您还未登录，登录后即可发布预约信息',
+          confirmButtonText: '立即登录',
+          cancelButtonText: '稍后再登'
+        }).then(() => {
+          this.$router.push('/common/login')
+        })
+        return
+      }
       this.$router.push('/release')
       this.$store.commit('changeTabsId', { type: 'release', index: 1 })
     }

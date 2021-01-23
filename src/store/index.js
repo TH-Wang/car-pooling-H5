@@ -12,6 +12,8 @@ import filters from './filters'
 import map from './map'
 import trip from './trip'
 import route from './route'
+import orderUrl from './orderUrl'
+import ticket from './ticket'
 
 Vue.use(Vuex)
 
@@ -34,6 +36,8 @@ export default new Vuex.Store({
     filters,
     map,
     trip,
-    route
+    route,
+    orderUrl,
+    ticket
   }
 })

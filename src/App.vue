@@ -7,8 +7,19 @@
 </template>
 
 <script>
-export default {
+import { isWeixin } from '@/utils/wx'
+import getQueryParams from '@/utils/getQueryParams'
 
+export default {
+  mounted () {
+    const code = getQueryParams().code
+    const state = getQueryParams().state
+    if (isWeixin() && code) {
+      this.$store.commit('setUnionCode', code)
+      const route = decodeURIComponent(state.split('#')[0])
+      this.$router.push(route)
+    }
+  }
 }
 </script>
 

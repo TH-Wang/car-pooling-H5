@@ -43,13 +43,13 @@
         <!-- 上驾驶证证图片 -->
         <div class="title">请上传驾驶证</div>
         <custom-upload
-          name="userDrivingCardLeft"
+          name="userDrivingCard"
           description="请上传驾驶证左面"
           base-image="driver-front.png"
           required
         />
         <custom-upload
-          name="userDrivingCardRight"
+          name="userDrivingCardBack"
           description="请上传驾驶证右面"
           base-image="driver-back.png"
           required

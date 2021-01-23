@@ -3,7 +3,8 @@ import axios from './http'
 export default {
   createTourCarOrder,
   getTourCarOrderList,
-  getTourCarOrderDetail
+  getTourCarOrderDetail,
+  getPrepayId
 }
 
 // 生成旅游包车订单
@@ -27,4 +28,9 @@ function getTourCarOrderDetail (id) {
     method: 'POST',
     params: { id }
   })
+}
+
+// 获取支付id
+function getPrepayId () {
+  return ''
 }

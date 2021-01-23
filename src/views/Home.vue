@@ -79,7 +79,8 @@
 import { mapGetters, mapState } from 'vuex'
 import { NavBar, Icon, List } from 'vant'
 import { cloneDeep } from 'lodash'
-import { getCar, getLatestSearch } from '@/api'
+// import { getCar, getLatestSearch } from '@/api'
+import { getLatestSearch } from '@/api'
 import EventBus from '@/utils/eventBus'
 import { OrderFilter } from '@/components/Filter/index.js'
 import SearchCard from '@/components/SearchCard'
@@ -129,7 +130,7 @@ export default {
     // reqApi (data) {
     //   return this.identity === 0 ? getCar(data) : queryPassengerOrders(data)
     // },
-    reqApi: getCar,
+    // reqApi: getCar,
     // 在发起请求之前会自动调用该函数，获取请求所需的主要数据（除页码、每页数量之外）
     getRequestDatas () {
       // if (this.identity === 1) return { showAll: 0 }

@@ -51,7 +51,7 @@
 <script>
 import moment from 'moment'
 // import Clipboard from 'clipboard'
-import { getPublishDetail } from '@/api'
+import { getPublishDetail, getShortLinkUrl } from '@/api'
 import { isEmpty } from 'lodash'
 import { Header, Field } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
@@ -102,9 +102,9 @@ export default {
       const res = await getPublishDetail(this.orderId)
       this.record = res.data.data
     },
-    copyToClip (type) {
+    async copyToClip (type) {
       const aux = document.createElement('textarea')
-      aux.value = this.getCopyContent(type)
+      aux.value = await this.getCopyContent(type)
       document.body.appendChild(aux)
       aux.select()
       document.execCommand('copy')
@@ -112,7 +112,7 @@ export default {
       this.$toast.success('复制成功')
     },
     // 复制内容
-    getCopyContent (type) {
+    async getCopyContent (type) {
       const { startTime, passPointList, remark } = this.record
       // 时间
       const formatTime = moment(startTime).format('MM月DD日 HH:mm')
@@ -120,12 +120,12 @@ export default {
       const passList = passPointList.filter(i => i.type === 2).map(i => i.pointName).join('-')
       // 预约
       const link = shareip + '/common/triplink/driver?id=' + this.orderId
-      // const reserve = type === 'wechat' ? '<a href="' + link + '">查看手机号</a>' : link
+      const url = await getShortLinkUrl(link)
       return '【拼车】车找人\n' +
         '【路线】' + this.addrName.startAddr + '-' + this.addrName.endAddr + '\n' +
         '【途径】' + (passList || '无') + '\n' +
         '【时间】' + formatTime + '\n' +
-        '【预约】' + link + '\n' +
+        '【预约】' + url + '\n' +
         '【备注】' + (remark || '无')
     }
   },

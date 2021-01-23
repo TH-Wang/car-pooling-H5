@@ -509,6 +509,13 @@ const routes = [
         component: () => import(
           /* webpackChunkName: "Test" */ '@/views/Test.vue'
         )
+      },
+      { // 测试wx页面
+        path: '/wx',
+        name: 'FinishWexinPay',
+        component: () => import(
+          /* webpackChunkName: "Test" */ '@/views/FinishWexinPay.vue'
+        )
       }
     ]
   }

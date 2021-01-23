@@ -50,7 +50,7 @@
         <!-- 手持身份证认证 -->
         <div class="title">手持身份证认证</div>
         <custom-upload
-          name="identityCardBack"
+          name="identityCardImmortal"
           description="请上传手持身份证照片"
           :required="!hold"
           base-image="idcard-hold.png"

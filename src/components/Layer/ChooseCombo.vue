@@ -63,7 +63,7 @@ export default {
     // 弹出层的显示
     visible: false,
     // 选择的套餐类型
-    setType: 0,
+    setType: 1,
     // 套餐选项
     options: [
       { id: 1, text: '周免发布' },
@@ -72,7 +72,7 @@ export default {
       { id: 4, text: '年免发布' }
     ],
     // 选择的支付方式
-    payType: 0,
+    payType: 1,
     // 支付方式
     payOptions: [
       { id: 1, icon: require('@/assets/icons/pay/alipay.png'), text: '支付宝钱包' },

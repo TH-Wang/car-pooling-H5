@@ -33,13 +33,13 @@
             />
             <div class="auth-title">请上传车辆行驶证</div>
             <custom-upload
-              name="carTravelPhotoLeft"
+              name="carTravelPhoto"
               description="请上传车辆行驶证左面"
               base-image="car-front.png"
               required
             />
             <custom-upload
-              name="carTravelPhotoRight"
+              name="carTravelPhotoBack"
               description="请上传车辆行驶证右面"
               base-image="car-back.png"
               required

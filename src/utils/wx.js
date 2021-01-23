@@ -12,15 +12,17 @@
  *  type=jsapi
  */
 import axios from 'axios'
-import randomString from 'randomString'
+import randomString from './randomString'
 import store from '@/store'
 import sha1 from 'js-sha1'
 import md5 from 'blueimp-md5'
+import { Dialog } from 'vant'
 import { getPrepayId } from '@/api'
 
-const appid = ''
-const secret = ''
-const url = 'http://pinchezhijia.com'
+const appid = 'wx15cd45ab652dc6e9'
+const secret = 'a84e4555a4874ef9cb8c8565d64448ef'
+const url = 'http://pinchezhijia.com/'
+const redirectUrl = 'http://www.pinchezhijia.com'
 
 // window.addEventListener('load', wxConfig, false)
 
@@ -46,7 +48,25 @@ export default async function () {
 // 判断是否是微信浏览器
 export function isWeixin () {
   const ua = navigator.userAgent.toLowerCase()
-  return ua.match(/MicroMessenger/i) === 'micromessenger'
+  return /(weixin|wechat)/gi.test(ua)
+}
+
+// 获取用户授权code
+export function getUserCode (url) {
+  if (!store.state.ticket.code) {
+    const redirect = encodeURIComponent(redirectUrl)
+    const route = encodeURIComponent(url)
+    const params = {
+      appid: appid,
+      redirect_uri: redirect,
+      response_type: 'code',
+      scope: 'snsapi_base',
+      state: route + '#wechat_redirect'
+    }
+    const queryString = getSign(params)
+    window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?' + queryString
+    // Dialog.alert({ message: JSON.stringify(res) })
+  }
 }
 
 // 微信支付
@@ -69,7 +89,7 @@ export async function chooseWXPay () {
 
 // 1. 获取asaccess_tokens
 async function getAccessToken () {
-  if (!store.state.ticket) {
+  if (!store.state.ticket.token) {
     const res = await axios({
       url: 'https://api.weixin.qq.com/cgi-bin/token',
       method: 'GET',
@@ -79,27 +99,35 @@ async function getAccessToken () {
         secret
       }
     })
+    Dialog.alert({ message: '获取asaccess_tokens：' + res.data })
     console.log(res)
     if (res.data.asaccess_tokens) {
       const token = res.data.asaccess_tokens
-      store.commit('setWxTicket', token)
+      store.commit('setWxAccessToken', token)
       return token
     }
     if (res.data.errcode) throw new Error(res.data)
-  }
-  return store.state.ticket
+  } else return store.state.ticket.token
 }
 
 // 2. 获取jsapi_ticket
 async function getJsApiTicket (token) {
-  const res = await axios({
-    url: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
-    method: 'GET',
-    params: { access_token: token, type: 'jsapi' }
-  })
-  console.log(res)
-  if (res.data.errcode === 0) return res.data.ticket
-  else throw new Error(res.data)
+  if (!store.state.ticket.ticket) {
+    const res = await axios({
+      url: 'https://api.weixin.qq.com/cgi-bin/ticket/getticket',
+      method: 'GET',
+      params: { access_token: token, type: 'jsapi' }
+    })
+    console.log(res)
+    Dialog.alert({ message: '获取jsapi_ticket' + res.data })
+    if (res.data.errcode === 0) {
+      const ticket = res.data.ticket
+      store.commit('setWxTicket', ticket)
+      return ticket
+    } else throw new Error(res.data)
+  } else {
+    return store.state.ticket.ticket
+  }
 }
 
 // 3. 生成签名signature
@@ -111,6 +139,7 @@ async function createSignature (ticket) {
     url: url
   }
   console.log(data)
+  Dialog.alert({ message: '生成签名signature' + data })
   return getSign(data, 'sha1')
 }
 
@@ -122,7 +151,7 @@ async function config (signature) {
     timestamp: new Date().getTime(), // 必填，生成签名的时间戳
     nonceStr: randomString(16), // 必填，生成签名的随机串
     signature: signature, // 必填，签名
-    jsApiList: ['chooseWXPay'] // 必填，需要使用的JS接口列表
+    jsApiList: ['chooseWXPay', 'getLocation'] // 必填，需要使用的JS接口列表
   })
   window.wx.ready(function () {
     return Promise.resolve()
@@ -140,5 +169,9 @@ function getSign (obj, type) {
     arr.push(`${key}=${obj[key]}`)
   }
   const string1 = arr.join('&')
-  return type === 'sha1' ? sha1(string1) : md5(string1)
+  switch (type) {
+    case 'sha1': return sha1(string1)
+    case 'md5': return md5(string1)
+    default: return string1
+  }
 }

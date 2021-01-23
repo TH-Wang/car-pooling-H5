@@ -68,7 +68,7 @@ export default {
         this.$dialog.confirm({
           message: '尊敬的用户，您还未登录，登录后即可发布拼车信息',
           confirmButtonText: '立即登录',
-          cancelButtonText: '稍后再等'
+          cancelButtonText: '稍后再登'
         }).then(() => {
           this.$router.push('/common/login')
         })

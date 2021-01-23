@@ -17,6 +17,7 @@ import tour from './tour'
 import bus from './bus'
 import pay from './pay'
 import service from './service'
+import shortLink from './shortLink'
 
 // 用户、登录模块
 export const sendCode = user.sendCode
@@ -28,6 +29,7 @@ export const updatePhoneToTwo = user.updatePhoneToTwo
 
 // 账户模块
 export const selectAccountInfo = account.selectAccountInfo
+export const selectAccountRecord = account.selectAccountRecord
 
 // 城市信息模块
 export const queryProvinceList = position.queryProvinceList
@@ -71,6 +73,8 @@ export const queryUserMessage = message.queryUserMessage
 export const selectGroup = group.selectGroup
 export const selectGroupById = group.selectGroupById
 export const addGroup = group.addGroup
+export const queryMineGroup = group.queryMineGroup
+export const queryMineGroupEarnings = group.queryMineGroupEarnings
 
 // 我的行程模块
 export const selectMyPassenger = myJourney.selectMyPassenger
@@ -123,6 +127,10 @@ export const getBusDetailById = bus.getBusDetailById
 export const createTourCarOrder = pay.createTourCarOrder
 export const getTourCarOrderList = pay.getTourCarOrderList
 export const getTourCarOrderDetail = pay.getTourCarOrderDetail
+export const getPrepayId = pay.getPrepayId
 
 // 客服模块
 export const getServiceInfo = service.getServiceInfo
+
+// 生成短链接
+export const getShortLinkUrl = shortLink.getShortLinkUrl

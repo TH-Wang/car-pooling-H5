@@ -17,11 +17,11 @@
       <div class="title">订单信息</div>
       <div class="info">
         <div class="info-label">订单编号</div>
-        <div class="info-text">11909402408045</div>
+        <div class="info-text">{{record.orderNo}}</div>
       </div>
       <div class="info">
         <div class="info-label">使用时间</div>
-        <div class="info-text">2020-04-07 08:00 至 2020-04-23 22:00</div>
+        <div class="info-text">{{record.startTime}}</div>
       </div>
       <div class="info">
         <div class="info-label">支付方式</div>
@@ -29,17 +29,17 @@
       </div>
       <div class="info">
         <div class="info-label">实付金额</div>
-        <div class="info-text">¥2000.00</div>
+        <div class="info-text">¥{{record.price}}</div>
       </div>
       <div class="info">
         <div class="info-label">付款时间</div>
-        <div class="info-text">2019-04-07 16:05.00</div>
+        <div class="info-text">{{record.payTime}}</div>
       </div>
 
       <order-info-phone phone="15704602398" />
     </div>
 
-    <main-button type="hollow" color="gray" center bold>取消</main-button>
+    <!-- <main-button type="hollow" color="gray" center bold>取消</main-button> -->
 
     <!-- 温馨提示 -->
     <order-info-tips :tips="tips" />
@@ -47,23 +47,36 @@
 </template>
 
 <script>
+import { getTourCarOrderList } from '@/api'
 import { Phone, Tips } from '@/components/OrderInfo/index'
 import Feedback from '@/components/Feedback'
-import MainButton from '@/components/MainButton'
+// import MainButton from '@/components/MainButton'
 
 export default {
   components: {
     feedback: Feedback,
-    'main-button': MainButton,
+    // 'main-button': MainButton,
     'order-info-phone': Phone,
     'order-info-tips': Tips
   },
   data: () => ({
+    id: null,
+    record: null,
     tips: [
       '温馨提示',
       '1.如您行程改变，请尽可能提前退订，<span style="color:#FFCD00">07月09日 08:00</span style="color:#FFCD00">前可<span style="color:#FFCD00">无责退订</span>。'
     ]
-  })
+  }),
+  methods: {
+    async handleReq () {
+      const res = await getTourCarOrderList(this.id)
+      this.record = res.data.data
+    }
+  },
+  created () {
+    this.id = this.$route.query.id
+    this.handleReq()
+  }
 }
 </script>
 

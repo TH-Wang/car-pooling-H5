@@ -124,6 +124,7 @@ import { Form, Item, Field, Picker, Textarea } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import ChooseComboLayer from '@/components/Layer/ChooseCombo'
 import { getDriverOpts } from './config'
+import { isWeixin } from '@/utils/wx'
 
 export default {
   components: {
@@ -234,6 +235,7 @@ export default {
           volume: data.volume,
           cost: data.cost
         })
+        this.resetTime()
       }, 200)
     },
     // 获取所有的车辆信息
@@ -284,6 +286,8 @@ export default {
         data.setType = 0
       } else {
         Object.assign(data, this.combo)
+        // 如果是微信浏览器，则发送code
+        if (isWeixin()) data.code = this.$store.state.ticket.code
       }
 
       console.log(data)

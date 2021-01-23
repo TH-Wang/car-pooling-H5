@@ -74,6 +74,7 @@ import DriverFormBody from './driver'
 import confirmLogin from '@/utils/confirmLogin'
 import getLineData, { filterPointParams } from '@/utils/transPos'
 import { aliPay, wexinPay } from '@/utils/pay'
+import { getUserCode, isWeixin } from '@/utils/wx'
 
 export default {
   name: 'Release',
@@ -85,7 +86,8 @@ export default {
     'driver-form-body': DriverFormBody
   },
   data: () => ({
-    tabId: 0
+    tabId: 0,
+    code: null
   }),
   computed: {
     ...mapState(['user', 'position', 'release', 'tabsId']),
@@ -110,13 +112,29 @@ export default {
         await this.confirmPhone()
         // 3. 提示收取信息费
         await this.alertCost()
+        // debugger
+        // await this.$dialog.alert({
+        //   title: '发送信息',
+        //   message: JSON.stringify(data)
+        // })
         // 4. 发起请求
         const res = type === 'driver'
           ? await this.driverRequest(cloneDeep(data))
           : await this.customerRequest(cloneDeep(data))
         // 5. 如果需要支付
         if (type === 'driver' && data.setType > 0) {
-          this.handlePay(res, data.payType)
+          // debugger
+          // await this.$dialog.alert({
+          //   title: '返回结果',
+          //   message: JSON.stringify(res.data.data)
+          // })
+          const id = res.data.data.data.id
+          // debugger
+          // await this.$dialog.alert({
+          //   title: '订单id',
+          //   message: 'id: ' + id
+          // })
+          this.handlePay(res, data.payType, '/common/order/detail?id=' + id)
           return
         }
         // 6. 处理反馈
@@ -145,6 +163,9 @@ export default {
         this.$router.push(pathInfo)
       } catch (error) {
         console.log(error)
+        this.$dialog.alert({
+          message: error
+        })
       }
     },
     // 提示确认手机号
@@ -227,11 +248,15 @@ export default {
       return insertPublish(data)
     },
     // 处理支付
-    handlePay (res, type) {
-      type === 1 ? aliPay(res) : wexinPay(res)
+    handlePay (res, type, redirect) {
+      // 如果是微信支付
+      type === 1 ? aliPay(res) : wexinPay(res, redirect)
     }
   },
   activated () {
+    if (!this.$store.state.ticket.code && isWeixin()) {
+      getUserCode('/release')
+    }
     // 验证是否登录
     confirmLogin('尊敬的用户，登录后才能发布拼车信息，请您登录！')
   }

@@ -57,7 +57,13 @@
         :rules="[{required: true}, {pattern: /^\d+$/, message: '请输入数字'}]"
       />
       <template v-else>
-        <custom-picker
+        <custom-timer
+          name="startTime"
+          v-model="form.startTime"
+          label="使用时间"
+          placeholder="请选择使用时间"
+        />
+        <!-- <custom-picker
           name="startTime"
           v-model="form.startTime"
           :columns="week"
@@ -72,7 +78,7 @@
           :defaultIndex="5"
           label="结束使用"
           placeholder="请选择结束使用时间"
-        />
+        /> -->
       </template>
     </custom-form>
 
@@ -142,8 +148,10 @@
 import { getTourDetailById, getBusDetailById, createTourCarOrder } from '@/api'
 import { Image, RadioGroup, Radio, Popup } from 'vant'
 // import { isEmpty } from 'lodash'
-import { Form, Field, Picker } from '@/components/Form'
+// import { Form, Field, Picker, Timer } from '@/components/Form'
+import { Form, Field, Timer } from '@/components/Form'
 import { aliPay, wexinPay } from '@/utils/pay'
+import { isWeixin, getUserCode } from '@/utils/wx'
 
 export default {
   components: {
@@ -153,7 +161,8 @@ export default {
     'van-popup': Popup,
     'custom-form': Form,
     'custom-field': Field,
-    'custom-picker': Picker
+    // 'custom-picker': Picker,
+    'custom-timer': Timer
   },
   data: () => ({
     // 当前页面类型: ['tour', 'car']
@@ -205,38 +214,34 @@ export default {
       const type = this.isTour ? 1 : 2
       const typeId = this.record.id
       const data = { ...this.form, type, payType, typeId }
+      if (isWeixin()) {
+        data.code = this.$store.state.ticket.code
+      }
       const res = await createTourCarOrder(data)
       if (res.data.status === 200) {
-        payType === 1 ? aliPay(res) : wexinPay(res)
+        const id = res.data.data.data.id
+        const url = this.mode === 'tour'
+          ? '/common/tour/feedback/success?id=' + id
+          : '/common/car/feedback/success?id=' + id
+        payType === 1 ? aliPay(res) : wexinPay(res, url)
+        if (payType === 1) {
+          aliPay(res)
+        } else {
+          await wexinPay(res)
+        }
       } else {
         this.$toast.fail({ message: res.data.msg })
       }
     }
-    // // 支付宝支付
-    // aliPay (res) {
-    //   const form = res.data.data.data
-    //   const div = document.createElement('div')
-    //   div.innerHTML = form
-    //   document.body.appendChild(div)
-    //   document.forms[0].submit()
-    // },
-    // // 微信支付
-    // wexinPay (res) {
-    //   this.$toast.loading({ message: '微信支付' })
-    //   const url = res.data.data.data
-    //   window.location.replace(url)
-    // }
   },
   created () {
     const { type, id } = this.$route.query
     this.mode = type
     this.id = id
     this.handleReq()
-  },
-  mounted () {
-    // this.$dialog.alert({
-    //   message: '支付宝支付：跳转购买成功页面，微信支付：跳转购买失败页面'
-    // })
+    if (!this.$store.state.ticket.code && isWeixin()) {
+      getUserCode('/common/tourcar/placeorder?id=' + id + '&type=' + type)
+    }
   }
 }
 </script>
@@ -292,7 +297,7 @@ export default {
   position: fixed;
   bottom: 0;
   left: 0;
-  z-index: 100000;
+  z-index: 100;
   background-color: #fff;
   padding: .10rem .11rem .20rem .15rem;
   box-sizing: border-box;
