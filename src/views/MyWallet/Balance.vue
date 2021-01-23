@@ -6,6 +6,7 @@
       :number="account"
       style="margin-bottom: 0"
       :hasButton="account < 0"
+      @click-button="handleOpenPayType"
     />
 
     <!-- 菜单列表 -->
@@ -47,33 +48,43 @@
         >
           <div class="bill-main">
             <img :src="getBillIcon(item.recordStatus)" alt="">
-            <span>{{item.recordBody}}</span>
+            <span>{{getBillText(item.recordStatus)}}</span>
             <div class="price">{{getPrice(item.recordPrice, item.recordStatus)}}</div>
           </div>
           <div class="bill-tip">{{item.createDate | time}}</div>
         </div>
       </div>
     </van-list>
+
+    <!-- 支付欠费弹层 -->
+    <pay-arrears ref="layer" @handleSubmit="handlePayArrears" />
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { selectAccountRecord } from '@/api'
+import { selectAccountRecord, insertAccount } from '@/api'
 import { List } from 'vant'
 import OverageCard from '@/components/OverageCard'
+import PayArrears from '@/components/Layer/PayArrears'
 import ListMixin from '@/mixins/list-mixin'
+import { aliPay, wexinPay } from '@/utils/pay'
 
 export default {
   mixins: [ListMixin],
   components: {
+    'pay-arrears': PayArrears,
     'van-list': List,
     'overage-card': OverageCard
   },
   data: () => ({
     account: 0,
     menuList: [
-      { icon: require('@/assets/icons/wallet/top-up.png'), title: '充值', path: '' },
+      {
+        icon: require('@/assets/icons/wallet/top-up.png'),
+        title: '充值',
+        path: '/common/recharge'
+      },
       { icon: require('@/assets/icons/wallet/with-draw.png'), title: '提现', path: '' }
     ]
   }),
@@ -90,18 +101,32 @@ export default {
       const { list, total } = res.data.data.list
       return { list, total }
     },
+    // 打开支付方式的弹窗
+    handleOpenPayType () {
+      // this.$refs.layer.show()
+      const count = Math.abs(this.account)
+      this.$router.push('/common/recharge?count=' + count)
+    },
+    // 提交支付欠费
+    async handlePayArrears (pay) {
+      const code = this.$store.state.ticket.code
+      const money = this.account
+      const res = await insertAccount({ code, pay, money })
+      const payType = res.data.data.data.pay
+      payType === 1 ? aliPay(res) : wexinPay(res)
+    },
     getBillIcon (type) {
       let iconName = ''
       switch (type) {
-        case 0: iconName = 'top-up'; break
-        case 1: iconName = 'with-draw'; break
+        case 0: iconName = 'with-draw'; break
+        case 1: iconName = 'top-up'; break
       }
       return require(`@/assets/icons/wallet/${iconName}-fill.png`)
     },
     getBillText (type) {
       switch (type) {
-        case 0: return '充值'
-        case 1: return '提现'
+        case 0: return '提现'
+        case 1: return '充值'
       }
     },
     getPrice (price, type) {

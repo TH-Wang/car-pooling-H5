@@ -219,15 +219,16 @@ export default {
       }
       const res = await createTourCarOrder(data)
       if (res.data.status === 200) {
-        const id = res.data.data.data.id
-        const url = this.mode === 'tour'
-          ? '/common/tour/feedback/success?id=' + id
-          : '/common/car/feedback/success?id=' + id
-        payType === 1 ? aliPay(res) : wexinPay(res, url)
+        // const id = res.data.data.data.id
+        // const url = this.mode === 'tour'
+        //   ? '/common/tour/feedback/success?id=' + id
+        //   : '/common/car/feedback/success?id=' + id
+        // payType === 1 ? aliPay(res) : wexinPay(res, url)
         if (payType === 1) {
           aliPay(res)
         } else {
           await wexinPay(res)
+          this.$router.go(-1)
         }
       } else {
         this.$toast.fail({ message: res.data.msg })

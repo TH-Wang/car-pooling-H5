@@ -60,7 +60,7 @@
         :number="account.info.totalPrice"
         :hasButton="account.info.totalPrice < 0"
         @click="$router.push('/common/my/wallet')"
-        @click-button="handlePay"
+        @click-button="$router.push('/common/rechage')"
       />
 
       <!-- 我的预约 -->
@@ -161,6 +161,7 @@ import ButtonMenuMixin from '@/mixins/button-menu-mixin'
 import Affix from '@/components/Affix'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
 import CancelReserve from '@/components/Layer/CancelReserve'
+// import { isWeixin, getUserCode } from '@/utils/wx'
 
 export default {
   name: 'Mine',
@@ -360,6 +361,10 @@ export default {
   },
   mounted: async function () {
     if (!this.user.token) return
+    // if (!this.$store.state.ticket.code && isWeixin()) {
+    //   getUserCode('/mine')
+    //   return
+    // }
     await this.reqList()
   }
   // beforeRouteEnter (to, from, next) {

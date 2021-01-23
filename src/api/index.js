@@ -30,6 +30,7 @@ export const updatePhoneToTwo = user.updatePhoneToTwo
 // 账户模块
 export const selectAccountInfo = account.selectAccountInfo
 export const selectAccountRecord = account.selectAccountRecord
+export const insertAccount = account.insertAccount
 
 // 城市信息模块
 export const queryProvinceList = position.queryProvinceList

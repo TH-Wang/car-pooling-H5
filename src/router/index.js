@@ -297,9 +297,14 @@ const routes = [
         )
       },
       { // 我的钱包
-        path: '/common/my/trip',
-        name: 'MyTrip',
-        component: () => import(/* webpackChunkName: "MyTrip" */ '@/views/MyTrip/index.vue')
+        path: '/common/my/wallet',
+        name: 'MyWallet',
+        component: () => import(/* webpackChunkName: "MyWallet" */ '@/views/MyWallet/index.vue')
+      },
+      { // 充值
+        path: '/common/recharge',
+        name: 'Recharge',
+        component: () => import(/* webpackChunkName: "Recharge" */ '@/views/MyWallet/Recharge.vue')
       },
       { // 我的预约
         path: '/common/my/appoint',
@@ -312,9 +317,9 @@ const routes = [
       //   component: () => import(/* webpackChunkName: "Appoint" */ '@/views/Appoint.vue')
       // },
       { // 我的行程
-        path: '/common/my/wallet',
-        name: 'MyWallet',
-        component: () => import(/* webpackChunkName: "MyWallet" */ '@/views/MyWallet/index.vue')
+        path: '/common/my/trip',
+        name: 'MyTrip',
+        component: () => import(/* webpackChunkName: "MyTrip" */ '@/views/MyTrip/index.vue')
       },
       { // 乘客的行程详情
         path: '/common/tripinfo/customer',

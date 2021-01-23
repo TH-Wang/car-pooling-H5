@@ -1,6 +1,10 @@
 import axios from './http'
 
-export default { selectAccountInfo, selectAccountRecord }
+export default {
+  selectAccountInfo,
+  selectAccountRecord,
+  insertAccount
+}
 
 function selectAccountInfo () {
   return axios.post('/account/selectAccountInfo')
@@ -10,6 +14,15 @@ function selectAccountInfo () {
 function selectAccountRecord (params) {
   return axios({
     url: '/account/selectAccountRecord',
+    method: 'POST',
+    params
+  })
+}
+
+// 充值
+function insertAccount (params) {
+  return axios({
+    url: '/account/insertAccount',
     method: 'POST',
     params
   })
