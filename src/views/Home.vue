@@ -138,7 +138,13 @@ export default {
       // const orderType = this.identity === 0 ? 1 : 2
       // 获取当前区域code
       // const { code } = this.position.county
-      return { orderType: 1, publishType: '1,2,3' }
+      const { lon, lat } = this.position.selected.county
+      return {
+        orderType: 1,
+        publishType: '1,2,3',
+        startAddrLon: lon,
+        startAddrLat: lat
+      }
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {

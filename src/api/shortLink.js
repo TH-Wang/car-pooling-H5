@@ -28,7 +28,6 @@ function getShortLinkUrl (longUrl) {
     ajax.onreadystatechange = function () {
       if (ajax.readyState === 4 && ajax.status === 200) {
         // 获取缩短后的网址
-        console.log()
         resolve(JSON.parse(ajax.responseText).shortUrl)
       }
     }

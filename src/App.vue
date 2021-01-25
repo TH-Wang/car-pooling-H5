@@ -12,13 +12,18 @@ import getQueryParams from '@/utils/getQueryParams'
 
 export default {
   mounted () {
+    // 如果是支付
     const code = getQueryParams().code
     const state = getQueryParams().state
     if (isWeixin() && code) {
       this.$store.commit('setUnionCode', code)
       const route = decodeURIComponent(state.split('#')[0])
       this.$router.push(route)
+      return
     }
+    // 如果是邀请登录
+    const invite = getQueryParams().invite
+    if (invite) this.$router.push('/common/login?invite=' + invite)
   }
 }
 </script>

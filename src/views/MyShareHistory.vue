@@ -11,13 +11,13 @@
     />
 
     <!-- 顶部总记录 -->
-    <div class="header">
+    <!-- <div class="header">
       <div class="header-item"><span>一级分销人数</span><p>1000</p></div>
       <div class="header-item"><span>二级分销人数</span><p>1000</p></div>
       <div class="header-item"><span>三级推广人数</span><p>1000</p></div>
-    </div>
+    </div> -->
 
-    <div class="title">我的邀请</div>
+    <!-- <div class="title">我的邀请</div> -->
 
     <!-- 邀请列表 -->
     <div class="history" v-for="(item, index) in list" :key="index">
@@ -66,7 +66,7 @@ export default {
 
 .title{
   @include font (.18rem, $main-text, bold);
-  margin: 0 .15rem;
+  margin: .15rem .15rem 0 .15rem;
 }
 
 .history{

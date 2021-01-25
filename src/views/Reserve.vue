@@ -164,7 +164,7 @@ export default {
         ...addr,
         orderNum: parseInt(values.orderNum),
         pprIdCar: pprId,
-        status: 5
+        status: 1
       }
       // 发送请求
       const res = await commitOrder(data)

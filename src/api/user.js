@@ -4,10 +4,12 @@ import store from '@/store'
 export default {
   sendCode,
   userCodeLogin,
+  userRecommendLogin,
   getUserDetail,
   updateUserInfo,
   updatePhoneToOne,
-  updatePhoneToTwo
+  updatePhoneToTwo,
+  getUserInviteQr
 }
 
 // 获取短信验证码
@@ -25,6 +27,15 @@ function userCodeLogin ({ phone, code }) {
     url: '/user/userSmsCodeLogin',
     method: 'POST',
     params: { userPhone: phone, code }
+  })
+}
+
+// 用户邀请登录
+function userRecommendLogin ({ phone, code, invite }) {
+  return axios({
+    url: '/user/userRecommendLogin',
+    method: 'POST',
+    params: { userPhone: phone, code, recommendId: invite }
   })
 }
 
@@ -59,4 +70,9 @@ function updatePhoneToTwo (params) {
     method: 'POST',
     params
   })
+}
+
+// 获取用户邀请码
+function getUserInviteQr () {
+  return axios.post('/user/getUserQr')
 }

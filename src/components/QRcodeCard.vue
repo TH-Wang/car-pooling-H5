@@ -3,7 +3,9 @@
     <group-item :record="record" :type="type" />
 
     <!-- 二维码图片 -->
-    <div class="QR-code"></div>
+    <div class="QR-code">
+      <img :src="qr" alt="">
+    </div>
 
     <!-- 提示说明 -->
     <div class="tip">
@@ -23,6 +25,10 @@ export default {
     center: {
       type: Boolean,
       default: false
+    },
+    qr: {
+      type: String,
+      default: ''
     },
     record: {
       type: Object,
@@ -50,7 +56,12 @@ export default {
     height: 2.8rem;
     margin: 0 auto .15rem auto;
     background-color: $light-color;
-    border-radius: .06rem;
+    // border-radius: .06rem;
+
+    img{
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .tip{

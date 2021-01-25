@@ -141,7 +141,8 @@ export default {
     // 是否显示拨号按钮
     showCallButton () {
       const status = this.record.status
-      return this.showCall && (status === 1 || status === 2)
+      // return this.showCall && (status === 1 || status === 2)
+      return this.showCall && ([1, 2, 5, 6].indexOf(status) !== -1)
     },
     // 信息容器宽度
     contentWidth () {

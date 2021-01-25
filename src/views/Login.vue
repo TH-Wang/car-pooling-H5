@@ -40,6 +40,20 @@
             <span class="code-suffix" @click="handleGetCode">{{verifyCode.text}}</span>
           </template>
         </custom-input>
+
+        <!-- 邀请码 -->
+        <custom-input
+          v-if="invite"
+          name="invite"
+          v-model="invite"
+          type="text"
+          readonly
+          input-style="font-size:0.16rem;font-weight:bold;"
+          :rules="[{required: true}]"
+        ><template #suffix>
+            <span class="invite-suffix">邀请码</span>
+          </template>
+        </custom-input>
       </custom-form>
 
       <!-- 提示 -->
@@ -61,11 +75,10 @@
 
 <script>
 import { isEmpty } from 'lodash'
-import store from '@/store'
 import { Form, Input } from '@/components/Form'
 import MainButton from '@/components/MainButton'
 import vertifyCodeMixin from '@/mixins/vertify-code'
-import { sendCode, userCodeLogin } from '@/api'
+import { sendCode, userCodeLogin, userRecommendLogin } from '@/api'
 
 export default {
   mixins: [vertifyCodeMixin],
@@ -76,7 +89,9 @@ export default {
   },
   data: () => ({
     phone: '',
-    code: ''
+    code: '',
+    // 邀请码
+    invite: null
   }),
   methods: {
     async handleGetCode () {
@@ -93,6 +108,10 @@ export default {
     async handleSubmit () {
       const { err, values } = this.$refs.form.submit()
       if (err) return
+      this.invite ? this.handleInviteLogin(values) : this.handleCommonLogin(values)
+    },
+    // 普通用户登录
+    async handleCommonLogin (values) {
       this.$toast.loading('登录中')
       const res = await userCodeLogin(values)
       const { msg, data } = res.data
@@ -109,10 +128,36 @@ export default {
         this.$toast({ message: msg, type: 'fail' })
       }
     },
+    // 用户邀请登录
+    async handleInviteLogin (values) {
+      this.$toast.loading('登录中')
+      const res = await userRecommendLogin(values)
+      const { msg, data } = res.data
+      if (msg === '成功') {
+        this.$toast.clear()
+        const { token, phone } = data
+        this.$toast({ message: '登录成功！', type: 'success' })
+        this.$store.commit('setStorage', { token, phone, info: data })
+        // 根据历史路由，判断需要返回页面，还是跳转首页
+        this.$router.push('/home')
+      } else {
+        this.$toast({ message: msg, type: 'fail' })
+      }
+    },
+    // 处理返回
     handleBack () {
       if (this.$store.state.route.history) {
         this.$router.go(-1)
       } else this.$router.push('/home')
+    }
+  },
+  created () {
+    const invite = this.$route.query.invite
+    if (this.$store.state.user.token && !invite) {
+      console.log('跳转到首页')
+      this.$router.push('/home')
+    } else {
+      this.invite = this.$route.query.invite
     }
   },
   mounted () {
@@ -120,13 +165,13 @@ export default {
     if (!isEmpty(phone)) {
       this.$refs.form.setValues({ phone })
     }
+    if (this.invite) {
+      const invite = this.invite
+      this.$refs.form.setValues({ invite })
+    }
   },
-  beforeRouteEnter (to, from, next) {
-    if (store.state.user.token) {
-      console.log('跳转到首页')
-      next('/home')
-    } else next()
-  },
+  // beforeRouteEnter (to, from, next) {
+  // },
   beforeRouteLeave (to, from, next) {
     if (to.path === '/common/setting') {
       next('/mine')
@@ -186,5 +231,9 @@ export default {
   padding-left: .20rem;
   margin-left: .10rem;
   border-left: dashed 1px $normal-text;
+}
+
+.invite-suffix{
+  @include font (.16rem, $main-text);
 }
 </style>
