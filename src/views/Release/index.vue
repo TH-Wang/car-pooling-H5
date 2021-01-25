@@ -112,28 +112,13 @@ export default {
         await this.confirmPhone()
         // 3. 提示收取信息费
         await this.alertCost()
-        // debugger
-        // await this.$dialog.alert({
-        //   title: '发送信息',
-        //   message: JSON.stringify(data)
-        // })
         // 4. 发起请求
         const res = type === 'driver'
           ? await this.driverRequest(cloneDeep(data))
           : await this.customerRequest(cloneDeep(data))
         // 5. 如果需要支付
         if (type === 'driver' && data.setType > 0) {
-          // debugger
-          // await this.$dialog.alert({
-          //   title: '返回结果',
-          //   message: JSON.stringify(res.data.data)
-          // })
           const id = res.data.data.data.id
-          // debugger
-          // await this.$dialog.alert({
-          //   title: '订单id',
-          //   message: 'id: ' + id
-          // })
           this.handlePay(res, data.payType, '/common/order/detail?id=' + id)
           return
         }
@@ -164,7 +149,7 @@ export default {
       } catch (error) {
         console.log(error)
         this.$dialog.alert({
-          message: error
+          message: '请选择使用支付宝支付'
         })
       }
     },

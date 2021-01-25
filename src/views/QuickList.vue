@@ -39,41 +39,29 @@
     ><van-empty description="暂无快捷路线，可点击重试" />
     </div>
     <!-- 快捷路线 -->
-    <!-- <van-list
-      v-else
-      v-model="loading"
-      :finished="finished"
-      finished-text="没有更多了"
-      :error.sync="error"
-      error-text="加载失败，请点击重试"
-      @load="handleListLoad"
-      class="list-container"
-    > -->
-      <line-card
-        class="list-item"
-        v-for="item in list"
-        :key="item.id"
-        :record="item"
-        :tagColor="query.workType === 'pending' ? 'green' : 'yellow'"
-        common
-        @click="handleSearch($event, item)"
-      />
-    <!-- </van-list> -->
+    <line-card
+      class="list-item"
+      v-for="item in list"
+      :key="item.id"
+      :record="item"
+      :tagColor="query.workType === 'pending' ? 'green' : 'yellow'"
+      common
+      @click="handleSearch($event, item)"
+    />
+
+    <!-- 占位符 -->
+    <div style="height:.2rem"></div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-// import { List } from 'vant'
 import { cloneDeep, isEmpty } from 'lodash'
 import { getCommonRoute, getNewPassengerCommonRoute, queryPositionForCounty } from '@/api'
 import LineCard from '@/components/LineCard'
-// import ListMixin from '@/mixins/list-mixin'
 
 export default {
-  // mixins: [ListMixin],
   components: {
-    // 'van-list': List,
     'line-card': LineCard
   },
   data: () => ({
@@ -81,7 +69,6 @@ export default {
     list: [],
     pageSize: 100,
     activeHotCity: null
-    // pageSize: 20
   }),
   computed: {
     ...mapState(['position']),
@@ -96,8 +83,10 @@ export default {
   },
   methods: {
     async handleRequest () {
+      this.$toast.loading({ message: '加载中', duration: 10000 })
       const data = this.getRequestDatas()
       const res = await this.reqApi(data)
+      this.$toast.clear()
       this.list = res.data.data
     },
     reqApi (data) {
@@ -149,12 +138,12 @@ export default {
     handleCityChange (code) {
       if (this.activeHotCity === code) this.activeHotCity = null
       else this.activeHotCity = code
-      this.handlePullRefresh()
+      this.handleRequest()
     },
     // 点击重试
     async handleRetry () {
       this.$toast.loading({ message: '加载中', duration: 10000 })
-      await this.handlePullRefresh()
+      await this.handleRequest()
       this.$toast.clear()
     }
   },
