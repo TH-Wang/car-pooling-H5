@@ -18,7 +18,7 @@
       <van-icon
         v-show="!valueIsEmpty"
         name="clear" color="#D1D1D1"
-        @click="searchValue = ''"
+        @click="searchValue = ''; $refs.input.focus()"
       />
     </div>
 

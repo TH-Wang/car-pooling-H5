@@ -21,7 +21,7 @@
         color="#D5D5D5"
         style="margin-left: 5px"
         v-show="searchValue"
-        @click="searchValue = ''; position = {}; $refs.input.focus()" />
+        @click="handleClear" />
     </div>
 
     <!-- 搜索结果列表 -->
@@ -298,6 +298,17 @@ export default {
       result.isHistory = true
       result.location = { lng, lat }
       this.$store.commit('addPositionHistory', result)
+    },
+    // 清除搜索框
+    handleClear () {
+      this.searchValue = ''
+      this.position = {}
+      this.$nextTick(() => {
+        this.$refs.input.focus()
+      })
+      setTimeout(() => {
+        this.searchShow = true
+      }, 250)
     },
     // 设置标注点的位置
     setMarker (position) {

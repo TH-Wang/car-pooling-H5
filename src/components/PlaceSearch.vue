@@ -127,7 +127,6 @@ export default {
     // 清空搜索框内容
     clear () {
       this.searchValue = ''
-      this.handleInputFoucs()
     },
     // 监听用户输入
     handleSearch: debounce(function (e) {
