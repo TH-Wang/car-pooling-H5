@@ -6,7 +6,8 @@ export default {
   addGroup,
   queryGroupByUser,
   queryMineGroup,
-  queryMineGroupEarnings
+  queryMineGroupEarnings,
+  payIntoGroup
 }
 
 // 查询拼车群列表
@@ -49,4 +50,13 @@ function queryMineGroup (id) {
 // 查询用户个人上传的群
 function queryMineGroupEarnings (id) {
   return axios.post('/web/group/groupEarnings?adminId=' + id)
+}
+
+// 用户付费进群
+function payIntoGroup (params) {
+  return axios({
+    url: '/group/intoGroup',
+    method: 'POST',
+    params
+  })
 }

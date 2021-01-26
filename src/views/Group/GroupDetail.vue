@@ -51,7 +51,12 @@
     <!-- 底部按钮 -->
     <div class="footer">
       <main-button width="1.20rem" color="yellow">分享给朋友</main-button>
-      <main-button width="2.10rem" color="yellow" type="gradient">{{priceText()}}</main-button>
+      <main-button
+        width="2.10rem"
+        color="yellow"
+        type="gradient"
+        @click="handleClickInto"
+      >{{priceText()}}</main-button>
     </div>
 
     <!-- 群二维码 -->
@@ -63,17 +68,23 @@
         <main-button width="3.15rem" color="yellow" type="gradient">复制入群码</main-button>
       </div>
     </overlay>
+
+    <!-- 支付弹窗 -->
+    <pay-layer ref="layer" @submit="handlePay" />
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { selectGroupById } from '@/api'
+import { selectGroupById, payIntoGroup } from '@/api'
 import GroupItem from '@/components/GroupItem'
 import MiniButton from '@/components/MiniButton'
 import MainButton from '@/components/MainButton'
 import Overlay from '@/components/Overlay'
 import QRcodeCard from '@/components/QRcodeCard'
+import PayArrears from '@/components/Layer/PayArrears'
+import { aliPay, wexinPay } from '@/utils/pay'
+import { isWeixin, getUserCode } from '@/utils/wx'
 
 export default {
   components: {
@@ -81,7 +92,8 @@ export default {
     'mini-button': MiniButton,
     'main-button': MainButton,
     overlay: Overlay,
-    'qrcode-card': QRcodeCard
+    'qrcode-card': QRcodeCard,
+    'pay-layer': PayArrears
   },
   data: () => ({
     // 拼车群id
@@ -119,6 +131,24 @@ export default {
         return `付费￥${text}元进群`
       }
     },
+    // 点击付费
+    async handleClickInto () {
+      if (this.info.price <= 0) return
+      this.$refs.layer.show()
+    },
+    // 发起支付
+    async handlePay (type) {
+      const groupId = this.groupId
+      const data = { type, groupId }
+      if (isWeixin()) data.code = this.$store.state.ticket.code
+      const res = await payIntoGroup(data)
+      if (type === 1) {
+        aliPay(res)
+      } else {
+        await wexinPay(res)
+        // ...修改状态
+      }
+    },
     handleBackHome () {
       this.$router.replace('/home')
       location.reload()
@@ -138,6 +168,10 @@ export default {
   created () {
     this.groupId = this.$route.query.id
     this.handleReq()
+    if (!this.$store.state.ticket.code && isWeixin()) {
+      const id = this.groupId
+      getUserCode('/common/group/detail?id=' + id)
+    }
   }
 }
 </script>

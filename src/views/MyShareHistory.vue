@@ -23,21 +23,31 @@
     <div class="history" v-for="(item, index) in list" :key="index">
       <!-- <van-image width=".30rem" height=".30rem" fit="cover" round  /> -->
       <div class="avatar"></div>
-      <span>圆脸橙</span>
+      <span>{{item.username}}</span>
     </div>
   </div>
 </template>
 
 <script>
 // import { Image } from 'vant'
+import { getUserInviteList } from '@/api'
 
 export default {
   components: {
     // 'van-image': Image
   },
   data: () => ({
-    list: new Array(5).fill('')
-  })
+    list: []
+  }),
+  methods: {
+    async handleReq () {
+      const res = await getUserInviteList()
+      this.list = res.data.data
+    }
+  },
+  created () {
+    this.handleReq()
+  }
 }
 </script>
 

@@ -19,24 +19,13 @@
         error-text="加载失败，请点击重试"
         @load="handleListLoad"
       >
-        <!-- 消息 -->
-        <div
-          class="notify-container"
+        <message-item
           v-for="(item, index) in list"
           :key="index"
-        >
-          <!-- 时间 -->
-          <div class="time">{{notifyTime(item.time)}}</div>
-          <!-- 详情卡片 -->
-          <div class="card" @click="handleLink($event, item.orderId)">
-            <div class="card-header">
-              <img src="@/assets/icons/notify.png" alt="">
-              <span>{{getTitle(item.type)}}</span>
-            </div>
-            <div class="card-content">{{item.message}}</div>
-            <div class="card-link">查看订单详情</div>
-          </div>
-        </div>
+          :record="item.obj"
+          :user="item.user"
+          :type="item.type"
+        />
       </van-list>
     </van-pull-refresh>
   </div>
@@ -47,6 +36,7 @@ import moment from 'moment'
 import { PullRefresh, List } from 'vant'
 import { queryUserMessage } from '@/api'
 import ListMixin from '@/mixins/list-mixin'
+import MessageItem from '@/components/MessageItem/index'
 
 export default {
   name: 'Notify',
@@ -54,7 +44,8 @@ export default {
   mixins: [ListMixin],
   components: {
     'van-pull-refresh': PullRefresh,
-    'van-list': List
+    'van-list': List,
+    'message-item': MessageItem
   },
   data: () => ({
     notReqOnMounted: true,

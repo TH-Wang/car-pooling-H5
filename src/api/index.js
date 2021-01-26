@@ -28,6 +28,7 @@ export const updateUserInfo = user.updateUserInfo
 export const updatePhoneToOne = user.updatePhoneToOne
 export const updatePhoneToTwo = user.updatePhoneToTwo
 export const getUserInviteQr = user.getUserInviteQr
+export const getUserInviteList = user.getUserInviteList
 
 // 账户模块
 export const selectAccountInfo = account.selectAccountInfo
@@ -79,6 +80,7 @@ export const addGroup = group.addGroup
 export const queryGroupByUser = group.queryGroupByUser
 export const queryMineGroup = group.queryMineGroup
 export const queryMineGroupEarnings = group.queryMineGroupEarnings
+export const payIntoGroup = group.payIntoGroup
 
 // 我的行程模块
 export const selectMyPassenger = myJourney.selectMyPassenger

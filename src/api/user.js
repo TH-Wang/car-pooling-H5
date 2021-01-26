@@ -9,7 +9,8 @@ export default {
   updateUserInfo,
   updatePhoneToOne,
   updatePhoneToTwo,
-  getUserInviteQr
+  getUserInviteQr,
+  getUserInviteList
 }
 
 // 获取短信验证码
@@ -75,4 +76,9 @@ function updatePhoneToTwo (params) {
 // 获取用户邀请码
 function getUserInviteQr () {
   return axios.post('/user/getUserQr')
+}
+
+// 获取用户邀请记录
+function getUserInviteList () {
+  return axios.post('/user/getUserRecommend')
 }
