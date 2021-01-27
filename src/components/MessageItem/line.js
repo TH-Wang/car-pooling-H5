@@ -1,4 +1,5 @@
 export default function (list) {
+  if (list.length === 0 || !list) return ''
   let start = null
   let end = null
   // 起点信息

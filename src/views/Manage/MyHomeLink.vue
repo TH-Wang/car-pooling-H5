@@ -13,32 +13,74 @@
 
     <div class="main-container">
       <div class="card">
-        <div class="name">橙池二</div>
-        <div class="phone">13720396397</div>
+        <div class="name">{{user.info.username}}</div>
+        <div class="phone">{{user.info.phone}}</div>
         <div class="title">{{title}}</div>
-        <div class="link-text">https://car.pooling.com/home/yubeiqu</div>
+        <div class="link-text">{{link}}</div>
       </div>
 
       <div class="footer">
-        <main-button width="1.15rem">复制到其他</main-button>
-        <main-button width="2.05rem" type="gradient">复制到微信</main-button>
+        <main-button
+          width="1.15rem"
+          @click="copyToClip"
+        >复制到其他</main-button>
+        <main-button
+          width="2.05rem"
+          type="gradient"
+          @click="copyToClip"
+        >复制到微信</main-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { getShortLinkUrl } from '@/api'
 import MainButton from '@/components/MainButton'
+
+const port = 'http://pinchezhijia.com/'
 
 export default {
   components: {
     'main-button': MainButton
   },
   data: () => ({
-    title: ''
+    title: '',
+    code: '',
+    addr: '',
+    alias: '',
+    link: ''
   }),
+  computed: {
+    ...mapState(['user'])
+  },
+  methods: {
+    // 请求短链接
+    async handleReqLink () {
+      const oriUrl = port + '?station=' + this.alias
+      console.log(oriUrl)
+      const url = await getShortLinkUrl(oriUrl)
+      this.link = url
+    },
+    // 复制
+    async copyToClip (type) {
+      const aux = document.createElement('textarea')
+      aux.value = this.link
+      document.body.appendChild(aux)
+      aux.select()
+      document.execCommand('copy')
+      document.body.removeChild(aux)
+      this.$toast.success('复制成功')
+    }
+  },
   created () {
-    this.title = this.$route.query.title
+    // this.title = this.$route.query.title
+    const { code, addr, alias } = this.$route.query
+    this.code = code
+    this.addr = addr
+    this.alias = alias
+    this.handleReqLink()
   }
 }
 </script>

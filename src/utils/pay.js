@@ -40,6 +40,7 @@ export async function wexinPay (res, redirect) {
         } else {
           store.commit('setUnionCode', null)
           Dialog.alert({ title: '遇到问题', message: '支付失败或取消支付，请稍后重试' })
+          return Promise.reject(new Error('支付失败'))
         }
       })
   } else {

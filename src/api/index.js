@@ -81,6 +81,7 @@ export const queryGroupByUser = group.queryGroupByUser
 export const queryMineGroup = group.queryMineGroup
 export const queryMineGroupEarnings = group.queryMineGroupEarnings
 export const payIntoGroup = group.payIntoGroup
+export const queryAuthIntoGroup = group.queryAuthIntoGroup
 
 // 我的行程模块
 export const selectMyPassenger = myJourney.selectMyPassenger
@@ -107,8 +108,11 @@ export const userComplaintDetail = complaint.userComplaintDetail
 // 站长模块
 export const postApplication = station.postApplication
 export const getApplications = station.getApplications
+export const getStationCode = station.getStationCode
+export const getFreePublishTime = station.getFreePublishTime
 export const getManager = station.getManager
 export const updateManagerPublish = station.updateManagerPublish
+export const getCountByStation = station.getCountByStation
 
 // 退订板块
 export const selectUnsubscribeReason = unsubscribe.selectUnsubscribeReason

@@ -65,11 +65,12 @@ export default {
   getters: {
     // 当前定位字符串
     location (state, context) {
-      if (context.unGeoLocation) return '请选择城市'
+      // if (context.unGeoLocation) return '请选择城市'
       const { city, county } = state.selected
-      return isEqual(county, defaultData)
-        ? city.shortName
-        : city.shortName + '·' + county.shortName
+      const text = []
+      if (!isEqual(city, defaultData)) text.push(city.shortName)
+      if (!isEqual(county, defaultData)) text.push(county.shortName)
+      return text.join('·')
     },
     // 当前定位市的名称
     cityName (state) {

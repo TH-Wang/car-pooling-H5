@@ -11,7 +11,7 @@ import { isWeixin } from '@/utils/wx'
 import getQueryParams from '@/utils/getQueryParams'
 
 export default {
-  mounted () {
+  created () {
     // 如果是支付
     const code = getQueryParams().code
     const state = getQueryParams().state
@@ -23,7 +23,16 @@ export default {
     }
     // 如果是邀请登录
     const invite = getQueryParams().invite
-    if (invite) this.$router.push('/common/login?invite=' + invite)
+    if (invite) {
+      this.$router.push('/common/login?invite=' + invite)
+      return
+    }
+
+    // 如果是站长首页
+    const station = getQueryParams().station
+    if (station) {
+      this.$router.push('/home?station=' + station)
+    }
   }
 }
 </script>

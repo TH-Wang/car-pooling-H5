@@ -76,31 +76,31 @@
     </div>
 
     <!-- 身份证认证 -->
-    <div class="cell" @click="handleLinkAuth($event, 'identity', '/common/auth/idcard')">
+    <div class="cell" @click="handleLinkAuth('identity')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/idcard.png" alt="">身份证认证
       </div>
       <div class="cell-right">
         <span v-if="!Authed('identity')" class="cell-text">立即认证</span>
-        <span v-else class="cell-text-main">{{user.identityInfo | auth}}</span>
+        <span v-else v-html="authContent(user.identityInfo)"></span>
         <van-icon name="arrow"/>
       </div>
     </div>
 
     <!-- 驾驶证认证 -->
-    <div class="cell" @click="handleLinkAuth($event, 'driving', '/common/auth/license')">
+    <div class="cell" @click="handleLinkAuth('driving')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/card.png" alt="">驾驶证认证
       </div>
       <div class="cell-right">
         <span v-if="!Authed('driving')" class="cell-text">驾驶证认证</span>
-        <template v-else v-html="user.drivingInfo | auth"></template>
+        <template v-else v-html="authContent(user.drivingInfo)"></template>
         <van-icon name="arrow"/>
       </div>
     </div>
 
     <!-- 车辆认证 -->
-    <div class="cell" @click="handleLinkAuth($event, 'car', '/common/auth/car', true)">
+    <div class="cell" @click="$router.push('/common/auth/car')">
       <div class="cell-left">
         <img src="@/assets/icons/setting/car.png" alt="">车辆认证
       </div>
@@ -153,20 +153,18 @@ export default {
   computed: {
     ...mapState(['user'])
   },
-  filters: {
-    auth (value) {
-      const state = value.state
-      if (!state) return ''
-      const innerHtml = {
-        0: '<span class="cell-text">审核中</span>',
-        1: '<span class="cell-text-main">已认证</span>',
-        2: '<span class="cell-text-error">认证失败</span>'
-      }
-      return innerHtml[state]
-    }
-  },
   methods: {
     ...mapActions(['queryAuthInfo']),
+    authContent (value) {
+      const state = value.state
+      if (!state) return '<span style="color: #262626">审核中</span>'
+      const innerHtml = {
+        0: '<span style="color: #262626">审核中</span>',
+        1: '<span style="color: #262626">已认证</span>',
+        2: '<span style="color: #ee0a24">认证失败</span>'
+      }
+      return innerHtml[state]
+    },
     // 预览头像
     previewAvatar () {
       const avatar = this.user.info.headimg
@@ -227,21 +225,25 @@ export default {
       this.$store.commit('setToken', res.data.data.token)
     },
     // 进入认证页面
-    handleLinkAuth (e, type, url, skip) {
-      if (!this.Authed(type) || skip) this.$router.push(url)
+    handleLinkAuth (type, url, skip) {
+      if (type === 'identity') {
+        if (!this.Authed(type) || this.user.identityInfo.state === 2) {
+          this.$router.push('/common/auth/idcard')
+        }
+      } else if (type === 'driving') {
+        if (!this.Authed(type) || this.user.drivingInfo.state === 2) {
+          this.$router.push('/common/auth/license')
+        }
+      }
     },
-    // 判断是否已认证
+    // 判断是否已提交认证信息
     Authed (type) {
       switch (type) {
         case 'identity':
           return this.user.identityInfo
-            ? this.user.identityInfo.state === 2
-            : false
         case 'driving':
           return this.user.drivingInfo
-            ? this.user.drivingInfo.state === 2
-            : false
-        case 'car': return this.user.carList.some(i => i.state && i.state === 2)
+        case 'car': return this.user.carList.some(i => i.state && i.state === 1)
       }
     },
     // 退出登录
@@ -305,22 +307,6 @@ export default {
   }
 }
 
-.cell-text{
-  margin-right: .05rem;
-  display: inline-block;
-  vertical-align: text-bottom;
-
-  &-error{
-    @extend .cell-text;
-    color: $error-text;
-  }
-
-  &-main{
-    @extend .cell-text;
-    color: $main-text;
-  }
-}
-
 .cell{
   height: .60rem;
   margin: 0 .15rem;
@@ -340,6 +326,16 @@ export default {
 
   &-right{
     @include font (.12rem, $tip-text);
+
+    span{
+      margin-right: .05rem;
+      display: inline-block;
+      vertical-align: text-bottom;
+    }
+
+    .cell-text-main{
+      color: $main-text;
+    }
   }
 }
 

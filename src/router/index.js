@@ -452,6 +452,13 @@ const routes = [
           /* webpackChunkName: "SubSiteMaster" */ '@/views/Manage/SubSiteMaster.vue'
         )
       },
+      { // 站长查询
+        path: '/common/site/select',
+        name: 'SiteSelectOrder',
+        component: () => import(
+          /* webpackChunkName: "SiteSelectOrder" */ '@/views/Manage/SiteSelectOrder.vue'
+        )
+      },
       { // 我的收益
         path: '/common/my/income',
         name: 'MyIncome',

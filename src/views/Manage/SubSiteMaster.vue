@@ -16,7 +16,7 @@
         class="cell-item"
         v-for="(item, index) in menuList"
         :key="index"
-        @click="$router.push(item.path)"
+        @click="handleLink(item.path)"
       >
         <img :src="item.icon" alt="">
         <span>{{item.title}}</span>
@@ -28,33 +28,67 @@
 </template>
 
 <script>
+import { getStationCode, getFreePublishTime } from '@/api'
+import { isEmpty } from 'lodash'
+import { mapState } from 'vuex'
+
 export default {
   data: () => ({
+    info: null,
     menuList: [
       {
         icon: require('@/assets/icons/mine/order.png'),
         title: '我的收益',
-        content: '100',
+        content: '',
         path: '/common/my/income'
       },
       {
         icon: require('@/assets/icons/mine/link.png'),
-        title: '陈女士的首页链接',
-        path: { path: '/common/my/homelink', query: { title: '陈女士的首页链接' } }
+        title: '首页链接',
+        path: '/common/my/homelink'
       },
       {
         icon: require('@/assets/icons/mine/query.png'),
         title: '拼车查询',
-        path: '/common/searchline/list'
+        path: '/common/site/select'
       },
       {
         icon: require('@/assets/icons/mine/add.png'),
         title: '拼车发布',
-        content: '余 423',
-        path: '/release'
+        content: '余'
       }
     ]
-  })
+  }),
+  computed: {
+    ...mapState(['user'])
+  },
+  methods: {
+    async handleReqCode () {
+      const res = await getStationCode()
+      this.info = res.data.data
+      const name = this.user.info.username
+      const config = this.menuList[1]
+      this.$set(this.menuList, 1, { ...config, title: name + '的首页链接' })
+    },
+    // 获取发布数量
+    async handleReqCount () {
+      const res = await getFreePublishTime()
+      const count = res.data.data.freeTime
+      const config = this.menuList[3]
+      this.count = count
+      this.$set(this.menuList, 3, { ...config, content: '余 ' + count })
+    },
+    handleLink (path) {
+      if (path || !isEmpty(path)) {
+        const { code, name, shortName } = this.info
+        this.$router.push({ path, query: { code, addr: name, alias: shortName } })
+      }
+    }
+  },
+  created () {
+    this.handleReqCode()
+    this.handleReqCount()
+  }
 }
 </script>
 

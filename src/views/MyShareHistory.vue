@@ -20,21 +20,24 @@
     <!-- <div class="title">我的邀请</div> -->
 
     <!-- 邀请列表 -->
+    <van-empty v-if="list.length === 0" description="暂无邀请记录，快去邀请你的好友吧" />
     <div class="history" v-for="(item, index) in list" :key="index">
       <!-- <van-image width=".30rem" height=".30rem" fit="cover" round  /> -->
-      <div class="avatar"></div>
+      <div class="avatar">
+        <van-image width="100%" height="100%" :src="item.headimg" fit="cover" />
+      </div>
       <span>{{item.username}}</span>
     </div>
   </div>
 </template>
 
 <script>
-// import { Image } from 'vant'
+import { Image } from 'vant'
 import { getUserInviteList } from '@/api'
 
 export default {
   components: {
-    // 'van-image': Image
+    'van-image': Image
   },
   data: () => ({
     list: []
@@ -90,6 +93,7 @@ export default {
     height: .30rem;
     border-radius: 50%;
     background-color: $light-color;
+    overflow: hidden;
   }
 
   span{

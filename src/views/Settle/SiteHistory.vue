@@ -11,6 +11,7 @@
     />
 
     <!-- 申请列表 -->
+    <van-empty v-if="dataSource.length === 0" description="暂无申请记录" />
     <div class="history" v-for="(item, index) in dataSource" :key="index">
       <div class="header">
         <div class="header-top">
@@ -26,30 +27,33 @@
         </div>
       </div>
       <div class="content">
-        <div class="content-item" v-for="(el, idx) in contentList" :key="idx">
-          <div class="content-label">{{el.label}}</div>
-          <div class="content-detail">{{item[el.key]}}</div>
-        </div>
+        <div class="item"><div>申请区域</div><span>{{item.areaName}}</span></div>
+        <div class="item"><div>站长类型</div><span>{{siteType[item.type]}}</span></div>
+        <div class="item"><div>微信号</div><span>{{item.vxNumber}}</span></div>
+        <div class="item"><div>公众号</div><span>{{item.tencentIsux}}</span></div>
+        <div class="item"><div>公众号名</div><span>{{item.tencentIsuxName}}</span></div>
+        <div class="item"><div>手机号</div><span>{{item.phone}}</span></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getApplications } from '@/api'
+
 export default {
   data: () => ({
-    contentList: [
-      { label: '申请区域', key: 'area' },
-      { label: '站长类型', key: 'site_type' },
-      { label: '最初渠道', key: 'channel' },
-      { label: '微信号', key: 'wechat' },
-      { label: '公众号', key: 'public_number' },
-      { label: '公众号名', key: 'public_name' },
-      { label: '手机号', key: 'phone' }
-    ],
-    dataSource: []
+    dataSource: [],
+    siteType: {
+      1: '站长',
+      2: '副站长'
+    }
   }),
   methods: {
+    async handleReq () {
+      const res = await getApplications({ startPage: 1, pageSize: 100 })
+      this.dataSource = res.data.data.list
+    },
     getTagColor (type) {
       switch (type) {
         case 0: return 'pending'
@@ -72,21 +76,8 @@ export default {
       }
     }
   },
-  mounted () {
-    const data = {
-      name: '陈女士',
-      area: '渝北区',
-      site_type: '站长',
-      channel: '这里是最初渠道',
-      wechat: 'loyojjom',
-      public_number: 'public_number',
-      public_name: '这里是公众号名称',
-      phone: '1382090929'
-    }
-    this.dataSource = new Array(3).fill({}).map((item, index) => ({
-      ...data,
-      type: index
-    }))
+  created () {
+    this.handleReq()
   }
 }
 </script>
@@ -152,21 +143,22 @@ export default {
     padding: 1px .15rem;
     box-sizing: border-box;
 
-    &-item{
+    .item{
       margin: .15rem 0;
       @include flex;
-    }
 
-    &-label{
-      flex-shrink: 0;
-      width: .70rem;
-      @include font (.12rem, $tip-text);
-      transform: translateY(.02rem);
-    }
+      & > div {
+        flex-shrink: 0;
+        width: .70rem;
+        @include font (.12rem, $tip-text);
+        transform: translateY(.02rem);
+      }
 
-    &-detail{
-      flex: 1;
-      @include font (.14rem, $main-text);
+      span{
+        flex: 1;
+        display: block;
+        @include font (.14rem, $main-text);
+      }
     }
   }
 }

@@ -13,43 +13,59 @@
     </van-nav-bar>
 
     <!-- 顶部 -->
-    <order-info-header :record="{
-      startAddr: record.startAddr,
-      endAddr: record.endAddr,
-      state: record.orderState
-    }" content-type="state" />
+    <order-info-header
+      :record="{
+        startAddr: record.startAddr,
+        endAddr: record.endAddr,
+        state: record.orderState,
+        startTime: startTime,
+        seatNum: record.num }"
+      showShare
+      content-type="state"
+      show-time-seat
+      @share="$router.push(`/common/tripshare/customer?id=${orderId}`)"
+    />
 
-    <!-- 详情卡片 -->
-    <div class="content-card">
-
-      <!-- <div> -->
-        <!-- 地图 -->
-        <map-view :info="record.passPointList || record.passPointLis" />
-
-        <!-- 详细信息：预约其他车主的订单信息 -->
-        <div v-if="record.isPublish === 0">
-          <order-info-field icon-type="user" label="车主" :content="record.userName" />
-          <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
-          <order-info-field icon-type="time" label="出发时间" :content="startTime" />
-          <order-info-field icon-type="address" label="途径点" :content="passPointList" />
+    <!-- 车主信息 -->
+    <div class="page-title">
+      <p>车主信息</p>
+      <van-empty v-if="record.myPassengerDetailVoList.length === 0" description="暂无预约成功的车主"></van-empty>
+      <!-- 乘客信息列表 -->
+      <div
+        class="info"
+        v-else
+        v-for="(item, index) in record.myPassengerDetailVoList"
+        :key="item.pprId"
+        @click="handleLinkDetail($event, item.orderId)"
+      >
+        <div class="info-index">{{index+1}}</div>
+        <div v-if="stateMark" class="info-phone" @click.stop="handleCall($event, item.telPhone)">
+          <van-icon name="phone" size=".14rem" color="#FFAE20" />
+          {{item.telPhone}}
         </div>
-        <div v-else>
-          <order-info-field icon-type="time" label="出发时间" :content="startTime" />
-          <order-info-field icon-type="user" label="预约状态" :content="statusText" />
-          <order-info-field icon-type="seat" label="人数" :content="record.orderNum" />
-          <order-info-field icon-type="remark" label="备注" :content="remark" />
+        <div class="info-field" :style="`${stateMark ? 'width:2.25rem' : ''}`">
+          <span class="info-field-label">车主</span>
+          <span class="info-field-text">{{item.userName}}</span>
         </div>
+        <div class="info-field">
+          <span class="info-field-label">出发地点</span>
+          <span class="info-field-text">{{item.startAddr}}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-field-label">到达地点</span>
+          <span class="info-field-text">{{item.endAddr}}</span>
+        </div>
+        <div class="info-field">
+          <span class="info-field-label">出发时间</span>
+          <span class="info-field-text">{{startTime}}</span>
+        </div>
+      </div>
+    </div>
 
-        <!-- 联系电话 -->
-        <order-info-phone
-          v-if="record.mobilePhone"
-          :phone="getPhone(record.mobilePhone)"
-          @click="handleCall"
-        />
-      <!-- </div> -->
-
-      <!-- 如果没有司机确认 -->
-      <!-- <van-empty  v-if="record.isPublish === 0 && !hasReversed" description="暂无车主预约"/> -->
+    <!-- 地图路线 -->
+    <div class="page-title" style="margin-top:.20rem">
+      <p>地图路线</p>
+      <map-view style="margin-top:.15rem" :info="record.passPointList" />
     </div>
 
     <main-button
@@ -73,7 +89,7 @@
 <script>
 import moment from 'moment'
 import { selectByPassengerDetail, getPassengerPublishDetail, confirmOrder } from '@/api'
-import { Header, Field, Phone, Tips } from '@/components/OrderInfo/index'
+import { Header, Tips } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
@@ -83,8 +99,6 @@ import callPhone from '@/utils/callPhone'
 export default {
   components: {
     'order-info-header': Header,
-    'order-info-field': Field,
-    'order-info-phone': Phone,
     'order-info-tips': Tips,
     'map-view': MapView,
     'refund-order-layer': RefundOrderLayer,

@@ -30,7 +30,12 @@
     <start-end :start="record.startAddr" :end="record.endAddr" narrow />
     <!-- 时间余座 -->
     <div v-if="showTimeSeat" class="time-seat">
-      <time-seat :time="record.startTime" :seat="seatNum" :type="record.type" />
+      <time-seat
+        :time="record.startTime"
+        :seat="seatNum"
+        :seatText="seatText"
+        :type="record.type"
+      />
       <div v-if="showShare" class="share-button" @click="$emit('share')">出行详情</div>
     </div>
   </div>
@@ -63,7 +68,9 @@ export default {
     showShare: {
       type: Boolean,
       default: false
-    }
+    },
+    // 余座处展示的文字
+    seatText: String
   },
   computed: {
     seatNum () {

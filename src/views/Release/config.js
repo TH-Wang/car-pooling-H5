@@ -18,7 +18,7 @@ const driCarpool = (carConfig) => ([
     label: '车型',
     placeholder: '请选择车型',
     columns: carConfig,
-    rules: [{ required: true }]
+    required: true
   }, {
     id: 'seatNum',
     type: 'picker',
@@ -68,7 +68,8 @@ export const getDriverOpts = (config = []) => {
       name: 'vehicleType',
       label: '车型',
       placeholder: '请选择车型',
-      columns: carConfig
+      columns: carConfig,
+      required: true
     }, {
       id: 'seatNum',
       type: 'picker',
@@ -100,7 +101,8 @@ export const getDriverOpts = (config = []) => {
         name: 'vehicleType',
         label: '车型',
         placeholder: '请选择车型',
-        columns: carConfig
+        columns: carConfig,
+        required: true
       }, {
         id: 'weight',
         type: 'field',
@@ -145,7 +147,8 @@ export const getDriverOpts = (config = []) => {
       name: 'vehicleType',
       label: '车型',
       placeholder: '请选择车型',
-      columns: carConfig
+      columns: carConfig,
+      required: true
     }, {
       id: 'seatNum',
       type: 'picker',

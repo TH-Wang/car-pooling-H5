@@ -13,7 +13,7 @@
     <!-- 钱包余额 -->
     <overage-card
       title="我的收益"
-      :number="100"
+      :number="0"
       style="margin-bottom: 0"
     />
 
@@ -44,10 +44,11 @@ export default {
     'overage-card': OverageCard
   },
   data: () => ({
-    billList: [
-      { type: 0, price: '+10.00', time: '2020-07-23 10:55', path: '' },
-      { type: 1, price: '-10.00', time: '2020-07-23 10:55', path: '' }
-    ]
+    // billList: [
+    //   { type: 0, price: '+10.00', time: '2020-07-23 10:55', path: '' },
+    //   { type: 1, price: '-10.00', time: '2020-07-23 10:55', path: '' }
+    // ]
+    billList: []
   }),
   methods: {
     getBillIcon (type) {

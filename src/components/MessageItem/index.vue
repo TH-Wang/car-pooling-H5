@@ -1,9 +1,9 @@
 <template>
   <div class="notify-container">
     <!-- 时间 -->
-    <div class="time">{{record.time | time}}</div>
+    <div class="time">{{notifyTime | time}}</div>
     <!-- 详情卡片 -->
-    <div class="card" @click="handleLink($event, record.orderId)">
+    <div class="card" @click="handleLink">
       <!-- 标题 -->
       <div class="card-header">
         <img src="@/assets/icons/notify.png" alt="">
@@ -16,16 +16,16 @@
         <!-- 预约乘客的信息 -->
         <template v-if="confirm.customer.name">
           <p><span>乘客姓名：</span>{{record.userName}}</p>
-          <p><span>联系电话：</span>{{record.telPhone}}</p>
+          <p><span>联系电话：</span>{{record.telPhone || record.mobilePhone}}</p>
         </template>
         <template v-if="confirm.customer.people">
           <p><span>订座人数：</span>{{record.orderNum}}</p>
           <p><span>行程起点：</span>{{record.passPointList | point('start')}}</p>
           <p><span>行程终点：</span>{{record.passPointList | point('end')}}</p>
-          <p><span>乘客备注：</span>{{record.remark}}</p>
+          <p><span>乘客备注：</span>{{record.remark | hasEmpty}}</p>
         </template>
         <template v-if="confirm.customer.cancel">
-          <p><span>取消时间：</span></p>
+          <p><span>取消时间：</span>{{updateTime | datetime}}</p>
           <p><span>当前余座：</span>{{record.num}}</p>
         </template>
         <!-- 车主发布的信息 -->
@@ -34,7 +34,7 @@
           <p><span>车辆途径：</span>{{middle}}</p>
           <p><span>手机号码：</span>{{record.mobilePhone}}</p>
           <p><span>出发时间：</span>{{record.startTime | datetime}}</p>
-          <p><span>发布座位：</span>{{record.seatNum}}</p>
+          <p><span>发布座位：</span>{{record.num}}</p>
           <p><span>拼车备注：</span>{{record.remark | hasEmpty}}</p>
         </template>
       </div>
@@ -45,25 +45,25 @@
         <template v-if="type === 7">
           <p><span>班车线路：</span>{{line}}</p>
           <p><span>起点终点：</span>{{middle}}</p>
-          <p><span>手机号码：</span>{{record.mobilePhone}}</p>
-          <p><span>出发时间：</span>{{record.startTime | datetime}}</p>
-          <p><span>乘车人数：</span>{{record.seatNum}}</p>
+          <p><span>手机号码：</span>{{record.telPhone}}</p>
+          <p><span>出发时间：</span>{{record.passengerStartTime | datetime}}</p>
+          <p><span>乘车人数：</span>{{record.orderNum}}</p>
           <p><span>拼车备注：</span>{{record.remark | hasEmpty}}</p>
         </template>
         <!-- 预约车主的信息 -->
         <template v-if="confirm.driver.name">
           <p><span>车主姓名：</span>{{record.userName}}</p>
-          <p><span>车辆型号：</span>{{record.userName}}</p>
+          <p><span>车辆型号：</span>{{record.vehicleTypeName}}</p>
         </template>
         <template v-if="confirm.driver.detail">
-          <p><span>该车余座：</span>{{record.userName}}</p>
+          <p><span>该车余座：</span>{{record.num}}</p>
           <p><span>手机号码：</span>{{record.mobilePhone}}</p>
-          <p><span>班车线路：</span>{{record.mobilePhone}}</p>
-          <p><span>车辆途径：</span>{{record.mobilePhone}}</p>
-          <p><span>车主备注：</span>{{record.mobilePhone}}</p>
+          <p><span>班车线路：</span>{{line}}</p>
+          <p><span>车辆途径：</span>{{middle}}</p>
+          <p><span>车主备注：</span>{{record.remark | hasEmpty}}</p>
         </template>
         <template v-if="confirm.driver.cancel">
-          <p><span>联系电话：</span></p>
+          <p><span>联系电话：</span>{{record.mobilePhone}}</p>
           <p><span>当前余座：</span>{{record.num}}</p>
         </template>
       </div>
@@ -75,6 +75,7 @@
 <script>
 import moment from 'moment'
 import titleConfig from './titleConfig'
+import descConfig from './descConfig'
 import confirm from './confirm'
 import line from './line'
 
@@ -85,10 +86,15 @@ export default {
       default: () => ({})
     },
     user: Object,
-    type: Number
+    type: Number,
+    num: Number,
+    updateTime: String,
+    otherId: Number,
+    notifyTime: String
   },
   data: () => ({
-    titleConfig
+    titleConfig,
+    descConfig
   }),
   computed: {
     // 标题
@@ -99,9 +105,11 @@ export default {
     desc () {
       const { username } = this.user
       if (this.confirm.isDriverMsg) {
-        return `${username}，您的车辆 行程已经发布成功`
+        // const car = this.record.vehicleTypeName || ''
+        // return `${username}，您的车辆${car}${this.descConfig[this.type]}`
+        return `${username}，${this.descConfig[this.type]}`
       }
-      return ''
+      return `${username}，${this.descConfig[this.type]}`
     },
     // 显示信息判断
     confirm () {
@@ -118,11 +126,21 @@ export default {
   },
   filters: {
     time: value => moment(value).format('YYYY-MM-DD HH:mm'),
-    datetime: value => moment(value).format('MM月DD日 HH:mm'),
+    datetime: value => (value ? moment(value).format('MM月DD日 HH:mm') : ''),
     hasEmpty: value => value || '无',
     point: (list, type) => {
       if (type === 'start') return list.find(i => i.type === 1).pointName
       else if (type === 'end') return list.find(i => i.type === 3).pointName
+    }
+  },
+  methods: {
+    handleLink () {
+      const id = this.otherId
+      let url = null
+      if (this.confirm.isDriverMsg) {
+        url = '/common/tripinfo/driver'
+      } else url = '/common/tripinfo/customer'
+      this.$router.push({ path: url, query: { id } })
     }
   }
 }

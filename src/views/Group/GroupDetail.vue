@@ -7,10 +7,9 @@
       placeholder
       :border="false"
       @click-left="$router.go(-1)"
-      @click-right="handleBackHome"
     >
       <template #left><van-icon name="arrow-left" /></template>
-      <template #right><van-icon name="wap-home" /></template>
+      <!-- <template #right><van-icon name="wap-home" /></template> -->
     </van-nav-bar>
 
     <!-- 群名片 -->
@@ -50,13 +49,17 @@
 
     <!-- 底部按钮 -->
     <div class="footer">
-      <main-button width="1.20rem" color="yellow">分享给朋友</main-button>
+      <main-button
+        width="1.20rem"
+        color="yellow"
+        @click="handleShare"
+      >分享给朋友</main-button>
       <main-button
         width="2.10rem"
         color="yellow"
         type="gradient"
         @click="handleClickInto"
-      >{{priceText()}}</main-button>
+      ><span>{{priceText}}</span></main-button>
     </div>
 
     <!-- 群二维码 -->
@@ -76,7 +79,7 @@
 
 <script>
 import moment from 'moment'
-import { selectGroupById, payIntoGroup } from '@/api'
+import { selectGroupById, payIntoGroup, queryAuthIntoGroup } from '@/api'
 import GroupItem from '@/components/GroupItem'
 import MiniButton from '@/components/MiniButton'
 import MainButton from '@/components/MainButton'
@@ -105,7 +108,9 @@ export default {
       '1.扫码二维码',
       '2.发送入群码 <span style="color:#FFCD00">CDSLVN</span>'
     ],
-    showQRcode: false
+    showQRcode: false,
+    // 是否有查看的权限
+    auth: false
   }),
   computed: {
     time () {
@@ -113,6 +118,18 @@ export default {
     },
     region () {
       return this.info.city + ' · ' + this.info.region
+    },
+    // 价格
+    priceText () {
+      const price = this.info.price
+      if (!price) return ''
+      if (price === 0) return '免费'
+      else {
+        if (this.auth) return '已付费'
+        const decimal = price.toString().split('.')[1]
+        const text = decimal ? price : price + '.00'
+        return `付费￥${text}元进群`
+      }
     }
   },
   methods: {
@@ -120,41 +137,57 @@ export default {
     async handleReq () {
       const res = await selectGroupById(this.groupId)
       this.info = res.data.data
-    },
-    // 价格的前缀样式
-    priceText () {
-      const price = this.info.price
-      if (price === 0) return '免费'
-      else {
-        const decimal = price.toString().split('.')[1]
-        const text = decimal ? price : price + '.00'
-        return `付费￥${text}元进群`
+      // 如果免费，则有权限
+      if (this.info.price <= 0) {
+        this.auth = true
+        return
       }
+      // 否则查询权限
+      this.handleReqAuth()
+    },
+    // 查看是否有权限查看二维码
+    async handleReqAuth () {
+      const res = await queryAuthIntoGroup(this.groupId)
+      this.auth = res.data.data === 1
     },
     // 点击付费
     async handleClickInto () {
-      if (this.info.price <= 0) return
+      if (this.auth) return
       this.$refs.layer.show()
     },
     // 发起支付
     async handlePay (type) {
-      const groupId = this.groupId
-      const data = { type, groupId }
-      if (isWeixin()) data.code = this.$store.state.ticket.code
-      const res = await payIntoGroup(data)
-      if (type === 1) {
-        aliPay(res)
-      } else {
-        await wexinPay(res)
-        // ...修改状态
+      try {
+        const groupId = this.groupId
+        const data = { type, groupId }
+        if (isWeixin()) data.code = this.$store.state.ticket.code
+        // debugger
+        // await this.$dialog.alert({
+        //   message: JSON.stringify(data)
+        // })
+        const res = await payIntoGroup(data)
+        if (type === 1) {
+          aliPay(res)
+        } else {
+          await wexinPay(res)
+          this.auth = true
+        }
+      } catch (error) {
+        this.$dialog.alert({
+          message: error
+        })
       }
+    },
+    // 点击分享
+    handleShare () {
+      this.$dialog.alert({ message: '分享' })
     },
     handleBackHome () {
       this.$router.replace('/home')
       location.reload()
     },
     handleShowCode () {
-      if (this.info.price > 0) {
+      if (!this.auth) {
         this.$dialog.alert({
           title: '付费进群',
           message: '亲爱的用户该群为付费群，<span style="color: #FFCD00">完成付费</span>后即可查看二维码',
@@ -168,6 +201,8 @@ export default {
   created () {
     this.groupId = this.$route.query.id
     this.handleReq()
+  },
+  mounted () {
     if (!this.$store.state.ticket.code && isWeixin()) {
       const id = this.groupId
       getUserCode('/common/group/detail?id=' + id)

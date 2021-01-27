@@ -56,8 +56,8 @@
           <span class="info-field-text">{{item.endAddr}}</span>
         </div>
         <div class="info-field">
-          <span class="info-field-label">出发时间</span>
-          <span class="info-field-text">{{startTime}}</span>
+          <span class="info-field-label">预定人数</span>
+          <span class="info-field-text">{{item.orderNum}}</span>
         </div>
       </div>
     </div>

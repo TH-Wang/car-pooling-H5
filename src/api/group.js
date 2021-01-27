@@ -7,7 +7,8 @@ export default {
   queryGroupByUser,
   queryMineGroup,
   queryMineGroupEarnings,
-  payIntoGroup
+  payIntoGroup,
+  queryAuthIntoGroup
 }
 
 // 查询拼车群列表
@@ -58,5 +59,14 @@ function payIntoGroup (params) {
     url: '/group/intoGroup',
     method: 'POST',
     params
+  })
+}
+
+// 查看用户群的有查看权限
+function queryAuthIntoGroup (id) {
+  return axios({
+    url: '/group/selectGroupByUser',
+    method: 'POST',
+    params: { id }
   })
 }

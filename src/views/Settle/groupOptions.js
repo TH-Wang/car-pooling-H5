@@ -27,7 +27,14 @@ export default [
     label: '群价格',
     placeholder: '请输入群价格',
     inputType: 'tel',
-    rules: [{ required: true }, { pattern: /^\d+$/g, message: '请输入合理的价格' }]
+    rules: [
+      { required: true },
+      {
+        validator: value => !isNaN(value),
+        message: '请输入合理的价格'
+      }
+      // { pattern: /^\d+$/g, message: '请输入合理的价格' }
+    ]
   },
   {
     type: 'picker',

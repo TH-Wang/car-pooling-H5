@@ -25,6 +25,10 @@
           :record="item.obj"
           :user="item.user"
           :type="item.type"
+          :otherId="item.otherId"
+          :updateTime="item.updateTime"
+          :num="item.num"
+          :notify-time="item.time"
         />
       </van-list>
     </van-pull-refresh>
@@ -75,9 +79,11 @@ export default {
       return this.messageType[type]
     }
   },
-  mounted () {
+  mounted: async function () {
     if (!this.$store.state.user.token) return
-    this.handleListLoad()
+    this.$toast.loading({ message: '加载中', duration: 10000 })
+    await this.handleListLoad()
+    this.$toast.clear()
   }
 }
 </script>

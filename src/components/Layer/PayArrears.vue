@@ -45,7 +45,7 @@ export default {
   data: () => ({
     visible: false,
     // 选择的支付方式
-    payType: 1,
+    payType: 2,
     // 支付方式
     payOptions: [
       { id: 1, icon: require('@/assets/icons/pay/alipay.png'), text: '支付宝钱包' },

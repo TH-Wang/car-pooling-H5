@@ -113,7 +113,7 @@ export default {
   }),
   computed: {
     // 全局存储城市区县数据
-    ...mapState(['user', 'position', 'search']),
+    ...mapState(['user', 'position', 'search', 'station']),
     ...mapGetters(['identity', 'location', 'unGeoLocation']),
     buttonColor () {
       return this.identity === 0 ? 'yellow' : 'green'
@@ -139,12 +139,14 @@ export default {
       // 获取当前区域code
       // const { code } = this.position.county
       const { lon, lat } = this.position.selected.county
-      return {
+      const data = {
         orderType: 1,
         publishType: '1,2,3',
         startAddrLon: lon,
         startAddrLat: lat
       }
+      if (this.station.name) data.cityname = this.station.name
+      return data
     },
     // 请求快捷路线时，自动调用该函数，获取请求参数
     getRequestQuickDatas () {
@@ -206,6 +208,20 @@ export default {
     }
   },
   created () {
+    // 如果是站长首页
+    const station = this.$route.query.station
+    if (station) {
+      this.$store.commit('setStationInfo', station)
+      this.$store.commit('setPositionSelect', {
+        type: 'city',
+        value: { name: '', shortName: '' }
+      })
+      this.$store.commit('setPositionSelect', {
+        type: 'county',
+        value: { name: station, shortName: station }
+      })
+    }
+    // 请求数据
     this.handleListLoad()
     this.handleQuickListLoad()
     this.reqLatestSearch()

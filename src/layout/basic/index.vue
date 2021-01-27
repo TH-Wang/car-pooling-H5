@@ -23,7 +23,8 @@ export default {
   },
   activated: function () {
     // 判断是否有位置信息，没有则引导用户选择位置或定位
-    if (this.$route.name === 'Home' && this.unGeoLocation) {
+    const station = this.$route.query.station
+    if (!station && this.$route.name === 'Home' && this.unGeoLocation) {
       setTimeout(async () => {
         await this.$dialog.alert({
           title: '位置信息',

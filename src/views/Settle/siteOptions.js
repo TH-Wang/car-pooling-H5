@@ -3,15 +3,16 @@ export default [
     type: 'area',
     name: 'area',
     label: '申请区域',
-    placeholder: '请选择申请区域'
+    placeholder: '请选择申请区域',
+    required: true
   },
-  // {
-  //   type: 'picker',
-  //   name: 'type',
-  //   label: '站长类型',
-  //   placeholder: '请选择站长类型',
-  //   columns: [{ id: 1, label: '站长' }, { id: 2, label: '副站长' }]
-  // },
+  {
+    type: 'picker',
+    name: 'type',
+    label: '站长类型',
+    placeholder: '请选择站长类型',
+    columns: [{ id: 1, label: '站长' }, { id: 2, label: '副站长' }]
+  },
   // {
   //   type: 'picker',
   //   name: 'way',
@@ -24,7 +25,8 @@ export default [
     name: 'realName',
     label: '真实姓名',
     placeholder: '请输入真实姓名',
-    clearable: true
+    clearable: true,
+    rules: [{ required: true }]
   },
   {
     type: 'field',
@@ -53,6 +55,8 @@ export default [
     label: '手机号',
     placeholder: '请输入手机号',
     inputType: 'tel',
-    clearable: true
+    maxLength: 11,
+    clearable: true,
+    rules: [{ required: true }, { pattern: /^\d{11}$/, message: '请输入合理的手机号码' }]
   }
 ]

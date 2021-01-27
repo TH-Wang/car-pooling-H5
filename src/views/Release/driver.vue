@@ -229,8 +229,10 @@ export default {
       data.publishType = publishType >= 1 && publishType <= 3 ? 1 : publishType
       this.$store.commit('setReleaseAddrInfo', data.passPointList)
       this.$refs.form.setValues(data)
+      const carId = this.user.carList[0].id
       setTimeout(() => {
         this.$refs.form.setValues({
+          vehicleType: carId,
           weight: data.weight,
           volume: data.volume,
           cost: data.cost
@@ -241,10 +243,10 @@ export default {
     // 获取所有的车辆信息
     async getCarInfo () {
       if (this.user.carList.length === 0) {
-        this.$toast.loading({ message: '加载中', duration: 10000 })
+        // this.$toast.loading({ message: '加载中', duration: 10000 })
         const res = await userCarDetail()
         this.$store.commit('setCarInfo', res.data.data)
-        this.$toast.clear()
+        // this.$toast.clear()
       }
       // 赋值到表单配置上
       this.formOptions = getDriverOpts(this.user.carList)

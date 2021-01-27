@@ -7,10 +7,7 @@
       fixed
       placeholder
       @click-left="$router.go(-1)"
-    ><template #right>
-      <strong @click="handleShare" style="color:#FFCD00">分享行程</strong>
-    </template>
-    </van-nav-bar>
+    />
 
     <!-- 顶部 -->
     <order-info-header
@@ -18,52 +15,77 @@
         startAddr: record.startAddr,
         endAddr: record.endAddr,
         state: record.orderState,
-        startTime: startTime,
-        seatNum: record.num }"
+        startTime: record.passengerStartTime,
+        seatNum: record.orderNum
+      }"
       showShare
-      content-type="state"
       show-time-seat
+      content-type="state"
+      seatText="人数"
       @share="$router.push(`/common/tripshare/customer?id=${orderId}`)"
     />
 
-    <!-- 车主信息 -->
-    <div class="page-title">
-      <p>车主信息</p>
-      <van-empty v-if="record.myPassengerDetailVoList.length === 0" description="暂无预约成功的车主"></van-empty>
-      <!-- 乘客信息列表 -->
-      <div
-        class="info"
-        v-else
-        v-for="(item, index) in record.myPassengerDetailVoList"
-        :key="item.pprId"
-        @click="handleLinkDetail($event, item.orderId)"
-      >
-        <div class="info-index">{{index+1}}</div>
-        <div v-if="stateMark" class="info-phone" @click.stop="handleCall($event, item.telPhone)">
-          <van-icon name="phone" size=".14rem" color="#FFAE20" />
-          {{item.telPhone}}
-        </div>
-        <div class="info-field" :style="`${stateMark ? 'width:2.25rem' : ''}`">
-          <span class="info-field-label">车主</span>
-          <span class="info-field-text">{{item.userName}}</span>
-        </div>
-        <div class="info-field">
-          <span class="info-field-label">出发地点</span>
-          <span class="info-field-text">{{item.startAddr}}</span>
-        </div>
-        <div class="info-field">
-          <span class="info-field-label">到达地点</span>
-          <span class="info-field-text">{{item.endAddr}}</span>
-        </div>
-        <div class="info-field">
-          <span class="info-field-label">出发时间</span>
-          <span class="info-field-text">{{startTime}}</span>
-        </div>
+    <!-- 详情卡片 -->
+    <div v-if="false" class="content-card">
+
+      <!-- 地图 -->
+      <!-- <map-view :info="record.passPointList || record.passPointLis" /> -->
+
+      <!-- 详细信息：预约其他车主的订单信息 -->
+      <div v-if="record.isPublish === 0">
+        <order-info-field icon-type="user" label="车主" :content="record.userName" />
+        <order-info-field icon-type="car" label="车型" :content="record.vehicleType" />
+        <order-info-field icon-type="time" label="出发时间" :content="startTime" />
+        <order-info-field icon-type="address" label="途径点" :content="passPointList" />
       </div>
+      <div v-else>
+        <order-info-field icon-type="time" label="出发时间" :content="startTime" />
+        <order-info-field icon-type="user" label="预约状态" :content="statusText" />
+        <order-info-field icon-type="seat" label="人数" :content="record.orderNum" />
+        <order-info-field icon-type="remark" label="备注" :content="remark" />
+      </div>
+
+      <!-- 联系电话 -->
+      <order-info-phone
+        v-if="record.mobilePhone"
+        :phone="getPhone(record.mobilePhone)"
+        @click="handleCall"
+      />
+
+      <!-- 如果没有司机确认 -->
+      <!-- <van-empty  v-if="record.isPublish === 0 && !hasReversed" description="暂无车主预约"/> -->
+    </div>
+
+    <!-- 如果没有司机确认 -->
+    <van-empty  v-if="record.status === 0" description="暂无车主预约"/>
+    <div v-else class="page-title">
+      <p>车主信息</p>
+      <div class="info">
+      <div v-if="stateMark" class="info-phone" @click.stop="handleCall">
+        <van-icon name="phone" size=".14rem" color="#FFAE20" />
+        {{getPhone(record.mobilePhone)}}
+      </div>
+      <div class="info-field" :style="`${stateMark ? 'width:2.25rem' : ''}`">
+        <span class="info-field-label">车主</span>
+        <span class="info-field-text">{{record.userName}}</span>
+      </div>
+      <div class="info-field">
+        <span class="info-field-label">出发地点</span>
+        <span class="info-field-text">{{record.startAddr}}</span>
+      </div>
+      <div class="info-field">
+        <span class="info-field-label">到达地点</span>
+        <span class="info-field-text">{{record.endAddr}}</span>
+      </div>
+      <div class="info-field">
+        <span class="info-field-label">余座</span>
+        <span class="info-field-text">{{record.num}}</span>
+      </div>
+    </div>
     </div>
 
     <!-- 地图路线 -->
-    <div class="page-title" style="margin-top:.20rem">
+    <div class="page-title" style="margin:.20rem .15rem .3rem">
       <p>地图路线</p>
       <map-view style="margin-top:.15rem" :info="record.passPointList" />
     </div>
@@ -89,7 +111,7 @@
 <script>
 import moment from 'moment'
 import { selectByPassengerDetail, getPassengerPublishDetail, confirmOrder } from '@/api'
-import { Header, Tips } from '@/components/OrderInfo/index'
+import { Header, Field, Phone, Tips } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
@@ -99,6 +121,8 @@ import callPhone from '@/utils/callPhone'
 export default {
   components: {
     'order-info-header': Header,
+    'order-info-field': Field,
+    'order-info-phone': Phone,
     'order-info-tips': Tips,
     'map-view': MapView,
     'refund-order-layer': RefundOrderLayer,
@@ -223,5 +247,57 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/orderinfo.scss'
+@import '@/assets/scss/orderinfo.scss';
+
+.page-title{
+  margin: 0 .15rem;
+  @include font (.18rem, $main-text, bold);
+}
+
+.info{
+  padding: .10rem 0 .15rem 0;
+  border-bottom: solid 1px $normal-text;
+  position: relative;
+
+  &-field{
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: .15rem;
+    margin: .10rem 0;
+    @include font (.14rem, $main-text);
+    @include flex ();
+
+    &-label{
+      flex-shrink: 0;
+      width: .60rem;
+      margin-right: .20rem;
+      @include textJustify;
+      @include font (.14rem, $tip-text);
+      transform: translateY(1px);
+    }
+
+    &-text{
+      flex: 1;
+    }
+  }
+
+  &-index{
+    width: .30rem;
+    height: 0.3rem;
+    border-radius: 50%;
+    background-color: $linecard-color;
+    @include font (.14rem, $tip-text);
+    @include flex (center, center);
+    position: absolute;
+    top: .16rem;
+    left: 0;
+  }
+
+  &-phone{
+    @include font (.16rem, $sub-color);
+    position: absolute;
+    right: 0;
+    top: .20rem;
+  }
+}
 </style>

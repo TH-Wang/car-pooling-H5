@@ -202,19 +202,19 @@ export default {
         icon: require('@/assets/icons/mine/group.png'),
         path: '/common/group/master',
         title: '我是群主',
-        show: true
+        show: false
       },
       etc: {
         icon: require('@/assets/icons/mine/master.png'),
         path: '/common/site/master',
         title: '我是站长',
-        show: true
+        show: false
       },
       viceAdministrator: {
         icon: require('@/assets/icons/mine/master.png'),
         path: '/common/site/submaster',
         title: '我是副站长',
-        show: true
+        show: false
       }
     },
     // 需要退订的订单id
@@ -271,10 +271,10 @@ export default {
       this.$store.commit('setUserInfo', res.data.data)
 
       // 身份判断
-      // const { group, etc, viceAdministrator } = res.data.data
-      // this.menuList.group.show = group === 'YES'
-      // this.menuList.etc.show = etc === 'YES'
-      // this.menuList.viceAdministrator.show = viceAdministrator === 'YES'
+      const { group, etc, viceAdministrator } = res.data.data
+      this.menuList.group.show = group === 'YES'
+      this.menuList.etc.show = etc === 'YES'
+      this.menuList.viceAdministrator.show = viceAdministrator === 'YES'
     },
     // 身份判断
     getConfirm (type) {

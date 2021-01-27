@@ -14,6 +14,7 @@ import trip from './trip'
 import route from './route'
 import orderUrl from './orderUrl'
 import ticket from './ticket'
+import station from './station'
 
 Vue.use(Vuex)
 
@@ -38,6 +39,7 @@ export default new Vuex.Store({
     trip,
     route,
     orderUrl,
-    ticket
+    ticket,
+    station
   }
 })

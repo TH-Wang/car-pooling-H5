@@ -1,14 +1,17 @@
 <template>
   <div class="manage-item">
-    <div>{{record.name}}</div>
-    <div>{{record.percent}}</div>
-    <div>{{record.published}}</div>
-    <van-switch
-      :value="value"
-      size=".23rem"
-      active-color="#FFCD00"
-      @change="handleChange"
-    />
+    <div>{{record.userName}}</div>
+    <div>{{record.percent || ' '}}</div>
+    <div>{{record.publishNum}}</div>
+    <div>
+      <van-switch
+        class="switch"
+        :value="record.isPublish === 1"
+        size=".23rem"
+        active-color="#FFCD00"
+        @change="handleChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -19,15 +22,7 @@ export default {
   components: {
     'van-switch': Switch
   },
-  model: {
-    prop: 'value',
-    event: 'change'
-  },
   props: {
-    value: {
-      type: Boolean,
-      default: true
-    },
     record: {
       type: Object,
       default: () => ({})
@@ -50,5 +45,11 @@ export default {
   margin: 0 .15rem;
   @include flex (space-between, center);
   @include font (.14rem, $main-text);
+
+  & > div{
+    flex: 1;
+    width: 25%;
+    text-align: center;
+  }
 }
 </style>
