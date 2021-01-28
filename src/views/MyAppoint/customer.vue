@@ -41,6 +41,9 @@
       </van-list>
       <div style="height:.5rem"></div>
     </van-pull-refresh>
+
+    <!-- 退订弹窗 -->
+    <refund-order-layer v-model="showRefund" @submit="handleRefund" />
   </div>
 </template>
 
@@ -52,6 +55,7 @@ import NoticeBar from '@/components/NoticeBar'
 import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
+import RefundOrderLayer from '@/components/Layer/RefundOrder'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
@@ -61,7 +65,8 @@ export default {
     'van-list': List,
     'van-pull-refresh': PullRefresh,
     'pending-order': PendingOrder,
-    'confirm-button': ConfirmButton
+    'confirm-button': ConfirmButton,
+    'refund-order-layer': RefundOrderLayer
   },
   data: () => ({
     // 显示公告栏
@@ -71,7 +76,10 @@ export default {
     orderMenu: [
       { type: 'cancel', text: '取消预约' },
       { type: 'report', text: '举报' }
-    ]
+    ],
+    showRefund: false,
+    // 需要退订的订单id
+    cancelOrderId: null
   }),
   computed: {
     ...mapState(['user']),
@@ -127,15 +135,26 @@ export default {
         this.$toast.fail('确认失败，请稍后再试')
       }
     },
-    // 取消预约
-    async handleOrderCancel (status, orderId) {
-      const res = await confirmOrder({ status, orderId })
-      if (res.data.status === 200) {
-        this.$toast.success('取消成功！')
-        this.handleRefreshStatus(orderId, 4)
+    // 乘客退订
+    async handleRefund (reason) {
+      const orderId = this.cancelOrderId
+      const data = { status: 4, orderId, ...reason }
+      // await this.handleReqCancel(data)
+      this.$toast.loading({ message: '请求中', duration: 10000 })
+      const res = await confirmOrder(data)
+      this.$toast.clear()
+      if (res.data.msg === '成功') {
+        this.$toast.success('取消成功')
       } else {
-        this.$toast.fail('取消失败\n请稍后再试')
+        this.$toast.fail('取消失败\n请稍后重试')
       }
+      this.showRefund = false
+      this.handleListLoad()
+    },
+    // 取消预约
+    handleOrderCancel (status, orderId) {
+      this.cancelOrderId = orderId
+      this.showRefund = true
     },
     handleRefreshStatus (id, status) {
       // 预约成功，status: 6 -> 2

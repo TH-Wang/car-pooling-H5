@@ -22,13 +22,7 @@
         <message-item
           v-for="(item, index) in list"
           :key="index"
-          :record="item.obj"
-          :user="item.user"
-          :type="item.type"
-          :otherId="item.otherId"
-          :updateTime="item.updateTime"
-          :num="item.num"
-          :notify-time="item.time"
+          :record="item"
         />
       </van-list>
     </van-pull-refresh>

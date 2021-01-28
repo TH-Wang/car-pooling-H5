@@ -18,7 +18,7 @@
         :record="{
           startAddr: addrName.startAddr,
           endAddr: addrName.endAddr,
-          seatNum: record.remainingSeat}"
+          seatNum: record.num}"
         content-type="seat"
       />
 
@@ -45,7 +45,7 @@
 
     <!-- 预约按钮 -->
     <main-button :class="submitButtonClass" width="3.45rem" @click="handleReserve">
-      {{record.remainingSeat > 0 || record.publishType === 5 ? '预约' : '更多车主'}}
+      {{record.num > 0 || record.publishType === 5 ? '预约' : '更多车主'}}
     </main-button>
   </div>
 </template>
@@ -105,14 +105,15 @@ export default {
     // 点击预约
     async handleReserve () {
       // 如果可以预约就跳转预约页面
-      if (this.record.remainingSeat > 0 || this.record.publishType === 5) {
+      if (this.record.num > 0 || this.record.publishType === 5) {
         // 判断是否登录...
         const isLogin = await confirmLogin('尊敬的用户，您还未登录，登录后即可预约')
         console.log(isLogin)
         if (!isLogin) return
         // 跳转到预约页面
         const id = this.orderId
-        this.$router.push({ path: '/common/reserve', query: { id } })
+        const seat = this.record.num
+        this.$router.push({ path: '/common/reserve', query: { id, seat } })
       } else {
         // 更多车主跳转到首页
         this.$router.push('/home')

@@ -16,9 +16,9 @@
       <div class="header">
         <div class="header-top">
           <div :class="`header-tag tag-${getTagColor(item.type)}`">
-            {{getTagText(item.type)}}
+            {{item.state}}
           </div>
-          <div class="header-title">{{item.name}}</div>
+          <div class="header-title">{{item.realName}}</div>
           <div class="header-status">{{getStatusText(item.type)}}</div>
         </div>
         <div class="header-time">

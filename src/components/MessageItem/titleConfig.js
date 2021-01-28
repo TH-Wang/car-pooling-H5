@@ -7,6 +7,6 @@ export default {
   11: '您的行程，已被车主<span style="color:#FFCD00">成功预定</span>',
   12: '您的爱车，座位被<span style="color:#FFCD00">取消预约</span>通知',
   13: '您的行程，车主<span style="color:#FFCD00">取消预约</span>通知',
-  14: '您的爱车，座位被<span style="color:#FFCD00">退订</span>通知',
-  15: '您的行程，车主<span style="color:#FFCD00">退订</span>通知'
+  14: '您的行程，车主<span style="color:#FFCD00">退订</span>通知',
+  15: '您的爱车，座位被<span style="color:#FFCD00">退订</span>通知'
 }

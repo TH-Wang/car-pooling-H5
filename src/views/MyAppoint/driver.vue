@@ -52,6 +52,9 @@
       </van-list>
       <div style="height:.5rem"></div>
     </van-pull-refresh>
+
+    <!-- 车主取消预约弹窗 -->
+    <cancel-reserve-layer v-model="showCancel" @submit="handleDriverCancel" />
   </div>
 </template>
 
@@ -62,6 +65,7 @@ import { driverOrder, confirmOrder } from '@/api'
 import PendingOrder from '@/components/OrderItem/Pending'
 import ConfirmButton from '@/components/ConfirmButton'
 import ButtonMenuMixin from '@/mixins/button-menu-mixin'
+import CancelReserve from '@/components/Layer/CancelReserve'
 import ListMixin from '@/mixins/list-mixin'
 
 export default {
@@ -71,7 +75,8 @@ export default {
     'van-list': List,
     'van-pull-refresh': PullRefresh,
     'pending-order': PendingOrder,
-    'confirm-button': ConfirmButton
+    'confirm-button': ConfirmButton,
+    'cancel-reserve-layer': CancelReserve
   },
   data: () => ({
     show: true,
@@ -79,7 +84,10 @@ export default {
     orderMenu: [
       { type: 'cancel', text: '取消预约' },
       { type: 'report', text: '举报' }
-    ]
+    ],
+    showCancel: false,
+    // 需要退订的订单id
+    cancelOrderId: null
   }),
   computed: {
     ...mapState(['user']),
@@ -93,35 +101,6 @@ export default {
   },
   methods: {
     reqApi: driverOrder,
-    // 请求列表
-    // async handleListLoad (deep) {
-    //   if (this.total === this.list.length && !deep) return
-
-    //   // 我是乘客，查询我的预约订单
-    //   const res = await driverOrder({
-    //     startPage: 1,
-    //     pageSize: 999
-    //   })
-    //   const { list, total } = res.data.data
-    //   const result = list.map(item => {
-    //     item.startTime = item.passengerStartTime
-    //     item.seatNum = item.orderNum
-    //     return item
-    //   })
-    //   // 如果是首页，则直接设置list，否则插入到尾部
-    //   if (this.startPage === 1) {
-    //     this.list = result
-    //   } else {
-    //     this.list.push(...result)
-    //   }
-
-    //   this.total = total
-    //   this.startPage++
-    //   this.loading = false
-    //   if (this.list.length === this.total) {
-    //     this.finished = true
-    //   }
-    // },
     // 刷新预约订单信息
     async handleRetry () {
       this.$toast.loading({
@@ -143,18 +122,26 @@ export default {
         this.$toast.fail('确认失败，请稍后再试')
       }
     },
-    // 取消预约
-    async handleOrderCancel (status, orderId) {
-      const userId = this.user.info.id
-      const res = await confirmOrder({ orderId, status, userId })
+    // 车主取消
+    async handleDriverCancel ({ id, text }) {
+      const orderId = this.cancelOrderId
+      const data = { status: 3, orderId, unsubscribeResonId: id }
+      // await this.handleReqCancel(data)
+      this.$toast.loading({ message: '请求中', duration: 10000 })
+      const res = await confirmOrder(data)
+      this.$toast.clear()
       if (res.data.msg === '成功') {
         this.$toast.success('取消成功')
-        this.handleRefreshStatus(orderId, 4)
-        // this.startPage = 1
-        // this.handleListLoad(true)
       } else {
         this.$toast.fail('取消失败\n请稍后重试')
       }
+      this.showCancel = false
+      this.handleListLoad()
+    },
+    // 取消预约
+    async handleOrderCancel (status, orderId) {
+      this.cancelOrderId = orderId
+      this.showCancel = true
     },
     handleRefreshStatus (id, status) {
       // 预约成功，status: 5 -> 1

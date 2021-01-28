@@ -12,11 +12,11 @@
     <!-- 顶部 -->
     <order-info-header
       :record="{
-        startAddr: record.startAddr,
-        endAddr: record.endAddr,
+        startAddr: getAddr(record.passengerOrderDto.passPoints || [], 'start'),
+        endAddr: getAddr(record.passengerOrderDto.passPoints || [], 'end'),
         state: record.orderState,
-        startTime: record.passengerStartTime,
-        seatNum: record.orderNum
+        startTime: record.passengerOrderDto.passengerOrder.passengerStartTime,
+        seatNum: record.passengerOrderDto.passengerOrder.orderNum
       }"
       showShare
       show-time-seat
@@ -67,19 +67,19 @@
       </div>
       <div class="info-field" :style="`${stateMark ? 'width:2.25rem' : ''}`">
         <span class="info-field-label">车主</span>
-        <span class="info-field-text">{{record.userName}}</span>
+        <span class="info-field-text">{{record.publishDto.user.username}}</span>
       </div>
       <div class="info-field">
         <span class="info-field-label">出发地点</span>
-        <span class="info-field-text">{{record.startAddr}}</span>
+        <span class="info-field-text">{{getAddr(record.publishDto.passPoints, 'start')}}</span>
       </div>
       <div class="info-field">
         <span class="info-field-label">到达地点</span>
-        <span class="info-field-text">{{record.endAddr}}</span>
+        <span class="info-field-text">{{getAddr(record.publishDto.passPoints, 'end')}}</span>
       </div>
       <div class="info-field">
         <span class="info-field-label">余座</span>
-        <span class="info-field-text">{{record.num}}</span>
+        <span class="info-field-text">{{record.publishDto.publish.num}}</span>
       </div>
     </div>
     </div>
@@ -87,17 +87,18 @@
     <!-- 地图路线 -->
     <div class="page-title" style="margin:.20rem .15rem .3rem">
       <p>地图路线</p>
-      <map-view style="margin-top:.15rem" :info="record.passPointList" />
+      <map-view style="margin-top:.15rem" :info="record.passengerOrderDto.passPoints" />
     </div>
 
     <main-button
-      v-if="record.orderState === 1 && record.isPublish === 0"
+      v-if="orderState === 1"
       color="gray" type="hollow" center
+      style="margin-bottom: .30rem"
       @click="showRefund = true"
     >退订座位</main-button>
 
     <!-- 温馨提示 -->
-    <order-info-tips v-if="record.orderState === 1 && record.isPublish === 0" :tips="tips" />
+    <!-- <order-info-tips v-if="record.orderState === 1 && record.isPublish === 0" :tips="tips" /> -->
 
     <!-- 退订弹窗 -->
     <refund-order-layer
@@ -110,8 +111,8 @@
 
 <script>
 import moment from 'moment'
-import { selectByPassengerDetail, getPassengerPublishDetail, confirmOrder } from '@/api'
-import { Header, Field, Phone, Tips } from '@/components/OrderInfo/index'
+import { selectByPassengerDetail, confirmOrder } from '@/api'
+import { Header, Field, Phone } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import RefundOrderLayer from '@/components/Layer/RefundOrder'
@@ -123,7 +124,7 @@ export default {
     'order-info-header': Header,
     'order-info-field': Field,
     'order-info-phone': Phone,
-    'order-info-tips': Tips,
+    // 'order-info-tips': Tips,
     'map-view': MapView,
     'refund-order-layer': RefundOrderLayer,
     'main-button': MainButton
@@ -131,16 +132,20 @@ export default {
   data: () => ({
     orderId: '',
     pprId: null,
-    record: {},
+    record: {
+      passengerOrderDto: { passengerOrder: {} },
+      publishDto: { publish: {} }
+    },
     stateMark: '',
     showRefund: false,
-    status: null
+    status: null,
+    orderState: null
   }),
   computed: {
     // 判断是否有车主预约
     hasReversed () {
-      if (!this.record.status) return false
-      const status = this.record.status
+      if (!this.status) return false
+      const status = this.status
       return status !== 0
     },
     // 预约状态信息
@@ -165,7 +170,7 @@ export default {
     },
     // 途径点拼接字符串
     passPointList () {
-      return getPointText(this.record.passPointLis)
+      return getPointText(this.record.passengerOrderDto.passPoints)
     },
     // 备注
     remark () {
@@ -186,22 +191,25 @@ export default {
     // 请求详情信息
     async reqInfo () {
       const res = await selectByPassengerDetail(this.orderId)
-      const data = res.data.data[0]
+      const data = res.data.data
       // 如果不是乘客自己发布的，则直接展示
-      this.status = data.status
-      if (data.isPublish === 0) {
-        this.record = res.data.data[0]
-        return
-      }
+      this.status = data.passengerOrderDto.passengerOrder.status
+      this.orderState = data.publishDto.publish.orderState || 0
+      this.record = res.data.data
       // 如果是自己发布的，则请求发布详情接口
-      const detailRes = await getPassengerPublishDetail(this.orderId)
-      this.record = detailRes.data.data
+      // const detailRes = await getPassengerPublishDetail(this.orderId)
+      // this.record = detailRes.data.data
+    },
+    // 获取起止点信息
+    getAddr (list, type) {
+      if (!list || list.length <= 0) return ''
+      if (type === 'start') return list.find(i => i.type === 1).pointName
+      else return list.find(i => i.type === 3).pointName
     },
     // 退订
     async handleRefund (data) {
-      // 判断是乘客取消还是司机取消
       const status = 7
-      const orderId = this.record.orderId
+      const orderId = this.orderId
       const res = await confirmOrder({ status, orderId, ...data })
       if (res.data.msg === '成功') {
         this.$toast.success('退订成功！')
@@ -210,11 +218,8 @@ export default {
     },
     // 跳转分享页面
     handleShare () {
-      if (this.record.isPublish === 0) {
-        this.$router.push('/common/tripshare/driver?id=' + this.pprId)
-      } else {
-        this.$router.push('/common/tripshare/customer?id=' + this.orderId)
-      }
+      const id = this.passengerOrderDto.passengerOrder.orderId
+      this.$router.push('/common/tripshare/customer?id=' + id)
     },
     // 跳转到无责退订页面
     handleLinkDesc () {
@@ -222,14 +227,14 @@ export default {
     },
     // 判断电话号码显示文本
     getPhone (phone) {
-      return this.record.orderState === 0
+      return this.orderState === 0
         ? phone
         : phone.slice(0, 3) + '****' + phone.slice(7)
     },
     // 拨打电话
     handleCall () {
-      if (this.record.orderState !== 0) return
-      callPhone(this.record.mobilePhone)
+      if (this.orderState !== 0) return
+      callPhone(this.record.publishDto.publish.mobilePhone)
     }
   },
   created () {

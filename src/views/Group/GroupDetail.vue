@@ -169,8 +169,12 @@ export default {
         if (type === 1) {
           aliPay(res)
         } else {
-          await wexinPay(res)
-          this.auth = true
+          wexinPay(res).then(() => {
+            this.$toast.loading({ message: '请稍后', duration: 1000 })
+            setTimeout(() => {
+              this.handleReq()
+            }, 1000)
+          })
         }
       } catch (error) {
         this.$dialog.alert({

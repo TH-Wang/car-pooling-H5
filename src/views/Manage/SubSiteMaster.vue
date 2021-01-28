@@ -74,9 +74,13 @@ export default {
     async handleReqCount () {
       const res = await getFreePublishTime()
       const count = res.data.data.freeTime
-      const config = this.menuList[3]
+      const integral = res.data.data.integral
+      const config1 = this.menuList[0]
+      const config2 = this.menuList[3]
       this.count = count
-      this.$set(this.menuList, 3, { ...config, content: '余 ' + count })
+      this.integral = integral
+      this.$set(this.menuList, 1, { ...config1, content: integral })
+      this.$set(this.menuList, 3, { ...config2, content: '余 ' + count })
     },
     handleLink (path) {
       if (path || !isEmpty(path)) {
