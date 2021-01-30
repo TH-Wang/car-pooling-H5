@@ -101,18 +101,22 @@ export default {
   data: () => ({
     // 拼车群id
     groupId: null,
+    code: 'CDSLVN',
     // 详细信息
     info: { price: 0, city: '', region: '' },
-    tips: [
-      '长按二维码扫描或保存进群流程',
-      '1.扫码二维码',
-      '2.发送入群码 <span style="color:#FFCD00">CDSLVN</span>'
-    ],
     showQRcode: false,
     // 是否有查看的权限
     auth: false
   }),
   computed: {
+    tips () {
+      const code = this.code
+      return [
+        '长按二维码扫描或保存进群流程',
+        '1.扫码二维码',
+        `2.发送入群码 <span style="color:#FFCD00">${code}</span>`
+      ]
+    },
     time () {
       return moment(this.info.createTime).format('YYYY-MM-DD')
     },
@@ -122,8 +126,8 @@ export default {
     // 价格
     priceText () {
       const price = this.info.price
-      if (!price) return ''
-      if (price === 0) return '免费'
+      // if (!price) return ''
+      if (price === 0) return '免费进群'
       else {
         if (this.auth) return '已付费'
         const decimal = price.toString().split('.')[1]

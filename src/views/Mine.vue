@@ -147,7 +147,7 @@
 import { mapGetters, mapState } from 'vuex'
 // import store from '@/store'
 import { Image, Swipe, SwipeItem } from 'vant'
-import { isEmpty } from 'lodash'
+// import { isEmpty } from 'lodash'
 import {
   selectAccountInfo,
   getOrdering,
@@ -250,7 +250,7 @@ export default {
           item.seatNum = item.orderNum
           return item
         })
-        this.reqAccount()
+        // this.reqAccount()
       }
     },
     // 刷新预约订单信息
@@ -265,7 +265,7 @@ export default {
     // 请求账户信息
     async reqAccount () {
       // 如果已请求到账户信息，则不再进行多余的请求
-      if (!isEmpty(this.account.info)) return
+      // if (!isEmpty(this.account.info)) return
       const res = await selectAccountInfo()
       this.$store.commit('setAccountInfo', res.data.data)
       this.$store.commit('setUserInfo', res.data.data)
@@ -354,25 +354,16 @@ export default {
       this.swipeCurrent = index
     }
   },
-  activated: async function () {
+  activated () {
     if (!this.user.token) return
-    await this.reqList()
-    await this.reqAccount()
+    this.reqList()
+    this.reqAccount()
   },
   mounted: async function () {
     if (!this.user.token) return
-    // if (!this.$store.state.ticket.code && isWeixin()) {
-    //   getUserCode('/mine')
-    //   return
-    // }
-    await this.reqList()
+    this.reqList()
+    this.reqAccount()
   }
-  // beforeRouteEnter (to, from, next) {
-  //   if (from.path === '/common/login' && store.state.user.token) {
-  //     window.location.reload()
-  //   }
-  //   next()
-  // }
 }
 </script>
 

@@ -13,8 +13,11 @@
 
     <div class="main-container">
       <div class="card">
-        <div class="name">{{user.info.username}}</div>
-        <div class="phone">{{user.info.phone}}</div>
+        <div v-if="type === 'site'" class="name">{{addr + '站首页'}}</div>
+        <template v-else>
+          <div class="name">{{user.info.username}}</div>
+          <div class="phone">{{user.info.phone}}</div>
+        </template>
         <div class="title">{{title}}</div>
         <div class="link-text">{{link}}</div>
       </div>
@@ -46,6 +49,7 @@ export default {
     'main-button': MainButton
   },
   data: () => ({
+    type: '',
     title: '',
     code: '',
     addr: '',
@@ -59,14 +63,16 @@ export default {
     // 请求短链接
     async handleReqLink () {
       const oriUrl = port + '?station=' + this.alias
-      console.log(oriUrl)
       const url = await getShortLinkUrl(oriUrl)
       this.link = url
     },
     // 复制
     async copyToClip (type) {
       const aux = document.createElement('textarea')
-      aux.value = this.link
+      const text = '【拼车之家】' +
+        (this.type === 'site' ? `${this.addr}站首页` : `${this.user.info.username}的首页`) +
+        '\n' + this.link
+      aux.value = text
       document.body.appendChild(aux)
       aux.select()
       document.execCommand('copy')
@@ -76,7 +82,8 @@ export default {
   },
   created () {
     // this.title = this.$route.query.title
-    const { code, addr, alias } = this.$route.query
+    const { code, addr, alias, type } = this.$route.query
+    this.type = type
     this.code = code
     this.addr = addr
     this.alias = alias

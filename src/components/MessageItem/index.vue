@@ -67,6 +67,12 @@
           <p><span>当前余座：</span>{{record.publish.num}}</p>
         </template>
       </div>
+
+      <!-- 温馨提示 -->
+      <div class="card-tips">
+        <p>温馨提示：</p>
+        <p v-for="(item, index) in tipConfig[record.type]" :key="index">{{item}}</p>
+      </div>
       <div class="card-link">查看行程详情</div>
     </div>
   </div>
@@ -76,6 +82,7 @@
 import moment from 'moment'
 import titleConfig from './titleConfig'
 import descConfig from './descConfig'
+import tipConfig from './tipConfig'
 import confirm from './confirm'
 import line from './line'
 
@@ -88,7 +95,8 @@ export default {
   },
   data: () => ({
     titleConfig,
-    descConfig
+    descConfig,
+    tipConfig
   }),
   computed: {
     // 标题
@@ -130,7 +138,7 @@ export default {
     handleLink () {
       let url = null
       if (this.confirm.isDriverMsg) {
-        url = '/common/tripinfo/driver?id=' + this.record.publish.orderId
+        url = '/common/tripinfo/driver?id=' + this.record.publish.pprId
       } else url = '/common/tripinfo/customer?id=' + this.record.order.orderId
       this.$router.push(url)
     }
@@ -174,7 +182,7 @@ export default {
       }
     }
 
-    &-desc, &-content{
+    &-desc, &-content, &-tips{
       padding-left: .25rem;
     }
 
@@ -197,9 +205,14 @@ export default {
       }
     }
 
+    &-tips{
+      @include font (.13rem, $sub-text);
+    }
+
     &-link{
       @include font (.12rem, $main-color);
       margin-left: .25rem;
+      margin-top: .10rem;
       padding-bottom: 3px;
       display: inline-block;
       border-bottom: solid 1px $main-color;

@@ -79,13 +79,21 @@ export default {
       const config2 = this.menuList[3]
       this.count = count
       this.integral = integral
-      this.$set(this.menuList, 1, { ...config1, content: integral })
+      this.$set(this.menuList, 0, { ...config1, content: integral })
       this.$set(this.menuList, 3, { ...config2, content: '余 ' + count })
     },
     handleLink (path) {
       if (path || !isEmpty(path)) {
         const { code, name, shortName } = this.info
-        this.$router.push({ path, query: { code, addr: name, alias: shortName } })
+        this.$router.push({
+          path,
+          query: {
+            code,
+            addr: name,
+            alias: shortName,
+            type: 'subSite'
+          }
+        })
       }
     }
   },

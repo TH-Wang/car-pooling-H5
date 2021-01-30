@@ -57,7 +57,7 @@
     </div>
 
     <!-- 如果没有司机确认 -->
-    <van-empty  v-if="record.status === 0" description="暂无车主预约"/>
+    <van-empty  v-if="!record.publishDto.publish" description="暂无车主预约"/>
     <div v-else class="page-title">
       <p>车主信息</p>
       <div class="info">
@@ -67,7 +67,9 @@
       </div>
       <div class="info-field" :style="`${stateMark ? 'width:2.25rem' : ''}`">
         <span class="info-field-label">车主</span>
-        <span class="info-field-text">{{record.publishDto.user.username}}</span>
+        <span class="info-field-text">
+          {{record.publishDto.user ? record.publishDto.user.username : ''}}
+        </span>
       </div>
       <div class="info-field">
         <span class="info-field-label">出发地点</span>
@@ -194,7 +196,7 @@ export default {
       const data = res.data.data
       // 如果不是乘客自己发布的，则直接展示
       this.status = data.passengerOrderDto.passengerOrder.status
-      this.orderState = data.publishDto.publish.orderState || 0
+      this.orderState = data.publishDto?.publish?.orderState || 0
       this.record = res.data.data
       // 如果是自己发布的，则请求发布详情接口
       // const detailRes = await getPassengerPublishDetail(this.orderId)
