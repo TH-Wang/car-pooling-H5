@@ -50,6 +50,9 @@ export default {
           // 预约成功
           this.handleTipPhone()
           this.hasReserve = true
+        } else if (status === -100) {
+          // 未找到匹配路线
+          this.handleTipRelease(msg)
         } else if (status === -6) {
           // 如果车主尚未发布
           this.handleTipRelease(msg)

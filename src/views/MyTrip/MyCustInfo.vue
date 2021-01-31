@@ -22,7 +22,7 @@
     <!-- 详情卡片 -->
     <div class="content-card">
       <!-- 地图 -->
-      <map-view :info="record.passPointLis" />
+      <map-view :info="record.passPointList" />
 
       <!-- 详细信息 -->
       <order-info-field
@@ -36,13 +36,13 @@
       <order-info-field icon-type="remark" label="备注" :content="record.remark || '无'" />
 
       <!-- 联系电话 -->
-      <order-info-phone tipType="customer" :phone="record.phone"/>
+      <order-info-phone tipType="customer" :phone="record.telPhone"/>
     </div>
   </div>
 </template>
 
 <script>
-import { selectByPassengerDetail } from '@/api'
+import { getPassengerPublishDetail } from '@/api'
 import { Header, Field, Phone } from '@/components/OrderInfo/index'
 import MapView from '@/components/MapView'
 
@@ -64,8 +64,8 @@ export default {
   }),
   methods: {
     async handleRequest () {
-      const res = await selectByPassengerDetail(this.orderId)
-      this.record = res.data.data[0]
+      const res = await getPassengerPublishDetail(this.orderId)
+      this.record = res.data.data
     }
   },
   created () {

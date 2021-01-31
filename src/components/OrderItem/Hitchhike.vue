@@ -25,11 +25,11 @@
         </div>
         <div class="car-info-item">
           <img src="@/assets/icons/order/location.png" alt="">
-          <span>{{record.distance || record.publish.distance}}km</span>
+          <span>距您{{record.distance || record.publish.distance}}km</span>
         </div>
         <div class="car-info-item">
           <img src="@/assets/icons/order/line.png" alt="">
-          <span>{{record.similarity || 0}}%</span>
+          <span>顺路{{record.similarity || 0}}%</span>
         </div>
       </div>
     </div>

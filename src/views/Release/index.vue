@@ -108,8 +108,12 @@ export default {
           window.scrollTo(0, 0)
           return
         }
-        // 2. 提示确认手机号
-        await this.confirmPhone()
+        // 2. 如果距上次登录超过了三天，提示确认手机号
+        console.log(new Date().getTime())
+        console.log(this.user.leaveTime)
+        if ((new Date().getTime() - this.user.leaveTime) > 259200000) {
+          await this.confirmPhone()
+        }
         // 3. 提示收取信息费
         await this.alertCost()
         // 4. 发起请求

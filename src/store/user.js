@@ -3,6 +3,7 @@ import { userIdentity, userDriving } from '@/api'
 const storageToken = localStorage.getItem('token')
 const phone = localStorage.getItem('phone')
 const info = JSON.parse(localStorage.getItem('info'))
+const leave = localStorage.getItem('leave')
 
 export default {
   state: {
@@ -11,7 +12,8 @@ export default {
     info: info || {},
     carList: [],
     identityInfo: {},
-    drivingInfo: {}
+    drivingInfo: {},
+    leaveTime: leave || 0
   },
 
   mutations: {
@@ -43,6 +45,10 @@ export default {
       for (const key in obj) {
         state[key] = obj[key]
       }
+    },
+    setLeaveTime (state, time) {
+      state.leaveTime = time
+      localStorage.setItem('leave', time)
     }
   },
 

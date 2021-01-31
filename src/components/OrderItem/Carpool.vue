@@ -22,11 +22,11 @@
           </div>
           <div class="car-info-item">
             <img src="@/assets/icons/order/location.png" alt="">
-            <span>{{distance}}km</span>
+            <span>距您{{distance}}km</span>
           </div>
           <div class="car-info-item">
             <img src="@/assets/icons/order/line.png" alt="">
-            <span>{{record.similarity || 0}}%</span>
+            <span>顺路{{record.similarity || 0}}%</span>
           </div>
         </div>
       </div>
@@ -177,13 +177,14 @@ export default {
 
           img{
             width: .13rem;
-            margin-right: .05rem;
+            // margin-right: .05rem;
           }
 
           span{
             font-size: .12rem;
             color: $tip-text;
             text-align: left;
+            margin-left: .03rem;
           }
         }
       }

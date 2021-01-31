@@ -33,6 +33,13 @@ export default {
     if (station) {
       this.$router.push('/home?station=' + station)
     }
+  },
+  mounted () {
+    const _this_ = this
+    window.onbeforeunload = function () {
+      // 更新离开时间
+      _this_.$store.commit('setLeaveTime', new Date().getTime())
+    }
   }
 }
 </script>

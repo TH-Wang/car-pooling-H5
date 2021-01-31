@@ -232,6 +232,7 @@ export default {
       const carId = this.user.carList[0].id
       setTimeout(() => {
         this.$refs.form.setValues({
+          remark: '拼车顺路上下，预订后请电话确认一下，请说拼车之家提供的信息服务',
           vehicleType: carId,
           weight: data.weight,
           volume: data.volume,
@@ -292,7 +293,6 @@ export default {
         if (isWeixin()) data.code = this.$store.state.ticket.code
       }
 
-      console.log(data)
       // 通知父组件做提交相关操作
       this.$emit('submit', { data, type: 'driver' })
     },
@@ -306,7 +306,6 @@ export default {
       // const minuteNum = nowTime.get('minute') % 5
       const decNum = 30 - (nowTime.get('minute') % 5)
       const time = moment().add('minute', decNum).format('YYYY-MM-DD HH:mm')
-      console.log(decNum, time)
       this.$refs.form.setValueField('startTime', time)
     },
     // 打开输入路线的对话框
@@ -349,38 +348,12 @@ export default {
   },
   mounted () {
     this.setLastData()
-    // 设置值到表单
-    // setTimeout(() => {
-    //   const data = this.history.driverPublish
-    //   console.log(data)
-    //   if (!isEmpty(data)) {
-    //     const formData = cloneDeep(data)
-    //     formData.publishType = data.publishType >= 1 && data.publishType <= 3
-    //       ? 1
-    //       : data.publishType
-    //     this.$refs.form.setValues(formData)
-    //   }
-    // }, 1000)
   },
   watch: {
     agreePackage: function (newVal) {
       if (newVal) this.$refs.layer.show()
       else this.combo = {}
     }
-    // startAddrName: function (newVal) {
-    //   if (!this.allInputStartEnd) return
-    //   const type = this.judgeType()
-    //   const typeName = this.orderMenu.find(i => i.id === type).label
-    //   this.$refs.form.setValueField('publishType', type)
-    //   this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
-    // },
-    // endAddrName: function (newVal) {
-    //   if (!this.allInputStartEnd) return
-    //   const type = this.judgeType()
-    //   const typeName = this.orderMenu.find(i => i.id === type).label
-    //   this.$refs.form.setValueField('publishType', type)
-    //   this.$toast({ message: `已为您自动选择为：${typeName}`, duration: 1000 })
-    // }
   }
 }
 </script>
