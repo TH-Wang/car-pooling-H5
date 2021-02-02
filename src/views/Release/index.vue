@@ -71,7 +71,7 @@ import { cloneDeep } from 'lodash'
 import SearchCard from '@/components/SearchCard'
 import CustomerFormBody from './customer'
 import DriverFormBody from './driver'
-import confirmLogin from '@/utils/confirmLogin'
+// import confirmLogin from '@/utils/confirmLogin'
 import getLineData, { filterPointParams } from '@/utils/transPos'
 import { aliPay, wexinPay } from '@/utils/pay'
 import { getUserCode, isWeixin } from '@/utils/wx'
@@ -108,25 +108,19 @@ export default {
           window.scrollTo(0, 0)
           return
         }
-        // 2. 如果距上次登录超过了三天，提示确认手机号
-        console.log(new Date().getTime())
-        console.log(this.user.leaveTime)
-        if ((new Date().getTime() - this.user.leaveTime) > 259200000) {
-          await this.confirmPhone()
-        }
-        // 3. 提示收取信息费
+        // 2. 提示收取信息费
         await this.alertCost()
-        // 4. 发起请求
+        // 3. 发起请求
         const res = type === 'driver'
           ? await this.driverRequest(cloneDeep(data))
           : await this.customerRequest(cloneDeep(data))
-        // 5. 如果需要支付
+        // 4. 如果需要支付
         if (type === 'driver' && data.setType > 0) {
           const id = res.data.data.data.id
           this.handlePay(res, data.payType, '/common/order/detail?id=' + id)
           return
         }
-        // 6. 处理反馈
+        // 5. 处理反馈
         if (res.data.status === -4) {
           // 如果token失效
           this.$dialog.alert({ message: '请重新登录' })
@@ -137,7 +131,7 @@ export default {
           this.$toast.fail('发布失败\n请稍后再试')
           return
         }
-        // 7. 重置时间未当前时间的半小时后
+        // 6. 重置时间未当前时间的半小时后
         this.$refs[type].resetTime()
         // 如果发布成功
         const commitType = type === 'driver' ? 'setDriverPublish' : 'setCustomerPublish'
@@ -245,9 +239,12 @@ export default {
   activated () {
     if (!this.$store.state.ticket.code && isWeixin()) {
       getUserCode('/release')
+      return
     }
-    // 验证是否登录
-    confirmLogin('尊敬的用户，登录后才能发布拼车信息，请您登录！')
+    // 如果距上次登录超过了三天，提示确认手机号
+    if ((new Date().getTime() - this.user.leaveTime) > 259200000) {
+      this.confirmPhone()
+    }
   }
 }
 </script>

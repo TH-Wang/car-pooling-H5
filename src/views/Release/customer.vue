@@ -155,6 +155,7 @@ export default {
       if (!data) return
       const publishType = parseInt(data.publishType)
       data.publishType = publishType >= 1 && publishType <= 3 ? 1 : publishType
+      data.remark = '拼车顺路上下，预订后请电话确认一下，请说拼车之家提供的信息服务'
       // this.$store.commit('setReleaseAddrInfo', data.passPointList)
       this.$refs.form.setValues(data)
     },

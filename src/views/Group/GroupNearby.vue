@@ -15,7 +15,7 @@
     <div class="header">
       <img class="header-icon" src="@/assets/icons/location.png" alt="">
       <div class="header-title">附近的群</div>
-      <div class="header-link">查看更多</div>
+      <!-- <div class="header-link">查看更多</div> -->
     </div>
 
     <!-- 如果群列表数据为空 -->
@@ -76,17 +76,19 @@ export default {
     reqApi: selectGroup,
     // 返回主要的请求参数
     getRequestDatas () {
-      const { city, county } = this.position
+      const { city, county } = this.position.selected
       return {
-        city: city.shortName,
-        region: county.name
+        lon: county.lon,
+        lat: county.lat,
+        city: city?.shortName,
+        region: county?.shortName
       }
     },
     // 自己处理返回值
-    resDataHandler (res) {
-      const { rows, total } = res.data
-      return { list: rows, total }
-    },
+    // resDataHandler (res) {
+    //   const { rows, total } = res.data
+    //   return { list: rows, total }
+    // },
     // 价格的前缀样式
     priceClass,
     // 价格的前缀样式

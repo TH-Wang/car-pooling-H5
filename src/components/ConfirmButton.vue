@@ -43,7 +43,6 @@
     :menuVisible="menuVisible"
     @click="menuVisible = !menuVisible"
     @cancel="handleCancel"
-    @report="$emit('report')"
   >预约成功</mini-button>
 
   <!-- 已取消 -->
@@ -85,8 +84,7 @@ export default {
     },
     menuVisible: false,
     menu: [
-      { type: 'cancel', text: '取消预约' },
-      { type: 'report', text: '举报' }
+      { type: 'cancel', text: '取消预约' }
     ]
   }),
   computed: {

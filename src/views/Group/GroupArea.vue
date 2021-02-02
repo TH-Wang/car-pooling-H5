@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 搜索框导航栏 -->
-    <nav-bar-search mode="dark"/>
+    <nav-bar-search mode="dark" button @click-search="$router.go(-1)"/>
 
     <!-- 顶部地区显示栏 -->
     <div class="area">
@@ -65,6 +65,7 @@ import MiniButton from '@/components/MiniButton'
 import ListMixin from '@/mixins/list-mixin'
 import areaList from '@/utils/areaList.js'
 import { priceClass, priceText } from './utils'
+import { mapState } from 'vuex'
 
 export default {
   mixins: [ListMixin],
@@ -83,28 +84,38 @@ export default {
     // 与list-mixin相关，如果该项为true，则不会自动在mounted阶段发送请求
     notReqOnMounted: true
   }),
+  computed: {
+    ...mapState(['position'])
+  },
   methods: {
     // 请求拼车群列表的api函数
     reqApi: selectGroup,
     // 返回主要的请求参数
     getRequestDatas () {
+      const countyInfo = this.position.selected.county
       const city = this.selected[1].name
       const county = this.selected[2].name
-      return { city, county }
+      return {
+        lon: countyInfo.lon,
+        lat: countyInfo.lat,
+        city,
+        county
+      }
     },
     // 自己处理返回值
-    resDataHandler (res) {
-      const { rows, total } = res.data
-      return { list: rows, total }
-    },
+    // resDataHandler (res) {
+    //   const { rows, total } = res.data
+    //   return { list: rows, total }
+    // },
     async handleChange (value) {
+      console.log(value)
       this.selected = value
       this.visible = false
       this.$toast.loading({
         message: '搜索中',
         duration: 10000
       })
-      await this.handleListLoad()
+      await this.handlePullRefresh()
       this.$toast.clear()
     },
     handleLink (e, id) {

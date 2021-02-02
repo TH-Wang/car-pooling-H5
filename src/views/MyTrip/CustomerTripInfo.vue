@@ -14,7 +14,7 @@
       :record="{
         startAddr: getAddr(record.passengerOrderDto.passPoints || [], 'start'),
         endAddr: getAddr(record.passengerOrderDto.passPoints || [], 'end'),
-        state: record.orderState,
+        state: record.publishDto.publish.orderState || 1,
         startTime: record.passengerOrderDto.passengerOrder.passengerStartTime,
         seatNum: record.passengerOrderDto.passengerOrder.orderNum
       }"
@@ -61,9 +61,9 @@
     <div v-else class="page-title">
       <p>车主信息</p>
       <div class="info">
-      <div v-if="stateMark" class="info-phone" @click.stop="handleCall">
+      <div class="info-phone" @click.stop="handleCall">
         <van-icon name="phone" size=".14rem" color="#FFAE20" />
-        {{getPhone(record.mobilePhone)}}
+        {{getPhone(record.publishDto.publish.mobilePhone || '')}}
       </div>
       <div class="info-field" :style="`${stateMark ? 'width:2.25rem' : ''}`">
         <span class="info-field-label">车主</span>
@@ -138,12 +138,15 @@ export default {
       passengerOrderDto: { passengerOrder: {} },
       publishDto: { publish: {} }
     },
-    stateMark: '',
     showRefund: false,
     status: null,
     orderState: null
   }),
   computed: {
+    stateMark () {
+      if (!this.record.publishDto.publish.orderState) return true
+      return this.record.publishDto.publish.orderState === 1
+    },
     // 判断是否有车主预约
     hasReversed () {
       if (!this.status) return false
@@ -229,13 +232,13 @@ export default {
     },
     // 判断电话号码显示文本
     getPhone (phone) {
-      return this.orderState === 0
+      return this.stateMark
         ? phone
         : phone.slice(0, 3) + '****' + phone.slice(7)
     },
     // 拨打电话
     handleCall () {
-      if (this.orderState !== 0) return
+      if (!this.stateMark) return
       callPhone(this.record.publishDto.publish.mobilePhone)
     }
   },

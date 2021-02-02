@@ -30,7 +30,7 @@
       <!-- 空状态 -->
       <van-empty
         v-if="list.length === 0"
-        description="未搜索到该地区的任何内容"
+        description="未搜索到该地区的拼车群"
       />
       <!-- 列表 -->
       <van-list
@@ -66,8 +66,10 @@ import { selectGroup } from '@/api'
 import NavBarSearch from '@/components/NavBarSearch'
 import MainButton from '@/components/MainButton'
 import GroupItem from '@/components/GroupItem'
+import MiniButton from '@/components/MiniButton'
 import ListMixin from '@/mixins/list-mixin'
 import { priceClass, priceText } from './utils'
+import { mapState } from 'vuex'
 
 export default {
   mixins: [ListMixin],
@@ -75,7 +77,8 @@ export default {
     'van-list': List,
     'nav-bar-search': NavBarSearch,
     'main-button': MainButton,
-    'group-item': GroupItem
+    'group-item': GroupItem,
+    'mini-button': MiniButton
   },
   data: () => ({
     hotGroups: [
@@ -92,6 +95,7 @@ export default {
     notReqOnMounted: true
   }),
   computed: {
+    ...mapState(['position']),
     showSearchList () {
       return !isEmpty(this.searchValue)
     }
@@ -101,23 +105,27 @@ export default {
     reqApi: selectGroup,
     // 返回主要的请求参数
     getRequestDatas () {
-      const city = this.searchValue
-      return { city }
+      const countyInfo = this.position.selected.county
+      const keyword = this.searchValue
+      return {
+        lon: countyInfo.lon,
+        lat: countyInfo.lat,
+        keyword
+      }
     },
     // 自己处理返回值
-    resDataHandler (res) {
-      const { rows, total } = res.data
-      return { list: rows, total }
-    },
+    // resDataHandler (res) {
+    //   const { rows, total } = res.data
+    //   return { list: rows, total }
+    // },
     // 搜索事件
     handleSearch: debounce(function () {
       if (isEmpty(this.searchValue)) return
-      this.startPage = 1
-      this.handleListLoad()
+      this.handlePullRefresh()
     }, 300),
     handleCheckHotGroup (e, name) {
       this.searchValue = name
-      this.handleSearch()
+      this.handlePullRefresh()
     },
     // 价格的前缀样式
     priceClass,

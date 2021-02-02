@@ -39,9 +39,9 @@
         @click="handleLinkDetail($event, item.orderId)"
       >
         <div class="info-index">{{index+1}}</div>
-        <div v-if="stateMark" class="info-phone" @click.stop="handleCall($event, item.telPhone)">
+        <div class="info-phone" @click.stop="handleCall($event, item.telPhone)">
           <van-icon name="phone" size=".14rem" color="#FFAE20" />
-          {{item.telPhone}}
+          {{getPhone(item.telPhone)}}
         </div>
         <div class="info-field" :style="`${stateMark ? 'width:2.25rem' : ''}`">
           <span class="info-field-label">乘客</span>
@@ -97,7 +97,7 @@ export default {
   }),
   computed: {
     stateMark () {
-      return this.record.orderState === 1 ? 'doing' : 'finish'
+      return this.record.orderState === 1
     },
     startAddrName () {
       if (this.record.pstartAddr) return this.record.pstartAddr
@@ -130,6 +130,7 @@ export default {
     },
     // 拨打乘客电话
     async handleCall (e, phone) {
+      if (!this.stateMark) return
       await this.$dialog.confirm({
         message: '是否向该乘客的手机号<span style="color:#FFCD00">' + phone + '</span>拨打电话',
         confirmButtonText: '立即拨打',
@@ -146,6 +147,12 @@ export default {
         path: '/common/trip/edit',
         query: { id, pCount, state }
       })
+    },
+    // 判断电话号码显示文本
+    getPhone (phone) {
+      return this.stateMark
+        ? phone
+        : phone.slice(0, 3) + '****' + phone.slice(7)
     }
   },
   mounted: async function () {

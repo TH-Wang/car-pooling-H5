@@ -95,7 +95,7 @@ export default {
     affixContent: ''
   }),
   computed: {
-    ...mapState(['user']),
+    ...mapState(['user', 'position']),
     ...mapGetters(['location']),
     // 是否专线
     isSpecial () {
@@ -112,13 +112,21 @@ export default {
     // 返回筛选参数
     getRequestDatas () {
       const { isSpecial, newDate } = this
-      return { isSpecial, newDate }
+      const data = { isSpecial, newDate }
+      const { city, county } = this.position.selected
+      data.lon = county.lon
+      data.lat = county.lat
+      if (this.tabsId === 0) {
+        data.city = city?.shortName
+        data.region = county?.shortName
+      }
+      return data
     },
     // 自己处理返回值
-    resDataHandler (res) {
-      const { rows, total } = res.data
-      return { list: rows, total }
-    },
+    // resDataHandler (res) {
+    //   const { rows, total } = res.data
+    //   return { list: rows, total }
+    // },
     // 切换查询类型
     async handleSwitchType () {
       this.startPage = 1
