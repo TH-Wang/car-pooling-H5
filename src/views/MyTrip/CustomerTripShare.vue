@@ -65,6 +65,7 @@ import MapView from '@/components/MapView'
 import MainButton from '@/components/MainButton'
 import QuickLine from '@/components/QuickLine'
 import { shareip } from '@/configs/sharePort'
+import copyToClip from '@/utils/copyToClip'
 
 export default {
   components: {
@@ -136,13 +137,8 @@ export default {
       this.$toast.clear()
     },
     async copyToClip (type) {
-      const aux = document.createElement('textarea')
-      aux.value = await this.getCopyContent(type)
-      document.body.appendChild(aux)
-      aux.select()
-      document.execCommand('copy')
-      document.body.removeChild(aux)
-      this.$toast.success('复制成功')
+      const content = await this.getCopyContent(type)
+      copyToClip(content)
     },
     // 复制内容
     async getCopyContent (type) {

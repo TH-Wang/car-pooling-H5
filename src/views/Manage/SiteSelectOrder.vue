@@ -63,6 +63,7 @@ import CarpoolOrder from '@/components/OrderItem/Carpool'
 import MiniButton from '@/components/MiniButton'
 import ListMixin from '@/mixins/list-mixin'
 import { shareip } from '@/configs/sharePort'
+import copyToClip from '@/utils/copyToClip'
 
 export default {
   mixins: [ListMixin],
@@ -97,13 +98,8 @@ export default {
     },
     // 复制到剪切板
     async copyToClip (item) {
-      const aux = document.createElement('textarea')
-      aux.value = await this.getCopyContent(item)
-      document.body.appendChild(aux)
-      aux.select()
-      document.execCommand('copy')
-      document.body.removeChild(aux)
-      this.$toast.success('复制成功')
+      const content = await this.getCopyContent(item)
+      copyToClip(content)
     },
     // 复制内容
     async getCopyContent (item) {

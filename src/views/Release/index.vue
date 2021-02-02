@@ -237,6 +237,7 @@ export default {
     }
   },
   activated () {
+    if (!this.user.token) return
     if (!this.$store.state.ticket.code && isWeixin()) {
       getUserCode('/release')
       return

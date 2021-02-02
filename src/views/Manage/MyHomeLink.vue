@@ -41,6 +41,7 @@
 import { mapState } from 'vuex'
 import { getShortLinkUrl } from '@/api'
 import MainButton from '@/components/MainButton'
+import copyToClip from '@/utils/copyToClip'
 
 const port = 'http://pinchezhijia.com/'
 
@@ -68,16 +69,10 @@ export default {
     },
     // 复制
     async copyToClip (type) {
-      const aux = document.createElement('textarea')
-      const text = '【拼车之家】' +
+      const content = '【拼车之家】' +
         (this.type === 'site' ? `${this.addr}站首页` : `${this.user.info.username}的首页`) +
         '\n' + this.link
-      aux.value = text
-      document.body.appendChild(aux)
-      aux.select()
-      document.execCommand('copy')
-      document.body.removeChild(aux)
-      this.$toast.success('复制成功')
+      copyToClip(content)
     }
   },
   created () {
